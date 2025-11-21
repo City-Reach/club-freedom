@@ -74,7 +74,7 @@ function RootComponent() {
     >
       <RootDocument>
         <Outlet />
-        <Toaster position="bottom-center" />
+        <Toaster richColors position="bottom-center" />
       </RootDocument>
     </ConvexBetterAuthProvider>
   );
@@ -82,7 +82,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>

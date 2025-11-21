@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { Authenticated, Unauthenticated, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { isModOrAdmin } from "@/convex/lib/permissions";
 import Logo from "./logo";
@@ -14,23 +14,20 @@ export default function Navbar() {
       <div className="flex items-center gap-4">
         <Logo />
         {isModOrAdmin(user?.role) && (
-          <Authenticated>
-            <div className="flex items-center gap-4">
-              <Button variant="link" className="cursor-pointer" asChild>
-                <Link to="/testimonials">Testimonials</Link>
-              </Button>
-            </div>
-          </Authenticated>
+          <div className="flex items-center gap-4">
+            <Button variant="link" className="cursor-pointer" asChild>
+              <Link to="/testimonials">Testimonials</Link>
+            </Button>
+          </div>
         )}
       </div>
-      <Unauthenticated>
+      {user ? (
+        <UserDropDown user={user} />
+      ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>
         </Button>
-      </Unauthenticated>
-      <Authenticated>
-        <UserDropDown />
-      </Authenticated>
+      )}
     </header>
   );
 }

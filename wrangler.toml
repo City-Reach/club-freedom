@@ -3,6 +3,12 @@ compatibility_date = "2025-09-02"
 compatibility_flags = [ "nodejs_compat" ]
 main = "@tanstack/react-start/server-entry"
 
+[vars]
+VITE_CONVEX_URL="https://judicious-ladybug-977.convex.cloud"
+VITE_CONVEX_SITE_URL="https://judicious-ladybug-977.convex.site"
+VITE_SITE_URL="https://for-club-freedom-2025.vhng7899.workers.dev"
+SITE_URL="https://for-club-freedom-2025.vhng7899.workers.dev"
+
 [observability]
 enabled = false
 head_sampling_rate = 1

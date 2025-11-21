@@ -9,8 +9,6 @@ import authSchema from "@/convex/betterAuth/schema";
 import { v } from "convex/values";
 import { sendResetPassword } from "./email";
 
-const siteUrl = process.env.SITE_URL!;
-
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
 export const authComponent = createClient<DataModel, typeof authSchema>(
@@ -27,6 +25,9 @@ export const createAuth = (
   ctx: GenericCtx<DataModel>,
   { optionsOnly } = { optionsOnly: false }
 ) => {
+  const siteUrl = process.env.SITE_URL!;
+  console.log("Creating Better Auth with site URL:", siteUrl);
+
   return betterAuth({
     user: {
       additionalFields: {
@@ -59,6 +60,9 @@ export const createAuth = (
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex(),
+    ],
+    trustedOrigins: [
+      siteUrl
     ],
   } satisfies BetterAuthOptions);
 };

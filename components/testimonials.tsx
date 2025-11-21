@@ -5,12 +5,10 @@ import { useQuery } from "convex/react";
 import { TestimonialCard } from "./testimonial-card";
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
-import { isModOrAdmin } from "@/convex/lib/permissions";
 
 export function Testimonials() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
-  const user = useQuery(api.auth.getCurrentUser);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -22,10 +20,7 @@ export function Testimonials() {
     };
   }, [searchQuery]);
 
-  let testimonials = useQuery(api.testimonials.getTestimonials, { searchQuery: debouncedQuery });
-  if (!isModOrAdmin(user?.role)) {
-    testimonials = testimonials?.filter((testimonial) => testimonial.approved === true);
-  }
+  const testimonials = useQuery(api.testimonials.getTestimonials, { searchQuery: debouncedQuery });
   return (
     <>
       <Input

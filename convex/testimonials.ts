@@ -2,10 +2,16 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
+import { isModOrAdmin } from "./lib/permissions";
 
 export const getTestimonials = query({
   args: { searchQuery: v.optional(v.string()) },
   handler: async (ctx, { searchQuery }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    const role = identity?.role ?? "";
+    if (!isModOrAdmin(role as string)) {  
+      throw new Error("Unauthorized");
+    }
     let testimonials: any[] = [];
 
     if (searchQuery && searchQuery.trim() !== "") {
@@ -71,6 +77,11 @@ export const updateTestimonialApproval = mutation({
     approved: v.boolean(),
   },
   handler: async (ctx, { id, approved }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    const role = identity?.role ?? "";
+    if (!isModOrAdmin(role as string)) {  
+      throw new Error("Unauthorized");
+    }
     await ctx.db.patch(id, { approved });
     return { id, approved };
   },
