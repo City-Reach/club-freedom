@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TurnstileRouteRouteImport } from './routes/turnstile/route'
 import { Route as TestimonialsRouteRouteImport } from './routes/testimonials/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -22,6 +23,11 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
+const TurnstileRouteRoute = TurnstileRouteRouteImport.update({
+  id: '/turnstile',
+  path: '/turnstile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -86,6 +92,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/turnstile': typeof TurnstileRouteRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/turnstile': typeof TurnstileRouteRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/turnstile': typeof TurnstileRouteRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/testimonials'
+    | '/turnstile'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/turnstile'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/testimonials'
+    | '/turnstile'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
+  TurnstileRouteRoute: typeof TurnstileRouteRoute
   AdminCreateUserRoute: typeof AdminCreateUserRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -176,6 +189,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/turnstile': {
+      id: '/turnstile'
+      path: '/turnstile'
+      fullPath: '/turnstile'
+      preLoaderRoute: typeof TurnstileRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/testimonials': {
       id: '/testimonials'
       path: '/testimonials'
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
+  TurnstileRouteRoute: TurnstileRouteRoute,
   AdminCreateUserRoute: AdminCreateUserRoute,
   AdminIndexRoute: AdminIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
