@@ -25,6 +25,9 @@ import MobileVideoRecorder from "../recorder/mobile-video-recorder";
 import { Testimonial, testimonialSchema } from "@/lib/schema";
 import { useNavigate } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
+import { Turnstile } from '@marsidev/react-turnstile'
+import React from "react";
+import { apiRoute } from "@/app/routes/api/turnstile/route";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
@@ -49,6 +52,18 @@ export default function TestimonialForm() {
 
   async function onSubmit(values: Testimonial) {
     try {
+      const token = values.turnstileToken;
+      const res = await fetch(apiRoute, {
+        method: 'POST',
+        body: JSON.stringify({ token }),
+        headers: {
+          'content-type': 'application/json'
+        }
+      });
+      if (!res.ok) {
+        toast.error("Human verification (Turnstile) failed. Please try again.");
+        return;
+      }
       let storageId: string | undefined = undefined;
       let media_type = "text";
       if (values.mediaFile) {
@@ -225,7 +240,27 @@ export default function TestimonialForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={form.formState.isSubmitting}>
+          <FormField
+            control={form.control}
+            name="turnstileToken"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Turnstile
+                    siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                    onSuccess={(token: string) => field.onChange(token)}
+                    onExpire={() => field.onChange("")}
+                    options={{ size: "flexible" }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+          >
             {form.formState.isSubmitting && <Spinner />}
             {form.formState.isSubmitting ? "Submitting..." : "Submit"}
           </Button>

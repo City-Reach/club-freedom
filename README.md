@@ -114,7 +114,7 @@ To set up R2 for Convex, follow the instructions in the _Cloudflare Account_ sec
 There are two sets of environment variables: one for the Convex backend and one for the local TanStack development
 
 - Convex backend: example of variables can be found in `convex/.env.example` file.
-  
+
   You can set them in your Convex environment using the Convex CLI below or in the Convex dashboard.
 
   ```bash
@@ -262,3 +262,14 @@ See this [migration](https://www.convex.dev/components/migrations) page for more
 To run a single migration, use the following command:
 
 `pnpx convex run migrations:run '{fn: "migrations:yourMigrationName"}'`
+
+## Cloudflare Turnstile
+
+Visit [these steps](https://developers.cloudflare.com/turnstile/get-started/) to obtain a free site key and secret key from Cloudflare.
+For more details, visit the [Cloudflare turnstile documentation](https://developers.cloudflare.com/turnstile/).
+
+Ensure the following environment variables are configured in your .env.local file:
+
+TURNSTILE_SECRET_KEY
+TURNSTILE_VERIFY_ENDPOINT
+VITE_TURNSTILE_SITE_KEY
