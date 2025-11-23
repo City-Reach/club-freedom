@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserRoundIcon } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { useNavigate } from "@tanstack/react-router";
 import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
@@ -41,6 +41,11 @@ export default function UserDropDown({ user }: Props) {
           <span className="text-sm text-muted-foreground">{user.email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {user.role === "admin" && (
+          <DropdownMenuItem onClick={() => navigate({ to: "/admin/members" })}>
+            Members
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
