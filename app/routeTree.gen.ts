@@ -14,7 +14,6 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
 import { Route as ApiTurnstileRouteImport } from './routes/api/turnstile'
 import { Route as AdminCreateUserRouteImport } from './routes/admin/create-user'
@@ -47,11 +46,6 @@ const TestimonialsIndexRoute = TestimonialsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => TestimonialsRouteRoute,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRouteRoute,
 } as any)
 const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   id: '/$id',
@@ -105,20 +99,19 @@ export interface FileRoutesByFullPath {
   '/admin/create-user': typeof AdminCreateUserRoute
   '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/admin/create-user': typeof AdminCreateUserRoute
   '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -135,7 +128,6 @@ export interface FileRoutesById {
   '/admin/create-user': typeof AdminCreateUserRoute
   '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -152,20 +144,19 @@ export interface FileRouteTypes {
     | '/admin/create-user'
     | '/api/turnstile'
     | '/testimonials/$id'
-    | '/admin/'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
     | '/admin/create-user'
     | '/api/turnstile'
     | '/testimonials/$id'
-    | '/admin'
     | '/testimonials'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -181,7 +172,6 @@ export interface FileRouteTypes {
     | '/admin/create-user'
     | '/api/turnstile'
     | '/testimonials/$id'
-    | '/admin/'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -232,13 +222,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/testimonials/'
       preLoaderRoute: typeof TestimonialsIndexRouteImport
       parentRoute: typeof TestimonialsRouteRoute
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRouteRoute
     }
     '/testimonials/$id': {
       id: '/testimonials/$id'
@@ -317,12 +300,10 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 interface AdminRouteRouteChildren {
   AdminCreateUserRoute: typeof AdminCreateUserRoute
-  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminCreateUserRoute: AdminCreateUserRoute,
-  AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
