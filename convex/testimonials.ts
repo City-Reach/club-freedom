@@ -2,38 +2,39 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
-import { authComponent, createAuth } from "./auth";
 import { api } from "./_generated/api";
 
 export const getTestimonials = query({
   args: { searchQuery: v.optional(v.string()) },
   handler: async (ctx, { searchQuery }) => {
-    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
-    let testimonials: any[] = [];
+    const user = await ctx.runQuery(api.auth.getCurrentUser);
 
-    if (searchQuery && searchQuery.trim() !== "") {
-      // Full-text search path (no filters before withSearchIndex)
-      testimonials = await ctx.db
-        .query("testimonials")
-        .withSearchIndex("search_posts", (q) =>
-          q.search("searchText", searchQuery)
-        )
-        .collect();
-
-      // Optional JS-side filtering
-      testimonials = testimonials.filter(
-        (t) => t.title && t.summary && t.testimonialText
-      );
-    } else {
-      // Normal query path with filters
-      testimonials = await ctx.db
-        .query("testimonials")
-        .filter((q) => q.neq(q.field("title"), undefined))
-        .filter((q) => q.neq(q.field("summary"), undefined))
-        .filter((q) => q.neq(q.field("testimonialText"), undefined))
-        .order("desc")
-        .collect();
+    if (!user) {
+      throw new Error("Unauthorized");
     }
+
+    let filterredQuery = ctx.db
+      .query("testimonials")
+      .filter((q) => q.neq(q.field("title"), undefined))
+      .filter((q) => q.neq(q.field("summary"), undefined))
+      .filter((q) => q.neq(q.field("testimonialText"), undefined));
+
+    if (user.role === "user") {
+      filterredQuery = filterredQuery.filter((q) =>
+        q.eq(q.field("approved"), true)
+      );
+    }
+
+    const trimmedSearchQuery = searchQuery?.trim() || "";
+
+    const finishedQuery =
+      trimmedSearchQuery.length > 0
+        ? filterredQuery.withSearchIndex("search_posts", (q) =>
+            q.search("searchText", trimmedSearchQuery)
+          )
+        : filterredQuery.order("desc");
+
+    const testimonials = await finishedQuery.collect();
 
     const testimonialsWithMedia = await Promise.all(
       testimonials.map(async (t) => {
@@ -62,7 +63,6 @@ export const postTestimonial = mutation({
       media_type,
       testimonialText: text,
       createdAt: Date.now(),
-      approved: false,
     });
     return id;
   },
@@ -76,7 +76,7 @@ export const updateTestimonialApproval = mutation({
   handler: async (ctx, { id, approved }) => {
     const permissionCheck = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: { testimonial: ["approve"] },
-    })
+    });
 
     if (!permissionCheck.success) {
       throw new Error("Forbidden");
