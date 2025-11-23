@@ -1,4 +1,3 @@
-import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { formatDistance } from "date-fns";
 import { Spinner } from "@/components/ui/spinner";
 import { Link } from "@tanstack/react-router";
 import { getApprovalStatusText } from "@/utils/testimonial-utils";
-import { isModOrAdmin } from "@/convex/lib/permissions";
+import { api } from "@/convex/_generated/api";
 
 type Props = {
   id: Id<"testimonials">;
@@ -14,15 +13,20 @@ type Props = {
 
 export default function TestimonialDetail({ id }: Props) {
   const testimonial = useQuery(api.testimonials.getTestimonialById, { id });
-  const user = useQuery(api.auth.getCurrentUser);
+  const permissionCheck = useQuery(api.auth.checkUserPermissions, {
+    permissions: {
+      testimonial: ["approve"],
+    },
+  });
+
   const updateTestimonialApproval = useMutation(
     api.testimonials.updateTestimonialApproval
   );
-  
+
   if (!testimonial) {
     return <div>Loading testimonial...</div>;
   }
-  
+
   const approvalText = getApprovalStatusText(testimonial.approved);
   const downloadTranscription = () => {
     const element = document.createElement("a");
@@ -71,7 +75,7 @@ export default function TestimonialDetail({ id }: Props) {
             : "Download Testimonial"}
         </Button>
       </div>
-      {isModOrAdmin(user?.role) && <p>{approvalText}</p>}
+      {permissionCheck?.success && <p>{approvalText}</p>}
       <div className="space-y-1">
         <h3 className="font-bold">Posted by {testimonial.name}</h3>
         <p className="font-mono text-muted-foreground">
@@ -109,7 +113,7 @@ export default function TestimonialDetail({ id }: Props) {
           </p>
         )}
       </div>
-      {(user?.role === "admin" || user?.role === "moderator") && (
+      {permissionCheck?.success && (
         <div className="flex gap-2">
           <Button
             className="bg-green-600 cursor-pointer"

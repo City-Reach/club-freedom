@@ -21,7 +21,7 @@ export default function UserDropDown({ user }: Props) {
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    navigate({ to: "/sign-in" });
+    await navigate({ to: "/sign-in" });
   };
 
   return (
@@ -41,11 +41,6 @@ export default function UserDropDown({ user }: Props) {
           <span className="text-sm text-muted-foreground">{user.email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {user.role === "admin" && (
-          <DropdownMenuItem onClick={() => navigate({ to: "/admin/members" })}>
-            Members
-          </DropdownMenuItem>
-        )}
         <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

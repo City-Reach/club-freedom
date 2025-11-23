@@ -20,7 +20,16 @@ export function Testimonials() {
     };
   }, [searchQuery]);
 
-  const testimonials = useQuery(api.testimonials.getTestimonials, { searchQuery: debouncedQuery });
+  const testimonials = useQuery(api.testimonials.getTestimonials, {
+    searchQuery: debouncedQuery,
+  });
+
+  const permissionCheck = useQuery(api.auth.checkUserPermissions, {
+    permissions: {
+      testimonial: ["approve"],
+    },
+  });
+
   return (
     <>
       <Input
@@ -29,7 +38,11 @@ export function Testimonials() {
         onChange={(e) => setSearchQuery(e.target.value)}
       />
       {testimonials?.map((testimonial) => (
-        <TestimonialCard key={testimonial._id} testimonial={testimonial} />
+        <TestimonialCard
+          key={testimonial._id}
+          testimonial={testimonial}
+          showApprovalStatus={permissionCheck?.success}
+        />
       ))}
     </>
   );

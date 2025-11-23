@@ -11,19 +11,19 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { getApprovalStatusText } from "@/utils/testimonial-utils";
-import { isModOrAdmin } from "@/convex/lib/permissions";
 
 type Props = {
   testimonial: Doc<"testimonials"> & { mediaUrl?: string | null };
+  showApprovalStatus?: boolean;
 };
 
-export function TestimonialCard({ testimonial }: Props) {
+export function TestimonialCard({
+  testimonial,
+  showApprovalStatus = false,
+}: Props) {
   const date = new Date(testimonial._creationTime);
-  const user = useQuery(api.auth.getCurrentUser);
-  const approvalText = getApprovalStatusText(testimonial.approved);
+
   return (
     <Card className="w-full relative">
       <CardHeader>
@@ -36,8 +36,10 @@ export function TestimonialCard({ testimonial }: Props) {
             <CardTitle className="">{testimonial.title}</CardTitle>
           </Link>
           <div className="flex items-center gap-2">
-            {isModOrAdmin(user?.role) && (
-              <p className="text-sm">{approvalText}</p>
+            {showApprovalStatus && (
+              <p className="text-sm font-medium">
+                {getApprovalStatusText(testimonial.approved)}
+              </p>
             )}
             <p className="text-xs text-muted-foreground whitespace-nowrap">
               {formatDistanceToNow(date, { addSuffix: true })}
