@@ -1,9 +1,11 @@
+
 import { createFileRoute } from '@tanstack/react-router'
 import type { TurnstileServerValidationResponse } from '@marsidev/react-turnstile'
-
 const verifyEndpoint = process.env.TURNSTILE_VERIFY_ENDPOINT || ''
 const secret = process.env.TURNSTILE_SECRET_KEY || ''
-export const Route = createFileRoute('/turnstile')({
+
+export const apiRoute = '/api/turnstile'
+export const Route = createFileRoute(apiRoute)({
   server: {
     handlers: {
       POST: async ({ request }) => {

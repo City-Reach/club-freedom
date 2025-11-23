@@ -27,6 +27,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
 import { Turnstile } from '@marsidev/react-turnstile'
 import React from "react";
+import { apiRoute } from "@/app/routes/api/turnstile/route";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
@@ -52,11 +53,7 @@ export default function TestimonialForm() {
   async function onSubmit(values: Testimonial) {
     try {
       const token = values.turnstileToken;
-      if (!token) {
-        toast.error("Please complete the human verification (Turnstile).");
-        return;
-      }
-      const res = await fetch('/turnstile', {
+      const res = await fetch(apiRoute, {
         method: 'POST',
         body: JSON.stringify({ token }),
         headers: {
@@ -253,6 +250,7 @@ export default function TestimonialForm() {
                     siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
                     onSuccess={(token: string) => field.onChange(token)}
                     onExpire={() => field.onChange("")}
+                    options={{ size: "flexible" }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -261,7 +259,7 @@ export default function TestimonialForm() {
           />
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting || !form.getValues("turnstileToken")}
+            disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting && <Spinner />}
             {form.formState.isSubmitting ? "Submitting..." : "Submit"}
