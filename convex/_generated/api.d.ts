@@ -283,12 +283,15 @@ export declare const components: {
           input:
             | {
                 data: {
+                  banExpires?: null | number;
+                  banReason?: null | string;
+                  banned?: null | boolean;
                   createdAt: number;
                   email: string;
                   emailVerified: boolean;
                   image?: null | string;
                   name: string;
-                  role: "user" | "admin" | "moderator";
+                  role?: null | string;
                   updatedAt: number;
                   userId?: null | string;
                 };
@@ -365,6 +368,9 @@ export declare const components: {
                     | "updatedAt"
                     | "userId"
                     | "role"
+                    | "banned"
+                    | "banReason"
+                    | "banExpires"
                     | "_id";
                   operator?:
                     | "lt"
@@ -549,6 +555,9 @@ export declare const components: {
                     | "updatedAt"
                     | "userId"
                     | "role"
+                    | "banned"
+                    | "banReason"
+                    | "banExpires"
                     | "_id";
                   operator?:
                     | "lt"
@@ -789,12 +798,15 @@ export declare const components: {
             | {
                 model: "user";
                 update: {
+                  banExpires?: null | number;
+                  banReason?: null | string;
+                  banned?: null | boolean;
                   createdAt?: number;
                   email?: string;
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
-                  role?: "user" | "admin" | "moderator";
+                  role?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -809,6 +821,9 @@ export declare const components: {
                     | "updatedAt"
                     | "userId"
                     | "role"
+                    | "banned"
+                    | "banReason"
+                    | "banExpires"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1019,12 +1034,15 @@ export declare const components: {
             | {
                 model: "user";
                 update: {
+                  banExpires?: null | number;
+                  banReason?: null | string;
+                  banned?: null | boolean;
                   createdAt?: number;
                   email?: string;
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
-                  role?: "user" | "admin" | "moderator";
+                  role?: null | string;
                   updatedAt?: number;
                   userId?: null | string;
                 };
@@ -1039,6 +1057,9 @@ export declare const components: {
                     | "updatedAt"
                     | "userId"
                     | "role"
+                    | "banned"
+                    | "banReason"
+                    | "banExpires"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1242,12 +1263,15 @@ export declare const components: {
         null | {
           _creationTime: number;
           _id: string;
+          banExpires?: null | number;
+          banReason?: null | string;
+          banned?: null | boolean;
           createdAt: number;
           email: string;
           emailVerified: boolean;
           image?: null | string;
           name: string;
-          role: "user" | "admin" | "moderator";
+          role?: null | string;
           updatedAt: number;
           userId?: null | string;
         }
