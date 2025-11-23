@@ -15,11 +15,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
+import { Route as ApiTurnstileRouteImport } from './routes/api/turnstile'
 import { Route as AdminCreateUserRouteImport } from './routes/admin/create-user'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
-import { Route as ApiTurnstileRouteRouteImport } from './routes/api/turnstile/route'
 import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
@@ -52,6 +52,11 @@ const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => TestimonialsRouteRoute,
 } as any)
+const ApiTurnstileRoute = ApiTurnstileRouteImport.update({
+  id: '/api/turnstile',
+  path: '/api/turnstile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCreateUserRoute = AdminCreateUserRouteImport.update({
   id: '/admin/create-user',
   path: '/admin/create-user',
@@ -72,11 +77,6 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const ApiTurnstileRouteRoute = ApiTurnstileRouteRouteImport.update({
-  id: '/api/turnstile',
-  path: '/api/turnstile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TestimonialsIdMediaDownloadRoute =
   TestimonialsIdMediaDownloadRouteImport.update({
     id: '/media-download',
@@ -92,11 +92,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
-  '/api/turnstile': typeof ApiTurnstileRouteRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/admin/create-user': typeof AdminCreateUserRoute
+  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
@@ -105,11 +105,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/api/turnstile': typeof ApiTurnstileRouteRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/admin/create-user': typeof AdminCreateUserRoute
+  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
@@ -121,11 +121,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
-  '/api/turnstile': typeof ApiTurnstileRouteRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/admin/create-user': typeof AdminCreateUserRoute
+  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
@@ -137,11 +137,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/testimonials'
-    | '/api/turnstile'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
     | '/admin/create-user'
+    | '/api/turnstile'
     | '/testimonials/$id'
     | '/admin'
     | '/testimonials/'
@@ -150,11 +150,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/api/turnstile'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
     | '/admin/create-user'
+    | '/api/turnstile'
     | '/testimonials/$id'
     | '/admin'
     | '/testimonials'
@@ -165,11 +165,11 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/testimonials'
-    | '/api/turnstile'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
     | '/admin/create-user'
+    | '/api/turnstile'
     | '/testimonials/$id'
     | '/admin/'
     | '/testimonials/'
@@ -181,8 +181,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
-  ApiTurnstileRouteRoute: typeof ApiTurnstileRouteRoute
   AdminCreateUserRoute: typeof AdminCreateUserRoute
+  ApiTurnstileRoute: typeof ApiTurnstileRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -231,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestimonialsIdRouteImport
       parentRoute: typeof TestimonialsRouteRoute
     }
+    '/api/turnstile': {
+      id: '/api/turnstile'
+      path: '/api/turnstile'
+      fullPath: '/api/turnstile'
+      preLoaderRoute: typeof ApiTurnstileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/create-user': {
       id: '/admin/create-user'
       path: '/admin/create-user'
@@ -258,13 +265,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/forgot-password'
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
-    }
-    '/api/turnstile': {
-      id: '/api/turnstile'
-      path: '/api/turnstile'
-      fullPath: '/api/turnstile'
-      preLoaderRoute: typeof ApiTurnstileRouteRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/testimonials/$id/media-download': {
       id: '/testimonials/$id/media-download'
@@ -328,8 +328,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
-  ApiTurnstileRouteRoute: ApiTurnstileRouteRoute,
   AdminCreateUserRoute: AdminCreateUserRoute,
+  ApiTurnstileRoute: ApiTurnstileRoute,
   AdminIndexRoute: AdminIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

@@ -25,9 +25,9 @@ import MobileVideoRecorder from "../recorder/mobile-video-recorder";
 import { Testimonial, testimonialSchema } from "@/lib/schema";
 import { useNavigate } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
-import { Turnstile } from '@marsidev/react-turnstile'
+import { Turnstile } from "@marsidev/react-turnstile";
 import React from "react";
-import { apiRoute } from "@/app/routes/api/turnstile/route";
+import { apiRoute } from "@/app/routes/api/turnstile";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
@@ -54,11 +54,11 @@ export default function TestimonialForm() {
     try {
       const token = values.turnstileToken;
       const res = await fetch(apiRoute, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ token }),
         headers: {
-          'content-type': 'application/json'
-        }
+          "content-type": "application/json",
+        },
       });
       if (!res.ok) {
         toast.error("Human verification (Turnstile) failed. Please try again.");
@@ -257,10 +257,7 @@ export default function TestimonialForm() {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting}
-          >
+          <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting && <Spinner />}
             {form.formState.isSubmitting ? "Submitting..." : "Submit"}
           </Button>
