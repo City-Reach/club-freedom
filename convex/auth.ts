@@ -28,7 +28,6 @@ export const createAuth = (
   { optionsOnly } = { optionsOnly: false }
 ) => {
   const siteUrl = process.env.SITE_URL!;
-  console.log("Creating Better Auth with site URL:", siteUrl);
 
   return betterAuth({
     // disable logging when createAuth is called just to generate options.
