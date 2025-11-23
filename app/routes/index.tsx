@@ -1,7 +1,12 @@
+import { createFileRoute } from "@tanstack/react-router";
 import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
 
-export default function Home() {
+export const Route = createFileRoute("/")({
+  component: Home,
+});
+
+function Home() {
   return (
     <>
       <Navbar />

@@ -1,4 +1,3 @@
-"use client";
 import { Doc } from "@/convex/_generated/dataModel";
 import {
   Card,
@@ -8,10 +7,10 @@ import {
   CardTitle,
 } from "./ui/card";
 import { formatDistanceToNow } from "date-fns";
-import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { getApprovalStatusText } from "@/utils/testimonial-utils";
@@ -30,7 +29,8 @@ export function TestimonialCard({ testimonial }: Props) {
       <CardHeader>
         <div className="flex justify-between items-center">
           <Link
-            href={`/testimonials/${testimonial._id}`}
+            to="/testimonials/$id"
+            params={{ id: testimonial._id }}
             className="hover:underline"
           >
             <CardTitle className="">{testimonial.title}</CardTitle>

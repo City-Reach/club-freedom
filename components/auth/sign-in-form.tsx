@@ -2,7 +2,6 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { signInSchema } from "@/lib/schema";
 import z from "zod";
@@ -16,12 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import Link from "next/link";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 type SignIn = z.infer<typeof signInSchema>;
 
 export function SignInForm() {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const form = useForm<SignIn>({
     defaultValues: {
@@ -39,7 +38,7 @@ export function SignInForm() {
       },
       {
         onSuccess() {
-          router.push("/testimonials");
+          navigate({ to: "/testimonials" });
         },
         onError(ctx) {
           toast.error(ctx.error.message);
@@ -75,7 +74,7 @@ export function SignInForm() {
               <div className="flex items-center">
                 <FormLabel>Password</FormLabel>
                 <Link
-                  href="/forgot-password"
+                  to="/forgot-password"
                   className="ml-auto text-sm underline-offset-4 hover:underline"
                 >
                   Forgot password?

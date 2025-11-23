@@ -34,7 +34,7 @@ export function RequestPasswordResetForm() {
     try {
       await authClient.requestPasswordReset({
         email: data.email,
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
+        redirectTo: `${import.meta.env.VITE_SITE_URL}/reset-password`,
       });
       toast.success("Check your email for the reset password link!");
     } catch (err) {

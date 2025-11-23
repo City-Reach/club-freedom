@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -18,9 +16,6 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
-import dynamic from "next/dynamic";
-import { Mic, Video } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { useState } from "react";
@@ -28,38 +23,18 @@ import { useUploadFile } from "@convex-dev/r2/react";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import MobileVideoRecorder from "../recorder/mobile-video-recorder";
 import { Testimonial, testimonialSchema } from "@/lib/schema";
-
-// Dynamic import with SSR disabled
-const AudioRecorder = dynamic(() => import("../recorder/audio-recorder"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex flex-col p-4 border items-center rounded-lg gap-4">
-      <Button size="icon" className="size-12 rounded-full" disabled>
-        <Mic className="size-6" />
-      </Button>
-      <div className="text-sm font-medium">Loading recorder...</div>
-    </div>
-  ),
-});
-
-const VideoRecorder = dynamic(() => import("../recorder/video-recorder"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex flex-col p-4 border items-center rounded-lg gap-4">
-      <Button size="icon" className="size-12 rounded-full" disabled>
-        <Video className="size-6" />
-      </Button>
-      <div className="text-sm font-medium">Loading recorder...</div>
-    </div>
-  ),
-});
+import { useNavigate } from "@tanstack/react-router";
+import { AudioRecorder, VideoRecorder } from "../recorder";
+import { Turnstile } from '@marsidev/react-turnstile'
+import React from "react";
+import { apiRoute } from "@/app/routes/api/turnstile/route";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: { name: "", writtenText: "", constent: false },
   });
-  const router = useRouter();
+  const navigation = useNavigate();
   const uploadFile = useUploadFile(api.r2);
   const isMobile = useMobileDetect();
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
@@ -77,6 +52,18 @@ export default function TestimonialForm() {
 
   async function onSubmit(values: Testimonial) {
     try {
+      const token = values.turnstileToken;
+      const res = await fetch(apiRoute, {
+        method: 'POST',
+        body: JSON.stringify({ token }),
+        headers: {
+          'content-type': 'application/json'
+        }
+      });
+      if (!res.ok) {
+        toast.error("Human verification (Turnstile) failed. Please try again.");
+        return;
+      }
       let storageId: string | undefined = undefined;
       let media_type = "text";
       if (values.mediaFile) {
@@ -104,7 +91,7 @@ export default function TestimonialForm() {
         description: "Thank you for your submission.",
       });
       form.reset();
-      router.push(`/testimonials/${id}`);
+      navigation({ to: "/testimonials/$id", params: { id } });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       toast.error("Failed to submit testimonial", {
@@ -253,7 +240,27 @@ export default function TestimonialForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={form.formState.isSubmitting}>
+          <FormField
+            control={form.control}
+            name="turnstileToken"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Turnstile
+                    siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                    onSuccess={(token: string) => field.onChange(token)}
+                    onExpire={() => field.onChange("")}
+                    options={{ size: "flexible" }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+          >
             {form.formState.isSubmitting && <Spinner />}
             {form.formState.isSubmitting ? "Submitting..." : "Submit"}
           </Button>

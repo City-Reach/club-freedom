@@ -1,5 +1,3 @@
-"use client";
-
 import ResetPasswordForm from "@/components/auth/password-reset-form";
 import {
   Card,
@@ -9,12 +7,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
-export default function ResetPasswordPage() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+export const Route = createFileRoute("/_auth/reset-password")({
+  component: RouteComponent,
+  validateSearch: (search) => {
+    return {
+      token: search.token as string,
+    };
+  },
+});
+
+function RouteComponent() {
+  const { token } = Route.useSearch();
 
   if (!token) {
     return (
@@ -30,7 +35,7 @@ export default function ResetPasswordPage() {
             Please request a new password reset link{" "}
             <Link
               className="text-foreground underline-offset-4 hover:underline"
-              href="/forgot-password"
+              to="/forgot-password"
             >
               here
             </Link>

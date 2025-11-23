@@ -38,8 +38,18 @@ yarn-error.log*
 # vercel
 .vercel
 
+# builds
+dist
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
+# Local SSL Certificates
 certificates
+
+# tanstack
+.tanstack
+
+# cloudflare
+.wrangler/

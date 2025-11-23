@@ -1,13 +1,18 @@
-"use client";
 import { RequestPasswordResetForm } from "@/components/auth/request-password-reset-form";
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
 } from "@/components/ui/card";
-export default function RequestPasswordResetPage() {
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_auth/forgot-password")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
   return (
     <Card>
       <CardHeader>

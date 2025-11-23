@@ -11,6 +11,7 @@ export const testimonialSchema = z
     constent: z.boolean().refine((val) => val === true, {
       message: "You must agree to the terms",
     }),
+    turnstileToken: z.string().min(1, "Please complete the human verification"),
   })
   .superRefine((data, ctx) => {
     if (

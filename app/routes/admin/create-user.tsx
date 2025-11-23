@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,20 +8,28 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-export default function SignUpPage() {
+import { authClient } from "@/lib/auth-client";
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "convex/react";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/admin/create-user")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
   const user = useQuery(api.auth.getCurrentUser);
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
+
   const handleSignUp = async () => {
     await authClient.signUp.email(
       {

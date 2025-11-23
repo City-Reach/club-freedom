@@ -1,6 +1,6 @@
 import { createAuth } from "@/convex/auth";
-import { getToken as getTokenNextjs } from "@convex-dev/better-auth/nextjs";
+import { setupFetchClient } from "@convex-dev/better-auth/react-start";
+import { getCookie } from "@tanstack/react-start/server";
 
-export const getToken = () => {
-  return getTokenNextjs(createAuth);
-};
+export const { fetchQuery, fetchMutation, fetchAction } =
+  await setupFetchClient(createAuth, getCookie);

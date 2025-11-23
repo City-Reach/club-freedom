@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { useNavigate } from "@tanstack/react-router";
 
 const passwordResetSchema = z
   .object({
@@ -42,7 +42,7 @@ export default function ResetPasswordForm({ token }: Props) {
     },
     resolver: zodResolver(passwordResetSchema),
   });
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: PasswordReset) => {
     await authClient.resetPassword(
@@ -52,7 +52,9 @@ export default function ResetPasswordForm({ token }: Props) {
       },
       {
         onSuccess() {
-          router.push("/sign-in");
+          navigate({
+            to: "/sign-in",
+          });
         },
         onError(context) {
           toast.error(context.error.message);
