@@ -8,6 +8,7 @@ import { betterAuth, BetterAuthOptions } from "better-auth";
 import authSchema from "./betterAuth/schema";
 import { v } from "convex/values";
 import { sendResetPassword } from "./email";
+import { admin } from "better-auth/plugins";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -29,16 +30,7 @@ export const createAuth = (
   console.log("Creating Better Auth with site URL:", siteUrl);
 
   return betterAuth({
-    user: {
-      additionalFields: {
-        role: {
-          type: "string",
-          required: false,
-          defaultValue: "user",
-          input: false, // don't allow user to set role
-        },
-      },
-    },
+    user: {},
     // disable logging when createAuth is called just to generate options.
     // this is not required, but there's a lot of noise in logs without it.
     logger: {
@@ -60,6 +52,7 @@ export const createAuth = (
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex(),
+      admin(),
     ],
     trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions);
