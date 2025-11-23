@@ -8,6 +8,7 @@
     "build": "vite build && tsc --noEmit",
     "preview": "vite preview",
     "tsr:generate": "tsr generate",
+    "auth:generate": "pnpx @better-auth/cli generate --config convex/betterAuth/auth.ts --output convex/betterAuth/generatedSchema.ts",
     "secret:bulk": "wrangler secret bulk",
     "deploy": "pnpm run build && wrangler deploy",
     "deploy:preview": "pnpm run build && wrangler deploy --env preview",

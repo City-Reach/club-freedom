@@ -78,8 +78,7 @@ For more details, visit this [guide](https://convex-better-auth.netlify.app/fram
 Whenever you want to make changes to the betterAuth schemas and components, run the following command
 
 ```
-cd convex/betterAuth
-npx @better-auth/cli generate -y --output generatedSchema.ts
+pnpm auth:generate
 ```
 
 Note: the betterAuth tables can be accessed under the betterAuth component in the convex dash board.
