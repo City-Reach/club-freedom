@@ -1,5 +1,6 @@
-import { createAccessControl } from "better-auth/plugins/access";
+import { createAccessControl, Subset, Role } from "better-auth/plugins/access";
 import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
+import z from "zod";
 
 const statement = {
   testimonial: ["approve"],
@@ -26,3 +27,5 @@ export const roles = {
   moderator,
   admin,
 } as const;
+
+export type PermissionCheck = Partial<Subset<keyof typeof statement, typeof statement>>;

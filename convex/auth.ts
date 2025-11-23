@@ -9,7 +9,7 @@ import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
 import { sendResetPassword } from "./email";
-import { ac, roles } from "@/lib/auth/permissions";
+import { ac, type PermissionCheck, roles } from "@/lib/auth/permissions";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -89,6 +89,23 @@ export const getUserById = query({
   handler: async (ctx, args) => {
     return ctx.runQuery(components.betterAuth.auth.getUser, {
       userId: args.userId,
+    });
+  },
+});
+
+export const checkUserPermissions = query({
+  handler: async (
+    ctx,
+    args: {
+      permissions: PermissionCheck;
+    }
+  ) => {
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+    return await auth.api.userHasPermission({
+      headers,
+      body: {
+        permissions: args.permissions,
+      },
     });
   },
 });
