@@ -69,9 +69,9 @@ Open [https://localhost:3000](https://localhost:3000) with your browser to see t
 2. Create the BETTER_AUTH_SECRET environment variable in your convex environment with the following command:
    `npx convex env set BETTER_AUTH_SECRET=$(openssl rand -base64 32)`
 3. Add your site url to your convex environment variables
-   `npx convex env set SITE_URL http://localhost:3000`
+   `npx convex env set SITE_URL https://localhost:3000`
    In prod, use the prod site url
-4. Ensure you have VITE_CONVEX_SITE_URL and SITE_URL set in your .env file.
+4. Ensure you have VITE_CONVEX_SITE_URL set in your .env file in root directory.
 
 For more details, visit this [guide](https://convex-better-auth.netlify.app/framework-guides/next)
 
