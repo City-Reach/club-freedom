@@ -16,7 +16,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
 import { Route as ApiTurnstileRouteImport } from './routes/api/turnstile'
-import { Route as AdminCreateUserRouteImport } from './routes/admin/create-user'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
@@ -57,11 +56,6 @@ const ApiTurnstileRoute = ApiTurnstileRouteImport.update({
   path: '/api/turnstile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminCreateUserRoute = AdminCreateUserRouteImport.update({
-  id: '/create-user',
-  path: '/create-user',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
@@ -91,12 +85,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRouteWithChildren
+  '/admin': typeof AdminRouteRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/admin/create-user': typeof AdminCreateUserRoute
   '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials/': typeof TestimonialsIndexRoute
@@ -105,11 +98,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRouteWithChildren
+  '/admin': typeof AdminRouteRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/admin/create-user': typeof AdminCreateUserRoute
   '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials': typeof TestimonialsIndexRoute
@@ -120,12 +112,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
-  '/admin': typeof AdminRouteRouteWithChildren
+  '/admin': typeof AdminRouteRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
-  '/admin/create-user': typeof AdminCreateUserRoute
   '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials/': typeof TestimonialsIndexRoute
@@ -141,7 +132,6 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/admin/create-user'
     | '/api/turnstile'
     | '/testimonials/$id'
     | '/testimonials/'
@@ -154,7 +144,6 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/admin/create-user'
     | '/api/turnstile'
     | '/testimonials/$id'
     | '/testimonials'
@@ -169,7 +158,6 @@ export interface FileRouteTypes {
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
-    | '/admin/create-user'
     | '/api/turnstile'
     | '/testimonials/$id'
     | '/testimonials/'
@@ -180,7 +168,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRoute
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
   ApiTurnstileRoute: typeof ApiTurnstileRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -237,13 +225,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTurnstileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/create-user': {
-      id: '/admin/create-user'
-      path: '/create-user'
-      fullPath: '/admin/create-user'
-      preLoaderRoute: typeof AdminCreateUserRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
     '/_auth/sign-in': {
       id: '/_auth/sign-in'
       path: '/sign-in'
@@ -298,18 +279,6 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface AdminRouteRouteChildren {
-  AdminCreateUserRoute: typeof AdminCreateUserRoute
-}
-
-const AdminRouteRouteChildren: AdminRouteRouteChildren = {
-  AdminCreateUserRoute: AdminCreateUserRoute,
-}
-
-const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
-  AdminRouteRouteChildren,
-)
-
 interface TestimonialsIdRouteChildren {
   TestimonialsIdMediaDownloadRoute: typeof TestimonialsIdMediaDownloadRoute
 }
@@ -338,7 +307,7 @@ const TestimonialsRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  AdminRouteRoute: AdminRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRoute,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
   ApiTurnstileRoute: ApiTurnstileRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
