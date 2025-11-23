@@ -2,14 +2,13 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
-import { isModOrAdmin } from "./lib/permissions";
+import { isModOrAdmin, Role } from "./lib/permissions";
 
 export const getTestimonials = query({
   args: { searchQuery: v.optional(v.string()) },
   handler: async (ctx, { searchQuery }) => {
     const identity = await ctx.auth.getUserIdentity();
-    const role = identity?.role ?? "";
-    if (!isModOrAdmin(role as string)) {  
+    if (!isModOrAdmin(identity?.role as Role | undefined)) {
       throw new Error("Unauthorized");
     }
     let testimonials: any[] = [];
@@ -78,8 +77,7 @@ export const updateTestimonialApproval = mutation({
   },
   handler: async (ctx, { id, approved }) => {
     const identity = await ctx.auth.getUserIdentity();
-    const role = identity?.role ?? "";
-    if (!isModOrAdmin(role as string)) {  
+    if (!isModOrAdmin(identity?.role as Role | undefined)) {
       throw new Error("Unauthorized");
     }
     await ctx.db.patch(id, { approved });

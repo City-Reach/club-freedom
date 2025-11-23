@@ -18,13 +18,14 @@ export const VALID_ROLES = {
   ADMIN: "admin",
 } as const;
 
-export const roles_schema = v.union(v.literal("user"), v.literal("admin"), v.literal("moderator"));
-export const allowedRoles = z.enum([
-  "user",
-  "moderator",
-  "admin",
-]);
+export const roles_schema = v.union(
+  v.literal("user"),
+  v.literal("admin"),
+  v.literal("moderator")
+);
 
-export function isModOrAdmin(role: string | undefined): boolean {
+export const allowedRoles = z.enum(["user", "moderator", "admin"]);
+
+export function isModOrAdmin(role?: Role): boolean {
   return role === "admin" || role === "moderator";
 }
