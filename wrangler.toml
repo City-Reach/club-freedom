@@ -1,11 +1,11 @@
 name = "club-freedom"
 
-[env.staging]
-name = "club-freedom-staging"
-
 compatibility_date = "2025-09-02"
 compatibility_flags = [ "nodejs_compat" ]
 main = "@tanstack/react-start/server-entry"
+
+[env.staging]
+name = "club-freedom-staging"
 
 [observability]
 enabled = false
