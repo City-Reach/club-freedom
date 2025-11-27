@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { TestimonialCard } from "./testimonial-card";
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
@@ -20,7 +20,11 @@ export function Testimonials() {
     };
   }, [searchQuery]);
 
-  const testimonials = useQuery(api.testimonials.getTestimonials, { searchQuery: debouncedQuery });
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.testimonials.getTestimonials, 
+    { searchQuery: debouncedQuery }, 
+    {initialNumItems: 5}
+  );
   return (
     <>
       <Input
@@ -28,9 +32,12 @@ export function Testimonials() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      {testimonials?.map((testimonial) => (
+      {results?.map((testimonial) => (
         <TestimonialCard key={testimonial._id} testimonial={testimonial} />
       ))}
+      <button onClick={() => loadMore(5)} disabled={status !== "CanLoadMore"}>
+        Load More
+      </button>
     </>
   );
 }

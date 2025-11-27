@@ -3,48 +3,44 @@ import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
 import { isModOrAdmin, Role } from "./lib/permissions";
+import { paginationOptsValidator } from "convex/server";
 
 export const getTestimonials = query({
-  args: { searchQuery: v.optional(v.string()) },
-  handler: async (ctx, { searchQuery }) => {
+  args: { paginationOpts: paginationOptsValidator, searchQuery: v.optional(v.string()) },
+  handler: async (ctx, { paginationOpts, searchQuery }) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!isModOrAdmin(identity?.role as Role | undefined)) {
       throw new Error("Unauthorized");
     }
-    let testimonials: any[] = [];
-
+    let testimonials;
     if (searchQuery && searchQuery.trim() !== "") {
-      // Full-text search path (no filters before withSearchIndex)
       testimonials = await ctx.db
         .query("testimonials")
         .withSearchIndex("search_posts", (q) =>
           q.search("searchText", searchQuery)
         )
-        .collect();
+        .filter((q) => q.neq(q.field("title"), undefined))
+        .filter((q) => q.neq(q.field("summary"), undefined))
+        .filter((q) => q.neq(q.field("testimonialText"), undefined))
+        .paginate(paginationOpts);
 
-      // Optional JS-side filtering
-      testimonials = testimonials.filter(
-        (t) => t.title && t.summary && t.testimonialText
-      );
     } else {
-      // Normal query path with filters
       testimonials = await ctx.db
         .query("testimonials")
         .filter((q) => q.neq(q.field("title"), undefined))
         .filter((q) => q.neq(q.field("summary"), undefined))
         .filter((q) => q.neq(q.field("testimonialText"), undefined))
         .order("desc")
-        .collect();
+        .paginate(paginationOpts);
     }
-
     const testimonialsWithMedia = await Promise.all(
-      testimonials.map(async (t) => {
+      testimonials.page.map(async (t) => {
         const mediaUrl = t.storageId ? await r2.getUrl(t.storageId) : undefined;
         return { ...t, mediaUrl };
       })
     );
 
-    return testimonialsWithMedia;
+    return { ...testimonials, page: testimonialsWithMedia };
   },
 });
 
