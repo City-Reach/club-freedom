@@ -1,22 +1,13 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import z from "zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
 import { useNavigate } from "@tanstack/react-router";
+import { Field, FieldError, FieldLabel } from "../ui/field";
 
 const passwordResetSchema = z
   .object({
@@ -59,57 +50,55 @@ export default function ResetPasswordForm({ token }: Props) {
         onError(context) {
           toast.error(context.error.message);
         },
-      }
+      },
     );
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <div className="flex items-center">
-                <FormLabel>New password</FormLabel>
-              </div>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <div className="flex items-center">
-                <FormLabel>Confirm password</FormLabel>
-              </div>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
-            "Reset Password"
-          )}
-        </Button>
-      </form>
-    </Form>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+      <Controller
+        control={form.control}
+        name="password"
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+            <Input
+              {...field}
+              type="password"
+              id={field.name}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="confirmPassword"
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+            <Input
+              {...field}
+              type="password"
+              id={field.name}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={form.formState.isSubmitting}
+      >
+        {form.formState.isSubmitting ? (
+          <Loader2 size={16} className="animate-spin" />
+        ) : (
+          "Reset Password"
+        )}
+      </Button>
+    </form>
   );
 }
