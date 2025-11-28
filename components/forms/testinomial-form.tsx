@@ -1,14 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  FormDescription,
-} from "../ui/form";
+import { Controller, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -28,11 +19,18 @@ import { AudioRecorder, VideoRecorder } from "../recorder";
 import { Turnstile } from "@marsidev/react-turnstile";
 import React from "react";
 import { apiRoute } from "@/app/routes/api/turnstile";
+import {
+  Field,
+  FieldLabel,
+  FieldError,
+  FieldDescription,
+  FieldContent,
+} from "../ui/field";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
-    defaultValues: { name: "", writtenText: "", constent: false },
+    defaultValues: { name: "", writtenText: "", consent: false },
   });
   const navigation = useNavigate();
   const uploadFile = useUploadFile(api.r2);
@@ -102,167 +100,180 @@ export default function TestimonialForm() {
 
   return (
     <div className="w-full max-w-lg">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
+        <Controller
+          control={form.control}
+          name="name"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+              <Input
+                {...field}
+                placeholder="Jane"
+                id={field.name}
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="email"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name} className="flex items-baseline">
+                Email <small>(optional)</small>
+              </FieldLabel>
+              <Input
+                {...field}
+                placeholder="name@example.com"
+                id={field.name}
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Tabs
+          className="w-full"
+          value={tabValue}
+          onValueChange={handleTabChange}
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Jane Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Email <small>(optional)</small>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="you@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <TabsList>
+            <TabsTrigger value="video" disabled={!canSwitchTab}>
+              Video
+            </TabsTrigger>
+            <TabsTrigger value="audio" disabled={!canSwitchTab}>
+              Audio
+            </TabsTrigger>
+            <TabsTrigger value="text" disabled={!canSwitchTab}>
+              Text
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="text">
+            <Controller
+              control={form.control}
+              name="writtenText"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Written Testimonial
+                  </FieldLabel>
+                  <Textarea
+                    {...field}
+                    placeholder="Start typing..."
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </TabsContent>
+          <TabsContent value="audio">
+            <Controller
+              control={form.control}
+              name="mediaFile"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Audio Testimonial
+                  </FieldLabel>
+                  <FieldDescription>
+                    Please find a quiet place to record your audio testimonial.
+                  </FieldDescription>
+                  <AudioRecorder
+                    onRecordingComplete={(mediaFile) => {
+                      field.onChange(mediaFile);
+                    }}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </TabsContent>
+          <TabsContent value="video">
+            <Controller
+              control={form.control}
+              name="mediaFile"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Video Testimonial
+                  </FieldLabel>
+                  <FieldDescription>
+                    Please find a quiet place to record your video testimonial.
+                  </FieldDescription>
+                  {isMobile ? (
+                    <MobileVideoRecorder />
+                  ) : (
+                    <VideoRecorder
+                      onRecordingComplete={(videoFile) => {
+                        field.onChange(videoFile);
+                      }}
+                    />
+                  )}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </TabsContent>
+        </Tabs>
 
-          <Tabs
-            className="w-full"
-            value={tabValue}
-            onValueChange={handleTabChange}
-          >
-            <TabsList>
-              <TabsTrigger value="video" disabled={!canSwitchTab}>
-                Video
-              </TabsTrigger>
-              <TabsTrigger value="audio" disabled={!canSwitchTab}>
-                Audio
-              </TabsTrigger>
-              <TabsTrigger value="text" disabled={!canSwitchTab}>
-                Text
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="text">
-              <FormField
-                control={form.control}
-                name="writtenText"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Written Testimonial</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} placeholder="Start typing..." />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+        <Controller
+          control={form.control}
+          name="consent"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} orientation="horizontal">
+              <Checkbox
+                id={field.name}
+                checked={field.value}
+                onCheckedChange={field.onChange}
               />
-            </TabsContent>
-            <TabsContent value="audio">
-              <FormField
-                control={form.control}
-                name="mediaFile"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Audio Testimonial</FormLabel>
-                    <FormDescription>
-                      Please find a quiet place to record your audio
-                      testimonial.
-                    </FormDescription>
-                    <FormControl>
-                      <AudioRecorder
-                        onRecordingComplete={(mediaFile) => {
-                          field.onChange(mediaFile);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+              <FieldContent>
+                <FieldLabel htmlFor={field.name}>
+                  I agree that my personal information and testimonial may be
+                  processsed and published on the Club Freedom service.
+                </FieldLabel>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
                 )}
+              </FieldContent>
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="turnstileToken"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <Turnstile
+                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                onSuccess={(token: string) => field.onChange(token)}
+                onExpire={() => field.onChange("")}
+                options={{ size: "flexible" }}
               />
-            </TabsContent>
-            <TabsContent value="video">
-              <FormField
-                control={form.control}
-                name="mediaFile"
-                render={(controller) => (
-                  <FormItem>
-                    <FormLabel>Video Testimonial</FormLabel>
-                    <FormDescription>
-                      Please find a quiet place to record your video
-                      testimonial.
-                    </FormDescription>
-                    <FormControl>
-                      {isMobile ? (
-                        <MobileVideoRecorder />
-                      ) : (
-                        <VideoRecorder
-                          onRecordingComplete={(videoFile) => {
-                            controller.field.onChange(videoFile);
-                          }}
-                        />
-                      )}
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </TabsContent>
-          </Tabs>
-          <FormField
-            control={form.control}
-            name="constent"
-            render={({ field }) => (
-              <FormItem className="flex items-start gap-3">
-                <FormControl>
-                  <Checkbox
-                    name="constent"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-2 leading-none">
-                  <FormLabel className="text-sm font-normal">
-                    I agree that my personal information and testimonial may be
-                    processsed and published on the Club Freedom service.
-                  </FormLabel>
-                  <FormMessage />
-                </div>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="turnstileToken"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Turnstile
-                    siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
-                    onSuccess={(token: string) => field.onChange(token)}
-                    onExpire={() => field.onChange("")}
-                    options={{ size: "flexible" }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting && <Spinner />}
-            {form.formState.isSubmitting ? "Submitting..." : "Submit"}
-          </Button>
-        </form>
-      </Form>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting && <Spinner />}
+          {form.formState.isSubmitting ? "Submitting..." : "Submit"}
+        </Button>
+      </form>
     </div>
   );
 }

@@ -8,7 +8,7 @@ export const testimonialSchema = z
       .file({ error: "Please record your audio testimonial" })
       .optional(),
     writtenText: z.string(),
-    constent: z.boolean().refine((val) => val === true, {
+    consent: z.boolean().refine((val) => val === true, {
       message: "You must agree to the terms",
     }),
     turnstileToken: z.string().min(1, "Please complete the human verification"),
