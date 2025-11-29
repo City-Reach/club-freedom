@@ -36,17 +36,19 @@ export function TestimonialCard({ testimonial }: Props) {
             <CardTitle className="">{testimonial.title}</CardTitle>
           </Link>
           <div className="flex items-center gap-2">
-            {isModOrAdmin(user?.role) && (
-              <p className="text-sm">{approvalText}</p>
-            )}
             <p className="text-xs text-muted-foreground whitespace-nowrap">
               {formatDistanceToNow(date, { addSuffix: true })}
             </p>
           </div>
         </div>
-        <p className="text-sm">
-          Posted by <strong>{testimonial.name}</strong>
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-sm">
+            Posted by <strong>{testimonial.name}</strong>
+          </p>
+          {isModOrAdmin(user?.role) && (
+            <p className="text-sm">{approvalText}</p>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {testimonial.mediaUrl && testimonial.media_type == "audio" && (
