@@ -30,7 +30,7 @@ import {
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
-    defaultValues: { name: "", writtenText: "", consent: false },
+    defaultValues: { name: "", email: "", writtenText: "", consent: false },
   });
   const navigation = useNavigate();
   const uploadFile = useUploadFile(api.r2);
@@ -79,7 +79,7 @@ export default function TestimonialForm() {
       // Step 3: Save testimonial data with storage ID
       const id = await postTestimonial({
         name: values.name,
-        email: values.email,
+        email: values.email ? values.email : undefined,
         storageId: storageId,
         media_type: media_type,
         text: values.writtenText,
