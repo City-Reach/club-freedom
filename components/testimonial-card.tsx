@@ -23,6 +23,7 @@ export function TestimonialCard({
   showApprovalStatus = false,
 }: Props) {
   const date = new Date(testimonial._creationTime);
+  const approvalText = getApprovalStatusText(testimonial.approved);
 
   return (
     <Card className="w-full relative">
@@ -46,9 +47,12 @@ export function TestimonialCard({
             </p>
           </div>
         </div>
-        <p className="text-sm">
-          Posted by <strong>{testimonial.name}</strong>
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-sm">
+            Posted by <strong>{testimonial.name}</strong>
+          </p>
+          {showApprovalStatus && <p className="text-sm">{approvalText}</p>}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {testimonial.mediaUrl && testimonial.media_type == "audio" && (
@@ -78,7 +82,7 @@ function TestimonialTextPreview({ content }: { content: string }) {
       <p
         className={cn(
           "text-sm",
-          isExpanded ? "line-clamp-none" : "line-clamp-5"
+          isExpanded ? "line-clamp-none" : "line-clamp-5",
         )}
       >
         {content}

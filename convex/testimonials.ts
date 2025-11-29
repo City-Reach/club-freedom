@@ -2,48 +2,55 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
+import { paginationOptsValidator } from "convex/server";
+import { APIError } from "better-auth";
 import { api } from "./_generated/api";
 
 export const getTestimonials = query({
-  args: { searchQuery: v.optional(v.string()) },
-  handler: async (ctx, { searchQuery }) => {
-    const user = await ctx.runQuery(api.auth.getCurrentUser);
-
-    if (!user) {
-      throw new Error("Unauthorized");
+  args: {
+    paginationOpts: paginationOptsValidator,
+    searchQuery: v.optional(v.string()),
+  },
+  handler: async (ctx, { paginationOpts, searchQuery }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new APIError("UNAUTHORIZED", {
+        message: "You must be logged in to view testimonials.",
+      });
     }
 
-    let filterredQuery = ctx.db
-      .query("testimonials")
+    const testimonialQuery = ctx.db.query("testimonials");
+
+    const testimonialQuerySearch =
+      searchQuery && searchQuery.trim() !== ""
+        ? testimonialQuery.withSearchIndex("search_posts", (q) =>
+            q.search("searchText", searchQuery.trim()),
+          )
+        : testimonialQuery.order("desc");
+
+    const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: {
+        testimonial: ["approve"],
+      },
+    });
+
+    const filteredTestimonialQuery = testimonialQuerySearch
       .filter((q) => q.neq(q.field("title"), undefined))
       .filter((q) => q.neq(q.field("summary"), undefined))
-      .filter((q) => q.neq(q.field("testimonialText"), undefined));
+      .filter((q) => q.neq(q.field("testimonialText"), undefined))
+      .filter((q) => (canApprove ? true : q.eq(q.field("approved"), true)));
 
-    if (user.role === "user") {
-      filterredQuery = filterredQuery.filter((q) =>
-        q.eq(q.field("approved"), true)
-      );
-    }
-
-    const trimmedSearchQuery = searchQuery?.trim() || "";
-
-    const finishedQuery =
-      trimmedSearchQuery.length > 0
-        ? filterredQuery.withSearchIndex("search_posts", (q) =>
-            q.search("searchText", trimmedSearchQuery)
-          )
-        : filterredQuery.order("desc");
-
-    const testimonials = await finishedQuery.collect();
+    const testimonials =
+      await filteredTestimonialQuery.paginate(paginationOpts);
 
     const testimonialsWithMedia = await Promise.all(
-      testimonials.map(async (t) => {
+      testimonials.page.map(async (t) => {
         const mediaUrl = t.storageId ? await r2.getUrl(t.storageId) : undefined;
         return { ...t, mediaUrl };
-      })
+      }),
     );
 
-    return testimonialsWithMedia;
+    return { ...testimonials, page: testimonialsWithMedia };
   },
 });
 
