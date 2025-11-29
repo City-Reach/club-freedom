@@ -27,6 +27,12 @@ export function Testimonials() {
     { initialNumItems: 5 }
   );
 
+  const sortedResults = results
+    ? [...results].sort(
+        (a, b) => (b._creationTime ?? b.createdAt ?? 0) - (a._creationTime ?? a.createdAt ?? 0)
+      )
+    : results;
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -55,7 +61,7 @@ export function Testimonials() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      {results?.map((testimonial) => (
+      {sortedResults?.map((testimonial) => (
         <TestimonialCard key={testimonial._id} testimonial={testimonial} />
       ))}
       <div ref={loadMoreRef} className="h-10" />

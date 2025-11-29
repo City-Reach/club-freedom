@@ -3,8 +3,7 @@ import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
 import { isModOrAdmin, Role } from "./lib/permissions";
-import { paginationOptsValidator, PaginationResult } from "convex/server";
-import { Id } from "./_generated/dataModel";
+import { paginationOptsValidator } from "convex/server";
 
 export const getTestimonials = query({
   args: { paginationOpts: paginationOptsValidator, searchQuery: v.optional(v.string()) },
@@ -14,37 +13,20 @@ export const getTestimonials = query({
       throw new Error("Unauthorized");
     }
 
-    const applyFilters = (q: any) =>
-      q
-        .filter((q: any) => q.neq(q.field("title"), undefined))
-        .filter((q: any) => q.neq(q.field("summary"), undefined))
-        .filter((q: any) => q.neq(q.field("testimonialText"), undefined));
+    const testimonialQuery = ctx.db.query("testimonials");
 
-    const testimonials: PaginationResult<{
-      _id: Id<"testimonials">;
-      _creationTime: number;
-      email?: string | undefined;
-      media_id?: Id<"_storage"> | undefined;
-      createdAt?: number | undefined;
-      storageId?: string | undefined;
-      title?: string | undefined;
-      testimonialText?: string | undefined;
-      summary?: string | undefined;
-      searchText?: string | undefined;
-      approved?: boolean | undefined;
-      name: string;
-      media_type: string;
-    }> = await (
-      searchQuery && searchQuery.trim() !== ""
-        ? applyFilters(
-            ctx.db
-              .query("testimonials")
-              .withSearchIndex("search_posts", (q) =>
-                q.search("searchText", searchQuery)
-              )
-          )
-        : applyFilters(ctx.db.query("testimonials")).order("desc")
-    ).paginate(paginationOpts);
+    const testimonialQuerySearch = (searchQuery && searchQuery.trim() !== "")
+      ? testimonialQuery.withSearchIndex("search_posts", (q) =>
+          q.search("searchText", searchQuery)
+        )
+      : testimonialQuery.order("desc");
+
+    const filteredTestimonialQuery = testimonialQuerySearch
+      .filter((q) => q.neq(q.field("title"), undefined))
+      .filter((q) => q.neq(q.field("summary"), undefined))
+      .filter((q) => q.neq(q.field("testimonialText"), undefined));
+
+    const testimonials = await filteredTestimonialQuery.paginate(paginationOpts);
 
     const testimonialsWithMedia = await Promise.all(
       testimonials.page.map(async (t) => {
@@ -52,7 +34,7 @@ export const getTestimonials = query({
         return { ...t, mediaUrl };
       })
     );
-
+    
     return { ...testimonials, page: testimonialsWithMedia };
   },
 });
