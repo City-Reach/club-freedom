@@ -1,0 +1,16 @@
+name: Protect main PR source
+
+on:
+  pull_request:
+    branches:
+      - main
+      
+jobs:
+  check_source_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if source is not staging
+        if: github.head_ref != 'staging'
+        run: |
+          echo "ERROR: Only PRs from 'staging' can be merged into 'main'."
+          exit 1
