@@ -1,4 +1,3 @@
-import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,8 @@ import { formatDistance } from "date-fns";
 import { Spinner } from "@/components/ui/spinner";
 import { Link } from "@tanstack/react-router";
 import { getApprovalStatusText } from "@/utils/testimonial-utils";
-import { isModOrAdmin } from "@/convex/lib/permissions";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
 
 type Props = {
   id: Id<"testimonials">;
@@ -14,21 +14,26 @@ type Props = {
 
 export default function TestimonialDetail({ id }: Props) {
   const testimonial = useQuery(api.testimonials.getTestimonialById, { id });
-  const user = useQuery(api.auth.getCurrentUser);
+  const canApprove = useQuery(api.auth.checkUserPermissions, {
+    permissions: {
+      testimonial: ["approve"],
+    },
+  });
+
   const updateTestimonialApproval = useMutation(
-    api.testimonials.updateTestimonialApproval
+    api.testimonials.updateTestimonialApproval,
   );
-  
+
   if (!testimonial) {
     return <div>Loading testimonial...</div>;
   }
-  
+
   const approvalText = getApprovalStatusText(testimonial.approved);
   const downloadTranscription = () => {
     const element = document.createElement("a");
     const file = new Blob(
       [testimonial.testimonialText || "Transcription not available."],
-      { type: "text/plain" }
+      { type: "text/plain" },
     );
     element.href = URL.createObjectURL(file);
     element.download = `${testimonial.name}-${testimonial._creationTime}-transcription.txt`;
@@ -38,7 +43,11 @@ export default function TestimonialDetail({ id }: Props) {
   };
 
   const handleApprovalOrDisapproval = async (approved: boolean) => {
-    await updateTestimonialApproval({ id, approved });
+    try {
+      await updateTestimonialApproval({ id, approved });
+    } catch (err) {
+      toast.error("Failed to update testimonial approval");
+    }
   };
 
   return (
@@ -71,7 +80,7 @@ export default function TestimonialDetail({ id }: Props) {
             : "Download Testimonial"}
         </Button>
       </div>
-      {isModOrAdmin(user?.role) && <p>{approvalText}</p>}
+      {canApprove && <p>{approvalText}</p>}
       <div className="space-y-1">
         <h3 className="font-bold">Posted by {testimonial.name}</h3>
         <p className="font-mono text-muted-foreground">
@@ -109,7 +118,7 @@ export default function TestimonialDetail({ id }: Props) {
           </p>
         )}
       </div>
-      {(user?.role === "admin" || user?.role === "moderator") && (
+      {canApprove && (
         <div className="flex gap-2">
           <Button
             className="bg-green-600 cursor-pointer"

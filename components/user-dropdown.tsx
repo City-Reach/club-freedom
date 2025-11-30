@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserRoundIcon } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { useNavigate } from "@tanstack/react-router";
 import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
@@ -21,7 +21,7 @@ export default function UserDropDown({ user }: Props) {
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    navigate({ to: "/sign-in" });
+    await navigate({ to: "/sign-in" });
   };
 
   return (

@@ -2,40 +2,56 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
-import { isModOrAdmin, Role } from "./lib/permissions";
-import { paginationOptsValidator } from "convex/server";
+import { paginationOptsValidator, PaginationResult } from "convex/server";
+import { api } from "./_generated/api";
 
 export const getTestimonials = query({
-  args: { paginationOpts: paginationOptsValidator, searchQuery: v.optional(v.string()) },
+  args: {
+    paginationOpts: paginationOptsValidator,
+    searchQuery: v.optional(v.string()),
+  },
   handler: async (ctx, { paginationOpts, searchQuery }) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!isModOrAdmin(identity?.role as Role | undefined)) {
-      throw new Error("Unauthorized");
+    if (!identity) {
+      return {
+        page: [] as never[],
+        isDone: true,
+        continueCursor: "",
+      } satisfies PaginationResult<never>;
     }
 
     const testimonialQuery = ctx.db.query("testimonials");
 
-    const testimonialQuerySearch = (searchQuery && searchQuery.trim() !== "")
-      ? testimonialQuery.withSearchIndex("search_posts", (q) =>
-          q.search("searchText", searchQuery)
-        )
-      : testimonialQuery.order("desc");
+    const testimonialQuerySearch =
+      searchQuery && searchQuery.trim() !== ""
+        ? testimonialQuery.withSearchIndex("search_posts", (q) =>
+            q.search("searchText", searchQuery.trim()),
+          )
+        : testimonialQuery.order("desc");
+
+    const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: {
+        testimonial: ["approve"],
+      },
+    });
 
     const filteredTestimonialQuery = testimonialQuerySearch
       .filter((q) => q.neq(q.field("title"), undefined))
       .filter((q) => q.neq(q.field("summary"), undefined))
-      .filter((q) => q.neq(q.field("testimonialText"), undefined));
+      .filter((q) => q.neq(q.field("testimonialText"), undefined))
+      .filter((q) => (canApprove ? true : q.eq(q.field("approved"), true)));
 
-    const testimonials = await filteredTestimonialQuery.paginate(paginationOpts);
+    const { page, ...rest } =
+      await filteredTestimonialQuery.paginate(paginationOpts);
 
     const testimonialsWithMedia = await Promise.all(
-      testimonials.page.map(async (t) => {
+      page.map(async (t) => {
         const mediaUrl = t.storageId ? await r2.getUrl(t.storageId) : undefined;
         return { ...t, mediaUrl };
-      })
+      }),
     );
-    
-    return { ...testimonials, page: testimonialsWithMedia };
+
+    return { ...rest, page: testimonialsWithMedia };
   },
 });
 
@@ -55,7 +71,6 @@ export const postTestimonial = mutation({
       media_type,
       testimonialText: text,
       createdAt: Date.now(),
-      approved: false,
     });
     return id;
   },
@@ -67,10 +82,14 @@ export const updateTestimonialApproval = mutation({
     approved: v.boolean(),
   },
   handler: async (ctx, { id, approved }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!isModOrAdmin(identity?.role as Role | undefined)) {
-      throw new Error("Unauthorized");
+    const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: { testimonial: ["approve"] },
+    });
+
+    if (!canApprove) {
+      throw new Error("Forbidden");
     }
+
     await ctx.db.patch(id, { approved });
     return { id, approved };
   },

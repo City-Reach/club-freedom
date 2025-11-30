@@ -1,13 +1,15 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
-import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { convex } from "@convex-dev/better-auth/plugins";
-import { components } from "@/convex/_generated/api";
-import { DataModel } from "@/convex/_generated/dataModel";
-import { query } from "@/convex/_generated/server";
+import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { betterAuth, BetterAuthOptions } from "better-auth";
-import authSchema from "@/convex/betterAuth/schema";
+import { admin } from "better-auth/plugins";
 import { v } from "convex/values";
+import { components } from "./_generated/api";
+import { DataModel } from "./_generated/dataModel";
+import { query } from "./_generated/server";
+import authSchema from "./betterAuth/schema";
 import { sendResetPassword } from "./email";
+import { type PermissionCheck, Role, adminOptions } from "@/lib/auth/permissions";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -18,27 +20,16 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
       schema: authSchema,
     },
     verbose: false,
-  }
+  },
 );
 
 export const createAuth = (
   ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false }
+  { optionsOnly } = { optionsOnly: false },
 ) => {
   const siteUrl = process.env.SITE_URL!;
-  console.log("Creating Better Auth with site URL:", siteUrl);
 
   return betterAuth({
-    user: {
-      additionalFields: {
-        role: {
-          type: "string",
-          required: false,
-          defaultValue: "user",
-          input: false, // don't allow user to set role
-        },
-      },
-    },
     // disable logging when createAuth is called just to generate options.
     // this is not required, but there's a lot of noise in logs without it.
     logger: {
@@ -60,10 +51,9 @@ export const createAuth = (
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex(),
+      admin(adminOptions),
     ],
-    trustedOrigins: [
-      siteUrl
-    ],
+    trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions);
 };
 
@@ -96,5 +86,30 @@ export const getUserById = query({
     return ctx.runQuery(components.betterAuth.auth.getUser, {
       userId: args.userId,
     });
+  },
+});
+
+export const checkUserPermissions = query({
+  handler: async (
+    ctx,
+    args: {
+      role?: Role;
+      permissions?: PermissionCheck;
+    },
+  ) => {
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+    try {
+      const { success } = await auth.api.userHasPermission({
+        headers,
+        body: {
+          role: args.role,
+          permissions: args.permissions || {},
+        },
+      });
+      return success;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   },
 });
