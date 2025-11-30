@@ -1,20 +1,13 @@
-"use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { emailSchema } from "@/lib/schema";
 import z from "zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Spinner } from "../ui/spinner";
 
 const requestPasswordResetSchema = z.object({
   email: emailSchema,
@@ -31,38 +24,49 @@ export function RequestPasswordResetForm() {
   });
 
   const onSubmit = async (data: RequestPasswordReset) => {
-    try {
-      await authClient.requestPasswordReset({
+    await authClient.requestPasswordReset(
+      {
         email: data.email,
         redirectTo: `${import.meta.env.VITE_SITE_URL}/reset-password`,
-      });
-      toast.success("Check your email for the reset password link!");
-    } catch (err) {
-      toast.error("Password reset request failed. Please try again.");
-    }
+      },
+      {
+        onSuccess() {
+          toast.success("Check your email for the reset password link!");
+        },
+        onError(ctx) {
+          toast.error("Failed to send reset password email", {
+            description: ctx.error.message,
+          });
+        },
+      },
+    );
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
-      >
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Jane Doe" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Request password reset</Button>
-      </form>
-    </Form>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="flex flex-col gap-4"
+    >
+      <Controller
+        control={form.control}
+        name="email"
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+            <Input
+              {...field}
+              type="email"
+              placeholder="name@example.com"
+              id={field.name}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+      <Button type="submit" disabled={form.formState.isSubmitting}>
+        {form.formState.isSubmitting ? <Spinner /> : "Request password reset"}
+      </Button>
+    </form>
   );
 }
