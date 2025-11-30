@@ -4,21 +4,21 @@ import { fetchQuery } from "@/lib/auth/auth-server";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 
-const checkAdmin = createServerFn({ method: "GET" }).handler(async () => {
+const getCurrentUser = createServerFn({ method: "GET" }).handler(async () => {
   const user = await fetchQuery(api.auth.getCurrentUser, {});
-  return user?.role === "admin";
+  return user;
 });
 
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,
   loader: async () => {
-    const isAdmin = await checkAdmin();
-    if (!isAdmin) {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "admin") {
       throw redirect({
         to: "/",
       });
     }
-    return isAdmin;
+    return { user };
   },
 });
 

@@ -43,3 +43,13 @@ export const ALL_ROLES = Object.keys(roles) as Array<Role>;
 export type PermissionCheck = Partial<
   Subset<keyof typeof statement, typeof statement>
 >;
+
+export function displayRole(role: Role) {
+  if (role === "user") {
+    return "User";
+  } else if (role === "moderator") {
+    return "Moderator";
+  } else if (role === "admin") {
+    return "Admin";
+  }
+}

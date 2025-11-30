@@ -1,4 +1,5 @@
 import InviteMemberForm from "@/components/auth/invite-member-form";
+import ActiveMembers from "@/components/members/active-members";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import z from "zod";
@@ -23,7 +24,7 @@ function RouteComponent() {
 
       <div className="w-full flex flex-col gap-4">
         <h2 className="text-xl font-bold">Members</h2>
-        <Tabs value={status}>
+        <Tabs value={status} className="gap-4">
           <TabsList>
             <TabsTrigger
               value="active"
@@ -43,9 +44,9 @@ function RouteComponent() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="active">
+            <ActiveMembers />
           </TabsContent>
-          <TabsContent value="pending">
-          </TabsContent>
+          <TabsContent value="pending"></TabsContent>
         </Tabs>
       </div>
     </main>
