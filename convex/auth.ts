@@ -9,7 +9,7 @@ import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
 import { sendResetPassword } from "./email";
-import { ac, type PermissionCheck, roles } from "@/lib/auth/permissions";
+import { type PermissionCheck, Role, adminOptions } from "@/lib/auth/permissions";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -51,10 +51,7 @@ export const createAuth = (
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex(),
-      admin({
-        ac,
-        roles,
-      }),
+      admin(adminOptions),
     ],
     trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions);
@@ -96,7 +93,8 @@ export const checkUserPermissions = query({
   handler: async (
     ctx,
     args: {
-      permissions: PermissionCheck;
+      role?: Role;
+      permissions?: PermissionCheck;
     },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
@@ -104,7 +102,8 @@ export const checkUserPermissions = query({
       const { success } = await auth.api.userHasPermission({
         headers,
         body: {
-          permissions: args.permissions,
+          role: args.role,
+          permissions: args.permissions || {},
         },
       });
       return success;

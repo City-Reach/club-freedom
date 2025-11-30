@@ -1,3 +1,7 @@
+import {
+  AdminOptions,
+  InferAdminRolesFromOption,
+} from "better-auth/plugins/admin";
 import { createAccessControl, Subset } from "better-auth/plugins/access";
 import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
 
@@ -27,7 +31,15 @@ export const roles = {
   admin,
 } as const;
 
-export type Role = keyof typeof roles;
+export const adminOptions = {
+  ac,
+  roles,
+} satisfies AdminOptions;
+
+export type Role = InferAdminRolesFromOption<typeof adminOptions>;
+
+export const ALL_ROLES = Object.keys(roles) as Array<Role>;
+
 export type PermissionCheck = Partial<
   Subset<keyof typeof statement, typeof statement>
 >;
