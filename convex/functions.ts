@@ -16,6 +16,7 @@ import { api } from "./_generated/api";
 import { v } from "convex/values";
 import { transcribeAudio } from "@/lib/transcribe";
 import { r2 } from "./r2";
+import { summarize } from "@/lib/ai/summarize";
 
 // start using Triggers, with table types from schema.ts
 const triggers = new Triggers<DataModel>();
@@ -168,10 +169,7 @@ export const summarizeText = action({
         { id: testimonialId }
       );
       if (testimonial) {
-        const resp: GeminiResponse = await summarize_text(
-          text,
-          testimonial.name
-        );
+        const resp = await summarize(text, testimonial.name);
         await ctx.runMutation(api.testimonials.updateSummaryAndTitle, {
           id: testimonialId,
           summary: resp.summary,
