@@ -213,7 +213,7 @@ export default function TestimonialForm() {
                     Please find a quiet place to record your video testimonial.
                   </FieldDescription>
                   {isMobile ? (
-                    <MobileVideoRecorder />
+                    <MobileVideoRecorder field={field} />
                   ) : (
                     <VideoRecorder
                       onRecordingComplete={(videoFile) => {
