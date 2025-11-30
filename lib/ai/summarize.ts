@@ -12,12 +12,15 @@ type SummaryResponse = z.infer<typeof SummaryResponseSchema>;
 export async function summarize(input: string, name: string) {
   const aiClient = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    baseURL: process.env.AI_GATEWAY_ENDPOINT,
+    defaultHeaders: {
+      "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
+    },
   });
 
   try {
     const completion = await aiClient.chat.completions.create({
-      model: "gemini-2.5-flash",
+      model: "google-ai-studio/gemini-2.5-flash",
       reasoning_effort: "none",
 
       messages: [
