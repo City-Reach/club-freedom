@@ -55,7 +55,6 @@ export function SignInForm() {
             <FieldLabel htmlFor={field.name}>Email</FieldLabel>
             <Input
               {...field}
-              type="email"
               placeholder="name@example.com"
               id={field.name}
               aria-invalid={fieldState.invalid}
