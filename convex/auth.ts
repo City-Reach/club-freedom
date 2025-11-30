@@ -10,6 +10,7 @@ import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
 import { sendResetPassword } from "./email";
 import { type PermissionCheck, Role, adminOptions } from "@/lib/auth/permissions";
+import { appInvite } from "@/lib/auth/app-invite";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -51,6 +52,7 @@ export const createAuth = (
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex(),
+      appInvite(),
       admin(adminOptions),
     ],
     trustedOrigins: [siteUrl],

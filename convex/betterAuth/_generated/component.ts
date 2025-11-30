@@ -92,6 +92,10 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   publicKey: string;
                 };
                 model: "jwks";
+              }
+            | {
+                data: { createdAt: number; email: string; role: string };
+                model: "appInvite";
               };
           onCreateHandle?: string;
           select?: Array<string>;
@@ -253,6 +257,32 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 where?: Array<{
                   connector?: "AND" | "OR";
                   field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
+              }
+            | {
+                model: "appInvite";
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -461,6 +491,32 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | Array<number>
                     | null;
                 }>;
+              }
+            | {
+                model: "appInvite";
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
               };
           onDeleteHandle?: string;
         },
@@ -472,7 +528,13 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "internal",
         {
           limit?: number;
-          model: "user" | "session" | "account" | "verification" | "jwks";
+          model:
+            | "user"
+            | "session"
+            | "account"
+            | "verification"
+            | "jwks"
+            | "appInvite";
           offset?: number;
           paginationOpts: {
             cursor: string | null;
@@ -514,7 +576,13 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "query",
         "internal",
         {
-          model: "user" | "session" | "account" | "verification" | "jwks";
+          model:
+            | "user"
+            | "session"
+            | "account"
+            | "verification"
+            | "jwks"
+            | "appInvite";
           select?: Array<string>;
           where?: Array<{
             connector?: "AND" | "OR";
@@ -766,6 +834,33 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | Array<number>
                     | null;
                 }>;
+              }
+            | {
+                model: "appInvite";
+                update: { createdAt?: number; email?: string; role?: string };
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
               };
           onUpdateHandle?: string;
           paginationOpts: {
@@ -983,6 +1078,33 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 where?: Array<{
                   connector?: "AND" | "OR";
                   field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
+              }
+            | {
+                model: "appInvite";
+                update: { createdAt?: number; email?: string; role?: string };
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
                   operator?:
                     | "lt"
                     | "lte"

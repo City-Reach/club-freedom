@@ -344,6 +344,10 @@ export declare const components: {
                   publicKey: string;
                 };
                 model: "jwks";
+              }
+            | {
+                data: { createdAt: number; email: string; role: string };
+                model: "appInvite";
               };
           onCreateHandle?: string;
           select?: Array<string>;
@@ -504,6 +508,32 @@ export declare const components: {
                 where?: Array<{
                   connector?: "AND" | "OR";
                   field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
+              }
+            | {
+                model: "appInvite";
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -711,6 +741,32 @@ export declare const components: {
                     | Array<number>
                     | null;
                 }>;
+              }
+            | {
+                model: "appInvite";
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
               };
           onDeleteHandle?: string;
         },
@@ -721,7 +777,13 @@ export declare const components: {
         "internal",
         {
           limit?: number;
-          model: "user" | "session" | "account" | "verification" | "jwks";
+          model:
+            | "user"
+            | "session"
+            | "account"
+            | "verification"
+            | "jwks"
+            | "appInvite";
           offset?: number;
           paginationOpts: {
             cursor: string | null;
@@ -762,7 +824,13 @@ export declare const components: {
         "query",
         "internal",
         {
-          model: "user" | "session" | "account" | "verification" | "jwks";
+          model:
+            | "user"
+            | "session"
+            | "account"
+            | "verification"
+            | "jwks"
+            | "appInvite";
           select?: Array<string>;
           where?: Array<{
             connector?: "AND" | "OR";
@@ -1013,6 +1081,33 @@ export declare const components: {
                     | Array<number>
                     | null;
                 }>;
+              }
+            | {
+                model: "appInvite";
+                update: { createdAt?: number; email?: string; role?: string };
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
               };
           onUpdateHandle?: string;
           paginationOpts: {
@@ -1229,6 +1324,33 @@ export declare const components: {
                 where?: Array<{
                   connector?: "AND" | "OR";
                   field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  operator?:
+                    | "lt"
+                    | "lte"
+                    | "gt"
+                    | "gte"
+                    | "eq"
+                    | "in"
+                    | "not_in"
+                    | "ne"
+                    | "contains"
+                    | "starts_with"
+                    | "ends_with";
+                  value:
+                    | string
+                    | number
+                    | boolean
+                    | Array<string>
+                    | Array<number>
+                    | null;
+                }>;
+              }
+            | {
+                model: "appInvite";
+                update: { createdAt?: number; email?: string; role?: string };
+                where?: Array<{
+                  connector?: "AND" | "OR";
+                  field: "email" | "createdAt" | "role" | "_id";
                   operator?:
                     | "lt"
                     | "lte"

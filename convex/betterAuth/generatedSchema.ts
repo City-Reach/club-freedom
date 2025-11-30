@@ -68,6 +68,12 @@ export const tables = {
     privateKey: v.string(),
     createdAt: v.number(),
   }),
+  appInvite: defineTable({
+    email: v.string(),
+    createdAt: v.number(),
+    role: v.string(),
+  })
+    .index("email", ["email"]),
 };
 
 const schema = defineSchema(tables);

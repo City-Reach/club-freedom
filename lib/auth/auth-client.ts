@@ -3,11 +3,13 @@ import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { convexClient } from "@convex-dev/better-auth/client/plugins";
 import type { auth } from "@/convex/betterAuth/auth";
 import { adminOptions } from "./permissions";
+import { appInviteClient } from "./app-invite";
 
 export const authClient = createAuthClient({
   plugins: [
     inferAdditionalFields<typeof auth>(),
     adminClient(adminOptions),
+    appInviteClient(),
     convexClient(),
   ],
 });
