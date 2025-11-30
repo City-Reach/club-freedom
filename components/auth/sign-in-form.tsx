@@ -34,7 +34,9 @@ export function SignInForm() {
           navigate({ to: "/testimonials" });
         },
         onError(ctx) {
-          toast.error(ctx.error.message);
+          toast.error("Failed to sign in", {
+            description: ctx.error.message,
+          });
         },
       },
     );

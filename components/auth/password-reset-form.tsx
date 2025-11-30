@@ -48,7 +48,9 @@ export default function ResetPasswordForm({ token }: Props) {
           });
         },
         onError(context) {
-          toast.error(context.error.message);
+          toast.error("Failed to reset password", {
+            description: context.error.message,
+          });
         },
       },
     );

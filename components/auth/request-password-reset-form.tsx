@@ -24,15 +24,22 @@ export function RequestPasswordResetForm() {
   });
 
   const onSubmit = async (data: RequestPasswordReset) => {
-    try {
-      await authClient.requestPasswordReset({
+    await authClient.requestPasswordReset(
+      {
         email: data.email,
         redirectTo: `${import.meta.env.VITE_SITE_URL}/reset-password`,
-      });
-      toast.success("Check your email for the reset password link!");
-    } catch (err) {
-      toast.error("Password reset request failed. Please try again.");
-    }
+      },
+      {
+        onSuccess() {
+          toast.success("Check your email for the reset password link!");
+        },
+        onError(ctx) {
+          toast.error("Failed to send reset password email", {
+            description: ctx.error.message,
+          });
+        },
+      },
+    );
   };
 
   return (
