@@ -33,7 +33,7 @@ export default function ActiveMembers() {
   }
 
   if (members.total === 0) {
-    return <div className="text-center">No other members</div>;
+    return <div className="text-center">No members</div>;
   }
 
   return (

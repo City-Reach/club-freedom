@@ -1,5 +1,6 @@
 import InviteMemberForm from "@/components/auth/invite-member-form";
 import ActiveMembers from "@/components/members/active-members";
+import PendingInvitations from "@/components/members/pending-invitations";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import z from "zod";
@@ -46,7 +47,9 @@ function RouteComponent() {
           <TabsContent value="active">
             <ActiveMembers />
           </TabsContent>
-          <TabsContent value="pending"></TabsContent>
+          <TabsContent value="pending">
+            <PendingInvitations />
+          </TabsContent>
         </Tabs>
       </div>
     </main>

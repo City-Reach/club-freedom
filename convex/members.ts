@@ -12,3 +12,12 @@ export const listMembers = query({
     });
   },
 });
+
+export const listInvitations = query({
+  handler: async (ctx) => {
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+    return await auth.api.listAppInvitations({
+      headers,
+    });
+  },
+});
