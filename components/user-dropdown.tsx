@@ -7,9 +7,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserRoundIcon } from "lucide-react";
+import { LogOutIcon, UserRoundIcon, UsersIcon } from "lucide-react";
 import { authClient } from "@/lib/auth/auth-client";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
@@ -41,7 +41,21 @@ export default function UserDropDown({ user }: Props) {
           <span className="text-sm text-muted-foreground">{user.email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+        {user.role === "admin" && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to="/admin/members">
+                <UsersIcon />
+                Members
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        <DropdownMenuItem onClick={handleSignOut}>
+          <LogOutIcon />
+          Sign out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
