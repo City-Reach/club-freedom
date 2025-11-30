@@ -15,7 +15,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
-import { Route as ApiTurnstileRouteImport } from './routes/api/turnstile'
 import { Route as AdminCreateUserRouteImport } from './routes/admin/create-user'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
@@ -51,11 +50,6 @@ const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => TestimonialsRouteRoute,
-} as any)
-const ApiTurnstileRoute = ApiTurnstileRouteImport.update({
-  id: '/api/turnstile',
-  path: '/api/turnstile',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminCreateUserRoute = AdminCreateUserRouteImport.update({
   id: '/admin/create-user',
@@ -96,7 +90,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/admin/create-user': typeof AdminCreateUserRoute
-  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
@@ -109,7 +102,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/admin/create-user': typeof AdminCreateUserRoute
-  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
@@ -125,7 +117,6 @@ export interface FileRoutesById {
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/admin/create-user': typeof AdminCreateUserRoute
-  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
@@ -141,7 +132,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/admin/create-user'
-    | '/api/turnstile'
     | '/testimonials/$id'
     | '/admin'
     | '/testimonials/'
@@ -154,7 +144,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/admin/create-user'
-    | '/api/turnstile'
     | '/testimonials/$id'
     | '/admin'
     | '/testimonials'
@@ -169,7 +158,6 @@ export interface FileRouteTypes {
     | '/_auth/reset-password'
     | '/_auth/sign-in'
     | '/admin/create-user'
-    | '/api/turnstile'
     | '/testimonials/$id'
     | '/admin/'
     | '/testimonials/'
@@ -182,7 +170,6 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
   AdminCreateUserRoute: typeof AdminCreateUserRoute
-  ApiTurnstileRoute: typeof ApiTurnstileRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -230,13 +217,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/testimonials/$id'
       preLoaderRoute: typeof TestimonialsIdRouteImport
       parentRoute: typeof TestimonialsRouteRoute
-    }
-    '/api/turnstile': {
-      id: '/api/turnstile'
-      path: '/api/turnstile'
-      fullPath: '/api/turnstile'
-      preLoaderRoute: typeof ApiTurnstileRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/admin/create-user': {
       id: '/admin/create-user'
@@ -329,7 +309,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
   AdminCreateUserRoute: AdminCreateUserRoute,
-  ApiTurnstileRoute: ApiTurnstileRoute,
   AdminIndexRoute: AdminIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
