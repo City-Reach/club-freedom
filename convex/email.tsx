@@ -3,6 +3,7 @@ import { type ActionCtx } from "./_generated/server";
 import { components } from "./_generated/api";
 import { render } from "@react-email/components";
 import ResetPasswordEmail from "../components/emails/reset-password";
+import InvitationEmail from "@/components/emails/invitation";
 
 export const resend = new Resend(components.resend, {
   testMode: false,
@@ -23,5 +24,23 @@ export const sendResetPassword = async (
     to,
     subject: "Reset your password",
     html: await render(<ResetPasswordEmail url={url} />),
+  });
+};
+
+export const sendInvitation = async (
+  ctx: ActionCtx,
+  {
+    to,
+    url,
+  }: {
+    to: string;
+    url: string;
+  },
+) => {
+  await resend.sendEmail(ctx, {
+    from: `Club Freedom <${process.env.AUTH_EMAIL}>`,
+    to,
+    subject: "You're invited",
+    html: await render(<InvitationEmail url={url} />),
   });
 };

@@ -8,8 +8,12 @@ import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
-import { sendResetPassword } from "./email";
-import { type PermissionCheck, Role, adminOptions } from "@/lib/auth/permissions";
+import { sendInvitation, sendResetPassword } from "./email";
+import {
+  type PermissionCheck,
+  Role,
+  adminOptions,
+} from "@/lib/auth/permissions";
 import { appInvite } from "@/lib/auth/app-invite";
 
 // The component client has methods needed for integrating Convex with Better Auth,
@@ -52,7 +56,14 @@ export const createAuth = (
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex(),
-      appInvite(),
+      appInvite({
+        sendInvitationEmail: async ({ invitation }) => {
+          await sendInvitation(requireActionCtx(ctx), {
+            to: invitation.email,
+            url: `${siteUrl}/accept-invite?id=${invitation.id}`,
+          });
+        },
+      }),
       admin(adminOptions),
     ],
     trustedOrigins: [siteUrl],
