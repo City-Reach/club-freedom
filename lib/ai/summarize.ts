@@ -12,7 +12,7 @@ type SummaryResponse = z.infer<typeof SummaryResponseSchema>;
 export async function summarize(input: string, name: string) {
   const aiClient = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
-    baseURL: process.env.AI_GATEWAY_ENDPOINT,
+    baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/compat`,
     defaultHeaders: {
       "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
     },
