@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import z from "zod";
 import { Controller, useForm } from "react-hook-form";
@@ -8,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Spinner } from "../ui/spinner";
 
 const passwordResetSchema = z
   .object({
@@ -93,11 +93,7 @@ export default function ResetPasswordForm({ token }: Props) {
         className="w-full"
         disabled={form.formState.isSubmitting}
       >
-        {form.formState.isSubmitting ? (
-          <Loader2 size={16} className="animate-spin" />
-        ) : (
-          "Reset Password"
-        )}
+        {form.formState.isSubmitting ? <Spinner /> : "Reset Password"}
       </Button>
     </form>
   );

@@ -7,6 +7,7 @@ import z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Spinner } from "../ui/spinner";
 
 const requestPasswordResetSchema = z.object({
   email: emailSchema,
@@ -56,7 +57,9 @@ export function RequestPasswordResetForm() {
           </Field>
         )}
       />
-      <Button type="submit">Request password reset</Button>
+      <Button type="submit" disabled={form.formState.isSubmitting}>
+        {form.formState.isSubmitting ? <Spinner /> : "Request password reset"}
+      </Button>
     </form>
   );
 }

@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Spinner } from "../ui/spinner";
 
 type SignIn = z.infer<typeof signInSchema>;
 
@@ -85,7 +86,9 @@ export function SignInForm() {
           </Field>
         )}
       />
-      <Button type="submit">Sign in</Button>
+      <Button type="submit" disabled={form.formState.isSubmitting}>
+        {form.formState.isSubmitting ? <Spinner /> : "Sign in"}
+      </Button>
     </form>
   );
 }
