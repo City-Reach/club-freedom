@@ -13,6 +13,8 @@ import {
 } from "../ui/select";
 import { ALL_ROLES } from "@/lib/auth/permissions";
 import { Button } from "../ui/button";
+import { authClient } from "@/lib/auth/auth-client";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.email(),
@@ -30,7 +32,21 @@ export default function InviteMemberForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = async (formData: InviteMember) => {};
+  const onSubmit = async (formData: InviteMember) => {
+    const invitation = await authClient.appInvite.createInvitation({
+      email: formData.email,
+      role: formData.role,
+    });
+    if (invitation.error) {
+      form.setError("email", {
+        message:
+          invitation.error.message || "Cannot sent invitation. Try again later",
+      });
+    } else {
+      toast.success("Invitation sent successfully");
+      form.resetField("email");
+    }
+  };
 
   return (
     <form
@@ -78,10 +94,7 @@ export default function InviteMemberForm() {
           </Field>
         )}
       />
-      <Button
-        type="submit"
-        disabled={form.formState.isSubmitting || !form.formState.isValid}
-      >
+      <Button type="submit" disabled={form.formState.isSubmitting}>
         Invite
       </Button>
     </form>
