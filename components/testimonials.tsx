@@ -21,7 +21,7 @@ export function Testimonials() {
     };
   }, [searchQuery]);
 
-  const permissionCheck = useQuery(api.auth.checkUserPermissions, {
+  const canApprove = useQuery(api.auth.checkUserPermissions, {
     permissions: {
       testimonial: ["approve"],
     },
@@ -73,7 +73,7 @@ export function Testimonials() {
         <TestimonialCard
           key={testimonial._id}
           testimonial={testimonial}
-          showApprovalStatus={permissionCheck?.success}
+          showApprovalStatus={canApprove}
         />
       ))}
       <div ref={loadMoreRef} className="h-10" />

@@ -2,8 +2,7 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
-import { paginationOptsValidator } from "convex/server";
-import { APIError } from "better-auth";
+import { paginationOptsValidator, PaginationResult } from "convex/server";
 import { api } from "./_generated/api";
 
 export const getTestimonials = query({
@@ -14,9 +13,11 @@ export const getTestimonials = query({
   handler: async (ctx, { paginationOpts, searchQuery }) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new APIError("UNAUTHORIZED", {
-        message: "You must be logged in to view testimonials.",
-      });
+      return {
+        page: [] as never[],
+        isDone: true,
+        continueCursor: "",
+      } satisfies PaginationResult<never>;
     }
 
     const testimonialQuery = ctx.db.query("testimonials");
@@ -40,17 +41,17 @@ export const getTestimonials = query({
       .filter((q) => q.neq(q.field("testimonialText"), undefined))
       .filter((q) => (canApprove ? true : q.eq(q.field("approved"), true)));
 
-    const testimonials =
+    const { page, ...rest } =
       await filteredTestimonialQuery.paginate(paginationOpts);
 
     const testimonialsWithMedia = await Promise.all(
-      testimonials.page.map(async (t) => {
+      page.map(async (t) => {
         const mediaUrl = t.storageId ? await r2.getUrl(t.storageId) : undefined;
         return { ...t, mediaUrl };
       }),
     );
 
-    return { ...testimonials, page: testimonialsWithMedia };
+    return { ...rest, page: testimonialsWithMedia };
   },
 });
 
@@ -81,11 +82,11 @@ export const updateTestimonialApproval = mutation({
     approved: v.boolean(),
   },
   handler: async (ctx, { id, approved }) => {
-    const permissionCheck = await ctx.runQuery(api.auth.checkUserPermissions, {
+    const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: { testimonial: ["approve"] },
     });
 
-    if (!permissionCheck.success) {
+    if (!canApprove) {
       throw new Error("Forbidden");
     }
 

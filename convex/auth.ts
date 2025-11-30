@@ -20,12 +20,12 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
       schema: authSchema,
     },
     verbose: false,
-  }
+  },
 );
 
 export const createAuth = (
   ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false }
+  { optionsOnly } = { optionsOnly: false },
 ) => {
   const siteUrl = process.env.SITE_URL!;
 
@@ -97,14 +97,20 @@ export const checkUserPermissions = query({
     ctx,
     args: {
       permissions: PermissionCheck;
-    }
+    },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
-    return await auth.api.userHasPermission({
-      headers,
-      body: {
-        permissions: args.permissions,
-      },
-    });
+    try {
+      const { success } = await auth.api.userHasPermission({
+        headers,
+        body: {
+          permissions: args.permissions,
+        },
+      });
+      return success;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   },
 });
