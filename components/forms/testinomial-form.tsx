@@ -18,7 +18,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
 import { Turnstile } from "@marsidev/react-turnstile";
 import React from "react";
-import { apiRoute } from "@/app/routes/api/turnstile";
 import {
   Field,
   FieldLabel,
@@ -26,6 +25,8 @@ import {
   FieldDescription,
   FieldContent,
 } from "../ui/field";
+import { useServerFn } from "@tanstack/react-start";
+import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
@@ -36,6 +37,7 @@ export default function TestimonialForm() {
   const uploadFile = useUploadFile(api.r2);
   const isMobile = useMobileDetect();
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
+  const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
 
   const [tabValue, setTabValue] = useState("video");
 
@@ -50,18 +52,17 @@ export default function TestimonialForm() {
 
   async function onSubmit(values: Testimonial) {
     try {
-      const token = values.turnstileToken;
-      const res = await fetch(apiRoute, {
-        method: "POST",
-        body: JSON.stringify({ token }),
-        headers: {
-          "content-type": "application/json",
-        },
+      // Step 1: Validate Turnstile token
+      const turnstileToken = values.turnstileToken;
+      const isHuman = await validateTurnstileToken({
+        data: { turnstileToken },
       });
-      if (!res.ok) {
-        toast.error("Human verification (Turnstile) failed. Please try again.");
+      if (!isHuman) {
+        toast.error("Human verification failed. Please try again.");
         return;
       }
+
+      // Step 2:
       let storageId: string | undefined = undefined;
       let media_type = "text";
       if (values.mediaFile) {
