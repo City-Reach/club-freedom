@@ -1,16 +1,15 @@
-"use client";
-
 import { useRef } from "react";
 import { Button } from "../ui/button";
-import { useController } from "react-hook-form";
+import { ControllerRenderProps } from "react-hook-form";
 import { Testimonial } from "@/lib/schema";
 import { Video } from "lucide-react";
 
-export default function MobileVideoRecorder() {
-  const { field } = useController<Testimonial>({
-    name: "mediaFile",
-  });
-  const inputRef = useRef<HTMLInputElement>(null);
+type Props = {
+  field: ControllerRenderProps<Testimonial, "mediaFile">;
+};
+
+export default function MobileVideoRecorder({ field }: Props) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">

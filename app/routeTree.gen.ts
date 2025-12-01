@@ -15,7 +15,6 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
-import { Route as ApiTurnstileRouteImport } from './routes/api/turnstile'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
@@ -51,11 +50,6 @@ const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => TestimonialsRouteRoute,
 } as any)
-const ApiTurnstileRoute = ApiTurnstileRouteImport.update({
-  id: '/api/turnstile',
-  path: '/api/turnstile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
@@ -90,7 +84,6 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -102,7 +95,6 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -117,7 +109,6 @@ export interface FileRoutesById {
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
-  '/api/turnstile': typeof ApiTurnstileRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -132,7 +123,6 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/api/turnstile'
     | '/testimonials/$id'
     | '/testimonials/'
     | '/api/auth/$'
@@ -144,7 +134,6 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/api/turnstile'
     | '/testimonials/$id'
     | '/testimonials'
     | '/api/auth/$'
@@ -158,7 +147,6 @@ export interface FileRouteTypes {
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
-    | '/api/turnstile'
     | '/testimonials/$id'
     | '/testimonials/'
     | '/api/auth/$'
@@ -170,7 +158,6 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRoute
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
-  ApiTurnstileRoute: typeof ApiTurnstileRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -217,13 +204,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/testimonials/$id'
       preLoaderRoute: typeof TestimonialsIdRouteImport
       parentRoute: typeof TestimonialsRouteRoute
-    }
-    '/api/turnstile': {
-      id: '/api/turnstile'
-      path: '/api/turnstile'
-      fullPath: '/api/turnstile'
-      preLoaderRoute: typeof ApiTurnstileRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_auth/sign-in': {
       id: '/_auth/sign-in'
@@ -309,7 +289,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRoute,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
-  ApiTurnstileRoute: ApiTurnstileRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,15 +1,16 @@
 import { Button } from "./ui/button";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import Logo from "./logo";
 import UserDropDown from "./user-dropdown";
 import { Link } from "@tanstack/react-router";
+import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
-export default function Navbar() {
-  const user = useQuery(api.auth.getCurrentUser);
+type Props = {
+  user: Doc<"user"> | null;
+};
 
+export default function Navbar({ user }: Props) {
   return (
-    <header className="border-b px-4 md:px-6 flex justify-between items-center">
+    <header className="border-b px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
       <div className="flex items-center gap-4">
         <Logo />
         {user && (

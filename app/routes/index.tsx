@@ -1,15 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
+import { getCurrentUser } from "../functions/auth";
 
 export const Route = createFileRoute("/")({
   component: Home,
+  loader: async () => {
+    const user = await getCurrentUser();
+    return { user };
+  },
 });
 
 function Home() {
+  const { user } = Route.useLoaderData();
   return (
     <>
-      <Navbar />
+      <Navbar user={user} />
       <main className="flex min-h-screen flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto">
         <div className="flex flex-col items-center justify-center text-center">
           <h1 className="text-4xl font-bold">
