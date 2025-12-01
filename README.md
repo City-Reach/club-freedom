@@ -45,7 +45,12 @@ cd for-club-freedom-2025
 pnpm install
 ```
 
-3. Set up environment variables (see Environment Variables section below)
+3. Set up environment variables. Most of it is just creating a new account and passing over your personal keys:
+   1. Setting up Better Auth...
+   2. Setting up Resend
+   3. Setup R2 for Convex
+   4. Cloudflare Turnstile
+   5. Environment Variables
 
 4. Set up local domains and HTTPS (see Local Domains and HTTPS Setup section below)
 
@@ -62,6 +67,8 @@ pnpm convex dev
 ```
 
 Open [https://localhost:3000](https://localhost:3000) with your browser to see the result.
+
+Note: If for whatever reason you'll be getting a 500 Internal Server Error, after connecting to the web page, try to use someone elses development environment convex keys and then slowly replace each key with your own to see which key could be problematic. If you are doing this make sure to replace R2 keys in bulk. Make sure your local convex/.env.local matches the environment varialbes on the cloud convex of your newly generated environment. Make sure that you set local react deployment to https://localhost:3000, as you will be working on front-end locally and need to have https enabled for using camera and audio.
 
 ### Setting up Better Auth with Convex in your environment
 
