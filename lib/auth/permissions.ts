@@ -16,10 +16,6 @@ export const user = ac.newRole({
   testimonial: [],
 });
 
-export const moderator = ac.newRole({
-  testimonial: ["approve"],
-});
-
 export const admin = ac.newRole({
   testimonial: ["approve"],
   ...adminAc.statements,
@@ -27,7 +23,6 @@ export const admin = ac.newRole({
 
 export const roles = {
   user,
-  moderator,
   admin,
 } as const;
 
