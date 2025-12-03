@@ -6,9 +6,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "../ui/breadcrumb";
+} from "./ui/breadcrumb";
 
-export default function AdminBreadcrumbs() {
+export default function DashboardBreadcrumbs() {
   const matches = useMatches();
   const matchesWithCrumbs = matches.filter((match) =>
     isMatch(match, "loaderData.crumb"),

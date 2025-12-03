@@ -4,7 +4,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from "../ui/sidebar";
+} from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
 
 export default function AdminSidebarNav() {

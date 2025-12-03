@@ -7,15 +7,19 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "../ui/sidebar";
-import { Link } from "@tanstack/react-router";
+} from "@/components/ui/sidebar";
+import { Link, useLoaderData } from "@tanstack/react-router";
 import { MicVocal } from "lucide-react";
-import AdminNavUser from "./admin-nav-user";
 import AdminSidebarNav from "./admin-sidebar-nav";
+import UserNavigation from "@/components/user-navigation";
 
 export default function AdminSidebar({
   ...props
 }: ComponentProps<typeof Sidebar>) {
+  const { user } = useLoaderData({
+    from: "/admin",
+  });
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -38,7 +42,7 @@ export default function AdminSidebar({
         <AdminSidebarNav />
       </SidebarContent>
       <SidebarFooter>
-        <AdminNavUser />
+        <UserNavigation user={user} />
       </SidebarFooter>
     </Sidebar>
   );

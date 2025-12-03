@@ -1,5 +1,5 @@
 import { authClient } from "@/lib/auth/auth-client";
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -7,17 +7,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem,
-} from "../ui/dropdown-menu";
-import { useLoaderData, useNavigate } from "@tanstack/react-router";
+} from "./ui/dropdown-menu";
+import { useNavigate } from "@tanstack/react-router";
 import { UserIcon, ChevronsUpDown, LogOut } from "lucide-react";
-import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar } from "../ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  useSidebar,
+} from "./ui/sidebar";
+import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
-export default function AdminNavUser() {
+type Props = {
+  user: Doc<"user">;
+};
+
+export default function UserNavigation({ user }: Props) {
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
-  const { user } = useLoaderData({
-    from: "/admin",
-  });
 
   const signOut = async () => {
     await authClient.signOut();

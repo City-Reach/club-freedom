@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
-import AdminSidebar from "../admin/admin-sidebar";
+import AdminSidebar from "./admin/admin-sidebar";
 import { Separator } from "../ui/separator";
-import AdminBreadcrumbs from "../admin/admin-breadcrumbs";
+import DashboardBreadcrumbs from "../dashboard-breadcrumbs";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,7 +12,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex items-center gap-2 px-3">
             <SidebarTrigger />
-            <AdminBreadcrumbs />
+            <DashboardBreadcrumbs />
             <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
         </header>
