@@ -1,0 +1,27 @@
+import { ReactNode } from "react";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+import { Separator } from "../ui/separator";
+import OrganizationSidebar from "./organization/organization-sidebar";
+import DashboardBreadcrumbs from "../dashboard-breadcrumbs";
+
+export default function OrganizationLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <SidebarProvider>
+      <OrganizationSidebar collapsible="icon" />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+          <div className="flex items-center gap-2 px-3">
+            <SidebarTrigger />
+            <DashboardBreadcrumbs />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+          </div>
+        </header>
+        <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}

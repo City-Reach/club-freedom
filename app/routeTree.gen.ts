@@ -19,7 +19,10 @@ import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizat
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as OSlugRouteRouteImport } from './routes/o.$slug/route'
 import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
+import { Route as OSlugSettingsRouteImport } from './routes/o.$slug/settings'
+import { Route as OSlugMembersRouteImport } from './routes/o.$slug/members'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
 const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
@@ -71,12 +74,27 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const OSlugRouteRoute = OSlugRouteRouteImport.update({
+  id: '/o/$slug',
+  path: '/o/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestimonialsIdMediaDownloadRoute =
   TestimonialsIdMediaDownloadRouteImport.update({
     id: '/media-download',
     path: '/media-download',
     getParentRoute: () => TestimonialsIdRoute,
   } as any)
+const OSlugSettingsRoute = OSlugSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OSlugRouteRoute,
+} as any)
+const OSlugMembersRoute = OSlugMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => OSlugRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -87,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/o/$slug': typeof OSlugRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -94,11 +113,14 @@ export interface FileRoutesByFullPath {
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/o/$slug/members': typeof OSlugMembersRoute
+  '/o/$slug/settings': typeof OSlugSettingsRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/o/$slug': typeof OSlugRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -106,6 +128,8 @@ export interface FileRoutesByTo {
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/o/$slug/members': typeof OSlugMembersRoute
+  '/o/$slug/settings': typeof OSlugSettingsRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRoutesById {
@@ -114,6 +138,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/o/$slug': typeof OSlugRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
@@ -121,6 +146,8 @@ export interface FileRoutesById {
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/o/$slug/members': typeof OSlugMembersRoute
+  '/o/$slug/settings': typeof OSlugSettingsRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRouteTypes {
@@ -129,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/testimonials'
+    | '/o/$slug'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -136,11 +164,14 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials/'
     | '/api/auth/$'
+    | '/o/$slug/members'
+    | '/o/$slug/settings'
     | '/testimonials/$id/media-download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/o/$slug'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -148,6 +179,8 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials'
     | '/api/auth/$'
+    | '/o/$slug/members'
+    | '/o/$slug/settings'
     | '/testimonials/$id/media-download'
   id:
     | '__root__'
@@ -155,6 +188,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/admin'
     | '/testimonials'
+    | '/o/$slug'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
@@ -162,6 +196,8 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials/'
     | '/api/auth/$'
+    | '/o/$slug/members'
+    | '/o/$slug/settings'
     | '/testimonials/$id/media-download'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +206,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
+  OSlugRouteRoute: typeof OSlugRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -245,12 +282,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/o/$slug': {
+      id: '/o/$slug'
+      path: '/o/$slug'
+      fullPath: '/o/$slug'
+      preLoaderRoute: typeof OSlugRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/testimonials/$id/media-download': {
       id: '/testimonials/$id/media-download'
       path: '/media-download'
       fullPath: '/testimonials/$id/media-download'
       preLoaderRoute: typeof TestimonialsIdMediaDownloadRouteImport
       parentRoute: typeof TestimonialsIdRoute
+    }
+    '/o/$slug/settings': {
+      id: '/o/$slug/settings'
+      path: '/settings'
+      fullPath: '/o/$slug/settings'
+      preLoaderRoute: typeof OSlugSettingsRouteImport
+      parentRoute: typeof OSlugRouteRoute
+    }
+    '/o/$slug/members': {
+      id: '/o/$slug/members'
+      path: '/members'
+      fullPath: '/o/$slug/members'
+      preLoaderRoute: typeof OSlugMembersRouteImport
+      parentRoute: typeof OSlugRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -315,11 +373,26 @@ const TestimonialsRouteRouteChildren: TestimonialsRouteRouteChildren = {
 const TestimonialsRouteRouteWithChildren =
   TestimonialsRouteRoute._addFileChildren(TestimonialsRouteRouteChildren)
 
+interface OSlugRouteRouteChildren {
+  OSlugMembersRoute: typeof OSlugMembersRoute
+  OSlugSettingsRoute: typeof OSlugSettingsRoute
+}
+
+const OSlugRouteRouteChildren: OSlugRouteRouteChildren = {
+  OSlugMembersRoute: OSlugMembersRoute,
+  OSlugSettingsRoute: OSlugSettingsRoute,
+}
+
+const OSlugRouteRouteWithChildren = OSlugRouteRoute._addFileChildren(
+  OSlugRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
+  OSlugRouteRoute: OSlugRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

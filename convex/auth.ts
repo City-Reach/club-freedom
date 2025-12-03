@@ -73,7 +73,7 @@ export const getCurrentUser = query({
   handler: async (ctx) => {
     try {
       return await authComponent.getAuthUser(ctx);
-    } catch (err: unknown) {
+    } catch (err) {
       // If the call failed because the user is not signed in, return null so client code can handle it.
       // Be conservative: only swallow unauthenticated errors; rethrow unexpected errors.
       const message = (err as any)?.message ?? "";
