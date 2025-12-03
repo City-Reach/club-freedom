@@ -13,7 +13,8 @@ import {
   type PermissionCheck,
   Role,
   adminOptions,
-} from "@/lib/auth/permissions";
+} from "@/lib/auth/permissions/admin";
+import { organizationOptions } from "@/lib/auth/permissions/organization";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -57,6 +58,7 @@ export const createAuth = (
       convex(),
       admin(adminOptions),
       organization({
+        ...organizationOptions,
         allowUserToCreateOrganization: async (user) => {
           return user?.role === "admin";
         },
