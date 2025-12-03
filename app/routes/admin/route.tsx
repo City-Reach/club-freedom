@@ -1,31 +1,30 @@
+import { getCurrentUser } from "@/app/functions/auth";
 import Navbar from "@/components/navbar";
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "@/lib/auth/auth-server";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 
-const checkAdmin = createServerFn({ method: "GET" }).handler(async () => {
-  const user = await fetchQuery(api.auth.getCurrentUser, {});
-  return user?.role === "admin";
-});
-
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,
   loader: async () => {
-    const isAdmin = await checkAdmin();
-    if (!isAdmin) {
+    const user = await getCurrentUser();
+    if (user?.role !== "admin") {
       throw redirect({
         to: "/",
       });
     }
-    return isAdmin;
+    return {
+      user,
+    };
   },
 });
 
 function RouteComponent() {
+  const { user } = Route.useLoaderData();
   return (
     <>
-      <Navbar />
+      <Navbar user={user} />
       <Outlet />
     </>
   );
