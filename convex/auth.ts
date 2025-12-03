@@ -8,7 +8,7 @@ import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
-import { sendResetPassword } from "./email";
+import { sendInvite, sendResetPassword } from "./email";
 import {
   type PermissionCheck,
   Role,
@@ -61,6 +61,14 @@ export const createAuth = (
         ...organizationOptions,
         allowUserToCreateOrganization: async (user) => {
           return user?.role === "admin";
+        },
+        sendInvitationEmail: async ({ id, organization, email }) => {
+          await sendInvite(requireActionCtx(ctx), {
+            to: email,
+            subject: `You're invited to ${organization.name}`,
+            url: `${siteUrl}/accept-invitation?id=${id}`,
+            organization: organization.name,
+          });
         },
       }),
     ],

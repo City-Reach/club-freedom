@@ -15,6 +15,9 @@ import {
   SelectValue,
 } from "../ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth/auth-client";
+import { useLoaderData } from "@tanstack/react-router";
 
 const inviteMemberSchema = z.object({
   email: z.email({ error: "Invalid email address" }),
@@ -24,6 +27,9 @@ const inviteMemberSchema = z.object({
 type InviteMember = z.infer<typeof inviteMemberSchema>;
 
 export default function InviteMemberForm() {
+  const { current } = useLoaderData({
+    from: "/o/$slug",
+  });
   const form = useForm<InviteMember>({
     defaultValues: {
       email: "",
@@ -32,8 +38,22 @@ export default function InviteMemberForm() {
     resolver: zodResolver(inviteMemberSchema),
   });
 
-  const onSubmit = (formData: InviteMember) => {
-    
+  const onSubmit = async (formData: InviteMember) => {
+    const { error } = await authClient.organization.inviteMember({
+      email: formData.email,
+      role: formData.role,
+      organizationId: current.id,
+    });
+
+    if (error) {
+      toast.error("Cannot invite member", {
+        description: error.message || "An unexpected error occurred",
+      });
+      return;
+    }
+
+    form.resetField("email");
+    toast.success("Invitation sent successfully");
   };
 
   return (

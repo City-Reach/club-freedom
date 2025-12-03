@@ -1,4 +1,4 @@
-import { Users2 } from "lucide-react";
+import { Settings, Users2 } from "lucide-react";
 import { Link, useParams } from "@tanstack/react-router";
 import {
   SidebarGroup,
@@ -14,6 +14,14 @@ export default function OrganizationSidebarNav() {
   return (
     <SidebarGroup>
       <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton tooltip="Settings" asChild>
+            <Link to="/o/$slug/settings" params={{ slug }}>
+              <Settings />
+              <span>Settings</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Members" asChild>
             <Link to="/o/$slug/members" params={{ slug }}>
