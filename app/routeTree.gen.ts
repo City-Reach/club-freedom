@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignOutRouteImport } from './routes/sign-out'
 import { Route as TestimonialsRouteRouteImport } from './routes/testimonials/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
@@ -25,6 +26,11 @@ import { Route as OSlugSettingsRouteImport } from './routes/o.$slug/settings'
 import { Route as OSlugMembersRouteImport } from './routes/o.$slug/members'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
+const SignOutRoute = SignOutRouteImport.update({
+  id: '/sign-out',
+  path: '/sign-out',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
   '/o/$slug': typeof OSlugRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
@@ -120,7 +127,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
-  '/o/$slug': typeof OSlugRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -138,6 +145,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
   '/o/$slug': typeof OSlugRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
@@ -156,6 +164,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/testimonials'
+    | '/sign-out'
     | '/o/$slug'
     | '/forgot-password'
     | '/reset-password'
@@ -171,7 +180,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
-    | '/o/$slug'
+    | '/sign-out'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/admin'
     | '/testimonials'
+    | '/sign-out'
     | '/o/$slug'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
@@ -206,12 +216,20 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
+  SignOutRoute: typeof SignOutRoute
   OSlugRouteRoute: typeof OSlugRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-out': {
+      id: '/sign-out'
+      path: '/sign-out'
+      fullPath: '/sign-out'
+      preLoaderRoute: typeof SignOutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/testimonials': {
       id: '/testimonials'
       path: '/testimonials'
