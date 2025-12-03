@@ -1,4 +1,5 @@
 import { getCurrentUser } from "@/app/functions/auth";
+import AdminLayout from "@/components/layouts/admin-layout";
 import Navbar from "@/components/navbar";
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "@/lib/auth/auth-server";
@@ -9,10 +10,11 @@ export const Route = createFileRoute("/admin")({
   component: RouteComponent,
   loader: async () => {
     const user = await getCurrentUser();
-    if (user?.role !== "admin") {
-      throw redirect({
-        to: "/",
-      });
+    if (!user) {
+      throw redirect({ to: "/sign-in" });
+    }
+    if (user.role !== "admin") {
+      throw redirect({ to: "/" });
     }
     return {
       user,
@@ -21,11 +23,9 @@ export const Route = createFileRoute("/admin")({
 });
 
 function RouteComponent() {
-  const { user } = Route.useLoaderData();
   return (
-    <>
-      <Navbar user={user} />
+    <AdminLayout>
       <Outlet />
-    </>
+    </AdminLayout>
   );
 }
