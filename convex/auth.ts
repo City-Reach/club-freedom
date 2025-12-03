@@ -9,7 +9,11 @@ import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
 import { sendResetPassword } from "./email";
-import { type PermissionCheck, Role, adminOptions } from "@/lib/auth/permissions";
+import {
+  type PermissionCheck,
+  Role,
+  adminOptions,
+} from "@/lib/auth/permissions";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -52,7 +56,11 @@ export const createAuth = (
       // The Convex plugin is required for Convex compatibility
       convex(),
       admin(adminOptions),
-      organization()
+      organization({
+        allowUserToCreateOrganization: async (user) => {
+          return user?.role === "admin";
+        },
+      }),
     ],
     trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions);
