@@ -11,9 +11,6 @@ export const Route = createFileRoute("/testimonials/")({
         to: "/sign-in",
       });
     }
-    return {
-      userId: context.userId,
-    };
   },
 });
 

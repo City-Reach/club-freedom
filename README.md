@@ -85,8 +85,7 @@ For more details, visit this [guide](https://convex-better-auth.netlify.app/fram
 Whenever you want to make changes to the betterAuth schemas and components, run the following command
 
 ```
-cd convex/betterAuth
-npx @better-auth/cli generate -y --output generatedSchema.ts
+pnpm auth:generate
 ```
 
 Note: the betterAuth tables can be accessed under the betterAuth component in the convex dash board.
@@ -104,11 +103,13 @@ We are using [Resend](https://resend.com) as our email provider. You have to:
    For more information, follow the instructions [here](https://www.convex.dev/components/resend) to set up resend in your convex environment
    We will need an official verified domain if we want our emails to not go to the spam folder.
 
-### Creating Users
+### Creating First Admin User
 
-To access the admin create user page without being an admin, comment out the if condition in app\admin\createuser\page.tsx.
+To create the first admin user, navigate to the `createAdminUser` function in the your Convex dashboard. Click `Run Function`, then fill in the name, email, and password fields, and `Run Mutation`.
 
-You must manually set the user's role in the betterAuth.users table.
+![admin_create](./images/better_auth_create_admin.png)
+
+You can manually set the user's role in the betterAuth.users table.
 
 ![admin](./images/better_auth_admin_set.png)
 
