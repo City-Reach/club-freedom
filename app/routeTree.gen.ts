@@ -128,6 +128,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/sign-out': typeof SignOutRoute
+  '/o/$slug': typeof OSlugRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -181,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/sign-out'
+    | '/o/$slug'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -410,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
+  SignOutRoute: SignOutRoute,
   OSlugRouteRoute: OSlugRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
