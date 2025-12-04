@@ -20,6 +20,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { useLoaderData } from "@tanstack/react-router";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 const inviteMemberSchema = z.object({
   email: z.email({ error: "Invalid email address" }),
@@ -42,6 +43,7 @@ export default function InviteMemberForm({
     },
     resolver: zodResolver(inviteMemberSchema),
   });
+  const queryClient = useQueryClient();
 
   const onSubmit = async (formData: InviteMember) => {
     const { error } = await authClient.organization.inviteMember({
@@ -59,6 +61,9 @@ export default function InviteMemberForm({
 
     form.resetField("email");
     toast.success("Invitation sent successfully");
+    queryClient.invalidateQueries({
+      queryKey: ["invites", current.id],
+    });
   };
 
   return (
