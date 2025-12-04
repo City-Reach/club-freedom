@@ -11,11 +11,11 @@ import {
   customCtx,
   customMutation,
 } from "convex-helpers/server/customFunctions";
-import { GeminiResponse, summarize_text } from "@/gemini/summarize_text";
 import { api } from "./_generated/api";
 import { v } from "convex/values";
-import { transcribeAudio } from "@/lib/transcribe";
+import { transcribeAudio } from "@/lib/ai/transcribe";
 import { r2 } from "./r2";
+import { summarize } from "@/lib/ai/summarize";
 
 // start using Triggers, with table types from schema.ts
 const triggers = new Triggers<DataModel>();
@@ -58,7 +58,7 @@ triggers.register("testimonials", async (ctx, change) => {
 
   if (!mediaId) {
     console.log(
-      `New testimonial inserted with id ${change.id} but no media ID.`
+      `New testimonial inserted with id ${change.id} but no media ID.`,
     );
     return;
   }
@@ -68,7 +68,7 @@ triggers.register("testimonials", async (ctx, change) => {
 
   if (!mediaUrl) {
     console.log(
-      `New testimonial inserted with id ${id} but failed to get media URL for storage ID ${mediaId}.`
+      `New testimonial inserted with id ${id} but failed to get media URL for storage ID ${mediaId}.`,
     );
     return;
   }
@@ -110,7 +110,7 @@ triggers.register("testimonials", async (ctx, change) => {
 export const mutation = customMutation(rawMutation, customCtx(triggers.wrapDB));
 export const internalMutation = customMutation(
   rawInternalMutation,
-  customCtx(triggers.wrapDB)
+  customCtx(triggers.wrapDB),
 );
 
 // Action to handle AssemblyAI transcription (runs in Node.js environment)
@@ -125,7 +125,7 @@ export const transcribe = action({
 
       if (!transcribedText) {
         console.error(
-          `Transcription returned no text for testimonial ${testimonialId}`
+          `Transcription returned no text for testimonial ${testimonialId}`,
         );
         return;
       }
@@ -143,11 +143,11 @@ export const transcribe = action({
       });
 
       console.log(
-        `Transcription completed and summarization scheduled for testimonial ${testimonialId}`
+        `Transcription completed and summarization scheduled for testimonial ${testimonialId}`,
       );
     } catch (error) {
       console.error(
-        `Transcription failed for testimonial ${testimonialId}: ${error}`
+        `Transcription failed for testimonial ${testimonialId}: ${error}`,
       );
       return;
     }
@@ -165,13 +165,10 @@ export const summarizeText = action({
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
-        { id: testimonialId }
+        { id: testimonialId },
       );
       if (testimonial) {
-        const resp: GeminiResponse = await summarize_text(
-          text,
-          testimonial.name
-        );
+        const resp = await summarize(text, testimonial.name);
         await ctx.runMutation(api.testimonials.updateSummaryAndTitle, {
           id: testimonialId,
           summary: resp.summary,
@@ -183,7 +180,7 @@ export const summarizeText = action({
       }
     } catch (error) {
       console.error(
-        `Summarization failed for testimonial ${testimonialId}: ${error}`
+        `Summarization failed for testimonial ${testimonialId}: ${error}`,
       );
       return;
     }
