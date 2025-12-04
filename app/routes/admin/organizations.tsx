@@ -1,4 +1,5 @@
 import NewOrganizationDialog from "@/components/forms/new-organization-form";
+import OrganizationList from "@/components/organization-list";
 import { Button } from "@/components/ui/button";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
@@ -23,6 +24,7 @@ function RouteComponent() {
             </Button>
           }
         />
+        <OrganizationList />
       </div>
     </div>
   );

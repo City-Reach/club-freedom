@@ -15,6 +15,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   trigger: ReactNode;
@@ -38,6 +39,7 @@ type Organization = z.infer<typeof organizationSchema>;
 
 export default function NewOrganizationDialog({ trigger, ...props }: Props) {
   const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
   const form = useForm<Organization>({
     defaultValues: {
       name: "",
@@ -58,8 +60,11 @@ export default function NewOrganizationDialog({ trigger, ...props }: Props) {
       });
       return;
     }
-    toast.success("Organization created successfully");
     setOpen(false);
+    toast.success("Organization created successfully");
+    queryClient.invalidateQueries({
+      queryKey: ["organizations"],
+    });
   };
   return (
     <Dialog {...props} open={open} onOpenChange={setOpen}>
@@ -78,6 +83,11 @@ export default function NewOrganizationDialog({ trigger, ...props }: Props) {
             name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
+                {slug && (
+                  <FieldDescription>
+                    Your URL name will be <strong>{slug}</strong>
+                  </FieldDescription>
+                )}
                 <FieldLabel htmlFor={field.name}>Name</FieldLabel>
                 <Input
                   {...field}
@@ -87,11 +97,6 @@ export default function NewOrganizationDialog({ trigger, ...props }: Props) {
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
-                )}
-                {slug && (
-                  <FieldDescription>
-                    Your URL name will be <strong>{slug}</strong>
-                  </FieldDescription>
                 )}
               </Field>
             )}
