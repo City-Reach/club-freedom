@@ -15,7 +15,7 @@ export const Route = createFileRoute("/admin/organizations")({
 
 function RouteComponent() {
   return (
-    <div className="container mx-auto px-4">
+    <div className="w-full max-w-3xl mx-auto">
       <div className="flex flex-col gap-4">
         <NewOrganizationDialog
           trigger={

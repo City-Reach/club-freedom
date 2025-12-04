@@ -6,7 +6,7 @@ import { signInSchema } from "@/lib/schema";
 import z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 
@@ -14,6 +14,9 @@ type SignIn = z.infer<typeof signInSchema>;
 
 export function SignInForm() {
   const navigate = useNavigate();
+  const { redirect } = useSearch({
+    from: "/_auth/sign-in",
+  });
 
   const form = useForm<SignIn>({
     defaultValues: {
@@ -31,7 +34,7 @@ export function SignInForm() {
       },
       {
         onSuccess() {
-          navigate({ to: "/testimonials" });
+          navigate({ to: redirect || "/sign-in" });
         },
         onError(ctx) {
           toast.error("Failed to sign in", {

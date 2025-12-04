@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
 import { Spinner } from "./ui/spinner";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Link } from "@tanstack/react-router";
 
 export default function OrganizationList() {
   const { isLoading, data, error } = useQuery({
@@ -47,7 +48,11 @@ export default function OrganizationList() {
       {data.map((organization) => (
         <Card key={organization.id} className="py-4">
           <CardHeader>
-            <CardTitle>{organization.name}</CardTitle>
+            <CardTitle>
+              <Link to="/o/$slug" params={{ slug: organization.slug }}>
+                {organization.name}
+              </Link>
+            </CardTitle>
             <CardDescription>{organization.slug}</CardDescription>
           </CardHeader>
         </Card>

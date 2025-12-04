@@ -21,7 +21,7 @@ type Props = {
   trigger: ReactNode;
 } & ComponentProps<typeof Dialog>;
 
-const organizationSchema = z.object({
+export const organizationSchema = z.object({
   name: z
     .string()
     .min(2, {

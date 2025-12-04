@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
+import { query as authQuery } from "./betterAuth/_generated/server";
 
 export const listOrganizations = query({
   handler: async (ctx) => {
@@ -26,5 +27,30 @@ export const getOrganizationBySlug = query({
       },
     });
     return data;
+  },
+});
+
+export const checkInvitationStatus = authQuery({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const invitation = await ctx.db
+      .query("invitation")
+      .withIndex("email", (q) => q.eq("email", args.email))
+      .filter((q) => q.eq(q.field("status"), "pending"))
+      .filter((q) => q.gte(q.field("expiresAt"), Date.now()))
+      .first();
+    return !!invitation;
+  },
+});
+
+export const findInvitationById = authQuery({
+  args: {
+    id: v.id("invitation"),
+  },
+  handler: async (ctx, args) => {
+    const invitation = await ctx.db.get(args.id);
+    return invitation;
   },
 });

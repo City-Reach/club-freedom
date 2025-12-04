@@ -52,6 +52,7 @@ export const createAuth = (
           url,
         });
       },
+      autoSignIn: true,
     },
     plugins: [
       // The Convex plugin is required for Convex compatibility
@@ -66,7 +67,7 @@ export const createAuth = (
           await sendInvite(requireActionCtx(ctx), {
             to: email,
             subject: `You're invited to ${organization.name}`,
-            url: `${siteUrl}/accept-invitation?id=${id}`,
+            url: `${siteUrl}/invitation/id=${id}`,
             organization: organization.name,
           });
         },

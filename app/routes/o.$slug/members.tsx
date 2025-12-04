@@ -1,4 +1,5 @@
 import InviteMemberForm from "@/components/forms/invite-member-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/o/$slug/members")({
@@ -10,11 +11,15 @@ export const Route = createFileRoute("/o/$slug/members")({
 
 function RouteComponent() {
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-col gap-8 py-12">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-bold">Invite member</h2>
-        <InviteMemberForm />
-      </div>
+    <div className="w-full max-w-3xl mx-auto flex flex-col gap-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Invite member</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <InviteMemberForm />
+        </CardContent>
+      </Card>
     </div>
   );
 }

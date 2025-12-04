@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "./ui/dropdown-menu";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { UserIcon, ChevronsUpDown, LogOut } from "lucide-react";
 import {
   SidebarMenu,
@@ -82,9 +82,11 @@ export default function UserNavigation({ user }: Props) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut}>
-              <LogOut />
-              Sign Out
+            <DropdownMenuItem asChild>
+              <Link to="/sign-out">
+                <LogOut />
+                Sign Out
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

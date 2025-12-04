@@ -18,6 +18,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth/auth-client";
 import { useLoaderData } from "@tanstack/react-router";
+import { ComponentProps } from "react";
+import { cn } from "@/lib/utils";
 
 const inviteMemberSchema = z.object({
   email: z.email({ error: "Invalid email address" }),
@@ -26,7 +28,10 @@ const inviteMemberSchema = z.object({
 
 type InviteMember = z.infer<typeof inviteMemberSchema>;
 
-export default function InviteMemberForm() {
+export default function InviteMemberForm({
+  className,
+  ...props
+}: ComponentProps<"form">) {
   const { current } = useLoaderData({
     from: "/o/$slug",
   });
@@ -59,7 +64,7 @@ export default function InviteMemberForm() {
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className="flex flex-wrap gap-4"
+      className={cn(className, "flex flex-wrap gap-4")}
     >
       <Controller
         control={form.control}
