@@ -38,9 +38,6 @@ importers:
       '@convex-dev/resend':
         specifier: ^0.1.13
         version: 0.1.13(convex-helpers@0.1.105(@standard-schema/spec@1.0.0)(convex@1.29.2(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@4.1.12))(convex@1.29.2(react@19.1.0))(react@19.1.0)
-      '@google/genai':
-        specifier: ^1.30.0
-        version: 1.30.0
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.66.1(react@19.1.0))
