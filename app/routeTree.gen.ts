@@ -10,12 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestimonialsRouteRouteImport } from './routes/testimonials/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
-import { Route as AdminCreateUserRouteImport } from './routes/admin/create-user'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
@@ -25,6 +24,11 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -41,20 +45,10 @@ const TestimonialsIndexRoute = TestimonialsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => TestimonialsRouteRoute,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => TestimonialsRouteRoute,
-} as any)
-const AdminCreateUserRoute = AdminCreateUserRouteImport.update({
-  id: '/admin/create-user',
-  path: '/admin/create-user',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/sign-in',
@@ -85,25 +79,23 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/admin/create-user': typeof AdminCreateUserRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/admin': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/admin/create-user': typeof AdminCreateUserRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -112,13 +104,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
+  '/admin': typeof AdminRouteRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
-  '/admin/create-user': typeof AdminCreateUserRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -127,25 +118,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/testimonials'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/admin/create-user'
     | '/testimonials/$id'
-    | '/admin'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/admin/create-user'
     | '/testimonials/$id'
-    | '/admin'
     | '/testimonials'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -153,13 +142,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_auth'
+    | '/admin'
     | '/testimonials'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
-    | '/admin/create-user'
     | '/testimonials/$id'
-    | '/admin/'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -168,9 +156,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRoute
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
-  AdminCreateUserRoute: typeof AdminCreateUserRoute
-  AdminIndexRoute: typeof AdminIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -181,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/testimonials'
       fullPath: '/testimonials'
       preLoaderRoute: typeof TestimonialsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -204,26 +198,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestimonialsIndexRouteImport
       parentRoute: typeof TestimonialsRouteRoute
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/testimonials/$id': {
       id: '/testimonials/$id'
       path: '/$id'
       fullPath: '/testimonials/$id'
       preLoaderRoute: typeof TestimonialsIdRouteImport
       parentRoute: typeof TestimonialsRouteRoute
-    }
-    '/admin/create-user': {
-      id: '/admin/create-user'
-      path: '/admin/create-user'
-      fullPath: '/admin/create-user'
-      preLoaderRoute: typeof AdminCreateUserRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_auth/sign-in': {
       id: '/_auth/sign-in'
@@ -307,9 +287,8 @@ const TestimonialsRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRoute,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
-  AdminCreateUserRoute: AdminCreateUserRoute,
-  AdminIndexRoute: AdminIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

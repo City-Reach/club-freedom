@@ -1,5 +1,4 @@
 import axios from "axios";
-import fs from "fs";
 
 export async function transcribeAudio(upload_url: string): Promise<string> {
   const API_KEY = process.env.ASSEMBLYAI_API_KEY;
@@ -13,7 +12,7 @@ export async function transcribeAudio(upload_url: string): Promise<string> {
         authorization: API_KEY,
         "content-type": "application/json",
       },
-    }
+    },
   );
 
   const transcriptId = transcript_result.data.id;
@@ -25,7 +24,7 @@ export async function transcribeAudio(upload_url: string): Promise<string> {
   while (attempts < maxAttempts) {
     const poll_result = await axios.get(
       `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
-      { headers: { authorization: API_KEY } }
+      { headers: { authorization: API_KEY } },
     );
 
     const status = poll_result.data.status;

@@ -1,5 +1,4 @@
 import { Button } from "./ui/button";
-import { isModOrAdmin } from "@/convex/lib/permissions";
 import Logo from "./logo";
 import UserDropDown from "./user-dropdown";
 import { Link } from "@tanstack/react-router";
@@ -14,7 +13,7 @@ export default function Navbar({ user }: Props) {
     <header className="border-b px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
       <div className="flex items-center gap-4">
         <Logo />
-        {isModOrAdmin(user?.role) && (
+        {user && (
           <div className="flex items-center gap-4">
             <Button variant="link" className="cursor-pointer" asChild>
               <Link to="/testimonials">Testimonials</Link>
@@ -22,9 +21,8 @@ export default function Navbar({ user }: Props) {
           </div>
         )}
       </div>
-      {user ? (
-        <UserDropDown user={user} />
-      ) : (
+      {user && <UserDropDown user={user} />}
+      {user === null && (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>
         </Button>

@@ -1,5 +1,5 @@
 import { api } from "@/convex/_generated/api";
-import { fetchQuery } from "@/lib/auth-server";
+import { fetchQuery } from "@/lib/auth/auth-server";
 import { createServerFn } from "@tanstack/react-start";
 
 export const getCurrentUser = createServerFn().handler(() => {
