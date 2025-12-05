@@ -1,12 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
-import { getCurrentUser } from "../functions/auth";
+import { convexQuery } from "@convex-dev/react-query";
+import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: async () => {
-    const user = await getCurrentUser();
+  loader: async ({ context }) => {
+    const user = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.getCurrentUser, {}),
+    );
     return { user };
   },
 });

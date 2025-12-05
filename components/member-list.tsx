@@ -5,13 +5,12 @@ import { Spinner } from "./ui/spinner";
 import { CircleAlert } from "lucide-react";
 import { Button } from "./ui/button";
 import { Member } from "better-auth/plugins";
-import z from "zod";
 import { User } from "better-auth";
 import { Fragment } from "react";
 import { Separator } from "./ui/separator";
 
 export default function MemberList() {
-  const { current } = useLoaderData({
+  const { current, user } = useLoaderData({
     from: "/o/$slug",
   });
 
