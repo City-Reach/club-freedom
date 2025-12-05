@@ -2,7 +2,7 @@ import OrganizationEditForm from "@/components/forms/organization-edit-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/o/$slug/settings")({
+export const Route = createFileRoute("/o/$slug/_dashboard/settings")({
   component: RouteComponent,
   loader: () => ({
     crumb: "Settings",

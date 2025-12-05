@@ -4,7 +4,7 @@ import MemberList from "@/components/member-list";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/o/$slug/members")({
+export const Route = createFileRoute("/o/$slug/_dashboard/members")({
   component: RouteComponent,
   loader: () => ({
     crumb: "Members",

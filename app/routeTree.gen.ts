@@ -25,10 +25,11 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 import { Route as OSlugRouteRouteImport } from './routes/o.$slug/route'
 import { Route as OSlugIndexRouteImport } from './routes/o.$slug/index'
 import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
-import { Route as OSlugSettingsRouteImport } from './routes/o.$slug/settings'
-import { Route as OSlugMembersRouteImport } from './routes/o.$slug/members'
+import { Route as OSlugDashboardRouteImport } from './routes/o.$slug/_dashboard'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as AuthAcceptInviteInvitationIdRouteImport } from './routes/_auth/accept-invite.$invitationId'
+import { Route as OSlugDashboardSettingsRouteImport } from './routes/o.$slug/_dashboard.settings'
+import { Route as OSlugDashboardMembersRouteImport } from './routes/o.$slug/_dashboard.members'
 
 const SignOutRoute = SignOutRouteImport.update({
   id: '/sign-out',
@@ -110,14 +111,8 @@ const TestimonialsIdMediaDownloadRoute =
     path: '/media-download',
     getParentRoute: () => TestimonialsIdRoute,
   } as any)
-const OSlugSettingsRoute = OSlugSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => OSlugRouteRoute,
-} as any)
-const OSlugMembersRoute = OSlugMembersRouteImport.update({
-  id: '/members',
-  path: '/members',
+const OSlugDashboardRoute = OSlugDashboardRouteImport.update({
+  id: '/_dashboard',
   getParentRoute: () => OSlugRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -131,13 +126,23 @@ const AuthAcceptInviteInvitationIdRoute =
     path: '/accept-invite/$invitationId',
     getParentRoute: () => AuthRouteRoute,
   } as any)
+const OSlugDashboardSettingsRoute = OSlugDashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OSlugDashboardRoute,
+} as any)
+const OSlugDashboardMembersRoute = OSlugDashboardMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => OSlugDashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
   '/sign-out': typeof SignOutRoute
-  '/o/$slug': typeof OSlugRouteRouteWithChildren
+  '/o/$slug': typeof OSlugDashboardRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -148,10 +153,10 @@ export interface FileRoutesByFullPath {
   '/testimonials/': typeof TestimonialsIndexRoute
   '/accept-invite/$invitationId': typeof AuthAcceptInviteInvitationIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/o/$slug/members': typeof OSlugMembersRoute
-  '/o/$slug/settings': typeof OSlugSettingsRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
   '/o/$slug/': typeof OSlugIndexRoute
+  '/o/$slug/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,10 +171,10 @@ export interface FileRoutesByTo {
   '/testimonials': typeof TestimonialsIndexRoute
   '/accept-invite/$invitationId': typeof AuthAcceptInviteInvitationIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/o/$slug/members': typeof OSlugMembersRoute
-  '/o/$slug/settings': typeof OSlugSettingsRoute
-  '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
   '/o/$slug': typeof OSlugIndexRoute
+  '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
+  '/o/$slug/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -189,10 +194,11 @@ export interface FileRoutesById {
   '/testimonials/': typeof TestimonialsIndexRoute
   '/_auth/accept-invite/$invitationId': typeof AuthAcceptInviteInvitationIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/o/$slug/members': typeof OSlugMembersRoute
-  '/o/$slug/settings': typeof OSlugSettingsRoute
+  '/o/$slug/_dashboard': typeof OSlugDashboardRouteWithChildren
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
   '/o/$slug/': typeof OSlugIndexRoute
+  '/o/$slug/_dashboard/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/_dashboard/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -212,10 +218,10 @@ export interface FileRouteTypes {
     | '/testimonials/'
     | '/accept-invite/$invitationId'
     | '/api/auth/$'
-    | '/o/$slug/members'
-    | '/o/$slug/settings'
     | '/testimonials/$id/media-download'
     | '/o/$slug/'
+    | '/o/$slug/members'
+    | '/o/$slug/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,10 +236,10 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/accept-invite/$invitationId'
     | '/api/auth/$'
+    | '/o/$slug'
+    | '/testimonials/$id/media-download'
     | '/o/$slug/members'
     | '/o/$slug/settings'
-    | '/testimonials/$id/media-download'
-    | '/o/$slug'
   id:
     | '__root__'
     | '/'
@@ -252,10 +258,11 @@ export interface FileRouteTypes {
     | '/testimonials/'
     | '/_auth/accept-invite/$invitationId'
     | '/api/auth/$'
-    | '/o/$slug/members'
-    | '/o/$slug/settings'
+    | '/o/$slug/_dashboard'
     | '/testimonials/$id/media-download'
     | '/o/$slug/'
+    | '/o/$slug/_dashboard/members'
+    | '/o/$slug/_dashboard/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -383,18 +390,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestimonialsIdMediaDownloadRouteImport
       parentRoute: typeof TestimonialsIdRoute
     }
-    '/o/$slug/settings': {
-      id: '/o/$slug/settings'
-      path: '/settings'
-      fullPath: '/o/$slug/settings'
-      preLoaderRoute: typeof OSlugSettingsRouteImport
-      parentRoute: typeof OSlugRouteRoute
-    }
-    '/o/$slug/members': {
-      id: '/o/$slug/members'
-      path: '/members'
-      fullPath: '/o/$slug/members'
-      preLoaderRoute: typeof OSlugMembersRouteImport
+    '/o/$slug/_dashboard': {
+      id: '/o/$slug/_dashboard'
+      path: ''
+      fullPath: '/o/$slug'
+      preLoaderRoute: typeof OSlugDashboardRouteImport
       parentRoute: typeof OSlugRouteRoute
     }
     '/api/auth/$': {
@@ -410,6 +410,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/accept-invite/$invitationId'
       preLoaderRoute: typeof AuthAcceptInviteInvitationIdRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/o/$slug/_dashboard/settings': {
+      id: '/o/$slug/_dashboard/settings'
+      path: '/settings'
+      fullPath: '/o/$slug/settings'
+      preLoaderRoute: typeof OSlugDashboardSettingsRouteImport
+      parentRoute: typeof OSlugDashboardRoute
+    }
+    '/o/$slug/_dashboard/members': {
+      id: '/o/$slug/_dashboard/members'
+      path: '/members'
+      fullPath: '/o/$slug/members'
+      preLoaderRoute: typeof OSlugDashboardMembersRouteImport
+      parentRoute: typeof OSlugDashboardRoute
     }
   }
 }
@@ -471,15 +485,27 @@ const TestimonialsRouteRouteChildren: TestimonialsRouteRouteChildren = {
 const TestimonialsRouteRouteWithChildren =
   TestimonialsRouteRoute._addFileChildren(TestimonialsRouteRouteChildren)
 
+interface OSlugDashboardRouteChildren {
+  OSlugDashboardMembersRoute: typeof OSlugDashboardMembersRoute
+  OSlugDashboardSettingsRoute: typeof OSlugDashboardSettingsRoute
+}
+
+const OSlugDashboardRouteChildren: OSlugDashboardRouteChildren = {
+  OSlugDashboardMembersRoute: OSlugDashboardMembersRoute,
+  OSlugDashboardSettingsRoute: OSlugDashboardSettingsRoute,
+}
+
+const OSlugDashboardRouteWithChildren = OSlugDashboardRoute._addFileChildren(
+  OSlugDashboardRouteChildren,
+)
+
 interface OSlugRouteRouteChildren {
-  OSlugMembersRoute: typeof OSlugMembersRoute
-  OSlugSettingsRoute: typeof OSlugSettingsRoute
+  OSlugDashboardRoute: typeof OSlugDashboardRouteWithChildren
   OSlugIndexRoute: typeof OSlugIndexRoute
 }
 
 const OSlugRouteRouteChildren: OSlugRouteRouteChildren = {
-  OSlugMembersRoute: OSlugMembersRoute,
-  OSlugSettingsRoute: OSlugSettingsRoute,
+  OSlugDashboardRoute: OSlugDashboardRouteWithChildren,
   OSlugIndexRoute: OSlugIndexRoute,
 }
 
