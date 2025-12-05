@@ -15,7 +15,6 @@ import {
   adminOptions,
 } from "@/lib/auth/permissions/admin";
 import { organizationOptions } from "@/lib/auth/permissions/organization";
-import { api } from "./betterAuth/_generated/api";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -105,20 +104,7 @@ export const createAuth = (
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
-    try {
-      return await authComponent.getAuthUser(ctx);
-    } catch (err) {
-      // If the call failed because the user is not signed in, return null so client code can handle it.
-      // Be conservative: only swallow unauthenticated errors; rethrow unexpected errors.
-      const message = (err as any)?.message ?? "";
-      if (
-        message.toString().toLowerCase().includes("unauthenticated") ||
-        (err as any)?.name === "Unauthenticated"
-      ) {
-        return null;
-      }
-      throw err;
-    }
+    return await authComponent.getAuthUser(ctx);
   },
 });
 
