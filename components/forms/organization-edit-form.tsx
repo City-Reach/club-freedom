@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate, useRouter } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { organizationSchema } from "./new-organization-form";
@@ -8,6 +8,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
+import { Organization } from "better-auth/plugins";
 
 const editOrganizationSchema = z.intersection(
   organizationSchema,
@@ -16,7 +17,7 @@ const editOrganizationSchema = z.intersection(
       .string()
       .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
         error:
-          "Slug must be lowercase and contain only letters, numbers, and dash (-)",
+          "Slug must be lowercase and contain only letters, numbers, and connected with dash",
       })
       .refine((data) => data !== "admin", {
         error: "Not the valid slug",
@@ -26,17 +27,18 @@ const editOrganizationSchema = z.intersection(
 
 type EditOrganization = z.infer<typeof editOrganizationSchema>;
 
-export default function OrganizationEditForm() {
-  const { current } = useLoaderData({
-    from: "/o/$slug",
-  });
+type Props = {
+  current: Organization;
+};
+
+export default function OrganizationEditForm({ current }: Props) {
   const router = useRouter();
   const navigate = useNavigate();
 
   const form = useForm<EditOrganization>({
     defaultValues: {
-      name: current.name,
-      slug: current.slug,
+      name: current.name || "",
+      slug: current.slug || "",
     },
     resolver: zodResolver(editOrganizationSchema),
   });
@@ -45,8 +47,8 @@ export default function OrganizationEditForm() {
     const { name, slug } = formData;
     const { error } = await authClient.organization.update({
       data: {
-        name: name === current.name ? undefined : name,
-        slug: slug === current.slug ? undefined : slug,
+        name: name === current?.name ? undefined : name,
+        slug: slug === current?.slug ? undefined : slug,
       },
       organizationId: current.id,
     });
@@ -59,11 +61,9 @@ export default function OrganizationEditForm() {
     }
 
     toast.success("Organization updated successfully");
-    await router
-      .invalidate({
-        filter: (route) => route.pathname.startsWith("/o"),
-      })
-      .then(async () => {});
+    await router.invalidate({
+      filter: (route) => route.pathname.startsWith("/o"),
+    });
     await navigate({ to: "/o/$slug/settings", params: { slug } });
   };
 
@@ -104,7 +104,7 @@ export default function OrganizationEditForm() {
       <Button
         className="place-self-start"
         type="submit"
-        disabled={form.formState.isSubmitting || !form.formState.isDirty}
+        disabled={form.formState.isSubmitting}
       >
         Save
       </Button>
