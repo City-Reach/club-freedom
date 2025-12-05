@@ -1490,6 +1490,29 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
       >;
     };
     auth: {
+      checkEmailExists: FunctionReference<
+        "query",
+        "internal",
+        { email: string },
+        boolean,
+        Name
+      >;
+      findInvitationById: FunctionReference<
+        "query",
+        "internal",
+        { invitationId: string },
+        null | {
+          _creationTime: number;
+          _id: string;
+          email: string;
+          expiresAt: number;
+          inviterId: string;
+          organizationId: string;
+          role?: null | string;
+          status: string;
+        },
+        Name
+      >;
       getUser: FunctionReference<
         "query",
         "internal",

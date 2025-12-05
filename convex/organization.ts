@@ -2,6 +2,9 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
 import { query as authQuery } from "./betterAuth/_generated/server";
+import { components } from "./_generated/api";
+import { Invitation } from "better-auth/plugins";
+import { Id } from "./betterAuth/_generated/dataModel";
 
 export const listOrganizations = query({
   handler: async (ctx) => {
@@ -30,27 +33,17 @@ export const getOrganizationBySlug = query({
   },
 });
 
-export const checkInvitationStatus = authQuery({
+export const findInvitationById = query({
   args: {
-    email: v.string(),
+    id: v.string(),
   },
   handler: async (ctx, args) => {
-    const invitation = await ctx.db
-      .query("invitation")
-      .withIndex("email", (q) => q.eq("email", args.email))
-      .filter((q) => q.eq(q.field("status"), "pending"))
-      .filter((q) => q.gte(q.field("expiresAt"), Date.now()))
-      .first();
-    return !!invitation;
-  },
-});
-
-export const findInvitationById = authQuery({
-  args: {
-    id: v.id("invitation"),
-  },
-  handler: async (ctx, args) => {
-    const invitation = await ctx.db.get(args.id);
+    const invitation = await ctx.runQuery(
+      components.betterAuth.auth.findInvitationById,
+      {
+        invitationId: args.id,
+      },
+    );
     return invitation;
   },
 });

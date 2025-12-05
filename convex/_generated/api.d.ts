@@ -1737,6 +1737,27 @@ export declare const components: {
       >;
     };
     auth: {
+      checkEmailExists: FunctionReference<
+        "query",
+        "internal",
+        { email: string },
+        boolean
+      >;
+      findInvitationById: FunctionReference<
+        "query",
+        "internal",
+        { invitationId: string },
+        null | {
+          _creationTime: number;
+          _id: string;
+          email: string;
+          expiresAt: number;
+          inviterId: string;
+          organizationId: string;
+          role?: null | string;
+          status: string;
+        }
+      >;
       getUser: FunctionReference<
         "query",
         "internal",

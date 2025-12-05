@@ -1,6 +1,9 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
-import { requireActionCtx } from "@convex-dev/better-auth/utils";
+import {
+  requireActionCtx,
+  requireQueryCtx,
+} from "@convex-dev/better-auth/utils";
 import { betterAuth, BetterAuthOptions } from "better-auth";
 import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
@@ -15,6 +18,7 @@ import {
   adminOptions,
 } from "@/lib/auth/permissions/admin";
 import { organizationOptions } from "@/lib/auth/permissions/organization";
+import { api } from "./betterAuth/_generated/api";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -25,12 +29,12 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
       schema: authSchema,
     },
     verbose: false,
-  },
+  }
 );
 
 export const createAuth = (
   ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false },
+  { optionsOnly } = { optionsOnly: false }
 ) => {
   const siteUrl = process.env.SITE_URL!;
 
@@ -67,12 +71,34 @@ export const createAuth = (
           await sendInvite(requireActionCtx(ctx), {
             to: email,
             subject: `You're invited to ${organization.name}`,
-            url: `${siteUrl}/invitation/id=${id}`,
+            url: `${siteUrl}/accept-invite?id=${id}&email=${encodeURIComponent(email)}`,
             organization: organization.name,
           });
         },
       }),
     ],
+    databaseHooks: {
+      user: {
+        create: {
+          before: async (user, context) => {
+            const invitationId = context?.headers?.get("x-invitation-id");
+            if (!invitationId) {
+              return false;
+            }
+            const invitation = await requireActionCtx(ctx).runQuery(
+              components.betterAuth.auth.findInvitationById,
+              {
+                invitationId,
+              }
+            );
+            if (!invitation || invitation.email !== user.email) {
+              return false;
+            }
+            return { data: user };
+          },
+        },
+      },
+    },
     trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions);
 };
@@ -109,13 +135,22 @@ export const getUserById = query({
   },
 });
 
+export const checkEmailExists = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return ctx.runQuery(components.betterAuth.auth.checkEmailExists, {
+      email: args.email,
+    });
+  },
+});
+
 export const checkUserPermissions = query({
   handler: async (
     ctx,
     args: {
       role?: Role;
       permissions?: PermissionCheck;
-    },
+    }
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
     try {
