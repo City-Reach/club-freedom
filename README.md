@@ -283,7 +283,7 @@ TURNSTILE_SECRET_KEY
 TURNSTILE_VERIFY_ENDPOINT
 VITE_TURNSTILE_SITE_KEY
 
-## PostHog
+## Configure Posthog and upload source maps
 
 Add the following environment variables to your .env.local file:
 
