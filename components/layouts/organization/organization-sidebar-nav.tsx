@@ -6,22 +6,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { ComponentProps } from "react";
 
-export default function OrganizationSidebarNav() {
+export default function OrganizationSidebarNav(
+  props: ComponentProps<typeof SidebarGroup>,
+) {
   const { slug } = useParams({
     from: "/o/$slug",
   });
   return (
-    <SidebarGroup>
+    <SidebarGroup {...props}>
       <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Settings" asChild>
-            <Link to="/o/$slug/settings" params={{ slug }}>
-              <Settings />
-              <span>Settings</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Members" asChild>
             <Link to="/o/$slug/members" params={{ slug }}>

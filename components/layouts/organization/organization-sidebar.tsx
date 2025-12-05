@@ -9,6 +9,7 @@ import { useLoaderData } from "@tanstack/react-router";
 import UserNavigation from "@/components/user-navigation";
 import OrganizationSidebarNav from "./organization-sidebar-nav";
 import OrganizationSwitcher from "./organization-switcher";
+import OrganizationSidebarSecondaryNav from "./organization-sidebar-secondary-nav";
 
 export default function OrganizationSidebar({
   ...props
@@ -23,6 +24,7 @@ export default function OrganizationSidebar({
       </SidebarHeader>
       <SidebarContent>
         <OrganizationSidebarNav />
+        <OrganizationSidebarSecondaryNav className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <UserNavigation user={user} />
