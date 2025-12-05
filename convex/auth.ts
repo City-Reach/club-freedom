@@ -1,9 +1,6 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
-import {
-  requireActionCtx,
-  requireQueryCtx,
-} from "@convex-dev/better-auth/utils";
+import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { betterAuth, BetterAuthOptions } from "better-auth";
 import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
@@ -29,12 +26,12 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
       schema: authSchema,
     },
     verbose: false,
-  }
+  },
 );
 
 export const createAuth = (
   ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false }
+  { optionsOnly } = { optionsOnly: false },
 ) => {
   const siteUrl = process.env.SITE_URL!;
 
@@ -89,7 +86,7 @@ export const createAuth = (
               components.betterAuth.auth.findInvitationById,
               {
                 invitationId,
-              }
+              },
             );
             if (!invitation || invitation.email !== user.email) {
               return false;
@@ -150,7 +147,7 @@ export const checkUserPermissions = query({
     args: {
       role?: Role;
       permissions?: PermissionCheck;
-    }
+    },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
     try {

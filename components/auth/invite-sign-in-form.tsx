@@ -1,52 +1,63 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { authClient } from "@/lib/auth/auth-client";
 import { signInSchema } from "@/lib/schema";
 import z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
+import { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { toast } from "sonner";
 
-type SignIn = z.infer<typeof signInSchema>;
+const inviteSignIn = signInSchema.pick({
+  password: true,
+});
+
+type InviteSignIn = z.infer<typeof inviteSignIn>;
 
 type Props = {
-  defaultValues?: Partial<SignIn>;
+  invitation: Doc<"invitation">;
 };
 
-export function SignInForm({ defaultValues }: Props) {
+export function InviteSignInForm({ invitation }: Props) {
   const navigate = useNavigate();
-  const { redirect } = useSearch({
-    from: "/_auth/sign-in",
-  });
-
-  const form = useForm<SignIn>({
+  const form = useForm<InviteSignIn>({
     defaultValues: {
-      email: defaultValues?.email || "",
-      password: defaultValues?.password || "",
+      password: "",
     },
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(inviteSignIn),
   });
 
-  const onSubmit = async (data: SignIn) => {
-    await authClient.signIn.email(
-      {
-        email: data.email,
-        password: data.password,
-      },
-      {
-        onSuccess() {
-          navigate({ to: redirect || "/sign-in" });
-        },
-        onError(ctx) {
-          toast.error("Failed to sign in", {
-            description: ctx.error.message,
-          });
-        },
-      },
-    );
+  const onSubmit = async (data: InviteSignIn) => {
+    const authenticated = await authClient.signIn.email({
+      email: invitation.email,
+      password: data.password,
+    });
+
+    if (authenticated.error) {
+      toast.error("Failed to sign in", {
+        description: authenticated.error.message,
+      });
+      return;
+    }
+
+    const acceptInvite = await authClient.organization.acceptInvitation({
+      invitationId: invitation._id,
+    });
+
+    if (acceptInvite.error) {
+      toast.error("Cannot accept invitation", {
+        description: acceptInvite.error.message,
+      });
+      return;
+    }
+
+    toast.success("Invitation accepted");
+    await navigate({
+      to: "/",
+    });
   };
 
   return (
@@ -54,22 +65,10 @@ export function SignInForm({ defaultValues }: Props) {
       onSubmit={form.handleSubmit(onSubmit)}
       className="flex flex-col gap-4"
     >
-      <Controller
-        control={form.control}
-        name="email"
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-            <Input
-              {...field}
-              placeholder="name@example.com"
-              id={field.name}
-              aria-invalid={fieldState.invalid}
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
+      <Field>
+        <FieldLabel htmlFor="email">Email</FieldLabel>
+        <Input readOnly value={invitation.email} id="email" />
+      </Field>
       <Controller
         control={form.control}
         name="password"
@@ -95,7 +94,7 @@ export function SignInForm({ defaultValues }: Props) {
         )}
       />
       <Button type="submit" disabled={form.formState.isSubmitting}>
-        {form.formState.isSubmitting ? <Spinner /> : "Sign in"}
+        {form.formState.isSubmitting ? <Spinner /> : "Accept invite"}
       </Button>
     </form>
   );
