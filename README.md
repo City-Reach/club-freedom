@@ -54,17 +54,25 @@ pnpm install
 
 4. Set up local domains and HTTPS (see Local Domains and HTTPS Setup section below)
 
-5. Run the development server:
+5. Run the development
 
-```bash
-pnpm dev
-```
-
-6. In a separate terminal, start the Convex development server:
-
-```bash
-pnpm convex dev
-```
+  You can run the vite server for frontend and convex server for backend by running each command in a separate terminal
+  
+  ```bash
+  # Run vite vite server
+  pnpm vite dev
+  
+  # Run convex sync engine
+  pnpm convex dev
+  ```
+  
+  Or you can run both concurrently in a single terminal
+  
+  ```bash
+  pnpm dev
+  ```
+  
+  
 
 Open [https://localhost:3000](https://localhost:3000) with your browser to see the result.
 
