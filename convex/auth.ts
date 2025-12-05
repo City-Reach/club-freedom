@@ -68,7 +68,7 @@ export const createAuth = (
           await sendInvite(requireActionCtx(ctx), {
             to: email,
             subject: `You're invited to ${organization.name}`,
-            url: `${siteUrl}/accept-invite?id=${id}&email=${encodeURIComponent(email)}`,
+            url: `${siteUrl}/invite/${IdleDeadline}`,
             organization: organization.name,
           });
         },
