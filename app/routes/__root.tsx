@@ -20,6 +20,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getCookie, getRequest } from "@tanstack/react-start/server";
 import { ConvexReactClient } from "convex/react";
 import appCss from "../globals.css?url";
+import { PostHogProvider } from '@posthog/react'
 
 const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
   const { createAuth } = await import("../../convex/auth");
@@ -65,18 +66,25 @@ export const Route = createRootRouteWithContext<{
   notFoundComponent: NotFound,
 });
 
+const postHogOptions = {
+  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+  defaults: '2025-11-30',
+} as const
+
 function RootComponent() {
   const context = useRouteContext({ from: Route.id });
   return (
-    <ConvexBetterAuthProvider
-      client={context.convexClient}
-      authClient={authClient}
-    >
-      <RootDocument>
-        <Outlet />
-        <Toaster richColors position="bottom-center" />
-      </RootDocument>
-    </ConvexBetterAuthProvider>
+    <PostHogProvider apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY} options={postHogOptions}>
+      <ConvexBetterAuthProvider
+        client={context.convexClient}
+        authClient={authClient}
+      >
+        <RootDocument>
+          <Outlet />
+          <Toaster richColors position="bottom-center" />
+        </RootDocument>
+      </ConvexBetterAuthProvider>
+    </PostHogProvider>
   );
 }
 

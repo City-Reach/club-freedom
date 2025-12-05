@@ -46,6 +46,7 @@ pnpm install
 ```
 
 3. Set up environment variables. Most of it is just creating a new account and passing over your personal keys:
+
    1. Setting up Better Auth...
    2. Setting up Resend
    3. Setup R2 for Convex
@@ -281,3 +282,12 @@ Ensure the following environment variables are configured in your .env.local fil
 TURNSTILE_SECRET_KEY
 TURNSTILE_VERIFY_ENDPOINT
 VITE_TURNSTILE_SITE_KEY
+
+## PostHog
+
+Add the following environment variables to your .env.local file:
+
+VITE_PUBLIC_POSTHOG_KEY
+VITE_PUBLIC_POSTHOG_HOST
+
+Instructions for uploading source maps can be found at [here](https://posthog.com/docs/error-tracking/upload-source-maps)
