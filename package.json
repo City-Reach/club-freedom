@@ -69,6 +69,7 @@
     "@fontsource-variable/open-sans": "^5.2.7",
     "@fontsource-variable/roboto-mono": "^5.2.8",
     "@fontsource/open-sans": "^5.2.7",
+    "@posthog/cli": "^0.5.16",
     "@tailwindcss/vite": "^4.1.17",
     "@tanstack/router-cli": "^1.136.11",
     "@types/mime-types": "^3.0.1",
