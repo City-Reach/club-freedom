@@ -1,5 +1,5 @@
 import { authClient } from "@/lib/auth/auth-client";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { Spinner } from "./ui/spinner";
 import { CircleAlert } from "lucide-react";
@@ -8,6 +8,19 @@ import { Member } from "better-auth/plugins";
 import { User } from "better-auth";
 import { Fragment } from "react";
 import { Separator } from "./ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import {
+  ALL_ROLES,
+  displayRole,
+  Role,
+} from "@/lib/auth/permissions/organization";
+import { toast } from "sonner";
 
 export default function MemberList() {
   const { current, user } = useLoaderData({
@@ -68,7 +81,10 @@ export default function MemberList() {
     <div className="flex flex-col gap-2">
       {data?.members.map((member, index) => (
         <Fragment key={member.id}>
-          <MemberItemList member={member} />
+          <MemberItemList
+            member={member}
+            isCurrentUser={member.userId === user._id}
+          />
           {index + 1 < data.members.length && <Separator />}
         </Fragment>
       ))}
@@ -78,15 +94,63 @@ export default function MemberList() {
 
 type MemberItemListProps = {
   member: Member & { user: Pick<User, "name" | "email"> };
+  isCurrentUser: boolean;
 };
 
-function MemberItemList({ member }: MemberItemListProps) {
+function MemberItemList({ member, isCurrentUser }: MemberItemListProps) {
+  const queryClient = useQueryClient();
+  const { mutateAsync: updateRole, isPending } = useMutation({
+    mutationFn: async (role: Role) => {
+      const { error } = await authClient.organization.updateMemberRole({
+        memberId: member.id,
+        role,
+        organizationId: member.organizationId,
+      });
+      if (error) {
+        throw error;
+      }
+    },
+    onSuccess: async () => {
+      toast.success("Member role updated");
+      await queryClient.invalidateQueries({
+        queryKey: ["members", member.organizationId],
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to update member role", {
+        description: error.message,
+      });
+    },
+  });
+
   return (
     <div className="flex items-center">
       <div className="grow">
-        <p className="font-semibold">{member.user.name}</p>
+        <p className="inline-flex items-center font-semibold gap-1">
+          {member.user.name} {isPending && <Spinner />}
+        </p>
         <p className="text-sm">{member.user.email}</p>
       </div>
+      {isCurrentUser ? (
+        <span>{displayRole(member.role as Role)}</span>
+      ) : (
+        <Select
+          value={member.role}
+          disabled={isPending}
+          onValueChange={updateRole}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {ALL_ROLES.map((role) => (
+              <SelectItem key={role} value={role}>
+                {displayRole(role)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
     </div>
   );
 }
