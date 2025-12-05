@@ -1,8 +1,13 @@
 import { InviteSignInForm } from "@/components/auth/invite-sign-in-form";
 import { InviteSignUpForm } from "@/components/auth/invite-sign-up-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/betterAuth/_generated/dataModel";
 import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
@@ -25,27 +30,18 @@ export const Route = createFileRoute("/_auth/accept-invite/$invitationId")({
 });
 
 function RouteComponent() {
-  const {
-    invitation: { _id, ...rest },
-    userExists,
-  } = Route.useLoaderData();
-
-  const invitation = {
-    _id: _id as Id<"invitation">,
-    ...rest,
-  };
+  const { invitation, userExists } = Route.useLoaderData();
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-xl">Accept invite</CardTitle>
+        <CardDescription>
+          You're about to join <strong>{invitation.organization.name}</strong>
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        {userExists ? (
-          <InviteSignInForm invitation={invitation} />
-        ) : (
-          <InviteSignUpForm invitation={invitation} />
-        )}
+        {userExists ? <InviteSignInForm /> : <InviteSignUpForm />}
       </CardContent>
     </Card>
   );

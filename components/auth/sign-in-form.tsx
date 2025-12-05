@@ -12,20 +12,13 @@ import { Spinner } from "../ui/spinner";
 
 type SignIn = z.infer<typeof signInSchema>;
 
-type Props = {
-  defaultValues?: Partial<SignIn>;
-};
-
-export function SignInForm({ defaultValues }: Props) {
+export function SignInForm() {
   const navigate = useNavigate();
-  const { redirect } = useSearch({
-    from: "/_auth/sign-in",
-  });
 
   const form = useForm<SignIn>({
     defaultValues: {
-      email: defaultValues?.email || "",
-      password: defaultValues?.password || "",
+      email: "",
+      password: "",
     },
     resolver: zodResolver(signInSchema),
   });
@@ -38,7 +31,7 @@ export function SignInForm({ defaultValues }: Props) {
       },
       {
         onSuccess() {
-          navigate({ to: redirect || "/sign-in" });
+          navigate({ to: "/sign-in" });
         },
         onError(ctx) {
           toast.error("Failed to sign in", {

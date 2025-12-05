@@ -5,7 +5,7 @@ import { signInSchema } from "@/lib/schema";
 import z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useLoaderData, useNavigate } from "@tanstack/react-router";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 import { Doc } from "@/convex/betterAuth/_generated/dataModel";
@@ -17,12 +17,12 @@ const inviteSignIn = signInSchema.pick({
 
 type InviteSignIn = z.infer<typeof inviteSignIn>;
 
-type Props = {
-  invitation: Doc<"invitation">;
-};
-
-export function InviteSignInForm({ invitation }: Props) {
+export function InviteSignInForm() {
   const navigate = useNavigate();
+  const { invitation } = useLoaderData({
+    from: "/_auth/accept-invite/$invitationId",
+  });
+
   const form = useForm<InviteSignIn>({
     defaultValues: {
       password: "",
@@ -56,7 +56,8 @@ export function InviteSignInForm({ invitation }: Props) {
 
     toast.success("Invitation accepted");
     await navigate({
-      to: "/",
+      to: "/o/$slug",
+      params: { slug: invitation.organization.slug },
     });
   };
 
@@ -67,7 +68,12 @@ export function InviteSignInForm({ invitation }: Props) {
     >
       <Field>
         <FieldLabel htmlFor="email">Email</FieldLabel>
-        <Input readOnly value={invitation.email} id="email" />
+        <Input
+          readOnly
+          className="read-only:bg-muted"
+          value={invitation.email}
+          id="email"
+        />
       </Field>
       <Controller
         control={form.control}

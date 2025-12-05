@@ -33,13 +33,34 @@ export const checkEmailExists = query({
 
 export const findInvitationById = query({
   args: { invitationId: v.string() },
-  returns: v.union(v.null(), doc(schema, "invitation")),
+  returns: v.union(
+    v.null(),
+    doc(schema, "invitation").extend({
+      organization: doc(schema, "organization"),
+    }),
+  ),
   handler: async (ctx, args) => {
-    return ctx.db
+    const invitation = await ctx.db
       .query("invitation")
       .withIndex("by_id", (q) =>
         q.eq("_id", args.invitationId as Id<"invitation">),
       )
       .first();
+    if (!invitation) {
+      return null;
+    }
+    const organization = await ctx.db
+      .query("organization")
+      .withIndex("by_id", (q) =>
+        q.eq("_id", invitation.organizationId as Id<"organization">),
+      )
+      .first();
+    if (!organization) {
+      return null;
+    }
+    return {
+      ...invitation,
+      organization,
+    };
   },
 });

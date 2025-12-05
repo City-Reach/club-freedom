@@ -1,10 +1,7 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
-import { query as authQuery } from "./betterAuth/_generated/server";
 import { components } from "./_generated/api";
-import { Invitation } from "better-auth/plugins";
-import { Id } from "./betterAuth/_generated/dataModel";
 
 export const listOrganizations = query({
   handler: async (ctx) => {

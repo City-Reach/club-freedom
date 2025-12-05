@@ -6,10 +6,9 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { passwordResetSchema } from "./password-reset-form";
 import { toast } from "sonner";
-import { useNavigate } from "@tanstack/react-router";
+import { useLoaderData, useNavigate } from "@tanstack/react-router";
 
 const inviteSignUp = z.intersection(
   passwordResetSchema,
@@ -17,15 +16,16 @@ const inviteSignUp = z.intersection(
     name: z
       .string()
       .min(2, { error: "Name must be at least 2 characters long" }),
-  }),
+  })
 );
 
 type InviteSignUp = z.infer<typeof inviteSignUp>;
 
-type Props = { invitation: Doc<"invitation"> };
-
-export function InviteSignUpForm({ invitation }: Props) {
+export function InviteSignUpForm() {
   const navigate = useNavigate();
+  const { invitation } = useLoaderData({
+    from: "/_auth/accept-invite/$invitationId",
+  });
   const form = useForm<InviteSignUp>({
     defaultValues: {
       name: "",
@@ -46,7 +46,7 @@ export function InviteSignUpForm({ invitation }: Props) {
         headers: {
           "x-invitation-id": invitation._id,
         },
-      },
+      }
     );
 
     if (newUser.error) {
@@ -82,7 +82,7 @@ export function InviteSignUpForm({ invitation }: Props) {
         <FieldLabel htmlFor="email">Email</FieldLabel>
         <Input
           readOnly
-          className="bg-muted"
+          className="read-only:bg-muted"
           value={invitation.email}
           id="email"
         />

@@ -1753,6 +1753,15 @@ export declare const components: {
           email: string;
           expiresAt: number;
           inviterId: string;
+          organization: {
+            _creationTime: number;
+            _id: string;
+            createdAt: number;
+            logo?: null | string;
+            metadata?: null | string;
+            name: string;
+            slug: string;
+          };
           organizationId: string;
           role?: null | string;
           status: string;
