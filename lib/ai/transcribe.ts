@@ -1,47 +1,36 @@
-import axios from "axios";
+import mimeType from "mime-types";
+import OpenAI from "openai";
 
-export async function transcribeAudio(upload_url: string): Promise<string> {
-  const API_KEY = process.env.ASSEMBLYAI_API_KEY;
+// https://platform.openai.com/docs/guides/speech-to-text
+const SUPPORT_FORMATS = ["mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"];
 
-  //request the transcription
-  const transcript_result = await axios.post(
-    "https://api.assemblyai.com/v2/transcript",
-    { audio_url: upload_url },
-    {
-      headers: {
-        authorization: API_KEY,
-        "content-type": "application/json",
-      },
+export async function transcribeAudio(upload_url: string) {
+  const response = await fetch(upload_url);
+  const blob = await response.blob();
+
+  const mimetype = blob.type;
+  const extension =
+    SUPPORT_FORMATS.find((ext) => ext === mimeType.extension(mimetype)) ||
+    "webm";
+
+  const audioFile = new File([blob], `audio.${extension}`, {
+    type: mimetype,
+  });
+
+  const client = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/groq`,
+    defaultHeaders: {
+      "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
     },
-  );
+  });
 
-  const transcriptId = transcript_result.data.id;
+  const transcription = await client.audio.transcriptions.create({
+    file: audioFile,
+    model: "whisper-large-v3",
+  });
 
-  // poll
-  let attempts = 0;
-  const maxAttempts = 60;
+  console.log("transcript", transcription.text);
 
-  while (attempts < maxAttempts) {
-    const poll_result = await axios.get(
-      `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
-      { headers: { authorization: API_KEY } },
-    );
-
-    const status = poll_result.data.status;
-
-    //return transcripted text as string
-    if (status === "completed") {
-      return poll_result.data.text as string;
-    }
-
-    //if error occurs, throw error
-    else if (status === "error") {
-      throw new Error("Transcription failed: " + poll_result.data.error);
-    }
-
-    //wait before polling again
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    attempts++;
-  }
-  throw new Error("Transcription did not complete within the expected time.");
+  return transcription.text;
 }

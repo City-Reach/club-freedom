@@ -74,7 +74,7 @@ triggers.register("testimonials", async (ctx, change) => {
   }
 
   // Schedule transcription as an action (runs in Node.js environment)
-  await ctx.scheduler.runAfter(0, api.functions.transcribe, {
+  await ctx.scheduler.runAfter(0, api.ai.transcribe, {
     testimonialId: id,
     mediaUrl,
   });
@@ -112,47 +112,6 @@ export const internalMutation = customMutation(
   rawInternalMutation,
   customCtx(triggers.wrapDB),
 );
-
-// Action to handle AssemblyAI transcription (runs in Node.js environment)
-export const transcribe = action({
-  args: {
-    testimonialId: v.id("testimonials"),
-    mediaUrl: v.string(),
-  },
-  handler: async (ctx, { testimonialId, mediaUrl }) => {
-    try {
-      const transcribedText = await transcribeAudio(mediaUrl);
-
-      if (!transcribedText) {
-        console.error(
-          `Transcription returned no text for testimonial ${testimonialId}`,
-        );
-        return;
-      }
-
-      // Update the testimonial with the transcribed text
-      await ctx.runMutation(api.testimonials.updateTranscription, {
-        id: testimonialId,
-        text: transcribedText,
-      });
-
-      // Schedule summarization as an action (runs in Node.js environment)
-      await ctx.scheduler.runAfter(0, api.functions.summarizeText, {
-        testimonialId: testimonialId,
-        text: transcribedText,
-      });
-
-      console.log(
-        `Transcription completed and summarization scheduled for testimonial ${testimonialId}`,
-      );
-    } catch (error) {
-      console.error(
-        `Transcription failed for testimonial ${testimonialId}: ${error}`,
-      );
-      return;
-    }
-  },
-});
 
 // Action to handle Gemini text summarization (runs in Node.js environment)
 export const summarizeText = action({
