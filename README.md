@@ -322,5 +322,6 @@ Instructions for uploading source maps can be found at [here](https://posthog.co
    POSTHOG_CLI_HOST: The PostHog host to connect to [default: https://us.posthog.com]
    POSTHOG_CLI_ENV_ID: PostHog project ID
    POSTHOG_CLI_TOKEN: Personal API key with error tracking write and organization read scopes
-3. posthog-cli sourcemap inject --directory ./path/to/assets --project my-app --version 1.0.0
-4. posthog-cli sourcemap upload --directory ./path/to/assets
+3. posthog-cli login
+4. posthog-cli sourcemap inject --directory ./path/to/assets --project my-app --version 1.0.0
+5. posthog-cli sourcemap upload --directory ./path/to/assets
