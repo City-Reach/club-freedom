@@ -1,46 +1,33 @@
-import axios from "axios";
+import mimeType from "mime-types";
 import OpenAI from "openai";
-import Groq from "groq-sdk";
 
-export async function transcribeAudio(upload_url: string): Promise<string> {
-    let buffer: Buffer;
-    try {
-        const readStream = await axios.get(upload_url, {
-            responseType: "arraybuffer",
-        });
-        buffer = Buffer.from(readStream.data);
+// https://platform.openai.com/docs/guides/speech-to-text
+const SUPPORT_FORMATS = ["mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"];
 
-        // @ts-ignore
-        const audioFile = new File([buffer as Uint8Array], "audio.mp3", {
-            type: "audio/mpeg"
-        });
+export async function transcribeAudio(upload_url: string) {
+  const response = await fetch(upload_url);
+  const blob = await response.blob();
 
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-        const transcription = await groq.audio.transcriptions.create({
-            file: audioFile,
-            model: "whisper-large-v3",
-            prompt: "Specify context or spelling", // Optional
-            response_format: "verbose_json", // Optional
-            timestamp_granularities: ["word", "segment"], // Optional
-            language: "en", // Optional
-            temperature: 0.0, // Optional
-        });
+  const mimetype = blob.type;
+  const extension =
+    SUPPORT_FORMATS.find((ext) => ext === mimeType.extension(mimetype)) ||
+    "webm";
 
-        // const client = new OpenAI({
-        //     apiKey: process.env.GROQ_API_KEY,
-        //     baseURL: "https://api.groq.com/openai/v1"
-        // });
-        //
-        // const transcription = await client.audio.transcriptions.create({
-        //     file: file,
-        //     model: "whisper-large-v3",
-        // });
+  const audioFile = new File([blob], `audio.${extension}`, {
+    type: mimetype,
+  });
 
-        console.log("transcript", transcription.text);
+  const client = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: "https://api.groq.com/openai/v1",
+  });
 
-        return transcription.text
-    } catch (error) {
-        console.error(error);
-        throw new Error("Transcription did not complete within the expected time.");
-    }
+  const transcription = await client.audio.transcriptions.create({
+    file: audioFile,
+    model: "whisper-large-v3",
+  });
+
+  console.log("transcript", transcription.text);
+
+  return transcription.text;
 }
