@@ -1,47 +1,36 @@
 import axios from "axios";
+import OpenAI from "openai";
+import Groq from "groq-sdk";
+import * as fs from "node:fs";
+import {Readable} from "node:stream";
 
 export async function transcribeAudio(upload_url: string): Promise<string> {
-  const API_KEY = process.env.ASSEMBLYAI_API_KEY;
+    let buffer: Buffer;
+    try {
+        const readStream = await axios.get(upload_url, {
+            responseType: "arraybuffer",
+        });
+        buffer = Buffer.from(readStream.data);
 
-  //request the transcription
-  const transcript_result = await axios.post(
-    "https://api.assemblyai.com/v2/transcript",
-    { audio_url: upload_url },
-    {
-      headers: {
-        authorization: API_KEY,
-        "content-type": "application/json",
-      },
-    },
-  );
+        // @ts-ignore
+        const file = new File([buffer as Uint8Array], "audio.mp3", {
+            type: "audio/mpeg"
+        });
 
-  const transcriptId = transcript_result.data.id;
+        const client = new OpenAI({
+            apiKey: process.env.GROQ_API_KEY,
+            baseURL: "https://api.groq.com/openai/v1"
+        });
 
-  // poll
-  let attempts = 0;
-  const maxAttempts = 60;
+        const transcription = await client.audio.transcriptions.create({
+            file: file,
+            model: "whisper-large-v3",
+        });
+        console.log("transcript", transcription.text);
 
-  while (attempts < maxAttempts) {
-    const poll_result = await axios.get(
-      `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
-      { headers: { authorization: API_KEY } },
-    );
-
-    const status = poll_result.data.status;
-
-    //return transcripted text as string
-    if (status === "completed") {
-      return poll_result.data.text as string;
+        return transcription.text
+    } catch (error) {
+        console.error(error);
+        throw new Error("Transcription did not complete within the expected time.");
     }
-
-    //if error occurs, throw error
-    else if (status === "error") {
-      throw new Error("Transcription failed: " + poll_result.data.error);
-    }
-
-    //wait before polling again
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    attempts++;
-  }
-  throw new Error("Transcription did not complete within the expected time.");
 }
