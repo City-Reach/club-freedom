@@ -19,7 +19,10 @@ export async function transcribeAudio(upload_url: string) {
 
   const client = new OpenAI({
     apiKey: process.env.GROQ_API_KEY,
-    baseURL: "https://api.groq.com/openai/v1",
+    baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/groq`,
+    defaultHeaders: {
+      "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
+    },
   });
 
   const transcription = await client.audio.transcriptions.create({
