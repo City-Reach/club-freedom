@@ -308,20 +308,25 @@ TURNSTILE_SECRET_KEY
 TURNSTILE_VERIFY_ENDPOINT
 VITE_TURNSTILE_SITE_KEY
 
-## Configure Posthog and upload source maps
+## Configure Posthog for your environment
 
 Add the following environment variables to your .env.local file:
 
 VITE_PUBLIC_POSTHOG_KEY
 VITE_PUBLIC_POSTHOG_HOST
 
-Instructions for uploading source maps can be found at [here](https://posthog.com/docs/error-tracking/upload-source-maps)
+## Uploading source maps to Posthog
+
+Detailed instructions for uploading source maps can be found at [here](https://posthog.com/docs/error-tracking/upload-source-maps)
+
+Ensure the following environment variables are set up:
+POSTHOG_CLI_HOST: The PostHog host to connect to [default: https://us.posthog.com]
+POSTHOG_CLI_ENV_ID: PostHog project ID
+POSTHOG_CLI_TOKEN: Personal API key with error tracking write and organization read scopes
+
+Then run the following commands:
 
 1. pnpm build
-2. Configure the following environment variables:
-   POSTHOG_CLI_HOST: The PostHog host to connect to [default: https://us.posthog.com]
-   POSTHOG_CLI_ENV_ID: PostHog project ID
-   POSTHOG_CLI_TOKEN: Personal API key with error tracking write and organization read scopes
-3. posthog-cli login
-4. posthog-cli sourcemap inject --directory ./path/to/assets --project my-app --version 1.0.0
-5. posthog-cli sourcemap upload --directory ./path/to/assets
+2. posthog-cli login
+3. posthog-cli sourcemap inject --directory ./path/to/assets --project my-app --version 1.0.0
+4. posthog-cli sourcemap upload --directory ./path/to/assets
