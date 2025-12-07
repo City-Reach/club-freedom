@@ -315,6 +315,11 @@ Add the following environment variables to your .env.local file:
 VITE_PUBLIC_POSTHOG_KEY
 VITE_PUBLIC_POSTHOG_HOST
 
+Add the follwoing environment variables to your convex environment:
+
+POSTHOG_API_KEY (same value as VITE_PUBLIC_POSTHOG_KEY)
+POSTHOG_HOST (same value as VITE_PUBLIC_POSTHOG_HOST)
+
 ## Uploading source maps to Posthog
 
 Detailed instructions for uploading source maps can be found at [here](https://posthog.com/docs/error-tracking/upload-source-maps)

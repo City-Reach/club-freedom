@@ -16,6 +16,7 @@ import { v } from "convex/values";
 import { transcribeAudio } from "@/lib/ai/transcribe";
 import { r2 } from "./r2";
 import { summarize } from "@/lib/ai/summarize";
+import { postHogClient } from "@/utils/posthog-convex";
 
 // start using Triggers, with table types from schema.ts
 const triggers = new Triggers<DataModel>();
@@ -146,9 +147,7 @@ export const transcribe = action({
         `Transcription completed and summarization scheduled for testimonial ${testimonialId}`,
       );
     } catch (error) {
-      console.error(
-        `Transcription failed for testimonial ${testimonialId}: ${error}`,
-      );
+      postHogClient.captureException(error, `transcribe-${testimonialId}`, { testimonialId: testimonialId, mediaUrl: mediaUrl });
       return;
     }
   },
@@ -161,7 +160,6 @@ export const summarizeText = action({
     text: v.string(),
   },
   handler: async (ctx, { testimonialId, text }) => {
-    console.log("Starting text summarization using Gemini API");
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
@@ -174,14 +172,11 @@ export const summarizeText = action({
           summary: resp.summary,
           title: resp.title,
         });
-        console.log(`Summarization completed for testimonial ${testimonialId}`);
       } else {
         throw new Error("Testimonial not found");
       }
     } catch (error) {
-      console.error(
-        `Summarization failed for testimonial ${testimonialId}: ${error}`,
-      );
+      postHogClient.captureException(error, `summarizeText-${testimonialId}`, { testimonialId: testimonialId, text: text });
       return;
     }
   },
