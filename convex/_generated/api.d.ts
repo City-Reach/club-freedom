@@ -13,6 +13,7 @@ import type * as email from "../email.js";
 import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as internal_createAdminUser from "../internal/createAdminUser.js";
+import type * as internal_organizations from "../internal/organizations.js";
 import type * as internal_r2 from "../internal/r2.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   functions: typeof functions;
   http: typeof http;
   "internal/createAdminUser": typeof internal_createAdminUser;
+  "internal/organizations": typeof internal_organizations;
   "internal/r2": typeof internal_r2;
   media: typeof media;
   migrations: typeof migrations;

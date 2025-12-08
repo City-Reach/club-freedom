@@ -119,6 +119,10 @@ You can manually set the user's role in the betterAuth.users table.
 
 ![admin](./images/better_auth_admin_set.png)
 
+### Creating Organizations manually
+
+To create an organization and its owner manually, navigate to the the `organizations:createOrganization` function in the your Convex dashboard. Click `Run Function`, then fill in the name, slug, userId (and optionally, logo), and `Run Mutation`. The userId must be the id of an existing user.
+
 ### Set up R2 for Convex
 
 To set up R2 for Convex, follow the instructions in the _Cloudflare Account_ section in the [Convex R2 documentation](https://www.convex.dev/components/cloudflare-r2#cloudflare-account).
