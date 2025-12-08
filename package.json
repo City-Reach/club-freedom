@@ -15,7 +15,7 @@
     "deploy:production": "pnpm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
     "run_in_isolation": "tsx",
-    "upload-sourcemaps": "posthog-cli login && posthog-cli sourcemap inject --directory ./dist/server/assets --project club-freedom --version 1.0.0 && posthog-cli sourcemap upload --directory ./dist/server/assets"
+    "upload-sourcemaps": "posthog-cli sourcemap inject --directory ./dist/server/assets --project club-freedom --version 1.0.0 && posthog-cli sourcemap upload --directory ./dist/server/assets"
   },
   "dependencies": {
     "@auth/core": "0.37.0",

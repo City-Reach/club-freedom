@@ -332,6 +332,5 @@ POSTHOG_CLI_TOKEN: Personal API key with error tracking write and organization r
 Then run the following commands:
 
 1. pnpm build
-2. posthog-cli login
-3. posthog-cli sourcemap inject --directory ./path/to/assets --project my-app --version 1.0.0
-4. posthog-cli sourcemap upload --directory ./path/to/assets
+2. posthog-cli sourcemap inject --directory ./path/to/assets --project my-app --version 1.0.0
+3. posthog-cli sourcemap upload --directory ./path/to/assets
