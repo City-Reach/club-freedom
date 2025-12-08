@@ -2,7 +2,7 @@ import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { betterAuth, BetterAuthOptions } from "better-auth";
-import { admin } from "better-auth/plugins";
+import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
@@ -52,6 +52,7 @@ export const createAuth = (
       // The Convex plugin is required for Convex compatibility
       convex(),
       admin(adminOptions),
+      organization(),
     ],
     trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions);
