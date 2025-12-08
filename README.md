@@ -60,7 +60,7 @@ A modern testimonial collection platform built for Club Freedom, allowing users 
    You can run the vite server for frontend and convex server for backend by running each command in a separate terminal
 
    ```bash
-   # Run vite vite server
+   # Run vite server
    pnpm vite dev
 
    # Run convex sync engine

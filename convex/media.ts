@@ -20,7 +20,7 @@ export const generateMediaDownloadUrl = action({
       );
 
       if (!testimonial || !testimonial.storageId) {
-        return undefined;
+        throw new Error(`Testimonial not found or has no media for id ${id}`);
       }
 
       const r2Client = createR2Client(r2.config);

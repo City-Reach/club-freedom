@@ -2,7 +2,6 @@
 import {
   mutation as rawMutation,
   internalMutation as rawInternalMutation,
-  action,
 } from "./_generated/server";
 /* eslint-enable no-restricted-imports */
 import { DataModel } from "./_generated/dataModel";
@@ -12,11 +11,7 @@ import {
   customMutation,
 } from "convex-helpers/server/customFunctions";
 import { api } from "./_generated/api";
-import { v } from "convex/values";
-import { transcribeAudio } from "@/lib/ai/transcribe";
 import { r2 } from "./r2";
-import { summarize } from "@/lib/ai/summarize";
-import { postHogClient } from "@/utils/posthog-convex";
 
 // start using Triggers, with table types from schema.ts
 const triggers = new Triggers<DataModel>();
@@ -44,8 +39,6 @@ triggers.register("testimonials", async (ctx, change) => {
   }
   const newSearchText = [email, name, summary, text, title].join(" ");
   await ctx.db.patch(change.id, { searchText: newSearchText });
-
-  console.log(`updated testimonial searchText for testimonial ${change.id}`);
 });
 
 // Only trigger when media_id changes
@@ -75,12 +68,10 @@ triggers.register("testimonials", async (ctx, change) => {
   }
 
   // Schedule transcription as an action (runs in Node.js environment)
-  await ctx.scheduler.runAfter(0, api.functions.transcribe, {
+  await ctx.scheduler.runAfter(0, api.llmActions.transcribe, {
     testimonialId: id,
     mediaUrl,
   });
-
-  console.log(`Scheduled transcription for testimonial ${id}`);
 });
 
 // Trigger when the transcript changes
@@ -98,12 +89,10 @@ triggers.register("testimonials", async (ctx, change) => {
   const id = change.id;
 
   // Schedule summarization as an action (runs in Node.js environment)
-  await ctx.scheduler.runAfter(0, api.functions.summarizeText, {
+  await ctx.scheduler.runAfter(0, api.llmActions.summarizeText, {
     testimonialId: id,
     text: newText,
   });
-
-  console.log(`Scheduled summarization for testimonial ${id}`);
 });
 
 // create wrappers that replace the built-in `mutation` and `internalMutation`
@@ -113,71 +102,3 @@ export const internalMutation = customMutation(
   rawInternalMutation,
   customCtx(triggers.wrapDB),
 );
-
-// Action to handle AssemblyAI transcription (runs in Node.js environment)
-export const transcribe = action({
-  args: {
-    testimonialId: v.id("testimonials"),
-    mediaUrl: v.string(),
-  },
-  handler: async (ctx, { testimonialId, mediaUrl }) => {
-    try {
-      const transcribedText = await transcribeAudio(mediaUrl);
-
-      if (!transcribedText) {
-        console.error(
-          `Transcription returned no text for testimonial ${testimonialId}`,
-        );
-        return;
-      }
-
-      // Update the testimonial with the transcribed text
-      await ctx.runMutation(api.testimonials.updateTranscription, {
-        id: testimonialId,
-        text: transcribedText,
-      });
-
-      // Schedule summarization as an action (runs in Node.js environment)
-      await ctx.scheduler.runAfter(0, api.functions.summarizeText, {
-        testimonialId: testimonialId,
-        text: transcribedText,
-      });
-
-      console.log(
-        `Transcription completed and summarization scheduled for testimonial ${testimonialId}`,
-      );
-    } catch (error) {
-      postHogClient.captureException(error, `transcribe-${testimonialId}`, { testimonialId: testimonialId, mediaUrl: mediaUrl });
-      return;
-    }
-  },
-});
-
-// Action to handle Gemini text summarization (runs in Node.js environment)
-export const summarizeText = action({
-  args: {
-    testimonialId: v.id("testimonials"),
-    text: v.string(),
-  },
-  handler: async (ctx, { testimonialId, text }) => {
-    try {
-      const testimonial = await ctx.runQuery(
-        api.testimonials.getTestimonialById,
-        { id: testimonialId },
-      );
-      if (testimonial) {
-        const resp = await summarize(text, testimonial.name);
-        await ctx.runMutation(api.testimonials.updateSummaryAndTitle, {
-          id: testimonialId,
-          summary: resp.summary,
-          title: resp.title,
-        });
-      } else {
-        throw new Error("Testimonial not found");
-      }
-    } catch (error) {
-      postHogClient.captureException(error, `summarizeText-${testimonialId}`, { testimonialId: testimonialId, text: text });
-      return;
-    }
-  },
-});
