@@ -8,8 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserRoundIcon } from "lucide-react";
-import { authClient } from "@/lib/auth/auth-client";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
@@ -17,13 +16,6 @@ type Props = {
 };
 
 export default function UserDropDown({ user }: Props) {
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await authClient.signOut();
-    await navigate({ to: "/sign-in" });
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -41,7 +33,9 @@ export default function UserDropDown({ user }: Props) {
           <span className="text-sm text-muted-foreground">{user.email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link to="/sign-out">Sign out</Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

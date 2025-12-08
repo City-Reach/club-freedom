@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignOutRouteImport } from './routes/sign-out'
 import { Route as TestimonialsRouteRouteImport } from './routes/testimonials/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
@@ -21,6 +22,11 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
+const SignOutRoute = SignOutRouteImport.update({
+  id: '/sign-out',
+  path: '/sign-out',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -91,11 +98,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
+  '/sign-out': typeof SignOutRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
+  '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/admin': typeof AdminRouteRoute
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/testimonials'
+    | '/sign-out'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -130,11 +140,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
+    | '/sign-out'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
     | '/testimonials/$id'
+    | '/admin'
     | '/testimonials'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/admin'
     | '/testimonials'
+    | '/sign-out'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
@@ -158,11 +170,19 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRoute
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
+  SignOutRoute: typeof SignOutRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-out': {
+      id: '/sign-out'
+      path: '/sign-out'
+      fullPath: '/sign-out'
+      preLoaderRoute: typeof SignOutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/testimonials': {
       id: '/testimonials'
       path: '/testimonials'
@@ -289,6 +309,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRoute,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
+  SignOutRoute: SignOutRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
