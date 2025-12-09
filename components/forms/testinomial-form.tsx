@@ -63,7 +63,7 @@ export default function TestimonialForm() {
       }
 
       // Step 2:
-      let storageId: string | undefined ;
+      let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
         storageId = await uploadFile(values.mediaFile);

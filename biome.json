@@ -6,11 +6,18 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist", "!**/_generated", "!**/components/ui"]
+    "includes": [
+      "**",
+      "!!**/dist",
+      "!!**/_generated",
+      "!!**/components/ui",
+      "!!app/routeTree.gen.ts"
+    ]
   },
   "formatter": {
     "enabled": true,
-    "indentStyle": "tab"
+    "indentStyle": "space",
+    "indentWidth": 2
   },
   "linter": {
     "enabled": true,

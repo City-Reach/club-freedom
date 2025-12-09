@@ -15,7 +15,7 @@ export const foundMediaForMigrations = query({
       testimonials.map(async (t) => {
         const mediaType = await ctx.db.system.get(t.media_id!);
         return { _id: t._id, mediaType, mediaId: t.media_id };
-      })
+      }),
     );
 
     return medias;

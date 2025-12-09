@@ -8,5 +8,5 @@ const app = defineApp();
 app.use(r2);
 app.use(migration);
 app.use(betterAuth);
-app.use(resend)
+app.use(resend);
 export default app;

@@ -16,7 +16,7 @@ export const generateMediaDownloadUrl = action({
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
-        { id }
+        { id },
       );
 
       if (!testimonial || !testimonial.storageId) {
@@ -38,13 +38,15 @@ export const generateMediaDownloadUrl = action({
           ResponseContentDisposition: `attachment; filename="${file}"`,
           ResponseContentType: metadata?.contentType,
         }),
-        { expiresIn: 900 } // URL valid for 15 minutes
+        { expiresIn: 900 }, // URL valid for 15 minutes
       );
 
       return url;
     } catch (e) {
-      postHogClient.captureException(e, `generateMediaDownloadUrl-${id}`, { id: id });
-      return undefined
+      postHogClient.captureException(e, `generateMediaDownloadUrl-${id}`, {
+        id: id,
+      });
+      return undefined;
     }
   },
 });
