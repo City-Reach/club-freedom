@@ -17,7 +17,7 @@ import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { useNavigate } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
 import { Turnstile } from "@marsidev/react-turnstile";
-import React from "react";
+
 import {
   Field,
   FieldLabel,
