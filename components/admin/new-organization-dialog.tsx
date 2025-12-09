@@ -1,7 +1,12 @@
 import { authClient } from "@/lib/auth/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { ComponentProps, ReactNode, useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useState,
+  type ChangeEvent,
+  type ComponentProps,
+  type ReactNode,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -62,6 +67,7 @@ const convertNameToSlug = (name: string) => {
 export default function NewOrganizationDialog({ trigger, ...props }: Props) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
+
   const form = useForm<Organization>({
     defaultValues: {
       name: "",
@@ -70,44 +76,47 @@ export default function NewOrganizationDialog({ trigger, ...props }: Props) {
     resolver: zodResolver(organizationSchema),
   });
 
-  const { control, formState, getValues, handleSubmit, setValue, watch } = form;
+  const { mutateAsync: createNewOrganziation } = useMutation({
+    mutationFn: async (formData: Organization) => {
+      const { error } = await authClient.organization.create({
+        name: formData.name.trim(),
+        slug: formData.slug.trim(),
+      });
+      if (error) {
+        throw Error(error.message);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["organizations"],
+      });
+    },
+    onSuccess: () => {
+      toast.success("Organization created successfully");
+      form.reset();
+      setOpen(false);
+    },
+    onError: (error) => {
+      toast.error("Cannot create organization", {
+        description: error.message,
+      });
+    },
+  });
 
-  const nameValue = watch("name");
-  const slugDirty = formState.dirtyFields.slug;
-
-  useEffect(() => {
-    if (slugDirty) {
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.value;
+    form.setValue("name", name);
+    if (form.getFieldState("slug").isDirty) {
       return;
     }
-
-    const generatedSlug = convertNameToSlug(nameValue || "");
-    const currentSlug = getValues("slug");
-
+    const generatedSlug = convertNameToSlug(name);
+    const currentSlug = form.getValues("slug");
     if (generatedSlug !== currentSlug) {
-      // Keep slug synced with name until the user edits slug manually.
-      setValue("slug", generatedSlug, {
+      form.setValue("slug", generatedSlug, {
         shouldDirty: false,
         shouldTouch: false,
-        shouldValidate: false,
       });
     }
-  }, [nameValue, slugDirty, getValues, setValue]);
-
-  const onSubmit = async (formData: Organization) => {
-    const { data, error } = await authClient.organization.create({
-      name: formData.name.trim(),
-      slug: formData.slug.trim(),
-    });
-    if (error || !data) {
-      toast.error("Could not create organization", {
-        description: error?.message,
-      });
-    }
-    setOpen(false);
-    toast.success("Organization created successfully");
-    queryClient.invalidateQueries({
-      queryKey: ["organizations"],
-    });
   };
 
   return (
@@ -120,16 +129,17 @@ export default function NewOrganizationDialog({ trigger, ...props }: Props) {
         <form
           className="grid gap-4"
           id="create-organization"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((data) => createNewOrganziation(data))}
         >
           <Controller
-            control={control}
+            control={form.control}
             name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Name</FieldLabel>
                 <Input
                   {...field}
+                  onChange={handleNameChange}
                   placeholder="Your organization name"
                   id={field.name}
                   aria-invalid={fieldState.invalid}
@@ -142,7 +152,7 @@ export default function NewOrganizationDialog({ trigger, ...props }: Props) {
           />
 
           <Controller
-            control={control}
+            control={form.control}
             name="slug"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
@@ -165,7 +175,7 @@ export default function NewOrganizationDialog({ trigger, ...props }: Props) {
         </form>
         <DialogFooter>
           <Button
-            disabled={formState.isSubmitting}
+            disabled={form.formState.isSubmitting}
             type="submit"
             form="create-organization"
           >
