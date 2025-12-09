@@ -63,11 +63,17 @@ pnpm lint
 pnpm format
 ```
 
-Automatically fix lint and format issues:
+Automatically fix lint and format issues
 
 ```bash
 pnpm lint --fix
 pnpm format --write
+```
+
+One command fix all
+
+```bash
+pnpm check --write
 ```
 
 ## Convex Migrations

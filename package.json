@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "lint": "biome lint",
     "format": "biome format",
+    "check": "biome check",
     "tsr:generate": "tsr generate",
     "auth:generate": "pnpx @better-auth/cli generate --config convex/betterAuth/auth.ts --output convex/betterAuth/generatedSchema.ts",
     "secret:bulk": "wrangler secret bulk",
