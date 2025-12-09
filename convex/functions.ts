@@ -1,17 +1,12 @@
 /* eslint-disable no-restricted-imports */
-import {
-  mutation as rawMutation,
-  internalMutation as rawInternalMutation,
-} from "./_generated/server";
+import {internalMutation as rawInternalMutation, mutation as rawMutation,} from "./_generated/server";
+
 /* eslint-enable no-restricted-imports */
-import { DataModel } from "./_generated/dataModel";
-import { Triggers } from "convex-helpers/server/triggers";
-import {
-  customCtx,
-  customMutation,
-} from "convex-helpers/server/customFunctions";
-import { api } from "./_generated/api";
-import { r2 } from "./r2";
+import {DataModel} from "./_generated/dataModel";
+import {Triggers} from "convex-helpers/server/triggers";
+import {customCtx, customMutation,} from "convex-helpers/server/customFunctions";
+import {api} from "./_generated/api";
+import {r2} from "./r2";
 
 // start using Triggers, with table types from schema.ts
 const triggers = new Triggers<DataModel>();
@@ -68,7 +63,7 @@ triggers.register("testimonials", async (ctx, change) => {
   }
 
   // Schedule transcription as an action (runs in Node.js environment)
-  await ctx.scheduler.runAfter(0, api.llmActions.transcribe, {
+  await ctx.scheduler.runAfter(0, api.ai.transcribe, {
     testimonialId: id,
     mediaUrl,
   });
@@ -89,7 +84,7 @@ triggers.register("testimonials", async (ctx, change) => {
   const id = change.id;
 
   // Schedule summarization as an action (runs in Node.js environment)
-  await ctx.scheduler.runAfter(0, api.llmActions.summarizeText, {
+  await ctx.scheduler.runAfter(0, api.ai.summarizeText, {
     testimonialId: id,
     text: newText,
   });

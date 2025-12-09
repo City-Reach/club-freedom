@@ -8,13 +8,13 @@
  * @module
  */
 
+import type * as ai from "../ai.js";
 import type * as auth from "../auth.js";
 import type * as email from "../email.js";
 import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as internal_createAdminUser from "../internal/createAdminUser.js";
 import type * as internal_r2 from "../internal/r2.js";
-import type * as llmActions from "../llmActions.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
 import type * as r2 from "../r2.js";
@@ -27,13 +27,13 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  ai: typeof ai;
   auth: typeof auth;
   email: typeof email;
   functions: typeof functions;
   http: typeof http;
   "internal/createAdminUser": typeof internal_createAdminUser;
   "internal/r2": typeof internal_r2;
-  llmActions: typeof llmActions;
   media: typeof media;
   migrations: typeof migrations;
   r2: typeof r2;
