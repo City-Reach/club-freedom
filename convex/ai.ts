@@ -5,6 +5,7 @@ import {transcribeAudio} from "@/lib/ai/transcribe";
 import {api} from "./_generated/api";
 import {summarize} from "@/lib/ai/summarize";
 import {v} from "convex/values";
+import { postHogClient } from "@/utils/posthog-convex";
 
 // Action to handle Gemini text summarization (runs in Node.js environment)
 export const summarizeText = action({
@@ -13,7 +14,6 @@ export const summarizeText = action({
     text: v.string(),
   },
   handler: async (ctx, {testimonialId, text}) => {
-    console.log("Starting text summarization using OpenAI with Groq");
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
@@ -26,14 +26,11 @@ export const summarizeText = action({
           summary: resp.summary,
           title: resp.title,
         });
-        console.log(`Summarization completed for testimonial ${testimonialId}`);
       } else {
         throw new Error("Testimonial not found");
       }
     } catch (error) {
-      console.error(
-        `Summarization failed for testimonial ${testimonialId}: ${error}`,
-      );
+      postHogClient.captureException(error, `summarizeText-${testimonialId}`, { testimonialId: testimonialId, text: text });
       return;
     }
   },
@@ -47,12 +44,8 @@ export const transcribe = action({
   handler: async (ctx, {testimonialId, mediaUrl}) => {
     try {
       const transcribedText = await transcribeAudio(mediaUrl);
-
       if (!transcribedText) {
-        console.error(
-          `Transcription returned no text for testimonial ${testimonialId}`,
-        );
-        return;
+        throw new Error(`Transcription returned no text for testimonial ${testimonialId}`);
       }
 
       // Update the testimonial with the transcribed text
@@ -60,14 +53,8 @@ export const transcribe = action({
         id: testimonialId,
         text: transcribedText,
       });
-
-      console.log(
-        `Transcription completed and summarization scheduled for testimonial ${testimonialId}`,
-      );
     } catch (error) {
-      console.error(
-        `Transcription failed for testimonial ${testimonialId}: ${error}`,
-      );
+      postHogClient.captureException(error, `transcribe-${testimonialId}`, { testimonialId: testimonialId, mediaUrl: mediaUrl });
       return;
     }
   },

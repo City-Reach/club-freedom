@@ -46,6 +46,7 @@ A modern testimonial collection platform built for Club Freedom, allowing users 
    ```
 
 3. Set up environment variables. Most of it is just creating a new account and passing over your personal keys:
+
    1. Setting up Better Auth...
    2. Setting up Resend
    3. Setup R2 for Convex
@@ -59,7 +60,7 @@ A modern testimonial collection platform built for Club Freedom, allowing users 
    You can run the vite server for frontend and convex server for backend by running each command in a separate terminal
 
    ```bash
-   # Run vite vite server
+   # Run vite server
    pnpm vite dev
 
    # Run convex sync engine
@@ -306,3 +307,30 @@ Ensure the following environment variables are configured in your .env.local fil
 TURNSTILE_SECRET_KEY
 TURNSTILE_VERIFY_ENDPOINT
 VITE_TURNSTILE_SITE_KEY
+
+## Configure Posthog for your environment
+
+Add the following environment variables to your .env.local file:
+
+VITE_PUBLIC_POSTHOG_KEY
+VITE_PUBLIC_POSTHOG_HOST
+
+Add the follwoing environment variables to your convex environment:
+
+POSTHOG_API_KEY (same value as VITE_PUBLIC_POSTHOG_KEY)
+POSTHOG_HOST (same value as VITE_PUBLIC_POSTHOG_HOST)
+
+## Uploading source maps to Posthog
+
+Detailed instructions for uploading source maps can be found at [here](https://posthog.com/docs/error-tracking/upload-source-maps)
+
+Ensure the following environment variables are set up:
+POSTHOG_CLI_HOST: The PostHog host to connect to [default: https://us.posthog.com]
+POSTHOG_CLI_ENV_ID: PostHog project ID
+POSTHOG_CLI_TOKEN: Personal API key with error tracking write and organization read scopes
+
+Then run the following commands:
+
+1. pnpm build
+2. posthog-cli sourcemap inject --directory ./path/to/assets --project my-app --version 1.0.0
+3. posthog-cli sourcemap upload --directory ./path/to/assets
