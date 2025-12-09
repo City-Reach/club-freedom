@@ -1,4 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import OrganizationList from "@/components/admin/organization-list";
+import NewOrganizationDialog from "@/components/admin/new-organization-dialog";
 
 export const Route = createFileRoute("/admin/organizations")({
   component: RouteComponent,
@@ -10,5 +14,16 @@ export const Route = createFileRoute("/admin/organizations")({
 });
 
 function RouteComponent() {
-  return <div>Organizations</div>;
+  return (
+    <div className="w-full mx-auto max-w-3xl flex flex-col gap-4">
+      <NewOrganizationDialog
+        trigger={
+          <Button className="place-self-end">
+            <Plus /> New Organization
+          </Button>
+        }
+      />
+      <OrganizationList />
+    </div>
+  );
 }
