@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { r2 } from "./r2";
-import { paginationOptsValidator, PaginationResult } from "convex/server";
+import { paginationOptsValidator, type PaginationResult } from "convex/server";
 import { api } from "./_generated/api";
 
 export const getTestimonials = query({

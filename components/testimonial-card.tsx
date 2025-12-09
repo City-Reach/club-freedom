@@ -1,4 +1,4 @@
-import { Doc } from "@/convex/_generated/dataModel";
+import type { Doc } from "@/convex/_generated/dataModel";
 import {
   Card,
   CardContent,
@@ -55,10 +55,10 @@ export function TestimonialCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {testimonial.mediaUrl && testimonial.media_type == "audio" && (
+        {testimonial.mediaUrl && testimonial.media_type === "audio" && (
           <audio className="w-full" controls src={testimonial.mediaUrl} />
         )}
-        {testimonial.mediaUrl && testimonial.media_type == "video" && (
+        {testimonial.mediaUrl && testimonial.media_type === "video" && (
           <video className="w-full" controls src={testimonial.mediaUrl} />
         )}
         {!testimonial.mediaUrl && testimonial.testimonialText && (

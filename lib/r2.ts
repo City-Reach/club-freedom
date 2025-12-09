@@ -1,4 +1,4 @@
-import { Infer, v } from "convex/values";
+import { type Infer, v } from "convex/values";
 import { S3Client } from "@aws-sdk/client-s3";
 
 export const r2ConfigValidator = v.object({

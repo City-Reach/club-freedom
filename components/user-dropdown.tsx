@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserRoundIcon } from "lucide-react";
 import { authClient } from "@/lib/auth/auth-client";
 import { useNavigate } from "@tanstack/react-router";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
   user: Doc<"user">;

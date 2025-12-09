@@ -1,5 +1,5 @@
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import { convex } from "@/lib/convex";
 import { createFileRoute } from "@tanstack/react-router";
 

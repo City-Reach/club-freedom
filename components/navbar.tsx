@@ -2,7 +2,7 @@ import { Button } from "./ui/button";
 import Logo from "./logo";
 import UserDropDown from "./user-dropdown";
 import { Link } from "@tanstack/react-router";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
   user: Doc<"user"> | null;

@@ -1,4 +1,4 @@
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { Button } from "@/components/ui/button";
 import { formatDistance } from "date-fns";
@@ -45,7 +45,7 @@ export default function TestimonialDetail({ id }: Props) {
   const handleApprovalOrDisapproval = async (approved: boolean) => {
     try {
       await updateTestimonialApproval({ id, approved });
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to update testimonial approval");
     }
   };
@@ -53,10 +53,10 @@ export default function TestimonialDetail({ id }: Props) {
   return (
     <div className="flex flex-col gap-8">
       <h1 className="text-2xl font-bold">{testimonial.name}'s Testimonial</h1>
-      {testimonial.mediaUrl && testimonial.media_type == "audio" && (
+      {testimonial.mediaUrl && testimonial.media_type === "audio" && (
         <audio className="w-full" controls src={testimonial.mediaUrl} />
       )}
-      {testimonial.mediaUrl && testimonial.media_type == "video" && (
+      {testimonial.mediaUrl && testimonial.media_type === "video" && (
         <video className="w-full" controls src={testimonial.mediaUrl} />
       )}
       <div className="flex gap-2">
@@ -67,7 +67,7 @@ export default function TestimonialDetail({ id }: Props) {
               params={{ id }}
               target="_blank"
             >
-              Download {testimonial.media_type == "audio" ? "Audio" : "Video"}
+              Download {testimonial.media_type === "audio" ? "Audio" : "Video"}
             </Link>
           </Button>
         )}

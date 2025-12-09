@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth/auth-client";
 import { signInSchema } from "@/lib/schema";
-import z from "zod";
+import type z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
