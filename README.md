@@ -260,34 +260,23 @@ Preview the production build:
 pnpm preview
 ```
 
-## Deployment
+## Linter and Formatter
 
-This application is configured for deployment on Cloudflare Pages using Wrangler.
+We use [Biome](https://biomejs.dev/) for linting and formatting our code. To run them, use the following commands:
 
-1. Configure your Cloudflare account in `wrangler.jsonc`
-2. Deploy using Wrangler:
-
-```bash
-pnpm wrangler pages deploy
-```
-
-## Learn More
-
-- [React 19 Documentation](https://react.dev/learn)
-- [TanStack Router Documentation](https://tanstack.com/router/latest)
-- [Convex Documentation](https://docs.convex.dev/)
-- [Better Auth Documentation](https://convex-better-auth.netlify.app/)
-- [Vite Documentation](https://vitejs.dev/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs/installation)
-- [shadcn/ui Documentation](https://ui.shadcn.com/)
-- [Resend Documentation](https://resend.com/docs/introduction)
-- [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
-- [Cloudflare Pages & Wrangler](https://developers.cloudflare.com/pages/)
-- [Cloudflare Turnstile Documentation](https://developers.cloudflare.com/turnstile/)
-
-## License
-
-This project is private and intended for Club Freedom use.
+To check for errors only:
+  
+  ```bash
+  pnpm lint
+  pnpm format
+  ```
+  
+Lint and format all files:
+  
+  ```bash
+  pnpm lint --fix
+  pnpm format --write
+  ```
 
 ## Convex Migrations
 
