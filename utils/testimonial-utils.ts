@@ -3,7 +3,7 @@ export const getApprovalStatusText = (approved: boolean | undefined) => {
     approved === true
       ? "Approved"
       : approved === false
-      ? "Disapproved"
-      : "Pending";
+        ? "Disapproved"
+        : "Pending";
   return approvalText;
 };

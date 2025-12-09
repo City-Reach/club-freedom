@@ -16,7 +16,7 @@ export const sendResetPassword = async (
   }: {
     to: string;
     url: string;
-  }
+  },
 ) => {
   await resend.sendEmail(ctx, {
     from: `Club Freedom <${process.env.AUTH_EMAIL}>`,

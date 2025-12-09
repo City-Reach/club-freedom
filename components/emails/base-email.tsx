@@ -111,11 +111,7 @@ export function BaseEmail({
               </React.Fragment>
             ))}
             {footerLinks.length > 0 && <br />}
-            {footerText || (
-              <>
-                {brandName}
-              </>
-            )}
+            {footerText || <>{brandName}</>}
           </Text>
         </Container>
       </Body>

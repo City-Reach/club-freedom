@@ -1,11 +1,10 @@
 "use node";
 
-import {action} from "./_generated/server";
-import {transcribeAudio} from "@/lib/ai/transcribe";
-import {api} from "./_generated/api";
-import {summarize} from "@/lib/ai/summarize";
-import {v} from "convex/values";
-import { postHogClient } from "@/utils/posthog-convex";
+import { action } from "./_generated/server";
+import { transcribeAudio } from "@/lib/ai/transcribe";
+import { api } from "./_generated/api";
+import { summarize } from "@/lib/ai/summarize";
+import { v } from "convex/values";
 
 // Action to handle Gemini text summarization (runs in Node.js environment)
 export const summarizeText = action({
@@ -13,11 +12,16 @@ export const summarizeText = action({
     testimonialId: v.id("testimonials"),
     text: v.string(),
   },
+<<<<<<< HEAD
   handler: async (ctx, {testimonialId, text}) => {
+=======
+  handler: async (ctx, { testimonialId, text }) => {
+    console.log("Starting text summarization using OpenAI with Groq");
+>>>>>>> 8be3a2f (Apply formatter)
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
-        {id: testimonialId},
+        { id: testimonialId },
       );
       if (testimonial) {
         const resp = await summarize(text, testimonial.name);
@@ -41,7 +45,7 @@ export const transcribe = action({
     testimonialId: v.id("testimonials"),
     mediaUrl: v.string(),
   },
-  handler: async (ctx, {testimonialId, mediaUrl}) => {
+  handler: async (ctx, { testimonialId, mediaUrl }) => {
     try {
       const transcribedText = await transcribeAudio(mediaUrl);
       if (!transcribedText) {

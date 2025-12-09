@@ -52,7 +52,7 @@ export const migrateToR2 = internalAction({
         {
           mediaId: media.mediaId,
           mediaType: media.mediaType.contentType,
-        }
+        },
       );
       if (storageId) {
         await ctx.runMutation(api.internal.r2.updateStorageId, {
