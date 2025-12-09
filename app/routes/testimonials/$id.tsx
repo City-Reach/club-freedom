@@ -1,9 +1,9 @@
-import TestimonialDetail from "@/components/testimonial-detail";
-import { Button } from "@/components/ui/button";
-import type { Id } from "@/convex/_generated/dataModel";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Authenticated } from "convex/react";
 import { ChevronLeft } from "lucide-react";
+import TestimonialDetail from "@/components/testimonial-detail";
+import { Button } from "@/components/ui/button";
+import type { Id } from "@/convex/_generated/dataModel";
 
 export const Route = createFileRoute("/testimonials/$id")({
   component: TestimonialDetailPage,

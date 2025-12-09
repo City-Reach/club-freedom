@@ -1,6 +1,6 @@
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { getCurrentUser } from "@/app/functions/auth";
 import Navbar from "@/components/navbar";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,

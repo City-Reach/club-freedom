@@ -3,10 +3,10 @@ import {
   Container,
   Head,
   Html,
-  Link,
-  Text,
   Img,
+  Link,
   Preview,
+  Text,
 } from "@react-email/components";
 import React from "react";
 

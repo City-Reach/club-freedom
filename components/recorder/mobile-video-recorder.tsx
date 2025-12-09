@@ -1,8 +1,8 @@
+import { Video } from "lucide-react";
 import { useRef } from "react";
-import { Button } from "../ui/button";
 import type { ControllerRenderProps } from "react-hook-form";
 import type { Testimonial } from "@/lib/schema";
-import { Video } from "lucide-react";
+import { Button } from "../ui/button";
 
 type Props = {
   field: ControllerRenderProps<Testimonial, "mediaFile">;

@@ -1,9 +1,9 @@
+import { createAccessControl, type Subset } from "better-auth/plugins/access";
 import type {
   AdminOptions,
   InferAdminRolesFromOption,
 } from "better-auth/plugins/admin";
-import { createAccessControl, type Subset } from "better-auth/plugins/access";
-import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
+import { adminAc, defaultStatements } from "better-auth/plugins/admin/access";
 
 const statement = {
   testimonial: ["approve"],
