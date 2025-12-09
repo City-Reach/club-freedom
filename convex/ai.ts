@@ -3,6 +3,7 @@
 import { v } from "convex/values";
 import { summarize } from "@/lib/ai/summarize";
 import { transcribeAudio } from "@/lib/ai/transcribe";
+import { postHogClient } from "@/utils/posthog-convex";
 import { api } from "./_generated/api";
 import { action } from "./_generated/server";
 
@@ -12,12 +13,7 @@ export const summarizeText = action({
     testimonialId: v.id("testimonials"),
     text: v.string(),
   },
-<<<<<<< HEAD
-  handler: async (ctx, {testimonialId, text}) => {
-=======
   handler: async (ctx, { testimonialId, text }) => {
-    console.log("Starting text summarization using OpenAI with Groq");
->>>>>>> 8be3a2f (Apply formatter)
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
@@ -34,7 +30,10 @@ export const summarizeText = action({
         throw new Error("Testimonial not found");
       }
     } catch (error) {
-      postHogClient.captureException(error, `summarizeText-${testimonialId}`, { testimonialId: testimonialId, text: text });
+      postHogClient.captureException(error, `summarizeText-${testimonialId}`, {
+        testimonialId: testimonialId,
+        text: text,
+      });
       return;
     }
   },
@@ -49,7 +48,9 @@ export const transcribe = action({
     try {
       const transcribedText = await transcribeAudio(mediaUrl);
       if (!transcribedText) {
-        throw new Error(`Transcription returned no text for testimonial ${testimonialId}`);
+        throw new Error(
+          `Transcription returned no text for testimonial ${testimonialId}`,
+        );
       }
 
       // Update the testimonial with the transcribed text
@@ -58,7 +59,10 @@ export const transcribe = action({
         text: transcribedText,
       });
     } catch (error) {
-      postHogClient.captureException(error, `transcribe-${testimonialId}`, { testimonialId: testimonialId, mediaUrl: mediaUrl });
+      postHogClient.captureException(error, `transcribe-${testimonialId}`, {
+        testimonialId: testimonialId,
+        mediaUrl: mediaUrl,
+      });
       return;
     }
   },
