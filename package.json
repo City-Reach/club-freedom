@@ -7,6 +7,8 @@
     "dev": "concurrently --names \"vite,convex\" \"vite dev\" \"convex dev\"",
     "build": "vite build && tsc --noEmit",
     "preview": "vite preview",
+    "lint": "biome lint",
+    "format": "biome format",
     "tsr:generate": "tsr generate",
     "auth:generate": "pnpx @better-auth/cli generate --config convex/betterAuth/auth.ts --output convex/betterAuth/generatedSchema.ts",
     "secret:bulk": "wrangler secret bulk",
