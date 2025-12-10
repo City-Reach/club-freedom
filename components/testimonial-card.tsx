@@ -23,7 +23,6 @@ export function TestimonialCard({
   showApprovalStatus = false,
 }: Props) {
   const date = new Date(testimonial._creationTime);
-  const approvalText = getApprovalStatusText(testimonial.approved);
 
   return (
     <Card className="w-full relative">
@@ -37,11 +36,6 @@ export function TestimonialCard({
             <CardTitle className="">{testimonial.title}</CardTitle>
           </Link>
           <div className="flex items-center gap-2">
-            {showApprovalStatus && (
-              <p className="text-sm font-medium">
-                {getApprovalStatusText(testimonial.approved)}
-              </p>
-            )}
             <p className="text-xs text-muted-foreground whitespace-nowrap">
               {formatDistanceToNow(date, { addSuffix: true })}
             </p>
@@ -51,7 +45,11 @@ export function TestimonialCard({
           <p className="text-sm">
             Posted by <strong>{testimonial.name}</strong>
           </p>
-          {showApprovalStatus && <p className="text-sm">{approvalText}</p>}
+          {showApprovalStatus && (
+            <p className="text-sm">
+              {getApprovalStatusText(testimonial.approved)}
+            </p>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
