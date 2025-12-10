@@ -21,8 +21,13 @@ import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizat
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as OSlugRouteRouteImport } from './routes/o.$slug/route'
+import { Route as OSlugIndexRouteImport } from './routes/o.$slug/index'
 import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
+import { Route as OSlugDashboardRouteRouteImport } from './routes/o.$slug/_dashboard/route'
+import { Route as OSlugDashboardSettingsRouteImport } from './routes/o.$slug/_dashboard/settings'
+import { Route as OSlugDashboardMembersRouteImport } from './routes/o.$slug/_dashboard/members'
 
 const SignOutRoute = SignOutRouteImport.update({
   id: '/sign-out',
@@ -83,6 +88,16 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const OSlugRouteRoute = OSlugRouteRouteImport.update({
+  id: '/o/$slug',
+  path: '/o/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OSlugIndexRoute = OSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OSlugRouteRoute,
+} as any)
 const TestimonialsIdMediaDownloadRoute =
   TestimonialsIdMediaDownloadRouteImport.update({
     id: '/media-download',
@@ -94,12 +109,27 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OSlugDashboardRouteRoute = OSlugDashboardRouteRouteImport.update({
+  id: '/_dashboard',
+  getParentRoute: () => OSlugRouteRoute,
+} as any)
+const OSlugDashboardSettingsRoute = OSlugDashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OSlugDashboardRouteRoute,
+} as any)
+const OSlugDashboardMembersRoute = OSlugDashboardMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => OSlugDashboardRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
   '/sign-out': typeof SignOutRoute
+  '/o/$slug': typeof OSlugDashboardRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -109,6 +139,9 @@ export interface FileRoutesByFullPath {
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
+  '/o/$slug/': typeof OSlugIndexRoute
+  '/o/$slug/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -120,8 +153,11 @@ export interface FileRoutesByTo {
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
+  '/o/$slug': typeof OSlugIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
+  '/o/$slug/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -130,6 +166,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
   '/sign-out': typeof SignOutRoute
+  '/o/$slug': typeof OSlugRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
@@ -137,8 +174,12 @@ export interface FileRoutesById {
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
+  '/o/$slug/_dashboard': typeof OSlugDashboardRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
+  '/o/$slug/': typeof OSlugIndexRoute
+  '/o/$slug/_dashboard/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/_dashboard/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -147,6 +188,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/testimonials'
     | '/sign-out'
+    | '/o/$slug'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -156,6 +198,9 @@ export interface FileRouteTypes {
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
+    | '/o/$slug/'
+    | '/o/$slug/members'
+    | '/o/$slug/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -167,8 +212,11 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/admin'
     | '/testimonials'
+    | '/o/$slug'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
+    | '/o/$slug/members'
+    | '/o/$slug/settings'
   id:
     | '__root__'
     | '/'
@@ -176,6 +224,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/testimonials'
     | '/sign-out'
+    | '/o/$slug'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
@@ -183,8 +232,12 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/admin/'
     | '/testimonials/'
+    | '/o/$slug/_dashboard'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
+    | '/o/$slug/'
+    | '/o/$slug/_dashboard/members'
+    | '/o/$slug/_dashboard/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -193,6 +246,7 @@ export interface RootRouteChildren {
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
   SignOutRoute: typeof SignOutRoute
+  OSlugRouteRoute: typeof OSlugRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -282,6 +336,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/o/$slug': {
+      id: '/o/$slug'
+      path: '/o/$slug'
+      fullPath: '/o/$slug'
+      preLoaderRoute: typeof OSlugRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/o/$slug/': {
+      id: '/o/$slug/'
+      path: '/'
+      fullPath: '/o/$slug/'
+      preLoaderRoute: typeof OSlugIndexRouteImport
+      parentRoute: typeof OSlugRouteRoute
+    }
     '/testimonials/$id/media-download': {
       id: '/testimonials/$id/media-download'
       path: '/media-download'
@@ -295,6 +363,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/o/$slug/_dashboard': {
+      id: '/o/$slug/_dashboard'
+      path: ''
+      fullPath: '/o/$slug'
+      preLoaderRoute: typeof OSlugDashboardRouteRouteImport
+      parentRoute: typeof OSlugRouteRoute
+    }
+    '/o/$slug/_dashboard/settings': {
+      id: '/o/$slug/_dashboard/settings'
+      path: '/settings'
+      fullPath: '/o/$slug/settings'
+      preLoaderRoute: typeof OSlugDashboardSettingsRouteImport
+      parentRoute: typeof OSlugDashboardRouteRoute
+    }
+    '/o/$slug/_dashboard/members': {
+      id: '/o/$slug/_dashboard/members'
+      path: '/members'
+      fullPath: '/o/$slug/members'
+      preLoaderRoute: typeof OSlugDashboardMembersRouteImport
+      parentRoute: typeof OSlugDashboardRouteRoute
     }
   }
 }
@@ -354,12 +443,40 @@ const TestimonialsRouteRouteChildren: TestimonialsRouteRouteChildren = {
 const TestimonialsRouteRouteWithChildren =
   TestimonialsRouteRoute._addFileChildren(TestimonialsRouteRouteChildren)
 
+interface OSlugDashboardRouteRouteChildren {
+  OSlugDashboardMembersRoute: typeof OSlugDashboardMembersRoute
+  OSlugDashboardSettingsRoute: typeof OSlugDashboardSettingsRoute
+}
+
+const OSlugDashboardRouteRouteChildren: OSlugDashboardRouteRouteChildren = {
+  OSlugDashboardMembersRoute: OSlugDashboardMembersRoute,
+  OSlugDashboardSettingsRoute: OSlugDashboardSettingsRoute,
+}
+
+const OSlugDashboardRouteRouteWithChildren =
+  OSlugDashboardRouteRoute._addFileChildren(OSlugDashboardRouteRouteChildren)
+
+interface OSlugRouteRouteChildren {
+  OSlugDashboardRouteRoute: typeof OSlugDashboardRouteRouteWithChildren
+  OSlugIndexRoute: typeof OSlugIndexRoute
+}
+
+const OSlugRouteRouteChildren: OSlugRouteRouteChildren = {
+  OSlugDashboardRouteRoute: OSlugDashboardRouteRouteWithChildren,
+  OSlugIndexRoute: OSlugIndexRoute,
+}
+
+const OSlugRouteRouteWithChildren = OSlugRouteRoute._addFileChildren(
+  OSlugRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
   SignOutRoute: SignOutRoute,
+  OSlugRouteRoute: OSlugRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
