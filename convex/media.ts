@@ -1,14 +1,13 @@
 "use node";
 
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { v } from "convex/values";
 import { extension as getExtension } from "mime-types";
 import { createR2Client } from "@/lib/r2";
-import { action } from "./_generated/server";
-import { v } from "convex/values";
 import { api } from "./_generated/api";
+import { action } from "./_generated/server";
 import { r2 } from "./r2";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { postHogClient } from "@/utils/posthog-convex";
 
 export const generateMediaDownloadUrl = action({
   args: { id: v.id("testimonials") },
@@ -16,7 +15,7 @@ export const generateMediaDownloadUrl = action({
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
-        { id }
+        { id },
       );
 
       if (!testimonial || !testimonial.storageId) {
@@ -38,13 +37,15 @@ export const generateMediaDownloadUrl = action({
           ResponseContentDisposition: `attachment; filename="${file}"`,
           ResponseContentType: metadata?.contentType,
         }),
-        { expiresIn: 900 } // URL valid for 15 minutes
+        { expiresIn: 900 }, // URL valid for 15 minutes
       );
 
       return url;
     } catch (e) {
-      postHogClient.captureException(e, `generateMediaDownloadUrl-${id}`, { id: id });
-      return undefined
+      postHogClient.captureException(e, `generateMediaDownloadUrl-${id}`, {
+        id: id,
+      });
+      return undefined;
     }
   },
 });

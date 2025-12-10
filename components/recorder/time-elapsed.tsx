@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
-import { useEffect, useRef, useState } from "react";
 
 export default function TimeElapsed({
   isRecording,

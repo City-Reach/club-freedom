@@ -1,4 +1,10 @@
-import { Doc } from "@/convex/_generated/dataModel";
+import { Link } from "@tanstack/react-router";
+import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
+import type { Doc } from "@/convex/_generated/dataModel";
+import { cn } from "@/lib/utils";
+import { getApprovalStatusText } from "@/utils/testimonial-utils";
+import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
@@ -6,12 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { formatDistanceToNow } from "date-fns";
-import { useState } from "react";
-import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { getApprovalStatusText } from "@/utils/testimonial-utils";
 
 type Props = {
   testimonial: Doc<"testimonials"> & { mediaUrl?: string | null };
@@ -55,10 +55,10 @@ export function TestimonialCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {testimonial.mediaUrl && testimonial.media_type == "audio" && (
+        {testimonial.mediaUrl && testimonial.media_type === "audio" && (
           <audio className="w-full" controls src={testimonial.mediaUrl} />
         )}
-        {testimonial.mediaUrl && testimonial.media_type == "video" && (
+        {testimonial.mediaUrl && testimonial.media_type === "video" && (
           <video className="w-full" controls src={testimonial.mediaUrl} />
         )}
         {!testimonial.mediaUrl && testimonial.testimonialText && (
