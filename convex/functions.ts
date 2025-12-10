@@ -34,8 +34,6 @@ triggers.register("testimonials", async (ctx, change) => {
   }
   const newSearchText = [email, name, summary, text, title].join(" ");
   await ctx.db.patch(change.id, { searchText: newSearchText });
-
-  console.log(`updated testimonial searchText for testimonial ${change.id}`);
 });
 
 // Only trigger when media_id changes
@@ -69,8 +67,6 @@ triggers.register("testimonials", async (ctx, change) => {
     testimonialId: id,
     mediaUrl,
   });
-
-  console.log(`Scheduled transcription for testimonial ${id}`);
 });
 
 // Trigger when the transcript changes
@@ -92,8 +88,6 @@ triggers.register("testimonials", async (ctx, change) => {
     testimonialId: id,
     text: newText,
   });
-
-  console.log(`Scheduled summarization for testimonial ${id}`);
 });
 
 // create wrappers that replace the built-in `mutation` and `internalMutation`

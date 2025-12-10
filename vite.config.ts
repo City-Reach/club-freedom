@@ -26,4 +26,7 @@ export default defineConfig({
     }),
     viteReact(),
   ],
+  build: {
+    sourcemap: true, 
+  }
 });

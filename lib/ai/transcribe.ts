@@ -30,7 +30,5 @@ export async function transcribeAudio(upload_url: string) {
     model: "whisper-large-v3",
   });
 
-  console.log("transcript", transcription.text);
-
   return transcription.text;
 }
