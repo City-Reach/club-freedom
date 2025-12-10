@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { authClient } from "@/lib/auth/auth-client";
 import appCss from "../globals.css?url";
+import NotFound from "@/components/not-found";
 
 const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
   const { createAuth } = await import("../../convex/auth");
@@ -102,20 +103,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  );
-}
-
-function NotFound() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-8 text-center">
-      <h1 className="text-6xl font-bold mb-4">404</h1>
-      <h2 className="text-2xl font-semibold mb-2">Page Not Found</h2>
-      <p className="text-gray-600 mb-8">
-        The page you're looking for doesn't exist or has been moved.
-      </p>
-      <Button asChild>
-        <Link to="/">Go Back Home</Link>
-      </Button>
-    </div>
   );
 }
