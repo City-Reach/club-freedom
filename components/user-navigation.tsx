@@ -16,10 +16,10 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "./ui/sidebar";
-import { User } from "better-auth";
+import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
-  user: User;
+  user: Doc<"user">;
 };
 
 export default function UserNavigation({ user }: Props) {

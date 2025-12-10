@@ -1,17 +1,14 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import AdminLayout from "@/components/layouts/admin";
-import { getUserById } from "@/app/functions/auth";
+import { convexQuery } from "@convex-dev/react-query";
+import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,
   loader: async ({ context }) => {
-    const userId = context.userId;
-    if (!userId) {
-      throw redirect({
-        to: "/sign-in",
-      });
-    }
-    const user = await getUserById({ data: { userId } });
+    const user = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.getCurrentUser, {})
+    );
     if (!user) {
       throw redirect({
         to: "/sign-in",
