@@ -1,10 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/")({
-  loader: () => {
-    redirect({
+  beforeLoad: () => {
+    throw redirect({
       to: "/admin/organizations",
-      throw: true,
     });
   },
 });
