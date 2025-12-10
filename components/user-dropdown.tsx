@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, Shield, UserRoundIcon } from "lucide-react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
@@ -30,12 +30,14 @@ export default function UserDropDown({ user }: Props) {
         <DropdownMenuLabel>
           <span className="text-sm text-muted-foreground">{user.email}</span>
         </DropdownMenuLabel>
-        <DropdownMenuItem asChild>
-          <Link to="/admin">
-            <Shield />
-            Admin
-          </Link>
-        </DropdownMenuItem>
+        {user.role === "admin" && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin">
+              <Shield />
+              Admin
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/sign-out">
