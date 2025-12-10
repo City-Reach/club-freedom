@@ -17,11 +17,11 @@ import {
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie, getRequest } from "@tanstack/react-start/server";
 import type { ConvexReactClient } from "convex/react";
-import { Button } from "@/components/ui/button";
+import ErrorBoundary from "@/components/error-boundary";
+import NotFound from "@/components/not-found";
 import { Toaster } from "@/components/ui/sonner";
 import { authClient } from "@/lib/auth/auth-client";
 import appCss from "../globals.css?url";
-import NotFound from "@/components/not-found";
 
 const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
   const { createAuth } = await import("../../convex/auth");
@@ -65,6 +65,11 @@ export const Route = createRootRouteWithContext<{
   },
   component: RootComponent,
   notFoundComponent: NotFound,
+  errorComponent: (props) => {
+    <RootDocument>
+      <ErrorBoundary {...props} />
+    </RootDocument>;
+  },
 });
 
 const postHogOptions = {
