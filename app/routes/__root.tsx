@@ -6,6 +6,7 @@ import {
 import type { ConvexQueryClient } from "@convex-dev/react-query";
 import { PostHogProvider } from "@posthog/react";
 import type { QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
   HeadContent,
@@ -13,6 +14,7 @@ import {
   Scripts,
   useRouteContext,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie, getRequest } from "@tanstack/react-start/server";
 import type { ConvexReactClient } from "convex/react";
@@ -64,11 +66,11 @@ export const Route = createRootRouteWithContext<{
   },
   component: RootComponent,
   notFoundComponent: NotFound,
-  errorComponent: (props) => {
+  errorComponent: (props) => (
     <RootDocument>
       <ErrorBoundary {...props} />
-    </RootDocument>;
-  },
+    </RootDocument>
+  ),
 });
 
 const postHogOptions = {
@@ -104,6 +106,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased">
         {children}
+        <TanStackRouterDevtools position="bottom-right" />
+        <ReactQueryDevtools buttonPosition="bottom-left" />
         <Scripts />
       </body>
     </html>
