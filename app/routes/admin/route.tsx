@@ -1,11 +1,17 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import AdminLayout from "@/components/layouts/admin";
-import { getCurrentUser } from "@/app/functions/auth";
+import { getUserById } from "@/app/functions/auth";
 
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,
-  loader: async () => {
-    const user = await getCurrentUser();
+  loader: async ({ context }) => {
+    const userId = context.userId;
+    if (!userId) {
+      throw redirect({
+        to: "/sign-in",
+      });
+    }
+    const user = await getUserById({ data: { userId } });
     if (!user) {
       throw redirect({
         to: "/sign-in",
