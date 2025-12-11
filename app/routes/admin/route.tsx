@@ -1,31 +1,39 @@
-import { getCurrentUser } from "@/app/functions/auth";
-import Navbar from "@/components/navbar";
-import { api } from "@/convex/_generated/api";
-import { fetchQuery } from "@/lib/auth/auth-server";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
+import AdminLayout from "@/components/layouts/admin";
+import { convexQuery } from "@convex-dev/react-query";
+import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,
-  loader: async () => {
-    const user = await getCurrentUser();
-    if (user?.role !== "admin") {
-      throw redirect({
-        to: "/",
-      });
+  beforeLoad: async ({ context }) => {
+    const userId = context.userId;
+    if (!userId) throw redirect({ to: "/sign-in" });
+
+    const user = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.getCurrentUser, {}),
+    );
+
+    if (!user) {
+      throw redirect({ to: "/sign-in" });
     }
+
     return {
       user,
+      userId,
     };
+  },
+  loader: async ({ context }) => {
+    if (context.user.role !== "admin") {
+      throw redirect({ to: "/" });
+    }
+    return { user: context.user };
   },
 });
 
 function RouteComponent() {
-  const { user } = Route.useLoaderData();
   return (
-    <>
-      <Navbar user={user} />
+    <AdminLayout>
       <Outlet />
-    </>
+    </AdminLayout>
   );
 }

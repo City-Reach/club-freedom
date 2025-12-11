@@ -7,9 +7,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserRoundIcon } from "lucide-react";
-import { authClient } from "@/lib/auth/auth-client";
-import { useNavigate } from "@tanstack/react-router";
+import { LogOut, Shield, UserRoundIcon } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
@@ -17,13 +16,6 @@ type Props = {
 };
 
 export default function UserDropDown({ user }: Props) {
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await authClient.signOut();
-    await navigate({ to: "/sign-in" });
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,14 +26,25 @@ export default function UserDropDown({ user }: Props) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
-        <DropdownMenuLabel>
-          {user.name} ({user.role})
-        </DropdownMenuLabel>
+        <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
         <DropdownMenuLabel>
           <span className="text-sm text-muted-foreground">{user.email}</span>
         </DropdownMenuLabel>
+        {user.role === "admin" && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin">
+              <Shield />
+              Admin
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/sign-out">
+            <LogOut />
+            Sign out
+          </Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -9,19 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignOutRouteImport } from './routes/sign-out'
 import { Route as TestimonialsRouteRouteImport } from './routes/testimonials/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
 import { Route as OrgSlugIndexRouteImport } from './routes/$orgSlug/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
+import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizations'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
+const SignOutRoute = SignOutRouteImport.update({
+  id: '/sign-out',
+  path: '/sign-out',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -51,10 +59,20 @@ const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
   path: '/$orgSlug/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => TestimonialsRouteRoute,
+} as any)
+const AdminOrganizationsRoute = AdminOrganizationsRouteImport.update({
+  id: '/organizations',
+  path: '/organizations',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/sign-in',
@@ -85,25 +103,30 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
+  '/admin/organizations': typeof AdminOrganizationsRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/$orgSlug': typeof OrgSlugIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
+  '/sign-out': typeof SignOutRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
+  '/admin/organizations': typeof AdminOrganizationsRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/$orgSlug': typeof OrgSlugIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -112,13 +135,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
-  '/admin': typeof AdminRouteRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/testimonials': typeof TestimonialsRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
+  '/admin/organizations': typeof AdminOrganizationsRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
   '/$orgSlug/': typeof OrgSlugIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -129,23 +155,28 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/testimonials'
+    | '/sign-out'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
+    | '/admin/organizations'
     | '/testimonials/$id'
     | '/$orgSlug'
+    | '/admin/'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
+    | '/sign-out'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
+    | '/admin/organizations'
     | '/testimonials/$id'
     | '/$orgSlug'
+    | '/admin'
     | '/testimonials'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -155,11 +186,14 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/admin'
     | '/testimonials'
+    | '/sign-out'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
+    | '/admin/organizations'
     | '/testimonials/$id'
     | '/$orgSlug/'
+    | '/admin/'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -168,14 +202,22 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  AdminRouteRoute: typeof AdminRouteRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
   OrgSlugIndexRoute: typeof OrgSlugIndexRoute
+  SignOutRoute: typeof SignOutRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-out': {
+      id: '/sign-out'
+      path: '/sign-out'
+      fullPath: '/sign-out'
+      preLoaderRoute: typeof SignOutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/testimonials': {
       id: '/testimonials'
       path: '/testimonials'
@@ -218,12 +260,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrgSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/testimonials/$id': {
       id: '/testimonials/$id'
       path: '/$id'
       fullPath: '/testimonials/$id'
       preLoaderRoute: typeof TestimonialsIdRouteImport
       parentRoute: typeof TestimonialsRouteRoute
+    }
+    '/admin/organizations': {
+      id: '/admin/organizations'
+      path: '/organizations'
+      fullPath: '/admin/organizations'
+      preLoaderRoute: typeof AdminOrganizationsRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/_auth/sign-in': {
       id: '/_auth/sign-in'
@@ -279,6 +335,20 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface AdminRouteRouteChildren {
+  AdminOrganizationsRoute: typeof AdminOrganizationsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminOrganizationsRoute: AdminOrganizationsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 interface TestimonialsIdRouteChildren {
   TestimonialsIdMediaDownloadRoute: typeof TestimonialsIdMediaDownloadRoute
 }
@@ -307,9 +377,10 @@ const TestimonialsRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  AdminRouteRoute: AdminRouteRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
   OrgSlugIndexRoute: OrgSlugIndexRoute,
+  SignOutRoute: SignOutRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
