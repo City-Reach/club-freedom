@@ -26,6 +26,7 @@ export const Route = createFileRoute("/o/$slug/_dashboard")({
     return {
       user,
       userId,
+      organization: context.organization,
     };
   },
   loader: async ({ context, params }) => {

@@ -1,0 +1,105 @@
+import {
+  type Organization,
+  organizationSchema,
+} from "@/lib/schema/organization";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { useRouteContext, useRouter } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth/auth-client";
+import { toast } from "sonner";
+import { api } from "@/convex/_generated/api";
+import { convexQuery } from "@convex-dev/react-query";
+
+type Props = {
+  organization: Organization & { id: string };
+};
+
+export default function EditOrganizationForm({ organization }: Props) {
+  const form = useForm<Organization>({
+    resolver: zodResolver(organizationSchema),
+    defaultValues: organization,
+  });
+  const router = useRouter();
+  const context = useRouteContext({ from: "/o/$slug/_dashboard" });
+
+  const onSubmit = async (formData: Organization) => {
+    const name =
+      formData.name === organization.name ? undefined : formData.name;
+    const slug =
+      formData.slug === organization.slug ? undefined : formData.slug;
+
+    const { error } = await authClient.organization.update({
+      organizationId: organization.id,
+      data: {
+        name,
+        slug,
+      },
+    });
+
+    if (error) {
+      toast.error("Cannot update organization", {
+        description: error.message,
+      });
+      return;
+    }
+
+    toast.success("Organization updated successfully");
+    if (slug) {
+      void router.navigate({
+        to: ".",
+        params: { slug },
+      });
+    }
+    await router.invalidate();
+    await context.queryClient.invalidateQueries(
+      convexQuery(api.organization.getAllOrganizations, {}),
+    );
+  };
+
+  return (
+    <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <Controller
+        control={form.control}
+        name="name"
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+            <Input
+              {...field}
+              placeholder="Your organization name"
+              id={field.name}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="slug"
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor={field.name}>Slug</FieldLabel>
+            <Input
+              {...field}
+              placeholder="your-organization-slug"
+              id={field.name}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+      <Button
+        className="place-self-start"
+        type="submit"
+        disabled={form.formState.isSubmitting}
+      >
+        Save
+      </Button>
+    </form>
+  );
+}
