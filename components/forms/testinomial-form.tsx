@@ -14,7 +14,7 @@ import { useUploadFile } from "@convex-dev/r2/react";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import MobileVideoRecorder from "../recorder/mobile-video-recorder";
 import { Testimonial, testimonialSchema } from "@/lib/schema";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
 import { Turnstile } from "@marsidev/react-turnstile";
 import React from "react";
@@ -29,6 +29,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 
 export default function TestimonialForm() {
+  const { orgSlug = "" } = useParams({ strict: false })
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: { name: "", email: "", writtenText: "", consent: false },
@@ -84,6 +85,7 @@ export default function TestimonialForm() {
         storageId: storageId,
         media_type: media_type,
         text: values.writtenText,
+        orgSlug: orgSlug,
       });
 
       toast.success("Testimonial submitted successfully!", {
