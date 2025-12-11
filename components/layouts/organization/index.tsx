@@ -4,11 +4,10 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ReactNode } from "react";
-import DashboardBreadcrumbs from "@/components/dashboard-breadcrumbs";
-import { Separator } from "@/components/ui/separator";
 import OrganizationSidebar from "./organization-sidebar";
 import UserDropDown from "@/components/user-dropdown";
 import { useLoaderData } from "@tanstack/react-router";
+import OrganizationInfo from "./organization-info";
 
 export default function OrganizationLayout({
   children,
@@ -25,6 +24,7 @@ export default function OrganizationLayout({
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3">
           <div className="flex items-center gap-2">
             <SidebarTrigger />
+            <OrganizationInfo />
           </div>
           <div className="ml-auto">
             <UserDropDown user={user} />

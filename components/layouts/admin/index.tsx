@@ -6,7 +6,6 @@ import {
 import { ReactNode } from "react";
 import AdminSidebar from "./admin-sidebar";
 import DashboardBreadcrumbs from "@/components/dashboard-breadcrumbs";
-import { Separator } from "@/components/ui/separator";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
@@ -17,7 +16,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2 px-3">
             <SidebarTrigger />
             <DashboardBreadcrumbs />
-            <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
