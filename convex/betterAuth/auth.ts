@@ -1,9 +1,9 @@
-import { query } from "./_generated/server";
-import { doc } from "convex-helpers/validators";
-import schema from "./schema";
-import { v } from "convex/values";
-import { createAuth } from "../auth";
 import { getStaticAuth } from "@convex-dev/better-auth";
+import { v } from "convex/values";
+import { doc } from "convex-helpers/validators";
+import { createAuth } from "../auth";
+import { query } from "./_generated/server";
+import schema from "./schema";
 
 // Export a static instance for Better Auth schema generation
 export const auth = getStaticAuth(createAuth);

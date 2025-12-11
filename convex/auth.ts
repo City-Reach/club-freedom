@@ -1,15 +1,19 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { requireActionCtx } from "@convex-dev/better-auth/utils";
-import { betterAuth, BetterAuthOptions } from "better-auth";
+import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
+import {
+  adminOptions,
+  type PermissionCheck,
+  type Role,
+} from "@/lib/auth/permissions";
 import { components } from "./_generated/api";
-import { DataModel } from "./_generated/dataModel";
+import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authSchema from "./betterAuth/schema";
 import { sendResetPassword } from "./email";
-import { type PermissionCheck, Role, adminOptions } from "@/lib/auth/permissions";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.

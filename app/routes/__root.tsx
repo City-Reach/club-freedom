@@ -1,13 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/sonner";
-import { authClient } from "@/lib/auth/auth-client";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import {
   fetchSession,
   getCookieName,
 } from "@convex-dev/better-auth/react-start";
-import { ConvexQueryClient } from "@convex-dev/react-query";
-import { QueryClient } from "@tanstack/react-query";
+import type { ConvexQueryClient } from "@convex-dev/react-query";
+import { PostHogProvider } from "@posthog/react";
+import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
   HeadContent,
@@ -18,9 +16,11 @@ import {
 } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie, getRequest } from "@tanstack/react-start/server";
-import { ConvexReactClient } from "convex/react";
+import type { ConvexReactClient } from "convex/react";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { authClient } from "@/lib/auth/auth-client";
 import appCss from "../globals.css?url";
-import { PostHogProvider } from '@posthog/react'
 
 const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
   const { createAuth } = await import("../../convex/auth");
@@ -68,13 +68,16 @@ export const Route = createRootRouteWithContext<{
 
 const postHogOptions = {
   api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-  defaults: '2025-11-30',
-} as const
+  defaults: "2025-11-30",
+} as const;
 
 function RootComponent() {
   const context = useRouteContext({ from: Route.id });
   return (
-    <PostHogProvider apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY} options={postHogOptions}>
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      options={postHogOptions}
+    >
       <ConvexBetterAuthProvider
         client={context.convexClient}
         authClient={authClient}

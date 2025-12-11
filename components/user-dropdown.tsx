@@ -1,3 +1,6 @@
+import { Link } from "@tanstack/react-router";
+import { LogOut, Shield, UserRoundIcon } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,10 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, Shield, UserRoundIcon } from "lucide-react";
-import { Link } from "@tanstack/react-router";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
   user: Doc<"user">;
