@@ -5,23 +5,28 @@ import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/admin")({
   component: RouteComponent,
-  loader: async ({ context }) => {
+  beforeLoad: async ({ context }) => {
+    const userId = context.userId;
+    if (!userId) throw redirect({ to: "/sign-in" });
+
     const user = await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.getCurrentUser, {})
+      convexQuery(api.auth.getCurrentUser, {}),
     );
+
     if (!user) {
-      throw redirect({
-        to: "/sign-in",
-      });
+      throw redirect({ to: "/sign-in" });
     }
-    if (user.role !== "admin") {
-      throw redirect({
-        to: "/",
-      });
-    }
+
     return {
       user,
+      userId,
     };
+  },
+  loader: async ({ context }) => {
+    if (context.user.role !== "admin") {
+      throw redirect({ to: "/" });
+    }
+    return { user: context.user };
   },
 });
 
