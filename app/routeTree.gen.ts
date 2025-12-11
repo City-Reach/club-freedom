@@ -15,8 +15,8 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
-import { Route as OrgSlugIndexRouteImport } from './routes/$orgSlug/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as OrgSlugIndexRouteImport } from './routes/$orgSlug/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
 import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizations'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
@@ -54,15 +54,15 @@ const TestimonialsIndexRoute = TestimonialsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => TestimonialsRouteRoute,
 } as any)
-const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
-  id: '/$orgSlug/',
-  path: '/$orgSlug/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRouteRoute,
+} as any)
+const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
+  id: '/$orgSlug/',
+  path: '/$orgSlug/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   id: '/$id',
@@ -204,8 +204,8 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
-  OrgSlugIndexRoute: typeof OrgSlugIndexRoute
   SignOutRoute: typeof SignOutRoute
+  OrgSlugIndexRoute: typeof OrgSlugIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -253,19 +253,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestimonialsIndexRouteImport
       parentRoute: typeof TestimonialsRouteRoute
     }
-    '/$orgSlug/': {
-      id: '/$orgSlug/'
-      path: '/$orgSlug'
-      fullPath: '/$orgSlug'
-      preLoaderRoute: typeof OrgSlugIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/$orgSlug/': {
+      id: '/$orgSlug/'
+      path: '/$orgSlug'
+      fullPath: '/$orgSlug'
+      preLoaderRoute: typeof OrgSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/testimonials/$id': {
       id: '/testimonials/$id'
@@ -379,8 +379,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
-  OrgSlugIndexRoute: OrgSlugIndexRoute,
   SignOutRoute: SignOutRoute,
+  OrgSlugIndexRoute: OrgSlugIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
