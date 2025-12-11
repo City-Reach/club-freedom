@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useUploadFile } from "@convex-dev/r2/react";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import MobileVideoRecorder from "../recorder/mobile-video-recorder";
-import { Testimonial, testimonialSchema } from "@/lib/schema";
+import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { useNavigate } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -63,7 +63,7 @@ export default function TestimonialForm() {
       }
 
       // Step 2:
-      let storageId: string | undefined = undefined;
+      let storageId: string | undefined ;
       let media_type = "text";
       if (values.mediaFile) {
         storageId = await uploadFile(values.mediaFile);

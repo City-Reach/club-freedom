@@ -1,6 +1,6 @@
 import TestimonialDetail from "@/components/testimonial-detail";
 import { Button } from "@/components/ui/button";
-import { Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Authenticated } from "convex/react";
 import { ChevronLeft } from "lucide-react";

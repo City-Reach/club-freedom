@@ -1,4 +1,4 @@
-import { ComponentProps, lazy, Suspense } from "react";
+import { type ComponentProps, lazy, Suspense } from "react";
 import { LoadingAudioRecorder, LoadingVideoRecorder } from "./loading";
 import { ClientOnly } from "@tanstack/react-router";
 

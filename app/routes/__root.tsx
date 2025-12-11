@@ -6,8 +6,8 @@ import {
   fetchSession,
   getCookieName,
 } from "@convex-dev/better-auth/react-start";
-import { ConvexQueryClient } from "@convex-dev/react-query";
-import { QueryClient } from "@tanstack/react-query";
+import type { ConvexQueryClient } from "@convex-dev/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
   HeadContent,
@@ -18,7 +18,7 @@ import {
 } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie, getRequest } from "@tanstack/react-start/server";
-import { ConvexReactClient } from "convex/react";
+import type { ConvexReactClient } from "convex/react";
 import appCss from "../globals.css?url";
 import { PostHogProvider } from '@posthog/react'
 
