@@ -7,21 +7,27 @@ import { ReactNode } from "react";
 import DashboardBreadcrumbs from "@/components/dashboard-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import OrganizationSidebar from "./organization-sidebar";
+import UserDropDown from "@/components/user-dropdown";
+import { useLoaderData } from "@tanstack/react-router";
 
 export default function OrganizationLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  const { user } = useLoaderData({
+    from: "/o/$slug/_dashboard",
+  });
   return (
     <SidebarProvider>
       <OrganizationSidebar collapsible="icon" />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-          <div className="flex items-center gap-2 px-3">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3">
+          <div className="flex items-center gap-2">
             <SidebarTrigger />
-            <DashboardBreadcrumbs />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+          </div>
+          <div className="ml-auto">
+            <UserDropDown user={user} />
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
