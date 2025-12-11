@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth/auth-client";
-import { emailSchema } from "@/lib/schema";
+import { emailSchema } from "@/lib/schema/testimonials";
 import z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

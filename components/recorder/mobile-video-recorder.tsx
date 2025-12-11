@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Button } from "../ui/button";
 import { ControllerRenderProps } from "react-hook-form";
-import { Testimonial } from "@/lib/schema";
+import { Testimonial } from "@/lib/schema/testimonials";
 import { Video } from "lucide-react";
 
 type Props = {
