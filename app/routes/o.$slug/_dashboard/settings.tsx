@@ -9,7 +9,8 @@ export const Route = createFileRoute("/o/$slug/_dashboard/settings")({
 function RouteComponent() {
   const { organization } = Route.useRouteContext();
   return (
-    <div className="grid max-w-3xl mx-auto w-full gap-4">
+    <div className="grid max-w-3xl w-full gap-4">
+      <h2 className="pb-2 text-3xl font-semibold tracking-tight">Settings</h2>
       <Card>
         <CardHeader>
           <CardTitle>Your organization</CardTitle>
