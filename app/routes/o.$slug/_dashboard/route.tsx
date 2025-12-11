@@ -11,18 +11,32 @@ import {
 
 export const Route = createFileRoute("/o/$slug/_dashboard")({
   component: RouteComponent,
-  loader: async ({ context, params }) => {
+  beforeLoad: async ({ context }) => {
     const userId = context.userId;
     if (!userId) throw redirect({ to: "/sign-in" });
+
+    const user = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.getCurrentUser, {}),
+    );
+
+    if (!user) {
+      throw redirect({ to: "/sign-in" });
+    }
+
+    return {
+      user,
+      userId,
+    };
+  },
+  loader: async ({ context, params }) => {
     const organizations = await context.queryClient.ensureQueryData(
       convexQuery(api.organization.getAllOrganizations, {}),
     );
     if (!organizations.find((org) => org.slug === params.slug)) {
       throw notFound();
     }
-    const user = await getCurrentUser();
     return {
-      user,
+      user: context.user,
       organizations,
     };
   },

@@ -1,5 +1,5 @@
 import { Building, Building2 } from "lucide-react";
-import { Link, useLoaderData } from "@tanstack/react-router";
+import { Link, useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
   useSidebar,
   SidebarMenu,
@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function OrganizationSwitcher() {
   const { isMobile } = useSidebar();
-  const { organization } = useLoaderData({
+  const { organization } = useRouteContext({
     from: "/o/$slug",
   });
   const { organizations } = useLoaderData({
@@ -52,7 +52,7 @@ export default function OrganizationSwitcher() {
               Organizations
             </DropdownMenuLabel>
             <DropdownMenuItem className="gap-2 p-2" asChild>
-              <Link to="/o/$slug" params={{ slug: organization.slug }}>
+              <Link to="/o/$slug/settings" params={{ slug: organization.slug }}>
                 <div className="flex size-6 items-center justify-center rounded-md border">
                   <Building2 className="size-3.5 shrink-0" />
                 </div>
@@ -62,7 +62,7 @@ export default function OrganizationSwitcher() {
             {others.length > 0 && <DropdownMenuSeparator />}
             {others.map((org) => (
               <DropdownMenuItem key={org.name} className="gap-2 p-2" asChild>
-                <Link to="/o/$slug" params={{ slug: org.slug }}>
+                <Link to="/o/$slug/settings" params={{ slug: org.slug }}>
                   <div className="flex size-6 items-center justify-center rounded-md border">
                     <Building2 className="size-3.5 shrink-0" />
                   </div>

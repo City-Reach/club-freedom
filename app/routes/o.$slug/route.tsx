@@ -3,8 +3,8 @@ import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/o/$slug")({
-  component: RouteComponent,
-  loader: async ({ context, params }) => {
+  component: () => <Outlet />,
+  beforeLoad: async ({ context, params }) => {
     const organization = await context.queryClient.ensureQueryData(
       convexQuery(api.organization.getOrganizationBySlug, {
         slug: params.slug,
@@ -16,7 +16,3 @@ export const Route = createFileRoute("/o/$slug")({
     return { organization };
   },
 });
-
-function RouteComponent() {
-  return <Outlet />;
-}
