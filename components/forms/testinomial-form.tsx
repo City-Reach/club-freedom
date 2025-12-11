@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useUploadFile } from "@convex-dev/r2/react";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import MobileVideoRecorder from "../recorder/mobile-video-recorder";
-import { Testimonial, testimonialSchema } from "@/lib/schema";
+import { Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 import { useNavigate } from "@tanstack/react-router";
 import { AudioRecorder, VideoRecorder } from "../recorder";
 import { Turnstile } from "@marsidev/react-turnstile";
