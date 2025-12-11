@@ -1,6 +1,6 @@
-import { authClient } from "@/lib/auth/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
+import { authClient } from "@/lib/auth/auth-client";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Spinner } from "../ui/spinner";
 

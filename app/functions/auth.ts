@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
+import z from "zod";
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "@/lib/auth/auth-server";
-import z from "zod";
 
 export const getCurrentUser = createServerFn().handler(() => {
   const user = fetchQuery(api.auth.getCurrentUser, {});
