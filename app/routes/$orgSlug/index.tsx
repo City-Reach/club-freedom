@@ -2,23 +2,26 @@ import { getCurrentUser } from '@/app/functions/auth';
 import { createFileRoute } from '@tanstack/react-router'
 import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
-import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { NotFound } from '../__root';
 import { Spinner } from '@/components/ui/spinner';
+import { convexQuery } from '@convex-dev/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 export const Route = createFileRoute('/$orgSlug/')({
   component: TestimonialSubmissionPage,
-  loader: async () => {
+  loader: async ({ context: { queryClient }, params }) => {
     const user = await getCurrentUser();
-    return { user };
+    await queryClient.ensureQueryData(
+      convexQuery(api.organizations.getOrg, { orgSlug: params.orgSlug })
+    );
+    return { user, orgSlug: params.orgSlug };
   },
 })
 
 function TestimonialSubmissionPage() {
-  const { user } = Route.useLoaderData();
-  const { orgSlug } = Route.useParams()
-  const orgData = useQuery(api.organizations.getOrg, { orgSlug: orgSlug });
-
+  const { user, orgSlug } = Route.useLoaderData();
+  const orgResult = useSuspenseQuery(convexQuery(api.organizations.getOrg, { orgSlug }));
+  const orgData = orgResult.data
   if (!orgData) return (
     <Spinner />
   );
