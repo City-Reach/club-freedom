@@ -7,11 +7,13 @@ import { Controller, useForm } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useRouteContext, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
-import { api } from "@/convex/_generated/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { convexQuery } from "@convex-dev/react-query";
+import { api } from "@/convex/_generated/api";
+import { Spinner } from "../ui/spinner";
 
 type Props = {
   organization: Organization & { id: string };
@@ -23,7 +25,7 @@ export default function EditOrganizationForm({ organization }: Props) {
     defaultValues: organization,
   });
   const router = useRouter();
-  const context = useRouteContext({ from: "/o/$slug/_dashboard" });
+  const queryClient = useQueryClient();
 
   const onSubmit = async (formData: Organization) => {
     const name =
@@ -31,13 +33,14 @@ export default function EditOrganizationForm({ organization }: Props) {
     const slug =
       formData.slug === organization.slug ? undefined : formData.slug;
 
-    const { error } = await authClient.organization.update({
-      organizationId: organization.id,
-      data: {
-        name,
-        slug,
-      },
-    });
+    const { data: updatedOrganization, error } =
+      await authClient.organization.update({
+        organizationId: organization.id,
+        data: {
+          name,
+          slug,
+        },
+      });
 
     if (error) {
       toast.error("Cannot update organization", {
@@ -47,16 +50,39 @@ export default function EditOrganizationForm({ organization }: Props) {
     }
 
     toast.success("Organization updated successfully");
-    if (slug) {
-      void router.navigate({
+
+    const organizationBySlugQuery = (slug: string) =>
+      convexQuery(api.organization.getOrganizationBySlug, {
+        slug,
+      });
+
+    const allOrganizationsQuery = convexQuery(
+      api.organization.getAllOrganizations,
+      {}
+    );
+
+    await Promise.all([
+      queryClient.removeQueries(organizationBySlugQuery(organization.slug)),
+      queryClient.removeQueries(
+        organizationBySlugQuery(updatedOrganization.slug)
+      ),
+      queryClient.removeQueries(allOrganizationsQuery),
+    ]);
+
+    await Promise.all([
+      queryClient.ensureQueryData(
+        organizationBySlugQuery(updatedOrganization.slug)
+      ),
+      queryClient.ensureQueryData(allOrganizationsQuery),
+    ]);
+
+    if (updatedOrganization.slug !== organization.slug) {
+      await router.navigate({
         to: ".",
-        params: { slug },
+        params: { slug: updatedOrganization.slug },
       });
     }
     await router.invalidate();
-    await context.queryClient.invalidateQueries(
-      convexQuery(api.organization.getAllOrganizations, {}),
-    );
   };
 
   return (
@@ -98,7 +124,14 @@ export default function EditOrganizationForm({ organization }: Props) {
         type="submit"
         disabled={form.formState.isSubmitting}
       >
-        Save
+        {form.formState.isSubmitting ? (
+          <>
+            <Spinner />
+            Saving...
+          </>
+        ) : (
+          "Save"
+        )}
       </Button>
     </form>
   );

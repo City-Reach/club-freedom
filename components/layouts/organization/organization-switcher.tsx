@@ -1,5 +1,10 @@
 import { Building, Building2 } from "lucide-react";
-import { Link, useLoaderData, useParams } from "@tanstack/react-router";
+import {
+  Link,
+  useLoaderData,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 import {
   useSidebar,
   SidebarMenu,
@@ -25,7 +30,7 @@ export default function OrganizationSwitcher() {
     from: "/o/$slug",
   });
 
-  const preloadOrganization = useLoaderData({
+  const preloadOrganization = useRouteContext({
     from: "/o/$slug",
   }).organization;
 
