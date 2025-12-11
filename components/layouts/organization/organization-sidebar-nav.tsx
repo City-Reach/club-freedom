@@ -1,4 +1,4 @@
-import { Users2 } from "lucide-react";
+import { MessageSquare, Shield, ShieldCheck, Users2 } from "lucide-react";
 import { Link, useParams } from "@tanstack/react-router";
 import {
   SidebarGroup,
@@ -17,6 +17,22 @@ export default function OrganizationSidebarNav(
   return (
     <SidebarGroup {...props}>
       <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton tooltip="Feeds" asChild>
+            <Link to="/o/$slug/feeds" params={{ slug }}>
+              <MessageSquare />
+              <span>Feeds</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton tooltip="Moderator" asChild>
+            <Link to="/o/$slug/moderator" params={{ slug }}>
+              <Shield />
+              <span>Moderator</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Members" asChild>
             <Link to="/o/$slug/members" params={{ slug }}>

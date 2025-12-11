@@ -1,4 +1,4 @@
-import { Settings, Shield } from "lucide-react";
+import { Settings, Shield, UserRoundCog } from "lucide-react";
 import { Link, useLoaderData, useParams } from "@tanstack/react-router";
 import {
   SidebarGroup,
@@ -33,7 +33,7 @@ export default function OrganizationSidebarNavSecondary(
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Admin" asChild>
               <Link to="/admin">
-                <Shield />
+                <UserRoundCog />
                 <span>Admin</span>
               </Link>
             </SidebarMenuButton>

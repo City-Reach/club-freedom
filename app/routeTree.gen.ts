@@ -27,7 +27,9 @@ import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testim
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as OSlugDashboardRouteRouteImport } from './routes/o.$slug/_dashboard/route'
 import { Route as OSlugDashboardSettingsRouteImport } from './routes/o.$slug/_dashboard/settings'
+import { Route as OSlugDashboardModeratorRouteImport } from './routes/o.$slug/_dashboard/moderator'
 import { Route as OSlugDashboardMembersRouteImport } from './routes/o.$slug/_dashboard/members'
+import { Route as OSlugDashboardFeedsRouteImport } from './routes/o.$slug/_dashboard/feeds'
 
 const SignOutRoute = SignOutRouteImport.update({
   id: '/sign-out',
@@ -118,9 +120,19 @@ const OSlugDashboardSettingsRoute = OSlugDashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => OSlugDashboardRouteRoute,
 } as any)
+const OSlugDashboardModeratorRoute = OSlugDashboardModeratorRouteImport.update({
+  id: '/moderator',
+  path: '/moderator',
+  getParentRoute: () => OSlugDashboardRouteRoute,
+} as any)
 const OSlugDashboardMembersRoute = OSlugDashboardMembersRouteImport.update({
   id: '/members',
   path: '/members',
+  getParentRoute: () => OSlugDashboardRouteRoute,
+} as any)
+const OSlugDashboardFeedsRoute = OSlugDashboardFeedsRouteImport.update({
+  id: '/feeds',
+  path: '/feeds',
   getParentRoute: () => OSlugDashboardRouteRoute,
 } as any)
 
@@ -140,7 +152,9 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
   '/o/$slug/': typeof OSlugIndexRoute
+  '/o/$slug/feeds': typeof OSlugDashboardFeedsRoute
   '/o/$slug/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/moderator': typeof OSlugDashboardModeratorRoute
   '/o/$slug/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRoutesByTo {
@@ -156,7 +170,9 @@ export interface FileRoutesByTo {
   '/o/$slug': typeof OSlugIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
+  '/o/$slug/feeds': typeof OSlugDashboardFeedsRoute
   '/o/$slug/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/moderator': typeof OSlugDashboardModeratorRoute
   '/o/$slug/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRoutesById {
@@ -178,7 +194,9 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
   '/o/$slug/': typeof OSlugIndexRoute
+  '/o/$slug/_dashboard/feeds': typeof OSlugDashboardFeedsRoute
   '/o/$slug/_dashboard/members': typeof OSlugDashboardMembersRoute
+  '/o/$slug/_dashboard/moderator': typeof OSlugDashboardModeratorRoute
   '/o/$slug/_dashboard/settings': typeof OSlugDashboardSettingsRoute
 }
 export interface FileRouteTypes {
@@ -199,7 +217,9 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
     | '/o/$slug/'
+    | '/o/$slug/feeds'
     | '/o/$slug/members'
+    | '/o/$slug/moderator'
     | '/o/$slug/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -215,7 +235,9 @@ export interface FileRouteTypes {
     | '/o/$slug'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
+    | '/o/$slug/feeds'
     | '/o/$slug/members'
+    | '/o/$slug/moderator'
     | '/o/$slug/settings'
   id:
     | '__root__'
@@ -236,7 +258,9 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
     | '/o/$slug/'
+    | '/o/$slug/_dashboard/feeds'
     | '/o/$slug/_dashboard/members'
+    | '/o/$slug/_dashboard/moderator'
     | '/o/$slug/_dashboard/settings'
   fileRoutesById: FileRoutesById
 }
@@ -378,11 +402,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OSlugDashboardSettingsRouteImport
       parentRoute: typeof OSlugDashboardRouteRoute
     }
+    '/o/$slug/_dashboard/moderator': {
+      id: '/o/$slug/_dashboard/moderator'
+      path: '/moderator'
+      fullPath: '/o/$slug/moderator'
+      preLoaderRoute: typeof OSlugDashboardModeratorRouteImport
+      parentRoute: typeof OSlugDashboardRouteRoute
+    }
     '/o/$slug/_dashboard/members': {
       id: '/o/$slug/_dashboard/members'
       path: '/members'
       fullPath: '/o/$slug/members'
       preLoaderRoute: typeof OSlugDashboardMembersRouteImport
+      parentRoute: typeof OSlugDashboardRouteRoute
+    }
+    '/o/$slug/_dashboard/feeds': {
+      id: '/o/$slug/_dashboard/feeds'
+      path: '/feeds'
+      fullPath: '/o/$slug/feeds'
+      preLoaderRoute: typeof OSlugDashboardFeedsRouteImport
       parentRoute: typeof OSlugDashboardRouteRoute
     }
   }
@@ -444,12 +482,16 @@ const TestimonialsRouteRouteWithChildren =
   TestimonialsRouteRoute._addFileChildren(TestimonialsRouteRouteChildren)
 
 interface OSlugDashboardRouteRouteChildren {
+  OSlugDashboardFeedsRoute: typeof OSlugDashboardFeedsRoute
   OSlugDashboardMembersRoute: typeof OSlugDashboardMembersRoute
+  OSlugDashboardModeratorRoute: typeof OSlugDashboardModeratorRoute
   OSlugDashboardSettingsRoute: typeof OSlugDashboardSettingsRoute
 }
 
 const OSlugDashboardRouteRouteChildren: OSlugDashboardRouteRouteChildren = {
+  OSlugDashboardFeedsRoute: OSlugDashboardFeedsRoute,
   OSlugDashboardMembersRoute: OSlugDashboardMembersRoute,
+  OSlugDashboardModeratorRoute: OSlugDashboardModeratorRoute,
   OSlugDashboardSettingsRoute: OSlugDashboardSettingsRoute,
 }
 

@@ -1,4 +1,3 @@
-import { getCurrentUser } from "@/app/functions/auth";
 import OrganizationLayout from "@/components/layouts/organization";
 import { api } from "@/convex/_generated/api";
 import { convexQuery } from "@convex-dev/react-query";
