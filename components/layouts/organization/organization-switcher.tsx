@@ -1,5 +1,5 @@
 import { Building, Building2 } from "lucide-react";
-import { Link, useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { Link, useLoaderData, useParams } from "@tanstack/react-router";
 import {
   useSidebar,
   SidebarMenu,
@@ -15,17 +15,40 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { api } from "@/convex/_generated/api";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { convexQuery } from "@convex-dev/react-query";
 
 export default function OrganizationSwitcher() {
   const { isMobile } = useSidebar();
-  const { organization } = useRouteContext({
+  const { slug } = useParams({
     from: "/o/$slug",
   });
-  const { organizations } = useLoaderData({
-    from: "/o/$slug/_dashboard",
-  });
 
-  const others = organizations.filter((org) => org.slug !== organization.slug);
+  const preloadOrganization = useLoaderData({
+    from: "/o/$slug",
+  }).organization;
+
+  const preloadOrganizations = useLoaderData({
+    from: "/o/$slug/_dashboard",
+  }).organizations;
+
+  const { data: liveOrganization } = useSuspenseQuery(
+    convexQuery(api.organization.getOrganizationBySlug, {
+      slug,
+    })
+  );
+
+  const { data: liveOrganizations } = useSuspenseQuery(
+    convexQuery(api.organization.getAllOrganizations, {})
+  );
+
+  const currentOrganization = liveOrganization || preloadOrganization;
+  const organizations = liveOrganizations || preloadOrganizations;
+
+  const others = organizations.filter(
+    (org) => org.slug !== currentOrganization.slug
+  );
 
   return (
     <SidebarMenu>
@@ -39,7 +62,9 @@ export default function OrganizationSwitcher() {
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <Building className="size-4" />
               </div>
-              <span className="truncate font-medium">{organization.name}</span>
+              <span className="truncate font-medium">
+                {currentOrganization.name}
+              </span>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -52,11 +77,14 @@ export default function OrganizationSwitcher() {
               Organizations
             </DropdownMenuLabel>
             <DropdownMenuItem className="gap-2 p-2" asChild>
-              <Link to="/o/$slug/settings" params={{ slug: organization.slug }}>
+              <Link
+                to="/o/$slug/settings"
+                params={{ slug: currentOrganization.slug }}
+              >
                 <div className="flex size-6 items-center justify-center rounded-md border">
                   <Building2 className="size-3.5 shrink-0" />
                 </div>
-                {organization.name} <Badge>Current</Badge>
+                {currentOrganization.name} <Badge>Current</Badge>
               </Link>
             </DropdownMenuItem>
             {others.length > 0 && <DropdownMenuSeparator />}
