@@ -13,8 +13,11 @@ export default defineSchema({
     testimonialText: v.optional(v.string()),
     summary: v.optional(v.string()),
     searchText: v.optional(v.string()),
-    approved: v.optional(v.boolean()), // Whether the testimonial is approved for display
-  }).searchIndex("search_posts", {
-    searchField: "searchText",
-  }),
+    orgSlug: v.string(),
+    approved: v.optional(v.boolean()),
+  })
+    .index("orgSlug", ["orgSlug"])
+    .searchIndex("search_posts", {
+      searchField: "searchText",
+    })
 });

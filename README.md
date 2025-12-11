@@ -301,6 +301,15 @@ To run a single migration, use the following command:
 
 `pnpx convex run migrations:run '{fn: "migrations:yourMigrationName"}'`
 
+Note: pass the --prod argument to run this in production
+
+### Adding the orgSlug field to the testimonials table
+
+1. Change the "orgSlug" field in the testimonials table in convex\schema.ts to `v.optional(v.string())`
+2. Ensure convex function sync is running with `pnpm comvex dev`
+3. Run `pnpx convex run migrations:run '{fn: "migrations:setOrgSlug"}'`
+4. Change the "orgSlug" field in the testimonials table in convex\schema.ts to `v.string()`
+
 ## Cloudflare Turnstile
 
 Visit [these steps](https://developers.cloudflare.com/turnstile/get-started/) to obtain a free site key and secret key from Cloudflare.

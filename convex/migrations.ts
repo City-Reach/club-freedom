@@ -11,6 +11,11 @@ export const setDefaultApprovedValue = migrations.define({
   migrateOne: () => ({ approved: true }),
 });
 
+export const setOrgSlug = migrations.define({
+  table: "testimonials",
+  migrateOne: () => ({ orgSlug: "club-freedom" }),
+});
+
 export const backFillSearchText = migrations.define({
   table: "testimonials",
   migrateOne(_, doc) {
