@@ -1,4 +1,4 @@
-import { Building, Building2 } from "lucide-react";
+import { Building, Building2, ChevronsUpDown } from "lucide-react";
 import {
   Link,
   useLoaderData,
@@ -41,18 +41,18 @@ export default function OrganizationSwitcher() {
   const { data: liveOrganization } = useSuspenseQuery(
     convexQuery(api.organization.getOrganizationBySlug, {
       slug,
-    })
+    }),
   );
 
   const { data: liveOrganizations } = useSuspenseQuery(
-    convexQuery(api.organization.getAllOrganizations, {})
+    convexQuery(api.organization.getAllOrganizations, {}),
   );
 
   const currentOrganization = liveOrganization || preloadOrganization;
   const organizations = liveOrganizations || preloadOrganizations;
 
   const others = organizations.filter(
-    (org) => org.slug !== currentOrganization.slug
+    (org) => org.slug !== currentOrganization.slug,
   );
 
   return (
@@ -70,6 +70,7 @@ export default function OrganizationSwitcher() {
               <span className="truncate font-medium">
                 {currentOrganization.name}
               </span>
+              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent

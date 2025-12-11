@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
 } from "./ui/dropdown-menu";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { UserIcon, ChevronsUpDown, LogOut } from "lucide-react";
+import { UserIcon, LogOut, EllipsisVertical } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuItem,
@@ -55,7 +55,7 @@ export default function UserNavigation({ user }: Props) {
                 <span className="truncate font-medium">{user?.name}</span>
                 <span className="truncate text-xs">{user?.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
