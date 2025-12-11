@@ -102,7 +102,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   );
 }
 
-function NotFound() {
+export function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-8 text-center">
       <h1 className="text-6xl font-bold mb-4">404</h1>

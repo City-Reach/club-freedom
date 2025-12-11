@@ -14,6 +14,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
+import { Route as OrgSlugIndexRouteImport } from './routes/$orgSlug/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
@@ -44,6 +45,11 @@ const TestimonialsIndexRoute = TestimonialsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => TestimonialsRouteRoute,
+} as any)
+const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
+  id: '/$orgSlug/',
+  path: '/$orgSlug/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   id: '/$id',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
+  '/$orgSlug': typeof OrgSlugIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
+  '/$orgSlug': typeof OrgSlugIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
+  '/$orgSlug/': typeof OrgSlugIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/testimonials/$id'
+    | '/$orgSlug'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/testimonials/$id'
+    | '/$orgSlug'
     | '/testimonials'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/_auth/reset-password'
     | '/_auth/sign-in'
     | '/testimonials/$id'
+    | '/$orgSlug/'
     | '/testimonials/'
     | '/api/auth/$'
     | '/testimonials/$id/media-download'
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRoute
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
+  OrgSlugIndexRoute: typeof OrgSlugIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/testimonials/'
       preLoaderRoute: typeof TestimonialsIndexRouteImport
       parentRoute: typeof TestimonialsRouteRoute
+    }
+    '/$orgSlug/': {
+      id: '/$orgSlug/'
+      path: '/$orgSlug'
+      fullPath: '/$orgSlug'
+      preLoaderRoute: typeof OrgSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/testimonials/$id': {
       id: '/testimonials/$id'
@@ -289,6 +309,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRoute,
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
+  OrgSlugIndexRoute: OrgSlugIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -1512,4 +1512,13 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         Name
       >;
     };
+    organizations: {
+      getOrgBySlug: FunctionReference<
+        "query",
+        "internal",
+        { orgSlug: string },
+        any,
+        Name
+      >;
+    };
   };
