@@ -1,8 +1,8 @@
-import { Button } from "./ui/button";
-import Logo from "./logo";
-import UserDropDown from "./user-dropdown";
 import { Link } from "@tanstack/react-router";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import Logo from "./logo";
+import { Button } from "./ui/button";
+import UserDropDown from "./user-dropdown";
 
 type Props = {
   user: Doc<"user"> | null;

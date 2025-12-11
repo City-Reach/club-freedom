@@ -1,6 +1,6 @@
-import { mutation } from "../functions";
-import { authComponent, createAuth } from "../auth";
 import { v } from "convex/values";
+import { authComponent, createAuth } from "../auth";
+import { mutation } from "../functions";
 
 export const createAdminUser = mutation({
   args: {

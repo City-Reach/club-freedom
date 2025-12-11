@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/sonner";
-import { authClient } from "@/lib/auth/auth-client";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import {
   fetchSession,
@@ -19,6 +16,9 @@ import {
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie, getRequest } from "@tanstack/react-start/server";
 import type { ConvexReactClient } from "convex/react";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { authClient } from "@/lib/auth/auth-client";
 import appCss from "../globals.css?url";
 import { PostHogProvider } from '@posthog/react'
 

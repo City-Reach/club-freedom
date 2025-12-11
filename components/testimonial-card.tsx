@@ -1,4 +1,10 @@
+import { Link } from "@tanstack/react-router";
+import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
 import type { Doc } from "@/convex/_generated/dataModel";
+import { cn } from "@/lib/utils";
+import { getApprovalStatusText } from "@/utils/testimonial-utils";
+import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
@@ -6,12 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { formatDistanceToNow } from "date-fns";
-import { useState } from "react";
-import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { getApprovalStatusText } from "@/utils/testimonial-utils";
 
 type Props = {
   testimonial: Doc<"testimonials"> & { mediaUrl?: string | null };

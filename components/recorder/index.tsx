@@ -1,6 +1,6 @@
+import { ClientOnly } from "@tanstack/react-router";
 import { type ComponentProps, lazy, Suspense } from "react";
 import { LoadingAudioRecorder, LoadingVideoRecorder } from "./loading";
-import { ClientOnly } from "@tanstack/react-router";
 
 const LazyVideoRecorder = lazy(() => import("./video-recorder"));
 const LazyAudioRecorder = lazy(() => import("./audio-recorder"));
