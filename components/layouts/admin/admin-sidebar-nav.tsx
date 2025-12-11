@@ -13,7 +13,7 @@ export default function AdminSidebarNav() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Organizations" asChild>
-            <Link to="/admin/organizations">
+            <Link to="/admin/organizations" className="[&.active]:not-hover:bg-muted">
               <Building />
               <span>Organizations</span>
             </Link>

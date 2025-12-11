@@ -1,4 +1,4 @@
-import { Settings, Shield, UserRoundCog } from "lucide-react";
+import { ExternalLink, Settings, UserRoundCog } from "lucide-react";
 import { Link, useLoaderData, useParams } from "@tanstack/react-router";
 import {
   SidebarGroup,
@@ -23,7 +23,11 @@ export default function OrganizationSidebarNavSecondary(
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Settings" asChild>
-            <Link to="/o/$slug/settings" params={{ slug }}>
+            <Link
+              to="/o/$slug/settings"
+              params={{ slug }}
+              className="[&.active]:not-hover:bg-muted"
+            >
               <Settings />
               <span>Settings</span>
             </Link>
@@ -31,10 +35,20 @@ export default function OrganizationSidebarNavSecondary(
         </SidebarMenuItem>
         {user?.role === "admin" && (
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Admin" asChild>
+            <SidebarMenuButton
+              tooltip={{
+                children: (
+                  <p className="flex gap-2 items-center">
+                    Admin <ExternalLink className="size-3" />
+                  </p>
+                ),
+              }}
+              asChild
+            >
               <Link to="/admin">
                 <UserRoundCog />
                 <span>Admin</span>
+                <ExternalLink className="ml-auto" />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
