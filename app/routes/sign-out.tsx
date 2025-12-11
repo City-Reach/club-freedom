@@ -1,5 +1,6 @@
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/auth-client";
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 
@@ -9,15 +10,17 @@ export const Route = createFileRoute("/sign-out")({
 
 function RouteComponent() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     authClient.signOut().then(async () => {
+      queryClient.removeQueries();
       await router.invalidate();
       await router.navigate({
         to: "/sign-in",
       });
     });
-  }, []);
+  }, [router, queryClient]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 h-screen">
