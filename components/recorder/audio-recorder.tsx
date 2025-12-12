@@ -2,8 +2,8 @@
 
 import { Mic, Square } from "lucide-react";
 import { ReactMediaRecorder } from "react-media-recorder";
-import TimeElapsed from "./time-elapsed";
 import { Button } from "../ui/button";
+import TimeElapsed from "./time-elapsed";
 
 type Props = {
   onRecordingComplete: (audioFile?: File) => void;

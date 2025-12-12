@@ -1,6 +1,6 @@
 import { Migrations } from "@convex-dev/migrations";
 import { api, components, internal } from "./_generated/api";
-import { DataModel } from "./_generated/dataModel";
+import type { DataModel } from "./_generated/dataModel";
 import { internalAction } from "./_generated/server";
 
 export const migrations = new Migrations<DataModel>(components.migrations);
@@ -57,7 +57,7 @@ export const migrateToR2 = internalAction({
         {
           mediaId: media.mediaId,
           mediaType: media.mediaType.contentType,
-        }
+        },
       );
       if (storageId) {
         await ctx.runMutation(api.internal.r2.updateStorageId, {

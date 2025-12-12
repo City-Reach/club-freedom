@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { internalAction, query } from "../_generated/server";
-import { r2 } from "../r2";
 import { mutation } from "../functions";
+import { r2 } from "../r2";
 
 export const foundMediaForMigrations = query({
   async handler(ctx) {
@@ -15,7 +15,7 @@ export const foundMediaForMigrations = query({
       testimonials.map(async (t) => {
         const mediaType = await ctx.db.system.get(t.media_id!);
         return { _id: t._id, mediaType, mediaId: t.media_id };
-      })
+      }),
     );
 
     return medias;

@@ -1,7 +1,7 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { convex } from "@/lib/convex";
 import { createFileRoute } from "@tanstack/react-router";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+import { convex } from "@/lib/convex";
 
 export const Route = createFileRoute("/testimonials/$id/media-download")({
   server: {

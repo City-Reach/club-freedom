@@ -1,7 +1,7 @@
 "use client";
 
-import { Testimonials } from "@/components/testimonials";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Testimonials } from "@/components/testimonials";
 
 export const Route = createFileRoute("/testimonials/")({
   component: TestimonialsPage,

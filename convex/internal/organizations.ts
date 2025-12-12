@@ -1,6 +1,6 @@
-import { mutation } from "../functions";
-import { authComponent, createAuth } from "@/convex/auth";
 import { v } from "convex/values";
+import { authComponent, createAuth } from "@/convex/auth";
+import { mutation } from "../functions";
 
 export const createOrganization = mutation({
   args: {
@@ -12,14 +12,13 @@ export const createOrganization = mutation({
   handler: async (ctx, args) => {
     const { auth } = await authComponent.getAuth(createAuth, ctx);
     await auth.api.createOrganization({
-        body: {
-            name: args.name,
-            slug: args.slug,
-            logo: args.logo,
-            userId: args.userId,
-            keepCurrentActiveOrganization: true,
-        },
+      body: {
+        name: args.name,
+        slug: args.slug,
+        logo: args.logo,
+        userId: args.userId,
+        keepCurrentActiveOrganization: true,
+      },
     });
   },
 });
-

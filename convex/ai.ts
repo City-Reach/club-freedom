@@ -1,11 +1,11 @@
 "use node";
 
-import {action} from "./_generated/server";
-import {transcribeAudio} from "@/lib/ai/transcribe";
-import {api} from "./_generated/api";
-import {summarize} from "@/lib/ai/summarize";
-import {v} from "convex/values";
+import { v } from "convex/values";
+import { summarize } from "@/lib/ai/summarize";
+import { transcribeAudio } from "@/lib/ai/transcribe";
 import { postHogClient } from "@/utils/posthog-convex";
+import { api } from "./_generated/api";
+import { action } from "./_generated/server";
 
 // Action to handle Gemini text summarization (runs in Node.js environment)
 export const summarizeText = action({
@@ -13,11 +13,11 @@ export const summarizeText = action({
     testimonialId: v.id("testimonials"),
     text: v.string(),
   },
-  handler: async (ctx, {testimonialId, text}) => {
+  handler: async (ctx, { testimonialId, text }) => {
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
-        {id: testimonialId},
+        { id: testimonialId },
       );
       if (testimonial) {
         const resp = await summarize(text, testimonial.name);
@@ -30,7 +30,10 @@ export const summarizeText = action({
         throw new Error("Testimonial not found");
       }
     } catch (error) {
-      postHogClient.captureException(error, `summarizeText-${testimonialId}`, { testimonialId: testimonialId, text: text });
+      postHogClient.captureException(error, `summarizeText-${testimonialId}`, {
+        testimonialId: testimonialId,
+        text: text,
+      });
       return;
     }
   },
@@ -41,11 +44,13 @@ export const transcribe = action({
     testimonialId: v.id("testimonials"),
     mediaUrl: v.string(),
   },
-  handler: async (ctx, {testimonialId, mediaUrl}) => {
+  handler: async (ctx, { testimonialId, mediaUrl }) => {
     try {
       const transcribedText = await transcribeAudio(mediaUrl);
       if (!transcribedText) {
-        throw new Error(`Transcription returned no text for testimonial ${testimonialId}`);
+        throw new Error(
+          `Transcription returned no text for testimonial ${testimonialId}`,
+        );
       }
 
       // Update the testimonial with the transcribed text
@@ -54,7 +59,10 @@ export const transcribe = action({
         text: transcribedText,
       });
     } catch (error) {
-      postHogClient.captureException(error, `transcribe-${testimonialId}`, { testimonialId: testimonialId, mediaUrl: mediaUrl });
+      postHogClient.captureException(error, `transcribe-${testimonialId}`, {
+        testimonialId: testimonialId,
+        mediaUrl: mediaUrl,
+      });
       return;
     }
   },
