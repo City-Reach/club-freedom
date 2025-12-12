@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import { api } from "@/convex/_generated/api";
+import type { IAbbreviatedOrg } from "@/convex/betterAuth/organization";
 import { getCurrentUser } from "../functions/auth";
 
 export const Route = createFileRoute("/")({
@@ -22,7 +23,7 @@ function Home() {
   const { user, organizations } = Route.useLoaderData();
   const navigate = Route.useNavigate();
   const orgsData = organizations || [];
-  const [selected, setSelected] = useState<(typeof orgsData)[0] | null>(null);
+  const [selected, setSelected] = useState<IAbbreviatedOrg | null>(null);
   return (
     <>
       <Navbar user={user} />

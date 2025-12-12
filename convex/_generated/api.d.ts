@@ -1763,6 +1763,7 @@ export declare const components: {
       >;
     };
     organization: {
+      getAllOrganizations: FunctionReference<"query", "internal", any, any>;
       getOrganization: FunctionReference<
         "query",
         "internal",
