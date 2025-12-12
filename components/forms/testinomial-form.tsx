@@ -30,7 +30,9 @@ import { Textarea } from "../ui/textarea";
 type TestonomialFormProps = {
   organizationId: string;
 };
-export default function TestimonialForm({ organizationId }: TestonomialFormProps) {
+export default function TestimonialForm({
+  organizationId,
+}: TestonomialFormProps) {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: { name: "", email: "", writtenText: "", consent: false },

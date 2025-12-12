@@ -13,7 +13,7 @@ export const setDefaultApprovedValue = migrations.define({
 
 export const setTestimonialOrganizationId = migrations.define({
   table: "testimonials",
-  migrateOne: () => ({ organizationId: process.env.ORGANIZATION_ID}),
+  migrateOne: () => ({ organizationId: process.env.ORGANIZATION_ID }),
 });
 
 export const backFillSearchText = migrations.define({

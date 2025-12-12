@@ -4,9 +4,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getCurrentUser } from "@/app/functions/auth";
 import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
+import NotFound from "@/components/not-found";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
-import NotFound from "@/components/not-found";
 export const Route = createFileRoute("/$orgSlug/")({
   component: TestimonialSubmissionPage,
   loader: async ({ context: { queryClient }, params }) => {
@@ -42,7 +42,7 @@ function TestimonialSubmissionPage() {
               "Let your light shine before others" – Matthew 5:16
             </p>
           </div>
-          <TestonomialForm organizationId={orgData[0]}/>
+          <TestonomialForm organizationId={orgData[0]} />
         </main>
       </>
     );

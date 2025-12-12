@@ -78,7 +78,7 @@ export const postTestimonial = mutation({
       media_type,
       testimonialText: text,
       createdAt: Date.now(),
-      organizationId
+      organizationId,
     });
     return id;
   },
