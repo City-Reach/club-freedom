@@ -8,7 +8,7 @@ import {
 import OrganizationLayout from "@/components/layouts/organization";
 import { api } from "@/convex/_generated/api";
 
-export const Route = createFileRoute("/o/$slug/_dashboard")({
+export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
   component: RouteComponent,
   beforeLoad: async ({ context }) => {
     const userId = context.userId;
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/o/$slug/_dashboard")({
     const organizations = await context.queryClient.ensureQueryData(
       convexQuery(api.organization.getAllOrganizations, {}),
     );
-    if (!organizations.find((org) => org.slug === params.slug)) {
+    if (!organizations.find((org) => org.slug === params.orgSlug)) {
       throw notFound();
     }
     return {

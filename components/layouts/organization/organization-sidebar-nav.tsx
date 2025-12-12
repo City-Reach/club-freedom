@@ -1,5 +1,5 @@
 import { Link, useParams } from "@tanstack/react-router";
-import { MessageSquare, Shield, ShieldCheck, Users2 } from "lucide-react";
+import { MessageSquare, Shield, Users2 } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
   SidebarGroup,
@@ -11,8 +11,8 @@ import {
 export default function OrganizationSidebarNav(
   props: ComponentProps<typeof SidebarGroup>,
 ) {
-  const { slug } = useParams({
-    from: "/o/$slug",
+  const { orgSlug } = useParams({
+    from: "/o/$orgSlug",
   });
   return (
     <SidebarGroup {...props}>
@@ -20,8 +20,8 @@ export default function OrganizationSidebarNav(
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Feeds" asChild>
             <Link
-              to="/o/$slug/feeds"
-              params={{ slug }}
+              to="/o/$orgSlug/feeds"
+              params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
               <MessageSquare />
@@ -32,8 +32,8 @@ export default function OrganizationSidebarNav(
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Moderator" asChild>
             <Link
-              to="/o/$slug/moderator"
-              params={{ slug }}
+              to="/o/$orgSlug/moderator"
+              params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
               <Shield />
@@ -44,8 +44,8 @@ export default function OrganizationSidebarNav(
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Members" asChild>
             <Link
-              to="/o/$slug/members"
-              params={{ slug }}
+              to="/o/$orgSlug/members"
+              params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
               <Users2 />

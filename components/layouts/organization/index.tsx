@@ -15,7 +15,7 @@ export default function OrganizationLayout({
   children: ReactNode;
 }) {
   const { user } = useLoaderData({
-    from: "/o/$slug/_dashboard",
+    from: "/o/$orgSlug/_dashboard",
   });
   return (
     <SidebarProvider>

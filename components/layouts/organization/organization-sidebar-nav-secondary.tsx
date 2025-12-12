@@ -11,11 +11,11 @@ import {
 export default function OrganizationSidebarNavSecondary(
   props: ComponentProps<typeof SidebarGroup>,
 ) {
-  const { slug } = useParams({
-    from: "/o/$slug",
+  const { orgSlug } = useParams({
+    from: "/o/$orgSlug",
   });
   const { user } = useLoaderData({
-    from: "/o/$slug/_dashboard",
+    from: "/o/$orgSlug/_dashboard",
   });
 
   return (
@@ -24,8 +24,8 @@ export default function OrganizationSidebarNavSecondary(
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Settings" asChild>
             <Link
-              to="/o/$slug/settings"
-              params={{ slug }}
+              to="/o/$orgSlug/settings"
+              params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
               <Settings />

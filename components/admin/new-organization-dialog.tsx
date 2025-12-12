@@ -23,6 +23,7 @@ import {
 } from "../ui/dialog";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
+import { authClient } from "@/lib/auth/auth-client";
 
 type Props = {
   trigger: ReactNode;

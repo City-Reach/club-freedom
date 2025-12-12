@@ -79,7 +79,7 @@ export default function EditOrganizationForm({ organization }: Props) {
     if (updatedOrganization.slug !== organization.slug) {
       await router.navigate({
         to: ".",
-        params: { slug: updatedOrganization.slug },
+        params: { orgSlug: updatedOrganization.slug },
       });
     }
     await router.invalidate();

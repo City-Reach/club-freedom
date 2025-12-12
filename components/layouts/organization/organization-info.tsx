@@ -6,11 +6,11 @@ import { api } from "@/convex/_generated/api";
 
 export default function OrganizationInfo() {
   const { open, isMobile } = useSidebar();
-  const { slug } = useParams({
-    from: "/o/$slug",
+  const { orgSlug } = useParams({
+    from: "/o/$orgSlug",
   });
   const { data: organization } = useSuspenseQuery(
-    convexQuery(api.organization.getOrganizationBySlug, { slug }),
+    convexQuery(api.organization.getOrganizationBySlug, { slug: orgSlug }),
   );
 
   if (open && !isMobile) {

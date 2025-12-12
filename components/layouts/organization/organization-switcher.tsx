@@ -26,21 +26,21 @@ import { api } from "@/convex/_generated/api";
 
 export default function OrganizationSwitcher() {
   const { isMobile } = useSidebar();
-  const { slug } = useParams({
-    from: "/o/$slug",
+  const { orgSlug } = useParams({
+    from: "/o/$orgSlug",
   });
 
   const preloadOrganization = useRouteContext({
-    from: "/o/$slug",
+    from: "/o/$orgSlug",
   }).organization;
 
   const preloadOrganizations = useLoaderData({
-    from: "/o/$slug/_dashboard",
+    from: "/o/$orgSlug/_dashboard",
   }).organizations;
 
   const { data: liveOrganization } = useSuspenseQuery(
     convexQuery(api.organization.getOrganizationBySlug, {
-      slug,
+      slug: orgSlug,
     }),
   );
 
@@ -84,8 +84,8 @@ export default function OrganizationSwitcher() {
             </DropdownMenuLabel>
             <DropdownMenuItem className="gap-2 p-2" asChild>
               <Link
-                to="/o/$slug/settings"
-                params={{ slug: currentOrganization.slug }}
+                to="/o/$orgSlug/settings"
+                params={{ orgSlug: currentOrganization.slug }}
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">
                   <Building2 className="size-3.5 shrink-0" />
@@ -96,7 +96,7 @@ export default function OrganizationSwitcher() {
             {others.length > 0 && <DropdownMenuSeparator />}
             {others.map((org) => (
               <DropdownMenuItem key={org.name} className="gap-2 p-2" asChild>
-                <Link to="/o/$slug/settings" params={{ slug: org.slug }}>
+                <Link to="/o/$orgSlug/settings" params={{ orgSlug: org.slug }}>
                   <div className="flex size-6 items-center justify-center rounded-md border">
                     <Building2 className="size-3.5 shrink-0" />
                   </div>

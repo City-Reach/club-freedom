@@ -15,7 +15,7 @@ export default function OrganizationSidebar({
   ...props
 }: ComponentProps<typeof Sidebar>) {
   const { user } = useLoaderData({
-    from: "/o/$slug/_dashboard",
+    from: "/o/$orgSlug/_dashboard",
   });
   return (
     <Sidebar {...props}>
