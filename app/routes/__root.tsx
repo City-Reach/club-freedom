@@ -6,18 +6,20 @@ import {
 import type { ConvexQueryClient } from "@convex-dev/react-query";
 import { PostHogProvider } from "@posthog/react";
 import type { QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
   HeadContent,
-  Link,
   Outlet,
   Scripts,
   useRouteContext,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie, getRequest } from "@tanstack/react-start/server";
 import type { ConvexReactClient } from "convex/react";
-import { Button } from "@/components/ui/button";
+import ErrorBoundary from "@/components/error-boundary";
+import NotFound from "@/components/not-found";
 import { Toaster } from "@/components/ui/sonner";
 import { authClient } from "@/lib/auth/auth-client";
 import appCss from "../globals.css?url";
@@ -64,6 +66,11 @@ export const Route = createRootRouteWithContext<{
   },
   component: RootComponent,
   notFoundComponent: NotFound,
+  errorComponent: (props) => (
+    <RootDocument>
+      <ErrorBoundary {...props} />
+    </RootDocument>
+  ),
 });
 
 const postHogOptions = {
@@ -99,23 +106,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased">
         {children}
+        <TanStackRouterDevtools position="bottom-right" />
+        <ReactQueryDevtools buttonPosition="bottom-left" />
         <Scripts />
       </body>
     </html>
-  );
-}
-
-function NotFound() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-8 text-center">
-      <h1 className="text-6xl font-bold mb-4">404</h1>
-      <h2 className="text-2xl font-semibold mb-2">Page Not Found</h2>
-      <p className="text-gray-600 mb-8">
-        The page you're looking for doesn't exist or has been moved.
-      </p>
-      <Button asChild>
-        <Link to="/">Go Back Home</Link>
-      </Button>
-    </div>
   );
 }
