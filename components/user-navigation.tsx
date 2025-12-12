@@ -1,22 +1,22 @@
+import { Link, useNavigate } from "@tanstack/react-router";
+import { EllipsisVertical, LogOut, UserIcon } from "lucide-react";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { authClient } from "@/lib/auth/auth-client";
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { UserIcon, LogOut, EllipsisVertical } from "lucide-react";
 import {
   SidebarMenu,
-  SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuItem,
   useSidebar,
 } from "./ui/sidebar";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
   user: Doc<"user">;

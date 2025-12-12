@@ -1,11 +1,11 @@
+import type { ReactNode } from "react";
+import DashboardBreadcrumbs from "@/components/dashboard-breadcrumbs";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ReactNode } from "react";
 import AdminSidebar from "./admin-sidebar";
-import DashboardBreadcrumbs from "@/components/dashboard-breadcrumbs";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (

@@ -7,6 +7,9 @@
     "dev": "concurrently --names \"vite,convex\" \"vite dev\" \"convex dev\"",
     "build": "vite build && tsc --noEmit",
     "preview": "vite preview",
+    "lint": "biome lint",
+    "format": "biome format",
+    "check": "biome check",
     "tsr:generate": "tsr generate",
     "auth:generate": "pnpx @better-auth/cli generate --config convex/betterAuth/auth.ts --output convex/betterAuth/generatedSchema.ts",
     "secret:bulk": "wrangler secret bulk",
@@ -70,6 +73,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.8",
     "@fontsource-variable/open-sans": "^5.2.7",
     "@fontsource-variable/roboto-mono": "^5.2.8",
     "@fontsource/open-sans": "^5.2.7",

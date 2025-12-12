@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import OrganizationList from "@/components/admin/organization-list";
 import NewOrganizationDialog from "@/components/admin/new-organization-dialog";
+import OrganizationList from "@/components/admin/organization-list";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin/organizations")({
   component: RouteComponent,

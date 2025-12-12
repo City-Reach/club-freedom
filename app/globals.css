@@ -7,8 +7,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Open Sans Variable', sans-serif;
-  --font-mono: 'Roboto Mono Variable', monospace;
+  --font-sans: "Open Sans Variable", sans-serif;
+  --font-mono: "Roboto Mono Variable", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-sidebar-ring: var(--sidebar-ring);

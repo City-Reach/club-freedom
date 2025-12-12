@@ -1,11 +1,11 @@
+import { Link } from "@tanstack/react-router";
 import { Building } from "lucide-react";
 import {
   SidebarGroup,
   SidebarMenu,
-  SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link } from "@tanstack/react-router";
 
 export default function AdminSidebarNav() {
   return (

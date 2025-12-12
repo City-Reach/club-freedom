@@ -1,4 +1,6 @@
-import { ComponentProps } from "react";
+import { Link, useLoaderData } from "@tanstack/react-router";
+import { Shield } from "lucide-react";
+import type { ComponentProps } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -8,10 +10,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link, useLoaderData } from "@tanstack/react-router";
-import { Shield } from "lucide-react";
-import AdminSidebarNav from "./admin-sidebar-nav";
 import UserNavigation from "@/components/user-navigation";
+import AdminSidebarNav from "./admin-sidebar-nav";
 
 export default function AdminSidebar({
   ...props

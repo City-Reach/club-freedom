@@ -1,8 +1,6 @@
-"use client";
-
+import { Square, Video } from "lucide-react";
 import { ReactMediaRecorder } from "react-media-recorder";
 import { Button } from "../ui/button";
-import { Square, Video } from "lucide-react";
 import TimeElapsed from "./time-elapsed";
 
 type Props = {
@@ -16,7 +14,7 @@ export default function VideoRecorder({ onRecordingComplete }: Props) {
       video
       audio
       blobPropertyBag={{
-        type: mp4Supported ? "video/mp4" : "video/webm"
+        type: mp4Supported ? "video/mp4" : "video/webm",
       }}
       mediaRecorderOptions={{
         mimeType: mp4Supported ? "video/mp4" : "video/webm",
