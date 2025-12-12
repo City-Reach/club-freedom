@@ -7,7 +7,6 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 import { Building, Building2, ChevronsUpDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -80,30 +79,39 @@ export default function OrganizationSwitcher() {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Organizations
+              Current Organization
             </DropdownMenuLabel>
-            <DropdownMenuItem className="gap-2 p-2" asChild>
-              <Link
-                to="/o/$orgSlug/settings"
-                params={{ orgSlug: currentOrganization.slug }}
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <Building2 className="size-3.5 shrink-0" />
-                </div>
-                {currentOrganization.name} <Badge>Current</Badge>
-              </Link>
+            <DropdownMenuItem className="gap-2 p-2">
+              <div className="flex size-6 items-center justify-center rounded-md border">
+                <Building2 className="size-3.5 shrink-0" />
+              </div>
+              {currentOrganization.name}
             </DropdownMenuItem>
-            {others.length > 0 && <DropdownMenuSeparator />}
-            {others.map((org) => (
-              <DropdownMenuItem key={org.name} className="gap-2 p-2" asChild>
-                <Link to="/o/$orgSlug/settings" params={{ orgSlug: org.slug }}>
-                  <div className="flex size-6 items-center justify-center rounded-md border">
-                    <Building2 className="size-3.5 shrink-0" />
-                  </div>
-                  {org.name}
-                </Link>
-              </DropdownMenuItem>
-            ))}
+            {others.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-muted-foreground text-xs">
+                  Other Organizations
+                </DropdownMenuLabel>
+                {others.map((org) => (
+                  <DropdownMenuItem
+                    key={org.name}
+                    className="gap-2 p-2"
+                    asChild
+                  >
+                    <Link
+                      to="/o/$orgSlug/testimonials"
+                      params={{ orgSlug: org.slug }}
+                    >
+                      <div className="flex size-6 items-center justify-center rounded-md border">
+                        <Building2 className="size-3.5 shrink-0" />
+                      </div>
+                      {org.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
