@@ -27,13 +27,14 @@ This guide walks through setting up the Club Freedom Testimonial Platform for lo
 
 3. Configure environment variables. Most of the setup involves creating the required accounts and storing your personal keys:
 
-   1. Setting up Better Auth
-   2. Setting up Resend
-   3. Setting up R2 for Convex
-   4. Configuring Cloudflare Turnstile
-   5. Populating local environment files
+   1. Setting up [Better Auth](./configuration.md#better-auth)
+   2. Setting up [Resend](./configuration.md#resend)
+   3. Setting up [R2 for Convex](./configuration.md#cloudflare-r2)
+   4. Configuring [Cloudflare Turnstile](./configuration.md#cloudflare-turnstile)
+   5. Configuring [Posthog](./configuration.md#posthog)
+   6. Populating local environment files
 
-4. Set up local domains and HTTPS (see the [Local Domains and HTTPS](configuration.md#local-domains-and-https-setup) guide).
+4. Set up local domains and HTTPS (see the [Local Domains and HTTPS](./configuration.md#local-domains-and-https-setup) guide).
 
 5. Run the development servers. You can start the Vite frontend and Convex backend in separate terminals:
 
