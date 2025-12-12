@@ -37,11 +37,6 @@ export function TestimonialCard({
             <CardTitle className="">{testimonial.title}</CardTitle>
           </Link>
           <div className="flex items-center gap-2">
-            {showApprovalStatus && (
-              <p className="text-sm font-medium">
-                {getApprovalStatusText(testimonial.approved)}
-              </p>
-            )}
             <p className="text-xs text-muted-foreground whitespace-nowrap">
               {formatDistanceToNow(date, { addSuffix: true })}
             </p>
