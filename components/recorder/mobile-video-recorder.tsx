@@ -1,7 +1,7 @@
 import { Video } from "lucide-react";
 import { useRef } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
-import type { Testimonial } from "@/lib/schema";
+import type { Testimonial } from "@/lib/schema/testimonials";
 import { Button } from "../ui/button";
 
 type Props = {

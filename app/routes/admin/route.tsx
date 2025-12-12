@@ -17,15 +17,16 @@ export const Route = createFileRoute("/admin")({
       throw redirect({ to: "/sign-in" });
     }
 
+    if (user.role !== "admin") {
+      throw redirect({ to: "/" });
+    }
+
     return {
       user,
       userId,
     };
   },
   loader: async ({ context }) => {
-    if (context.user.role !== "admin") {
-      throw redirect({ to: "/" });
-    }
     return { user: context.user };
   },
 });

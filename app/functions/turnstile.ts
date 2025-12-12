@@ -1,6 +1,6 @@
 import type { TurnstileServerValidationResponse } from "@marsidev/react-turnstile";
 import { createServerFn } from "@tanstack/react-start";
-import { testimonialSchema } from "@/lib/schema";
+import { testimonialSchema } from "@/lib/schema/testimonials";
 
 const tokenValidator = testimonialSchema.pick({ turnstileToken: true });
 
