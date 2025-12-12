@@ -1778,15 +1778,6 @@ export declare const components: {
         }
       >;
     };
-    organizations: {
-      getAllOrgs: FunctionReference<"query", "internal", any, any>;
-      getOrgBySlug: FunctionReference<
-        "query",
-        "internal",
-        { orgSlug: string },
-        any
-      >;
-    };
   };
   resend: {
     lib: {

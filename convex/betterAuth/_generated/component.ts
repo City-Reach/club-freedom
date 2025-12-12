@@ -1529,14 +1529,4 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         Name
       >;
     };
-    organizations: {
-      getAllOrgs: FunctionReference<"query", "internal", any, any, Name>;
-      getOrgBySlug: FunctionReference<
-        "query",
-        "internal",
-        { orgSlug: string },
-        any,
-        Name
-      >;
-    };
   };
