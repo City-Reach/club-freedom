@@ -3,6 +3,7 @@ import { AlertCircle } from "lucide-react";
 import { authClient } from "@/lib/auth/auth-client";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Spinner } from "../ui/spinner";
+import { Link } from "@tanstack/react-router";
 
 export default function OrganizationList() {
   const { isLoading, data, error } = useQuery({
@@ -47,7 +48,15 @@ export default function OrganizationList() {
       {data.map((organization) => (
         <Card key={organization.id} className="py-4">
           <CardHeader>
-            <CardTitle>{organization.name}</CardTitle>
+            <CardTitle>
+              <Link
+                to="/o/$orgSlug/testimonials"
+                params={{ orgSlug: organization.slug }}
+                className="hover:underline hover:underline-offset-2"
+              >
+                {organization.name}
+              </Link>
+            </CardTitle>
             <CardDescription>{organization.slug}</CardDescription>
           </CardHeader>
         </Card>

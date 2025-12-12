@@ -20,7 +20,7 @@ export default function OrganizationSidebarNav(
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Testimonials" asChild>
             <Link
-              to="/testimonials"
+              to="/o/$orgSlug/testimonials"
               params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
