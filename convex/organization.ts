@@ -1,5 +1,7 @@
 import { v } from "convex/values";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { components } from "./_generated/api";
+
 import { query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
 
@@ -10,7 +12,7 @@ export const getOrganizationBySlug = query({
       components.betterAuth.organization.getOrganization,
       { slug },
     );
-    return organization;
+    return organization as Doc<"organization">;
   },
 });
 export const getAllOrganizations = query({
