@@ -2,6 +2,8 @@ import { Migrations } from "@convex-dev/migrations";
 import { api, components, internal } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { internalAction } from "./_generated/server";
+import { v } from "convex/values";
+import { internalMutation } from "./_generated/server";
 
 export const migrations = new Migrations<DataModel>(components.migrations);
 export const run = migrations.runner();
@@ -11,9 +13,14 @@ export const setDefaultApprovedValue = migrations.define({
   migrateOne: () => ({ approved: true }),
 });
 
-export const setTestimonialOrganizationId = migrations.define({
-  table: "testimonials",
-  migrateOne: () => ({ organizationId: process.env.ORGANIZATION_ID }),
+export const setTestimonialOrganizationId = internalMutation({
+  args: { organizationId: v.string() },
+  handler: async (ctx, { organizationId }) => {
+    const testimonials = await ctx.db.query("testimonials").collect();
+    for (const testimonial of testimonials){
+      await ctx.db.patch(testimonial._id, { organizationId })
+    }
+  },
 });
 
 export const backFillSearchText = migrations.define({
