@@ -9,7 +9,7 @@ export const getOrgBySlug = query({
       .withIndex("slug", (q) => q.eq("slug", orgSlug))
       .take(1);
     if (organizationQuery.length > 0) {
-      return [organizationQuery[0].slug];
+      return [organizationQuery[0]._id];
     }
     return organizationQuery; //returns undefined while query is in progress and [] if nothing found
   },

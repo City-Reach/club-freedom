@@ -13,10 +13,10 @@ export default defineSchema({
     testimonialText: v.optional(v.string()),
     summary: v.optional(v.string()),
     searchText: v.optional(v.string()),
-    orgSlug: v.string(),
+    organizationId: v.string(),
     approved: v.optional(v.boolean()),
   })
-    .index("orgSlug", ["orgSlug"])
+    .index("organizationId", ["organizationId"])
     .searchIndex("search_posts", {
       searchField: "searchText",
     }),

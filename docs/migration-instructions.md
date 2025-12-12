@@ -10,7 +10,7 @@ Note: pass the --prod argument to run this in production
 
 ### Adding the orgSlug field to the testimonials table
 
-1. Change the "orgSlug" field in the testimonials table in convex\schema.ts to `v.optional(v.string())`
+1. Change the "organizationId" field in the testimonials table in convex\schema.ts to `v.optional(v.string())`
 2. Ensure convex function sync is running with `pnpm comvex dev`
-3. Run `pnpx convex run migrations:run '{fn: "migrations:setOrgSlug"}'`
-4. Change the "orgSlug" field in the testimonials table in convex\schema.ts to `v.string()`
+3. Run `pnpx convex run migrations:run '{fn: "migrations:setTestimonialOrganizationId"}'`
+4. Change the "organizationId" field in the testimonials table in convex\schema.ts to `v.string()`

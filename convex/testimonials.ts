@@ -65,11 +65,11 @@ export const postTestimonial = mutation({
     storageId: v.optional(v.string()),
     media_type: v.string(),
     text: v.string(),
-    orgSlug: v.string(),
+    organizationId: v.string(),
   },
   handler: async (
     ctx,
-    { name, email, storageId, media_type, text, orgSlug },
+    { name, email, storageId, media_type, text, organizationId },
   ) => {
     const id = await ctx.db.insert("testimonials", {
       name,
@@ -78,7 +78,7 @@ export const postTestimonial = mutation({
       media_type,
       testimonialText: text,
       createdAt: Date.now(),
-      orgSlug,
+      organizationId
     });
     return id;
   },

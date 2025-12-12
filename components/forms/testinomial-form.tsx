@@ -1,7 +1,7 @@
 import { useUploadFile } from "@convex-dev/r2/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { useState } from "react";
@@ -27,8 +27,10 @@ import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 
-export default function TestimonialForm() {
-  const { orgSlug = "" } = useParams({ strict: false });
+type TestonomialFormProps = {
+  organizationId: string;
+};
+export default function TestimonialForm({ organizationId }: TestonomialFormProps) {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: { name: "", email: "", writtenText: "", consent: false },
@@ -84,7 +86,7 @@ export default function TestimonialForm() {
         storageId: storageId,
         media_type: media_type,
         text: values.writtenText,
-        orgSlug: orgSlug,
+        organizationId: organizationId,
       });
 
       toast.success("Testimonial submitted successfully!", {
