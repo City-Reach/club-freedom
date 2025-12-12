@@ -1,18 +1,31 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Testimonials } from "@/components/testimonials";
+import { auth } from "@/convex/betterAuth/auth";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials")({
   component: TestimonialsPage,
-  loader: async ({ context }) => {
+  errorComponent: ({ error }) => {
+    if (error.message === "UNAUTHORIZED") {
+      return <>Unauthorized</>;
+    }
+    // fallback for other errors
+    return <div>Something went wrong: {error.message}</div>;
+  },
+  loader: async ({ params, context }) => {
     if (!context.userId) {
       throw redirect({
         to: "/sign-in",
       });
     }
+
+    return { userRole: context.user.role };
   },
 });
 
 function TestimonialsPage() {
+  // if ((!organizations || organizations.some(org => org.slug === orgSlug)) && userRole != "admin") {
+  //   throw new Error("UNAUTHORIZED")
+  // }
   return (
     <main className="container mx-auto px-4">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">

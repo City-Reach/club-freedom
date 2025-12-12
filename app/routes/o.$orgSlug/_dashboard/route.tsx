@@ -32,7 +32,10 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
     const organizations = await context.queryClient.ensureQueryData(
       convexQuery(api.organization.getAllOrganizations, {}),
     );
-    if (!organizations.find((org) => org.slug === params.orgSlug)) {
+    if (
+      !organizations.find((org) => org.slug === params.orgSlug) &&
+      context.user.role != "admin"
+    ) {
       throw notFound();
     }
     return {

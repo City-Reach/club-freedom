@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { components } from "./_generated/api";
-import { mutation, query } from "./_generated/server";
+import { query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
 
 export const getOrganizationBySlug = query({
@@ -13,7 +13,6 @@ export const getOrganizationBySlug = query({
     return organization;
   },
 });
-
 export const getAllOrganizations = query({
   handler: async (ctx) => {
     const { headers, auth } = await authComponent.getAuth(createAuth, ctx);
