@@ -1,27 +1,18 @@
-import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { getCurrentUser } from "@/app/functions/auth";
 import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
-import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$orgSlug/")({
   component: TestimonialSubmissionPage,
-  loader: async ({ context: { queryClient }, params }) => {
+  loader: async ({ context: { organization }, params }) => {
     const user = await getCurrentUser();
-    const organization = await queryClient.ensureQueryData(
-      convexQuery(api.organization.getOrganizationBySlug, {
-        slug: params.orgSlug,
-      }),
-    );
     return { user, orgSlug: params.orgSlug, organization };
   },
 });
 
 function TestimonialSubmissionPage() {
   const { user, organization } = Route.useLoaderData();
-  console.log("organization");
-  console.log(organization);
   return (
     <>
       <Navbar user={user} />
