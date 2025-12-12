@@ -1,6 +1,6 @@
+import { createFileRoute } from "@tanstack/react-router";
 import EditOrganizationForm from "@/components/organization/edit-organization-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/o/$slug/_dashboard/settings")({
   component: RouteComponent,

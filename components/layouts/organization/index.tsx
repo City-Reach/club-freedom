@@ -1,13 +1,13 @@
+import { useLoaderData } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ReactNode } from "react";
-import OrganizationSidebar from "./organization-sidebar";
 import UserDropDown from "@/components/user-dropdown";
-import { useLoaderData } from "@tanstack/react-router";
 import OrganizationInfo from "./organization-info";
+import OrganizationSidebar from "./organization-sidebar";
 
 export default function OrganizationLayout({
   children,

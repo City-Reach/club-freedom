@@ -1,18 +1,18 @@
+import { convexQuery } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { api } from "@/convex/_generated/api";
+import { authClient } from "@/lib/auth/auth-client";
 import {
   type Organization,
   organizationSchema,
 } from "@/lib/schema/organization";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Button } from "../ui/button";
+import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { useRouter } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth/auth-client";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { convexQuery } from "@convex-dev/react-query";
-import { api } from "@/convex/_generated/api";
 import { Spinner } from "../ui/spinner";
 
 type Props = {
@@ -58,20 +58,20 @@ export default function EditOrganizationForm({ organization }: Props) {
 
     const allOrganizationsQuery = convexQuery(
       api.organization.getAllOrganizations,
-      {}
+      {},
     );
 
     await Promise.all([
       queryClient.removeQueries(organizationBySlugQuery(organization.slug)),
       queryClient.removeQueries(
-        organizationBySlugQuery(updatedOrganization.slug)
+        organizationBySlugQuery(updatedOrganization.slug),
       ),
       queryClient.removeQueries(allOrganizationsQuery),
     ]);
 
     await Promise.all([
       queryClient.ensureQueryData(
-        organizationBySlugQuery(updatedOrganization.slug)
+        organizationBySlugQuery(updatedOrganization.slug),
       ),
       queryClient.ensureQueryData(allOrganizationsQuery),
     ]);

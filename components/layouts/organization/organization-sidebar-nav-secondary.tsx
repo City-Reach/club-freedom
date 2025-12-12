@@ -1,12 +1,12 @@
-import { ExternalLink, Settings, UserRoundCog } from "lucide-react";
 import { Link, useLoaderData, useParams } from "@tanstack/react-router";
+import { ExternalLink, Settings, UserRoundCog } from "lucide-react";
+import type { ComponentProps } from "react";
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ComponentProps } from "react";
 
 export default function OrganizationSidebarNavSecondary(
   props: ComponentProps<typeof SidebarGroup>,

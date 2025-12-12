@@ -1,8 +1,8 @@
-import { useSidebar } from "@/components/ui/sidebar";
-import { api } from "@/convex/_generated/api";
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
+import { useSidebar } from "@/components/ui/sidebar";
+import { api } from "@/convex/_generated/api";
 
 export default function OrganizationInfo() {
   const { open, isMobile } = useSidebar();

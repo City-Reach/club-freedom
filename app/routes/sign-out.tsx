@@ -1,8 +1,8 @@
-import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth/auth-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/sign-out")({
   component: RouteComponent,

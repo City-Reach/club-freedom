@@ -76,7 +76,7 @@
   --sidebar-primary: oklch(31.96% 0.1 216.6);
   --sidebar-primary-foreground: hsl(0 0% 98%);
   --sidebar-accent: hsl(200 40% 60%);
-  --sidebar-accent-foreground:  hsl(200 70% 20%);
+  --sidebar-accent-foreground: hsl(200 70% 20%);
   --sidebar-border: hsl(210 10% 80%);
   --sidebar-ring: hsl(210 30% 50%);
 }

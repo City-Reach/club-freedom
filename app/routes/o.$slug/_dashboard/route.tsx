@@ -1,5 +1,3 @@
-import OrganizationLayout from "@/components/layouts/organization";
-import { api } from "@/convex/_generated/api";
 import { convexQuery } from "@convex-dev/react-query";
 import {
   createFileRoute,
@@ -7,6 +5,8 @@ import {
   Outlet,
   redirect,
 } from "@tanstack/react-router";
+import OrganizationLayout from "@/components/layouts/organization";
+import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$slug/_dashboard")({
   component: RouteComponent,

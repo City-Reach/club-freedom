@@ -8,6 +8,10 @@ import {
 } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import {
+  type Organization,
+  organizationSchema,
+} from "@/lib/schema/organization";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -19,10 +23,6 @@ import {
 } from "../ui/dialog";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import {
-  type Organization,
-  organizationSchema,
-} from "@/lib/schema/organization";
 
 type Props = {
   trigger: ReactNode;

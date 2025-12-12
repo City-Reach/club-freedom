@@ -1,6 +1,6 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
 import { doc } from "convex-helpers/validators";
+import { query } from "./_generated/server";
 import schema from "./schema";
 
 export const getOrganization = query({

@@ -1,15 +1,15 @@
+import { useLoaderData } from "@tanstack/react-router";
+import type { ComponentProps } from "react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { ComponentProps } from "react";
-import OrganizationSwitcher from "./organization-switcher";
-import { useLoaderData } from "@tanstack/react-router";
 import UserNavigation from "@/components/user-navigation";
 import OrganizationSidebarNav from "./organization-sidebar-nav";
 import OrganizationSidebarNavSecondary from "./organization-sidebar-nav-secondary";
+import OrganizationSwitcher from "./organization-switcher";
 
 export default function OrganizationSidebar({
   ...props
