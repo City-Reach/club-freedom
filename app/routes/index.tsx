@@ -22,7 +22,7 @@ function Home() {
   const { user, organizations } = Route.useLoaderData();
   const navigate = Route.useNavigate();
   const orgsData = organizations || [];
-  const [selected, setSelected] = useState<typeof orgsData[0]| null>(null);
+  const [selected, setSelected] = useState<(typeof orgsData)[0] | null>(null);
   return (
     <>
       <Navbar user={user} />
