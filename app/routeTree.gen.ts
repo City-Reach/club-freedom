@@ -16,7 +16,6 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as OrgSlugIndexRouteImport } from './routes/$orgSlug/index'
 import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
 import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizations'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
@@ -65,11 +64,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRouteRoute,
-} as any)
-const OrgSlugIndexRoute = OrgSlugIndexRouteImport.update({
-  id: '/$orgSlug/',
-  path: '/$orgSlug/',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
   id: '/$id',
@@ -157,7 +151,6 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof AuthSignInRoute
   '/admin/organizations': typeof AdminOrganizationsRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/$orgSlug': typeof OrgSlugIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -176,7 +169,6 @@ export interface FileRoutesByTo {
   '/sign-in': typeof AuthSignInRoute
   '/admin/organizations': typeof AdminOrganizationsRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/$orgSlug': typeof OrgSlugIndexRoute
   '/admin': typeof AdminIndexRoute
   '/testimonials': typeof TestimonialsIndexRoute
   '/o/$orgSlug': typeof OOrgSlugIndexRoute
@@ -200,7 +192,6 @@ export interface FileRoutesById {
   '/_auth/sign-in': typeof AuthSignInRoute
   '/admin/organizations': typeof AdminOrganizationsRoute
   '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
-  '/$orgSlug/': typeof OrgSlugIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/o/$orgSlug/_dashboard': typeof OOrgSlugDashboardRouteRouteWithChildren
@@ -225,7 +216,6 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/admin/organizations'
     | '/testimonials/$id'
-    | '/$orgSlug'
     | '/admin/'
     | '/testimonials/'
     | '/api/auth/$'
@@ -244,7 +234,6 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/admin/organizations'
     | '/testimonials/$id'
-    | '/$orgSlug'
     | '/admin'
     | '/testimonials'
     | '/o/$orgSlug'
@@ -267,7 +256,6 @@ export interface FileRouteTypes {
     | '/_auth/sign-in'
     | '/admin/organizations'
     | '/testimonials/$id'
-    | '/$orgSlug/'
     | '/admin/'
     | '/testimonials/'
     | '/o/$orgSlug/_dashboard'
@@ -287,7 +275,6 @@ export interface RootRouteChildren {
   TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
   SignOutRoute: typeof SignOutRoute
   OOrgSlugRouteRoute: typeof OOrgSlugRouteRouteWithChildren
-  OrgSlugIndexRoute: typeof OrgSlugIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -341,13 +328,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
-    }
-    '/$orgSlug/': {
-      id: '/$orgSlug/'
-      path: '/$orgSlug'
-      fullPath: '/$orgSlug'
-      preLoaderRoute: typeof OrgSlugIndexRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/testimonials/$id': {
       id: '/testimonials/$id'
@@ -546,7 +526,6 @@ const rootRouteChildren: RootRouteChildren = {
   TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
   SignOutRoute: SignOutRoute,
   OOrgSlugRouteRoute: OOrgSlugRouteRouteWithChildren,
-  OrgSlugIndexRoute: OrgSlugIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

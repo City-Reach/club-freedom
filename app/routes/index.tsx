@@ -21,9 +21,6 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { user, organizations } = Route.useLoaderData();
   const navigate = Route.useNavigate();
-  // const orgsResult = useSuspenseQuery(
-  //   convexQuery(api.organization.getAllOrganizations, {}),
-  // );
   const orgsData = organizations || [];
   const [selected, setSelected] = useState<typeof orgsData[0]| null>(null);
   return (
@@ -49,7 +46,7 @@ function Home() {
               disabled={!selected}
               onClick={() =>
                 navigate({
-                  to: "/$orgSlug",
+                  to: "/o/$orgSlug",
                   params: { orgSlug: selected?.slug || "" },
                 })
               }
