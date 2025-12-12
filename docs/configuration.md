@@ -51,6 +51,24 @@ mkdir -p ./certificates
 mkcert -cert-file ./certificates/dev.pem -key-file ./certificates/dev-key.pem localhost 127.0.0.1
 ```
 
+## [Set up Cloudflare R2](#cloudflare-r2)
+
+1. Follow the instructions in the **Cloudflare Account** section in the Convex R2 documentation. You need to create your own R2 bucket and set up the API key. Record these environment variables below and put them in your development Convex deployment
+
+  ```
+  R2_ACCESS_KEY_ID=
+  R2_BUCKET=
+  R2_ENDPOINT=
+  R2_SECRET_ACCESS_KEY=
+  R2_TOKEN=
+  ```
+
+2. Locate your newly created R2 bucket in the Cloudflare dashboard, enable [Public Development URL](https://developers.cloudflare.com/r2/buckets/public-buckets/#public-development-url). Record this environment variable below and put it in your development Convex deployment
+
+  ```
+  R2_PUBLIC_URL=
+  ```
+
 ## [Setting up Better Auth with Convex in your environment](#better-auth)
 
 1. Run pnpm install
