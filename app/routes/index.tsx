@@ -6,6 +6,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { api } from "@/convex/_generated/api";
 import type { IOrg } from "@/convex/betterAuth/organizations";
 import { getCurrentUser } from "../functions/auth";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -19,11 +20,12 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const [selected, setSelected] = useState<IOrg | null>(null)
   const { user } = Route.useLoaderData();
   const orgsResult = useSuspenseQuery(
     convexQuery(api.organizations.getAllOrgsWrapper, {}),
   );
-  const orgsData: IOrg[] = orgsResult.data;
+  const orgsData: IOrg[] = orgsResult.data || [];
   return (
     <>
       <Navbar user={user} />
@@ -33,7 +35,13 @@ function Home() {
           <p className="my-4 text-lg">
             Please select an org to submit testimonials to
           </p>
-          <Combobox />
+          <Combobox
+            items={orgsData}
+            valueField="orgSlug"
+            labelField="orgName"
+            onSelect={setSelected}
+            value={selected}
+          />
         </div>
       </main>
     </>
