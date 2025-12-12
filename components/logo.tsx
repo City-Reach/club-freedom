@@ -1,8 +1,8 @@
 import { Link, useParams } from "@tanstack/react-router";
 
 export default function Logo() {
-  const { orgSlug = "" } = useParams({ strict: false })
-  let link = `/${orgSlug}`
+  const { orgSlug = "" } = useParams({ strict: false });
+  const link = `/${orgSlug}`;
   return (
     <Link to={link} className="flex h-16 items-center justify-center">
       <img

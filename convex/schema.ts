@@ -19,5 +19,5 @@ export default defineSchema({
     .index("orgSlug", ["orgSlug"])
     .searchIndex("search_posts", {
       searchField: "searchText",
-    })
+    }),
 });

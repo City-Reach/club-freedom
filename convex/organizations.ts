@@ -1,6 +1,6 @@
-import { query } from "./_generated/server";
-import { components } from "./_generated/api";
 import { v } from "convex/values";
+import { components } from "./_generated/api";
+import { query } from "./_generated/server";
 
 export const getOrg = query({
   args: { orgSlug: v.string() },

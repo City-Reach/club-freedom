@@ -64,7 +64,10 @@ export const postTestimonial = mutation({
     text: v.string(),
     orgSlug: v.string(),
   },
-  handler: async (ctx, { name, email, storageId, media_type, text, orgSlug }) => {
+  handler: async (
+    ctx,
+    { name, email, storageId, media_type, text, orgSlug },
+  ) => {
     const id = await ctx.db.insert("testimonials", {
       name,
       email,

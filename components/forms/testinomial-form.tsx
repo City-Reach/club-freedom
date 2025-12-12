@@ -28,7 +28,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 
 export default function TestimonialForm() {
-  const { orgSlug = "" } = useParams({ strict: false })
+  const { orgSlug = "" } = useParams({ strict: false });
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: { name: "", email: "", writtenText: "", consent: false },

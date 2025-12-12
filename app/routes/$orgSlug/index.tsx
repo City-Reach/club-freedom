@@ -1,30 +1,30 @@
-import { getCurrentUser } from '@/app/functions/auth';
-import { createFileRoute } from '@tanstack/react-router'
+import { convexQuery } from "@convex-dev/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { getCurrentUser } from "@/app/functions/auth";
 import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
-import { api } from '@/convex/_generated/api';
-import { NotFound } from '../__root';
-import { Spinner } from '@/components/ui/spinner';
-import { convexQuery } from '@convex-dev/react-query';
-import { useSuspenseQuery } from '@tanstack/react-query';
-export const Route = createFileRoute('/$orgSlug/')({
+import { Spinner } from "@/components/ui/spinner";
+import { api } from "@/convex/_generated/api";
+import { NotFound } from "../__root";
+export const Route = createFileRoute("/$orgSlug/")({
   component: TestimonialSubmissionPage,
   loader: async ({ context: { queryClient }, params }) => {
     const user = await getCurrentUser();
     await queryClient.ensureQueryData(
-      convexQuery(api.organizations.getOrg, { orgSlug: params.orgSlug })
+      convexQuery(api.organizations.getOrg, { orgSlug: params.orgSlug }),
     );
     return { user, orgSlug: params.orgSlug };
   },
-})
+});
 
 function TestimonialSubmissionPage() {
   const { user, orgSlug } = Route.useLoaderData();
-  const orgResult = useSuspenseQuery(convexQuery(api.organizations.getOrg, { orgSlug }));
-  const orgData = orgResult.data
-  if (!orgData) return (
-    <Spinner />
+  const orgResult = useSuspenseQuery(
+    convexQuery(api.organizations.getOrg, { orgSlug }),
   );
+  const orgData = orgResult.data;
+  if (!orgData) return <Spinner />;
   if (orgData.length > 0) {
     return (
       <>
@@ -35,7 +35,9 @@ function TestimonialSubmissionPage() {
               Welcome to <span className="text-secondary">Club Freedom</span>{" "}
               Testimonial
             </h1>
-            <p className="mt-4 text-lg">Please share your testimonial with us!</p>
+            <p className="mt-4 text-lg">
+              Please share your testimonial with us!
+            </p>
             <p className="mt-4 italic text-lg text-gray-600">
               "Let your light shine before others" – Matthew 5:16
             </p>
@@ -45,8 +47,5 @@ function TestimonialSubmissionPage() {
       </>
     );
   }
-  return (
-    <NotFound />
-  )
-  
+  return <NotFound />;
 }
