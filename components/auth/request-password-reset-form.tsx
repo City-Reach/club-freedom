@@ -5,7 +5,7 @@ import z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
-import { emailSchema } from "@/lib/schema";
+import { emailSchema } from "@/lib/schema/testimonials";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 

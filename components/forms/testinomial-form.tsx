@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import useMobileDetect from "@/hooks/use-mobile-detect";
-import { type Testimonial, testimonialSchema } from "@/lib/schema";
+import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 import { AudioRecorder, VideoRecorder } from "../recorder";
 import MobileVideoRecorder from "../recorder/mobile-video-recorder";
 import { Button } from "../ui/button";

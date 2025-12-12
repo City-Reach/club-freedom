@@ -8,8 +8,11 @@ import {
 } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
 import { authClient } from "@/lib/auth/auth-client";
+import {
+  type Organization,
+  organizationSchema,
+} from "@/lib/schema/organization";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -25,34 +28,6 @@ import { Input } from "../ui/input";
 type Props = {
   trigger: ReactNode;
 } & ComponentProps<typeof Dialog>;
-
-export const organizationSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      error: "Name must be at least 2 characters long",
-    })
-    .max(50, {
-      error: "Name must be at most 50 characters long",
-    }),
-  slug: z
-    .string()
-    .min(2, {
-      error: "Slug must be at least 2 characters long",
-    })
-    .max(50, {
-      error: "Slug must be at most 50 characters long",
-    })
-    .refine((data) => /^[a-z0-9-]+$/.test(data), {
-      error:
-        "Only contains lower letters (a-z), numbers (0-9), and hyphens (-)",
-    })
-    .refine((data) => !data.startsWith("-") && !data.endsWith("-"), {
-      error: "Slug should not begin or end with hypen (-)",
-    }),
-});
-
-type Organization = z.infer<typeof organizationSchema>;
 
 const convertNameToSlug = (name: string) => {
   return name

@@ -1,33 +1,31 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import { api } from "@/convex/_generated/api";
-import type { IOrg } from "@/convex/betterAuth/organizations";
 import { getCurrentUser } from "../functions/auth";
 
 export const Route = createFileRoute("/")({
   component: Home,
   loader: async ({ context: { queryClient } }) => {
     const user = await getCurrentUser();
-    await queryClient.ensureQueryData(
-      convexQuery(api.organizations.getAllOrgsWrapper, {}),
+    const organizations = await queryClient.ensureQueryData(
+      convexQuery(api.organization.getAllOrganizations, {}),
     );
-    return { user };
+    return { user, organizations };
   },
 });
 
 function Home() {
-  const [selected, setSelected] = useState<IOrg | null>(null);
-  const { user } = Route.useLoaderData();
+  const { user, organizations } = Route.useLoaderData();
   const navigate = Route.useNavigate();
-  const orgsResult = useSuspenseQuery(
-    convexQuery(api.organizations.getAllOrgsWrapper, {}),
-  );
-  const orgsData: IOrg[] = orgsResult.data || [];
+  // const orgsResult = useSuspenseQuery(
+  //   convexQuery(api.organization.getAllOrganizations, {}),
+  // );
+  const orgsData = organizations || [];
+  const [selected, setSelected] = useState<typeof orgsData[0]| null>(null);
   return (
     <>
       <Navbar user={user} />
@@ -42,8 +40,8 @@ function Home() {
           <div className="flex items-center gap-3">
             <Combobox
               items={orgsData}
-              valueField="orgSlug"
-              labelField="orgName"
+              valueField="slug"
+              labelField="name"
               onSelect={setSelected}
               value={selected}
             />
@@ -52,7 +50,7 @@ function Home() {
               onClick={() =>
                 navigate({
                   to: "/$orgSlug",
-                  params: { orgSlug: selected?.orgSlug || "" },
+                  params: { orgSlug: selected?.slug || "" },
                 })
               }
             >

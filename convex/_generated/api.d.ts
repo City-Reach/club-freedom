@@ -18,6 +18,7 @@ import type * as internal_organizations from "../internal/organizations.js";
 import type * as internal_r2 from "../internal/r2.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
+import type * as organization from "../organization.js";
 import type * as organizations from "../organizations.js";
 import type * as r2 from "../r2.js";
 import type * as testimonials from "../testimonials.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   "internal/r2": typeof internal_r2;
   media: typeof media;
   migrations: typeof migrations;
+  organization: typeof organization;
   organizations: typeof organizations;
   r2: typeof r2;
   testimonials: typeof testimonials;
@@ -1759,6 +1761,22 @@ export declare const components: {
           role?: null | string;
           updatedAt: number;
           userId?: null | string;
+        }
+      >;
+    };
+    organization: {
+      getOrganization: FunctionReference<
+        "query",
+        "internal",
+        { slug: string },
+        null | {
+          _creationTime: number;
+          _id: string;
+          createdAt: number;
+          logo?: null | string;
+          metadata?: null | string;
+          name: string;
+          slug: string;
         }
       >;
     };

@@ -6,7 +6,7 @@ import type z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
-import { signInSchema } from "@/lib/schema";
+import { signInSchema } from "@/lib/schema/testimonials";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 
