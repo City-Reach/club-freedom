@@ -1,12 +1,13 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import Navbar from "@/components/navbar";
+import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import { api } from "@/convex/_generated/api";
 import type { IOrg } from "@/convex/betterAuth/organizations";
 import { getCurrentUser } from "../functions/auth";
-import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -20,8 +21,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const [selected, setSelected] = useState<IOrg | null>(null)
+  const [selected, setSelected] = useState<IOrg | null>(null);
   const { user } = Route.useLoaderData();
+  const navigate = Route.useNavigate();
   const orgsResult = useSuspenseQuery(
     convexQuery(api.organizations.getAllOrgsWrapper, {}),
   );
@@ -31,17 +33,32 @@ function Home() {
       <Navbar user={user} />
       <main className="flex min-h-screen flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto">
         <div className="flex flex-col items-center justify-center text-center">
-          <h1 className="text-4xl font-bold">Landing Page Yippee</h1>
+          <h1 className="text-4xl font-bold">
+            Welcome to Testimonials Submission Product!
+          </h1>
           <p className="my-4 text-lg">
             Please select an org to submit testimonials to
           </p>
-          <Combobox
-            items={orgsData}
-            valueField="orgSlug"
-            labelField="orgName"
-            onSelect={setSelected}
-            value={selected}
-          />
+          <div className="flex items-center gap-3">
+            <Combobox
+              items={orgsData}
+              valueField="orgSlug"
+              labelField="orgName"
+              onSelect={setSelected}
+              value={selected}
+            />
+            <Button
+              disabled={!selected}
+              onClick={() =>
+                navigate({
+                  to: "/$orgSlug",
+                  params: { orgSlug: selected?.orgSlug || "" },
+                })
+              }
+            >
+              Go
+            </Button>
+          </div>
         </div>
       </main>
     </>
