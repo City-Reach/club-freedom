@@ -18,14 +18,14 @@ export default function OrganizationSidebarNav(
     <SidebarGroup {...props}>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Feeds" asChild>
+          <SidebarMenuButton tooltip="Testimonials" asChild>
             <Link
-              to="/o/$orgSlug/feeds"
+              to="/testimonials"
               params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
               <MessageSquare />
-              <span>Feeds</span>
+              <span>Testimonials</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
