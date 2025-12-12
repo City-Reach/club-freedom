@@ -29,7 +29,7 @@ This guide walks through setting up the Club Freedom Testimonial Platform for lo
 
    1. Setting up [Better Auth](./configuration.md#better-auth)
    2. Setting up [Resend](./configuration.md#resend)
-   3. Setting up [R2 for Convex](https://www.convex.dev/components/cloudflare-r2#cloudflare-account)
+   3. Setting up [R2 for Convex](./configuration.md#cloudflare-r2)
    4. Configuring [Cloudflare Turnstile](./configuration.md#cloudflare-turnstile)
    5. Configuring [Posthog](./configuration.md#posthog)
    6. Populating local environment files

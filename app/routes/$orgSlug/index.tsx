@@ -6,7 +6,7 @@ import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
-import { NotFound } from "../__root";
+import NotFound from "@/components/not-found";
 export const Route = createFileRoute("/$orgSlug/")({
   component: TestimonialSubmissionPage,
   loader: async ({ context: { queryClient }, params }) => {

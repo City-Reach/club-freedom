@@ -3,7 +3,6 @@ import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
-import { r2 } from "./r2";
 
 export const getTestimonials = query({
   args: {
@@ -44,9 +43,13 @@ export const getTestimonials = query({
     const { page, ...rest } =
       await filteredTestimonialQuery.paginate(paginationOpts);
 
+    const r2PublicUrl = process.env.R2_PUBLIC_URL;
+
     const testimonialsWithMedia = await Promise.all(
       page.map(async (t) => {
-        const mediaUrl = t.storageId ? await r2.getUrl(t.storageId) : undefined;
+        const mediaUrl = t.storageId
+          ? `${r2PublicUrl}/${t.storageId}`
+          : undefined;
         return { ...t, mediaUrl };
       }),
     );
@@ -104,13 +107,14 @@ export const getTestimonialById = query({
   args: { id: v.id("testimonials") },
   handler: async (ctx, { id }) => {
     const testimonial = await ctx.db.get(id);
+    const r2PublicUrl = process.env.R2_PUBLIC_URL;
 
-    if (!testimonial) {
+    if (!testimonial || !r2PublicUrl) {
       return undefined;
     }
 
     const mediaUrl = testimonial.storageId
-      ? await r2.getUrl(testimonial.storageId)
+      ? `${r2PublicUrl}/${testimonial.storageId}`
       : undefined;
     return {
       ...testimonial,
