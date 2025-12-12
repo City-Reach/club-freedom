@@ -1,8 +1,14 @@
-import { Link, useParams } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
-export default function Logo() {
-  const { orgSlug = "" } = useParams({ strict: false });
-  const link = `/o/${orgSlug}`;
+type Props = {
+  organization?: Doc<"organization"> | undefined;
+};
+export default function Logo({ organization }: Props) {
+  let link = `/`;
+  if (organization && organization.slug) {
+    link = `/o/${organization.slug}`;
+  }
   return (
     <Link to={link} className="flex h-16 items-center justify-center">
       <img
