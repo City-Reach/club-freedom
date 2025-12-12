@@ -10,3 +10,9 @@ export const getOrg = query({
     });
   },
 });
+
+export const getAllOrgsWrapper = query({
+  handler: async (ctx) => {
+    return ctx.runQuery(components.betterAuth.organizations.getAllOrgs);
+  },
+});
