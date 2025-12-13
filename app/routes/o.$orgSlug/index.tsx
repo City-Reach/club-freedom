@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getCurrentUser } from "@/app/functions/auth";
 import TestonomialForm from "@/components/forms/testinomial-form";
-import Navbar from "@/components/navbar";
+
+import OrganizationNavbar from "@/components/organization/organization-navbar";
 
 export const Route = createFileRoute("/o/$orgSlug/")({
   component: TestimonialSubmissionPage,
@@ -15,7 +16,7 @@ function TestimonialSubmissionPage() {
   const { user, organization } = Route.useLoaderData();
   return (
     <>
-      <Navbar user={user} organization={organization} />
+      <OrganizationNavbar user={user} organization={organization} />
       <main className="flex min-h-screen flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto">
         <div className="flex flex-col items-center justify-center text-center">
           <h1 className="text-4xl font-bold">
