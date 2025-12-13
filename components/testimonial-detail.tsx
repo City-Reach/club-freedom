@@ -14,7 +14,7 @@ type Props = {
 
 export default function TestimonialDetail({ id }: Props) {
   const testimonial = useQuery(api.testimonials.getTestimonialById, { id });
-  const canApprove = useQuery(api.auth.checkUserPermissions, {
+  const canApprove = useQuery(api.organization.checkPermission, {
     permissions: {
       testimonial: ["approve"],
     },
