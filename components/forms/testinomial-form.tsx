@@ -29,9 +29,11 @@ import { Textarea } from "../ui/textarea";
 
 type TestonomialFormProps = {
   organizationId: string;
+  organizationSlug: string;
 };
 export default function TestimonialForm({
   organizationId,
+  organizationSlug,
 }: TestonomialFormProps) {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
@@ -95,7 +97,10 @@ export default function TestimonialForm({
         description: "Thank you for your submission.",
       });
       form.reset();
-      navigation({ to: "/testimonials/$id", params: { id } });
+      navigation({
+        to: "/o/$orgSlug/submission/$id",
+        params: { id, orgSlug: organizationSlug },
+      });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       toast.error("Failed to submit testimonial", {
@@ -118,7 +123,7 @@ export default function TestimonialForm({
               <FieldLabel htmlFor={field.name}>Name</FieldLabel>
               <Input
                 {...field}
-                placeholder="Jane"
+                placeholder="Your name"
                 id={field.name}
                 aria-invalid={fieldState.invalid}
               />
