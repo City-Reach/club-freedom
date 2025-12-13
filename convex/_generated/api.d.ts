@@ -355,6 +355,7 @@ export declare const components: {
             | {
                 data: {
                   createdAt: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name: string;
@@ -573,6 +574,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -857,6 +859,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1267,6 +1270,7 @@ export declare const components: {
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1280,6 +1284,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1622,6 +1627,7 @@ export declare const components: {
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1635,6 +1641,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1771,6 +1778,7 @@ export declare const components: {
           _creationTime: number;
           _id: string;
           createdAt: number;
+          icon?: null | string;
           logo?: null | string;
           metadata?: null | string;
           name: string;
