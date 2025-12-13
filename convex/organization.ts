@@ -1,9 +1,9 @@
 import { v } from "convex/values";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { OrganizationPermissionCheck } from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import { query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
-import { OrganizationPermissionCheck } from "@/lib/auth/permissions/organization";
 
 export const getOrganizationBySlug = query({
   args: { slug: v.string() },

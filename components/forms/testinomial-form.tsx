@@ -7,6 +7,7 @@ import { useMutation } from "convex/react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { saveTestimonialForPublicView } from "@/app/functions/testimonial";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import useMobileDetect from "@/hooks/use-mobile-detect";
@@ -26,7 +27,6 @@ import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
-import { saveTestimonialForPublicView } from "@/app/functions/testimonial";
 
 type TestonomialFormProps = {
   organizationId: string;
@@ -95,7 +95,9 @@ export default function TestimonialForm({
       });
 
       // Step 4: Save this testimonial for public view temporarily
-      await saveTestimonialForPublicView({ data: { testimonialId: id, organizationId } });
+      await saveTestimonialForPublicView({
+        data: { testimonialId: id, organizationId },
+      });
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
       });
