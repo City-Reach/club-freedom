@@ -12,7 +12,7 @@ export const getOrganizationBySlug = query({
       components.betterAuth.organization.getOrganization,
       { slug },
     );
-    return organization as Doc<"organization">;
+    return organization as Doc<"organization"> | null;
   },
 });
 
