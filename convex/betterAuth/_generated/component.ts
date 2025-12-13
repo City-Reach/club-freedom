@@ -97,6 +97,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             | {
                 data: {
                   createdAt: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name: string;
@@ -316,6 +317,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -601,6 +603,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1014,6 +1017,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1027,6 +1031,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1370,6 +1375,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1383,6 +1389,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1521,6 +1528,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           _creationTime: number;
           _id: string;
           createdAt: number;
+          icon?: null | string;
           logo?: null | string;
           metadata?: null | string;
           name: string;
