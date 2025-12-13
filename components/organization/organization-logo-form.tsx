@@ -1,22 +1,23 @@
+import { useConvexMutation } from "@convex-dev/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
-import { useMutation as useConvexMutation } from "convex/react";
 import { ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
 import { useFileUpload } from "@/hooks/use-file-upload";
+import { useUploadFile } from "@/hooks/use-upload-file";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
 
 export default function OrganizationLogoForm() {
+  const uploadFile = useUploadFile();
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
-  
+
   const generateUploadUrl = useConvexMutation(
     api.organization.generateLogoUploadUrl,
   );
-  const syncMetadata = useConvexMutation(api.r2.syncMetadata);
 
   const [{ files }, { clearFiles, openFileDialog, getInputProps }] =
     useFileUpload({
@@ -29,19 +30,7 @@ export default function OrganizationLogoForm() {
       const { url, key, storageUrl } = await generateUploadUrl({
         organizationId: organization._id,
       });
-      try {
-        const result = await fetch(url, {
-          method: "PUT",
-          headers: { "Content-Type": file.type },
-          body: file,
-        });
-        if (!result.ok) {
-          throw new Error(`Failed to upload image: ${result.statusText}`);
-        }
-      } catch (error) {
-        throw new Error(`Failed to upload image: ${error}`);
-      }
-      await syncMetadata({ key });
+      await uploadFile({ file, url, key });
       await authClient.organization.update({
         organizationId: organization._id,
         data: {
