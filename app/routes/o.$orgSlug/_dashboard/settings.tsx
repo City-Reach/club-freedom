@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import EditOrganizationForm from "@/components/organization/edit-organization-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import OrganizationLogoForm from "@/components/organization/organization-logo-form";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard/settings")({
   component: RouteComponent,
@@ -24,6 +25,14 @@ function RouteComponent() {
               slug: organization.slug,
             }}
           />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Logo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <OrganizationLogoForm />
         </CardContent>
       </Card>
     </div>
