@@ -7,9 +7,12 @@ import type { Id } from "@/convex/_generated/dataModel";
 
 export const Route = createFileRoute("/o/$orgSlug/_public/submission/$id")({
   component: RouteComponent,
-  beforeLoad: async ({ params }) => {
+  beforeLoad: async ({ params, context }) => {
     const canView = await isTestimonialForPublicView({
-      data: { testimonialId: params.id },
+      data: {
+        testimonialId: params.id,
+        organizationId: context.organization._id,
+      },
     });
     if (!canView) {
       throw redirect({

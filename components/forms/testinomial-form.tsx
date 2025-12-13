@@ -95,7 +95,7 @@ export default function TestimonialForm({
       });
 
       // Step 4: Save this testimonial for public view temporarily
-      await saveTestimonialForPublicView({ data: { testimonialId: id } });
+      await saveTestimonialForPublicView({ data: { testimonialId: id, organizationId } });
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
       });

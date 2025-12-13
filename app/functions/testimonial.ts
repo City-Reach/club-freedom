@@ -5,10 +5,12 @@ import z from "zod";
 export const saveTestimonialForPublicView = createServerFn({
   method: "POST",
 })
-  .inputValidator(z.object({ testimonialId: z.string() }))
+  .inputValidator(
+    z.object({ testimonialId: z.string(), organizationId: z.string() }),
+  )
   .handler(({ data }) => {
     const key = `testimonials/${data.testimonialId}`;
-    setCookie(key, "true", {
+    setCookie(key, data.organizationId, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
@@ -19,9 +21,11 @@ export const saveTestimonialForPublicView = createServerFn({
 export const isTestimonialForPublicView = createServerFn({
   method: "GET",
 })
-  .inputValidator(z.object({ testimonialId: z.string() }))
+  .inputValidator(
+    z.object({ testimonialId: z.string(), organizationId: z.string() }),
+  )
   .handler(async ({ data }) => {
     const key = `testimonials/${data.testimonialId}`;
     const cookie = getCookie(key);
-    return cookie === "true";
+    return cookie === data.organizationId;
   });
