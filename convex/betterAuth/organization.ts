@@ -14,21 +14,3 @@ export const getOrganization = query({
     return organization;
   },
 });
-export type IAbbreviatedOrg = {
-  name: string;
-  slug: string;
-};
-export const getAllOrganizations = query({
-  handler: async (ctx) => {
-    const orgResults = await ctx.db
-      .query("organization")
-      .withIndex("name")
-      .order("asc")
-      .collect();
-    const organizations: IAbbreviatedOrg[] = orgResults.map((org) => ({
-      name: org.name,
-      slug: org.slug,
-    }));
-    return organizations;
-  },
-});

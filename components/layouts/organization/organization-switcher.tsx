@@ -44,7 +44,7 @@ export default function OrganizationSwitcher() {
   );
 
   const { data: liveOrganizations } = useSuspenseQuery(
-    convexQuery(api.organization.getAllUserOrganizations, {}),
+    convexQuery(api.organization.getAllOrganizations, {}),
   );
 
   const currentOrganization = liveOrganization || preloadOrganization;

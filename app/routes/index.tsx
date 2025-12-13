@@ -1,29 +1,17 @@
-import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import Navbar from "@/components/navbar";
-import { Button } from "@/components/ui/button";
-import { Combobox } from "@/components/ui/combobox";
-import { api } from "@/convex/_generated/api";
-import type { IAbbreviatedOrg } from "@/convex/betterAuth/organization";
 import { getCurrentUser } from "../functions/auth";
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: async ({ context: { queryClient } }) => {
+  loader: async () => {
     const user = await getCurrentUser();
-    const organizations = await queryClient.ensureQueryData(
-      convexQuery(api.organization.getAllOrganizations, {}),
-    );
-    return { user, organizations };
+    return { user };
   },
 });
 
 function Home() {
-  const { user, organizations } = Route.useLoaderData();
-  const navigate = Route.useNavigate();
-  const orgsData = organizations || [];
-  const [selected, setSelected] = useState<IAbbreviatedOrg | null>(null);
+  const { user } = Route.useLoaderData();
   return (
     <>
       <Navbar user={user} />
@@ -32,29 +20,6 @@ function Home() {
           <h1 className="text-4xl font-bold">
             Welcome to Testimonials Submission Product!
           </h1>
-          <p className="my-4 text-lg">
-            Please select an org to submit testimonials to
-          </p>
-          <div className="flex items-center gap-3">
-            <Combobox
-              items={orgsData}
-              valueField="slug"
-              labelField="name"
-              onSelect={setSelected}
-              value={selected}
-            />
-            <Button
-              disabled={!selected}
-              onClick={() =>
-                navigate({
-                  to: "/o/$orgSlug",
-                  params: { orgSlug: selected?.slug || "" },
-                })
-              }
-            >
-              Go
-            </Button>
-          </div>
         </div>
       </main>
     </>

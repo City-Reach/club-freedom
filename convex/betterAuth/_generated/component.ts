@@ -1513,13 +1513,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
       >;
     };
     organization: {
-      getAllOrganizations: FunctionReference<
-        "query",
-        "internal",
-        any,
-        any,
-        Name
-      >;
       getOrganization: FunctionReference<
         "query",
         "internal",

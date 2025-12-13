@@ -57,7 +57,7 @@ export default function EditOrganizationForm({ organization }: Props) {
       });
 
     const allOrganizationsQuery = convexQuery(
-      api.organization.getAllUserOrganizations,
+      api.organization.getAllOrganizations,
       {},
     );
 
