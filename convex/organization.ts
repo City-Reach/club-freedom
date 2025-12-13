@@ -62,3 +62,17 @@ export const generateLogoUploadUrl = mutation({
     };
   },
 });
+
+export const generateIconUploadUrl = mutation({
+  args: { organizationId: v.string() },
+  handler: async (_ctx, { organizationId }) => {
+    const key = `assets/${organizationId}/icon`;
+    const { url } = await r2.generateUploadUrl(key);
+    const storageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
+    return {
+      url,
+      key,
+      storageUrl,
+    };
+  },
+});
