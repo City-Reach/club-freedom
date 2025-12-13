@@ -90,7 +90,7 @@ export const updateTestimonialApproval = mutation({
     approved: v.boolean(),
   },
   handler: async (ctx, { id, approved }) => {
-    const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
+    const canApprove = await ctx.runQuery(api.organization.checkPermission, {
       permissions: { testimonial: ["approve"] },
     });
 

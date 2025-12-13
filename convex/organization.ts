@@ -3,6 +3,7 @@ import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { components } from "./_generated/api";
 import { query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
+import { OrganizationPermissionCheck } from "@/lib/auth/permissions/organization";
 
 export const getOrganizationBySlug = query({
   args: { slug: v.string() },
@@ -22,5 +23,22 @@ export const getAllOrganizations = query({
       headers,
     });
     return organizations;
+  },
+});
+
+export const checkPermission = query({
+  handler: async (ctx, args: { permissions: OrganizationPermissionCheck }) => {
+    const { headers, auth } = await authComponent.getAuth(createAuth, ctx);
+    try {
+      const { success } = await auth.api.hasPermission({
+        headers,
+        body: {
+          permissions: args.permissions,
+        },
+      });
+      return success;
+    } catch (_error) {
+      return false;
+    }
   },
 });
