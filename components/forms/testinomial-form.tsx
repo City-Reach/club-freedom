@@ -26,6 +26,7 @@ import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
+import { saveTestimonialForPublicView } from "@/app/functions/testimonial";
 
 type TestonomialFormProps = {
   organizationId: string;
@@ -93,6 +94,8 @@ export default function TestimonialForm({
         organizationId: organizationId,
       });
 
+      // Step 4: Save this testimonial for public view temporarily
+      await saveTestimonialForPublicView({ data: { testimonialId: id } });
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
       });
