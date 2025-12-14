@@ -98,7 +98,6 @@ export const updateTestimonialApproval = mutation({
 
     const canApprove = await ctx.runQuery(api.organization.checkPermission, {
       permissions: { testimonial: ["approve"] },
-      organizationId: testimonial.organizationId,
     });
 
     if (!canApprove) {

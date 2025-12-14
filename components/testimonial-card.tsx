@@ -30,7 +30,7 @@ export function TestimonialCard({
       <CardHeader>
         <div className="flex justify-between items-center">
           <Link
-            to="/testimonials/$id"
+            to="/"
             params={{ id: testimonial._id }}
             className="hover:underline"
           >
