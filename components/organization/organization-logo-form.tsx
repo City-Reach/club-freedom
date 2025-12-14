@@ -1,6 +1,6 @@
-import { useConvexMutation } from "@convex-dev/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
@@ -25,6 +25,15 @@ export default function OrganizationLogoForm() {
       multiple: false,
     });
 
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const organizationQuery = convexQuery(
+    api.organization.getOrganizationBySlug,
+    {
+      slug: organization.slug,
+    },
+  );
+
   const { mutate: updateLogo, isPending } = useMutation({
     mutationFn: async (file: File) => {
       const { url, key, storageUrl } = await generateUploadUrl({
@@ -38,8 +47,12 @@ export default function OrganizationLogoForm() {
         },
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Logo updated successfully");
+      await queryClient.invalidateQueries(organizationQuery);
+      await queryClient.ensureQueryData(organizationQuery);
+      await router.invalidate();
+      clearFiles();
     },
     onError: (error) => {
       toast.error("Failed to update logo", {
@@ -57,7 +70,7 @@ export default function OrganizationLogoForm() {
       <div className="relative flex w-full aspect-21/9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-input">
         {displayUrl ? (
           <img
-            alt="Upload preview"
+            alt={previewUrl ? "Preview" : "Logo"}
             className="size-full object-contain p-4"
             src={displayUrl}
           />
@@ -68,22 +81,24 @@ export default function OrganizationLogoForm() {
         )}
       </div>
       <div className="relative inline-flex gap-2">
-        <Button aria-haspopup="dialog" onClick={openFileDialog}>
-          {previewUrl ? "Change image" : "Upload image"}
-        </Button>
-        {previewUrl && (
-          <Button
-            variant="outline"
-            type="button"
-            onClick={() => {
-              clearFiles();
-            }}
-          >
-            Reset
-          </Button>
-        )}
         <Button
-          className="ml-auto"
+          aria-haspopup="dialog"
+          onClick={openFileDialog}
+          variant="outline"
+        >
+          {displayUrl ? "Update Logo" : "Upload Logo"}
+        </Button>
+        <Button
+          variant="destructive"
+          disabled={!previewUrl}
+          type="button"
+          onClick={() => {
+            clearFiles();
+          }}
+        >
+          Reset
+        </Button>
+        <Button
           disabled={!previewUrl || isPending}
           onClick={async () => {
             const file = fileWithPreview?.file as File;

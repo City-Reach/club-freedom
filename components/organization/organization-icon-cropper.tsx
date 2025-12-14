@@ -1,6 +1,6 @@
-import { useConvexMutation } from "@convex-dev/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouteContext, useRouter } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   ImageIcon,
@@ -142,6 +142,14 @@ export default function OrganizationIconCropper() {
     api.organization.generateIconUploadUrl,
   );
   const uploadFile = useUploadFile();
+  const queryClient = useQueryClient();
+  const organizationQuery = convexQuery(
+    api.organization.getOrganizationBySlug,
+    {
+      slug: organization.slug,
+    },
+  );
+  const router = useRouter();
 
   const { mutate: updateIcon, isPending } = useMutation({
     mutationFn: async (blob: Blob) => {
@@ -161,8 +169,12 @@ export default function OrganizationIconCropper() {
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Icon updated successfully");
+      await queryClient.invalidateQueries(organizationQuery);
+      await queryClient.ensureQueryData(organizationQuery);
+      await router.invalidate();
+      handleRemoveFinalImage();
     },
     onError: (error) => {
       toast.error("Failed to update icon", {
@@ -177,7 +189,7 @@ export default function OrganizationIconCropper() {
       <div className="relative flex size-32 place-items-center mx-auto justify-center overflow-hidden rounded-lg border-2 border-input border-dashed">
         {displayUrl ? (
           <img
-            alt="Organization Icon"
+            alt={finalImageUrl ? "Preview" : "Current Icon"}
             className="size-full object-cover bg-transparent"
             height={64}
             src={displayUrl}
@@ -191,18 +203,21 @@ export default function OrganizationIconCropper() {
         )}
       </div>
 
-      <div className="inline-flex gap-4">
-        <Button onClick={openFileDialog}>Update Icon</Button>
-        {finalImageUrl && (
-          <Button onClick={handleRemoveFinalImage} variant="outline">
-            Reset
-          </Button>
-        )}
+      <div className="inline-flex gap-2">
+        <Button onClick={openFileDialog} variant="outline">
+          {displayUrl ? "Update Icon" : "Upload Icon"}
+        </Button>
         <Button
-          className="ml-auto"
+          disabled={!finalImageUrl}
+          onClick={handleRemoveFinalImage}
+          variant="destructive"
+        >
+          Reset
+        </Button>
+        <Button
           onClick={async () => {
             if (imageBlob) {
-              await updateIcon(imageBlob);
+              updateIcon(imageBlob);
             }
           }}
           disabled={!finalImageUrl || isPending}
