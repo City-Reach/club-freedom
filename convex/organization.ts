@@ -27,9 +27,21 @@ export const getAllOrganizations = query({
 });
 
 export const checkPermission = query({
-  handler: async (ctx, args: { permissions: OrganizationPermissionCheck }) => {
+  handler: async (
+    ctx,
+    args: {
+      organizationId: string;
+      permissions: OrganizationPermissionCheck;
+    },
+  ) => {
     const { headers, auth } = await authComponent.getAuth(createAuth, ctx);
     try {
+      await auth.api.setActiveOrganization({
+        headers,
+        body: {
+          organizationId: args.organizationId,
+        },
+      });
       const { success } = await auth.api.hasPermission({
         headers,
         body: {
