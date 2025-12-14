@@ -11,13 +11,18 @@ type Props = {
 
 export default function OrganiztionNavbar({ user, organization }: Props) {
   return (
-    <header className="border-b px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
+    <header className="border-b py-2 px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
       <div className="flex items-center gap-4">
         <OrganizationLogo organization={organization} />
         {user && (
-          <div className="flex items-center gap-4">
-            <Button variant="link" className="cursor-pointer" asChild>
-              <Link to="/testimonials">Testimonials</Link>
+          <div className="flex items-center">
+            <Button variant="ghost" size="sm" asChild>
+              <Link
+                to="/o/$orgSlug/testimonials"
+                params={{ orgSlug: organization.slug }}
+              >
+                Testimonials
+              </Link>
             </Button>
           </div>
         )}

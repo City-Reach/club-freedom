@@ -9,12 +9,7 @@ export default function OrganizationLogo({ organization }: Props) {
   return (
     <Link to="/o/$orgSlug" params={{ orgSlug: organization.slug }}>
       {organization.logo ? (
-        <img
-          src={organization.logo}
-          alt={organization.name}
-          height={32}
-          className="size-full"
-        />
+        <img src={organization.logo} alt={organization.name} className="h-10" />
       ) : (
         <span>{organization.name}</span>
       )}
