@@ -12,6 +12,7 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials/$id")(
 
 function RouteComponent() {
   const { id } = Route.useParams();
+  const { organization } = Route.useRouteContext();
   return (
     <div className="max-w-lg mx-auto py-12 px-8 space-y-4">
       <Button variant="link" className="px-0!" asChild>
@@ -20,7 +21,10 @@ function RouteComponent() {
           Back
         </Link>
       </Button>
-      <TestimonialDetail id={id as Id<"testimonials">} />
+      <TestimonialDetail
+        id={id as Id<"testimonials">}
+        organizationId={organization._id}
+      />
     </div>
   );
 }

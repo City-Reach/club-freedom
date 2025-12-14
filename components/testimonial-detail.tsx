@@ -9,12 +9,14 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { getApprovalStatusText } from "@/utils/testimonial-utils";
 
 type Props = {
+  organizationId: string;
   id: Id<"testimonials">;
 };
 
-export default function TestimonialDetail({ id }: Props) {
+export default function TestimonialDetail({ id, organizationId }: Props) {
   const testimonial = useQuery(api.testimonials.getTestimonialById, { id });
   const canApprove = useQuery(api.organization.checkPermission, {
+    organizationId,
     permissions: {
       testimonial: ["approve"],
     },

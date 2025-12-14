@@ -25,6 +25,7 @@ export const Route = createFileRoute("/o/$orgSlug/_public/submission/$id")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
+  const { organization } = Route.useRouteContext();
   return (
     <main className="max-w-lg mx-auto py-12 px-8 space-y-4">
       <Alert>
@@ -34,7 +35,10 @@ function RouteComponent() {
           If you leave this page, you may not be able to see this page again.
         </AlertDescription>
       </Alert>
-      <TestimonialDetail id={id as Id<"testimonials">} />
+      <TestimonialDetail
+        id={id as Id<"testimonials">}
+        organizationId={organization._id}
+      />
     </main>
   );
 }
