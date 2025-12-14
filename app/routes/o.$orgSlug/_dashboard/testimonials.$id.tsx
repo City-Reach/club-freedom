@@ -16,6 +16,7 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials/$id")(
 
 function RouteComponent() {
   const { id } = Route.useParams();
+  const { organization } = Route.useRouteContext();
   const testimonial = useQuery(api.testimonials.getTestimonialById, {
     id: id as Id<"testimonials">,
   });
@@ -47,6 +48,11 @@ function RouteComponent() {
         {testimonial.mediaUrl && (
           <Testimonial.Media mediaUrl={testimonial.mediaUrl} />
         )}
+        <Testimonial.Action organization={organization}>
+          <div className="flex wrap gap-4">
+            <Testimonial.Action.MediaDownload />
+          </div>
+        </Testimonial.Action>
         <Testimonial.Summary />
         <Testimonial.Text />
       </Testimonial>

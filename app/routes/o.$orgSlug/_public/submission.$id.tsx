@@ -2,14 +2,14 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { CircleAlert } from "lucide-react";
 import { isTestimonialForPublicView } from "@/app/functions/testimonial";
-import TestimonialDetail from "@/components/testimonial-detail";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
-import { Spinner } from "@/components/ui/spinner";
 import NotFound from "@/components/not-found";
 import Testimonial from "@/components/testimonial";
+import TestimonialDetail from "@/components/testimonial-detail";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 
 export const Route = createFileRoute("/o/$orgSlug/_public/submission/$id")({
   component: RouteComponent,

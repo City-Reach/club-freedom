@@ -1,17 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { DownloadIcon } from "lucide-react";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
-import { Button } from "../ui/button";
-import { useTestimonialContext } from "./context";
+import { Button } from "@/components/ui/button";
+import { useTestimonialActionContext } from "./context";
 
-type Props = {
-  organization: Doc<"organization">;
-};
+export default function TestimonialMediaDownload() {
+  const { testimonial, organization } = useTestimonialActionContext();
 
-export default function TestimonialDownload({ organization }: Props) {
-  const { testimonial } = useTestimonialContext();
-
-  if (!testimonial.media_type) {
+  if (
+    testimonial.media_type !== "audio" &&
+    testimonial.media_type !== "video"
+  ) {
     return null;
   }
 
