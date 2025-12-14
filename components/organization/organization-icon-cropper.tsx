@@ -143,7 +143,7 @@ export default function OrganizationIconCropper() {
   );
   const uploadFile = useUploadFile();
 
-  const { mutateAsync: updateIcon, isPending } = useMutation({
+  const { mutate: updateIcon, isPending } = useMutation({
     mutationFn: async (blob: Blob) => {
       const { _id: organizationId } = organization;
       const file = createFileFromImageBlob(organizationId, blob);

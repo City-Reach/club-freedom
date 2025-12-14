@@ -25,7 +25,7 @@ export default function OrganizationLogoForm() {
       multiple: false,
     });
 
-  const { mutateAsync: updateLogo, isPending } = useMutation({
+  const { mutate: updateLogo, isPending } = useMutation({
     mutationFn: async (file: File) => {
       const { url, key, storageUrl } = await generateUploadUrl({
         organizationId: organization._id,
