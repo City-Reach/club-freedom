@@ -13,7 +13,7 @@ export const setDefaultApprovedValue = migrations.define({
 });
 
 export const setTestimonialOrganizationId = internalMutation({
-  args: { organizationId: v.string() },
+  args: { organizationId: v.optional(v.string()) },
   handler: async (ctx, { organizationId }) => {
     const testimonials = await ctx.db.query("testimonials").collect();
     for (const testimonial of testimonials) {
