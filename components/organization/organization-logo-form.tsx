@@ -40,6 +40,7 @@ export default function OrganizationLogoForm({ organization }: Props) {
     mutationFn: async (file: File) => {
       const { url, key, storageUrl } = await generateUploadUrl({
         organizationId: organization._id,
+        oldUrl: organization.logo || undefined,
       });
       await uploadFile({ file, url, key });
       await authClient.organization.update({

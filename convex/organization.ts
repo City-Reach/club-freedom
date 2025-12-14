@@ -50,8 +50,17 @@ export const setActiveOrganization = mutation({
 });
 
 export const generateLogoUploadUrl = mutation({
-  args: { organizationId: v.string() },
-  handler: async (_ctx, { organizationId }) => {
+  args: {
+    organizationId: v.string(),
+    oldUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, { organizationId, oldUrl }) => {
+    // Remove old logo if exists
+    if (oldUrl && oldUrl.startsWith(process.env.R2_PUBLIC_URL!)) {
+      const oldKey = oldUrl.replace(`${process.env.R2_PUBLIC_URL}/`, "");
+      await r2.deleteObject(ctx, oldKey);
+    }
+
     const key = `assets/${organizationId}/logo-${Date.now()}`;
     const { url } = await r2.generateUploadUrl(key);
     const storageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
@@ -64,8 +73,15 @@ export const generateLogoUploadUrl = mutation({
 });
 
 export const generateIconUploadUrl = mutation({
-  args: { organizationId: v.string() },
-  handler: async (_ctx, { organizationId }) => {
+  args: {
+    organizationId: v.string(),
+    oldUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, { organizationId, oldUrl }) => {
+    if (oldUrl && oldUrl.startsWith(process.env.R2_PUBLIC_URL!)) {
+      const oldKey = oldUrl.replace(`${process.env.R2_PUBLIC_URL}/`, "");
+      await r2.deleteObject(ctx, oldKey);
+    }
     const key = `assets/${organizationId}/icon-${Date.now()}`;
     const { url } = await r2.generateUploadUrl(key);
     const storageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;

@@ -158,6 +158,7 @@ export default function OrganizationIconCropper({ organization }: Props) {
       const file = createFileFromImageBlob(organizationId, blob);
       const { url, key, storageUrl } = await generateUploadUrl({
         organizationId,
+        oldUrl: organization.icon || undefined,
       });
       await uploadFile({ file, url, key });
       const { error } = await authClient.organization.update({
