@@ -37,18 +37,6 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
       organization: context.organization,
     };
   },
-  loader: async ({ context, params }) => {
-    const organizations = await context.queryClient.ensureQueryData(
-      convexQuery(api.organization.getAllOrganizations, {}),
-    );
-    if (!organizations.find((org) => org.slug === params.orgSlug)) {
-      throw notFound();
-    }
-    return {
-      user: context.user,
-      organizations,
-    };
-  },
 });
 
 function RouteComponent() {

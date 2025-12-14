@@ -56,24 +56,17 @@ export default function EditOrganizationForm({ organization }: Props) {
         slug,
       });
 
-    const allOrganizationsQuery = convexQuery(
-      api.organization.getAllOrganizations,
-      {},
-    );
-
     await Promise.all([
       queryClient.removeQueries(organizationBySlugQuery(organization.slug)),
       queryClient.removeQueries(
         organizationBySlugQuery(updatedOrganization.slug),
       ),
-      queryClient.removeQueries(allOrganizationsQuery),
     ]);
 
     await Promise.all([
       queryClient.ensureQueryData(
         organizationBySlugQuery(updatedOrganization.slug),
       ),
-      queryClient.ensureQueryData(allOrganizationsQuery),
     ]);
 
     if (updatedOrganization.slug !== organization.slug) {
