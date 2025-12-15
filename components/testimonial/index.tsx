@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { TestimonialContext } from "./context";
+import TestimonialAction from "./testimonial-action";
 import TestimonialMedia from "./testimonial-media";
 import TestimonialMetadata from "./testimonial-metadata";
 import { TestimonialSummary } from "./testimonial-summary";
 import TestimonialText from "./testimonial-text";
 import { TestimonialTitle } from "./testimonial-title";
-import TestimonialAction from "./testimonial-action";
 
 type Props = {
   testimonial: Doc<"testimonials">;

@@ -51,6 +51,7 @@ function RouteComponent() {
         <Testimonial.Action organization={organization}>
           <div className="flex wrap gap-4">
             <Testimonial.Action.MediaDownload />
+            <Testimonial.Action.Approval />
           </div>
         </Testimonial.Action>
         <Testimonial.Summary />

@@ -53,18 +53,11 @@ export const checkPermission = query({
   handler: async (
     ctx,
     args: {
-      organizationId: string;
       permissions: OrganizationPermissionCheck;
     },
   ) => {
     const { headers, auth } = await authComponent.getAuth(createAuth, ctx);
     try {
-      await auth.api.setActiveOrganization({
-        headers,
-        body: {
-          organizationId: args.organizationId,
-        },
-      });
       const { success } = await auth.api.hasPermission({
         headers,
         body: {
@@ -72,7 +65,8 @@ export const checkPermission = query({
         },
       });
       return success;
-    } catch (_error) {
+    } catch (error) {
+      console.error(error);
       return false;
     }
   },

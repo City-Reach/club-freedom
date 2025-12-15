@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext } from "react";
+import { createContext, useContext } from "react";
 import type { Doc } from "@/convex/_generated/dataModel";
 import type { Doc as AuthDoc } from "@/convex/betterAuth/_generated/dataModel";
 

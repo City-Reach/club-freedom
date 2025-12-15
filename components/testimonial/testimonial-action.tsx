@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { TestimonialActionContext } from "./actions/context";
-import { useTestimonialContext } from "./context";
+import TestimonialApproval from "./actions/testimonial-approval";
 import TestimonialMediaDownload from "./actions/testimonial-media-download";
+import { useTestimonialContext } from "./context";
 
 type Props = {
   organization: Doc<"organization">;
@@ -19,3 +20,4 @@ export default function TestimonialAction({ organization, children }: Props) {
 }
 
 TestimonialAction.MediaDownload = TestimonialMediaDownload;
+TestimonialAction.Approval = TestimonialApproval;
