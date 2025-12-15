@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { OrganizationPermissionCheck } from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
@@ -43,6 +44,23 @@ export const setActiveOrganization = mutation({
       return data !== null;
     } catch (error) {
       console.log(error);
+      return false;
+    }
+  },
+});
+
+export const checkPermission = query({
+  handler: async (ctx, args: { permissions: OrganizationPermissionCheck }) => {
+    const { headers, auth } = await authComponent.getAuth(createAuth, ctx);
+    try {
+      const { success } = await auth.api.hasPermission({
+        headers,
+        body: {
+          permissions: args.permissions,
+        },
+      });
+      return success;
+    } catch (_error) {
       return false;
     }
   },
