@@ -1,4 +1,4 @@
-import { Link, useLoaderData, useParams } from "@tanstack/react-router";
+import { Link, useParams, useRouteContext } from "@tanstack/react-router";
 import { ExternalLink, Settings, UserRoundCog } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
@@ -14,7 +14,7 @@ export default function OrganizationSidebarNavSecondary(
   const { orgSlug } = useParams({
     from: "/o/$orgSlug",
   });
-  const { user } = useLoaderData({
+  const { user } = useRouteContext({
     from: "/o/$orgSlug/_dashboard",
   });
 

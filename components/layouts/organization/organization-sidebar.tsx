@@ -1,4 +1,4 @@
-import { useLoaderData } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import type { ComponentProps } from "react";
 import {
   Sidebar,
@@ -7,20 +7,20 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import UserNavigation from "@/components/user-navigation";
+import OrganizationSidebarHeader from "./organization-sidebar-header";
 import OrganizationSidebarNav from "./organization-sidebar-nav";
 import OrganizationSidebarNavSecondary from "./organization-sidebar-nav-secondary";
-import OrganizationSwitcher from "./organization-switcher";
 
 export default function OrganizationSidebar({
   ...props
 }: ComponentProps<typeof Sidebar>) {
-  const { user } = useLoaderData({
+  const { user } = useRouteContext({
     from: "/o/$orgSlug/_dashboard",
   });
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <OrganizationSwitcher />
+        <OrganizationSidebarHeader />
       </SidebarHeader>
       <SidebarContent>
         <OrganizationSidebarNav />
