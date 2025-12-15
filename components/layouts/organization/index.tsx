@@ -1,4 +1,4 @@
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import {
   SidebarInset,
