@@ -1,20 +1,66 @@
+import { useMutation } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
+import { useMutation as useConvexMutation } from "convex/react";
 import { ImageIcon } from "lucide-react";
+import { toast } from "sonner";
+import { api } from "@/convex/_generated/api";
 import { useFileUpload } from "@/hooks/use-file-upload";
+import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
 
 export default function OrganizationLogoForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
+  
+  const generateUploadUrl = useConvexMutation(
+    api.organization.generateLogoUploadUrl,
+  );
+  const syncMetadata = useConvexMutation(api.r2.syncMetadata);
 
   const [{ files }, { clearFiles, openFileDialog, getInputProps }] =
     useFileUpload({
       accept: "image/*",
+      multiple: false,
     });
 
-  const previewUrl = files[0]?.preview || null;
+  const { mutateAsync: updateLogo, isPending } = useMutation({
+    mutationFn: async (file: File) => {
+      const { url, key, storageUrl } = await generateUploadUrl({
+        organizationId: organization._id,
+      });
+      try {
+        const result = await fetch(url, {
+          method: "PUT",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        if (!result.ok) {
+          throw new Error(`Failed to upload image: ${result.statusText}`);
+        }
+      } catch (error) {
+        throw new Error(`Failed to upload image: ${error}`);
+      }
+      await syncMetadata({ key });
+      await authClient.organization.update({
+        organizationId: organization._id,
+        data: {
+          logo: storageUrl,
+        },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Logo updated successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to update logo", {
+        description: error.message,
+      });
+    },
+  });
 
+  const fileWithPreview = files.at(0);
+  const previewUrl = fileWithPreview?.preview || null;
   const displayUrl = previewUrl || organization.logo;
 
   return (
@@ -47,8 +93,18 @@ export default function OrganizationLogoForm() {
             Reset
           </Button>
         )}
-        <Button className="ml-auto" disabled={!previewUrl}>
-          Save
+        <Button
+          className="ml-auto"
+          disabled={!previewUrl || isPending}
+          onClick={async () => {
+            const file = fileWithPreview?.file as File;
+            if (!file) {
+              return;
+            }
+            updateLogo(file);
+          }}
+        >
+          {isPending ? "Saving..." : "Save"}
         </Button>
         <input
           {...getInputProps()}
