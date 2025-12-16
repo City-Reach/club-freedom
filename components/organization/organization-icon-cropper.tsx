@@ -30,12 +30,13 @@ import { useFileUpload } from "@/hooks/use-file-upload";
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { authClient } from "@/lib/auth/auth-client";
 import { type Area, createFileFromImageBlob, getCroppedImg } from "@/lib/image";
+import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
-export default function OrganizationIconCropper() {
-  const { organization } = useRouteContext({
-    from: "/o/$orgSlug",
-  });
+type Props = {
+  organization: Doc<"organization">;
+};
 
+export default function OrganizationIconCropper({ organization }: Props) {
   const [{ files }, { openFileDialog, removeFile, getInputProps }] =
     useFileUpload({
       accept: "image/*",
@@ -139,7 +140,7 @@ export default function OrganizationIconCropper() {
   }, [fileId]); // Depend only on fileId
 
   const generateUploadUrl = useConvexMutation(
-    api.organization.generateIconUploadUrl,
+    api.organization.generateIconUploadUrl
   );
   const uploadFile = useUploadFile();
   const queryClient = useQueryClient();
@@ -147,7 +148,7 @@ export default function OrganizationIconCropper() {
     api.organization.getOrganizationBySlug,
     {
       slug: organization.slug,
-    },
+    }
   );
   const router = useRouter();
 

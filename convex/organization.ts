@@ -10,7 +10,7 @@ export const getOrganizationBySlug = query({
   handler: async (ctx, { slug }) => {
     const organization = await ctx.runQuery(
       components.betterAuth.organization.getOrganization,
-      { slug },
+      { slug }
     );
     return organization as Doc<"organization"> | null;
   },
@@ -52,7 +52,7 @@ export const setActiveOrganization = mutation({
 export const generateLogoUploadUrl = mutation({
   args: { organizationId: v.string() },
   handler: async (_ctx, { organizationId }) => {
-    const key = `assets/${organizationId}/logo`;
+    const key = `assets/${organizationId}/logo-${Date.now()}`;
     const { url } = await r2.generateUploadUrl(key);
     const storageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     return {
@@ -66,7 +66,7 @@ export const generateLogoUploadUrl = mutation({
 export const generateIconUploadUrl = mutation({
   args: { organizationId: v.string() },
   handler: async (_ctx, { organizationId }) => {
-    const key = `assets/${organizationId}/icon`;
+    const key = `assets/${organizationId}/icon-${Date.now()}`;
     const { url } = await r2.generateUploadUrl(key);
     const storageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     return {

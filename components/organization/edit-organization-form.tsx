@@ -14,9 +14,10 @@ import { Button } from "../ui/button";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
+import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
-  organization: Organization & { id: string };
+  organization: Doc<"organization">;
 };
 
 export default function EditOrganizationForm({ organization }: Props) {
@@ -35,7 +36,7 @@ export default function EditOrganizationForm({ organization }: Props) {
 
     const { data: updatedOrganization, error } =
       await authClient.organization.update({
-        organizationId: organization.id,
+        organizationId: organization._id,
         data: {
           name,
           slug,
@@ -59,13 +60,13 @@ export default function EditOrganizationForm({ organization }: Props) {
     await Promise.all([
       queryClient.removeQueries(organizationBySlugQuery(organization.slug)),
       queryClient.removeQueries(
-        organizationBySlugQuery(updatedOrganization.slug),
+        organizationBySlugQuery(updatedOrganization.slug)
       ),
     ]);
 
     await Promise.all([
       queryClient.ensureQueryData(
-        organizationBySlugQuery(updatedOrganization.slug),
+        organizationBySlugQuery(updatedOrganization.slug)
       ),
     ]);
 
