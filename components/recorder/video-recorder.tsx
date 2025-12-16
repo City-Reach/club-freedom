@@ -11,7 +11,10 @@ export default function VideoRecorder({ onRecordingComplete }: Props) {
   const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
   return (
     <ReactMediaRecorder
-      video
+      video={{
+        width: 1280,
+        height: 720,
+      }}
       audio
       blobPropertyBag={{
         type: mp4Supported ? "video/mp4" : "video/webm",
