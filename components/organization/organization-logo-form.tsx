@@ -4,11 +4,11 @@ import { useRouter } from "@tanstack/react-router";
 import { ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
   organization: Doc<"organization">;
@@ -18,7 +18,7 @@ export default function OrganizationLogoForm({ organization }: Props) {
   const uploadFile = useUploadFile();
 
   const generateUploadUrl = useConvexMutation(
-    api.organization.generateLogoUploadUrl
+    api.organization.generateLogoUploadUrl,
   );
 
   const [{ files }, { clearFiles, openFileDialog, getInputProps }] =
@@ -33,7 +33,7 @@ export default function OrganizationLogoForm({ organization }: Props) {
     api.organization.getOrganizationBySlug,
     {
       slug: organization.slug,
-    }
+    },
   );
 
   const { mutate: updateLogo, isPending } = useMutation({

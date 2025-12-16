@@ -10,7 +10,7 @@ export const getOrganizationBySlug = query({
   handler: async (ctx, { slug }) => {
     const organization = await ctx.runQuery(
       components.betterAuth.organization.getOrganization,
-      { slug }
+      { slug },
     );
     return organization as Doc<"organization"> | null;
   },
@@ -56,7 +56,7 @@ export const generateLogoUploadUrl = mutation({
   },
   handler: async (ctx, { organizationId, oldUrl }) => {
     // Remove old logo if exists
-    if (oldUrl && oldUrl.startsWith(process.env.R2_PUBLIC_URL!)) {
+    if (oldUrl?.startsWith(process.env.R2_PUBLIC_URL!)) {
       const oldKey = oldUrl.replace(`${process.env.R2_PUBLIC_URL}/`, "");
       await r2.deleteObject(ctx, oldKey);
     }
@@ -78,7 +78,7 @@ export const generateIconUploadUrl = mutation({
     oldUrl: v.optional(v.string()),
   },
   handler: async (ctx, { organizationId, oldUrl }) => {
-    if (oldUrl && oldUrl.startsWith(process.env.R2_PUBLIC_URL!)) {
+    if (oldUrl?.startsWith(process.env.R2_PUBLIC_URL!)) {
       const oldKey = oldUrl.replace(`${process.env.R2_PUBLIC_URL}/`, "");
       await r2.deleteObject(ctx, oldKey);
     }

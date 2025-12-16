@@ -26,11 +26,11 @@ import {
 } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
 import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { authClient } from "@/lib/auth/auth-client";
 import { type Area, createFileFromImageBlob, getCroppedImg } from "@/lib/image";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
   organization: Doc<"organization">;
@@ -140,7 +140,7 @@ export default function OrganizationIconCropper({ organization }: Props) {
   }, [fileId]); // Depend only on fileId
 
   const generateUploadUrl = useConvexMutation(
-    api.organization.generateIconUploadUrl
+    api.organization.generateIconUploadUrl,
   );
   const uploadFile = useUploadFile();
   const queryClient = useQueryClient();
@@ -148,7 +148,7 @@ export default function OrganizationIconCropper({ organization }: Props) {
     api.organization.getOrganizationBySlug,
     {
       slug: organization.slug,
-    }
+    },
   );
   const router = useRouter();
 
