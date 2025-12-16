@@ -30,6 +30,10 @@ export default function MobileVideoRecorder({ field }: Props) {
     previewStream,
   } = useReactMediaRecorder({
     video: {
+      frameRate: {
+        ideal: 24,
+        max: 30,
+      },
       width: 1280,
       height: 720,
       facingMode: "user",
