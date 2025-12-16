@@ -1,10 +1,9 @@
+import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { Square, Video } from "lucide-react";
 import { useState } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
-import type { Testimonial } from "@/lib/schema";
-import { Button } from "../ui/button";
 import { useReactMediaRecorder } from "react-media-recorder";
-import TimeElapsed from "./time-elapsed";
+import type { Testimonial } from "@/lib/schema";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,7 +11,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
 } from "../ui/alert-dialog";
-import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
+import { Button } from "../ui/button";
+import TimeElapsed from "./time-elapsed";
 
 type Props = {
   field: ControllerRenderProps<Testimonial, "mediaFile">;
