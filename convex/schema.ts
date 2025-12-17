@@ -12,6 +12,14 @@ export default defineSchema({
     summary: v.optional(v.string()),
     searchText: v.optional(v.string()),
     approved: v.optional(v.boolean()), // Whether the testimonial is approved for display
+    processingStatus: v.optional(
+      v.union(
+        v.literal("ongoing"),
+        v.literal("completed"),
+        v.literal("transcription_error"),
+        v.literal("summary_error"),
+      ),
+    ),
   }).searchIndex("search_posts", {
     searchField: "searchText",
   }),
