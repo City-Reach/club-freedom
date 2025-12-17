@@ -34,6 +34,8 @@ export default function TestimonialDetail({ id }: Props) {
     api.testimonials.updateTestimonialApproval,
   );
 
+  const retryProcessing = useMutation(api.testimonials.retryProcessing);
+
   if (!testimonial) {
     return <div>Loading testimonial...</div>;
   }
@@ -80,7 +82,12 @@ export default function TestimonialDetail({ id }: Props) {
               </ItemDescription>
             </ItemContent>
             <ItemActions>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer"
+                onClick={() => retryProcessing({ id })}
+              >
                 Try again
               </Button>
             </ItemActions>

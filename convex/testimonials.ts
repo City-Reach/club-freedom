@@ -149,3 +149,30 @@ export const updateProcessingStatus = mutation({
     await ctx.db.patch(id, { processingStatus });
   },
 });
+
+export const retryProcessing = mutation({
+  args: {
+    id: v.id("testimonials"),
+  },
+  handler: async (ctx, { id }) => {
+    const testimonial = await ctx.db.get(id);
+    if (!testimonial) return;
+    const status = testimonial.processingStatus;
+    if (status !== "summaryError" && status !== "transcriptionError") return;
+
+    await ctx.db.patch(id, { processingStatus: "ongoing" });
+
+    if (!testimonial.testimonialText) {
+      const mediaUrl = `${process.env.R2_PUBLIC_URL}/${testimonial.storageId}`;
+      await ctx.scheduler.runAfter(0, api.ai.transcribe, {
+        testimonialId: id,
+        mediaUrl,
+      });
+    } else if (!testimonial.summary || !testimonial.title) {
+      await ctx.scheduler.runAfter(0, api.ai.summarizeText, {
+        testimonialId: id,
+        text: testimonial.testimonialText,
+      });
+    }
+  },
+});
