@@ -1,5 +1,6 @@
 import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
-import { Square, Video } from "lucide-react";
+import { useOrientation } from "@uidotdev/usehooks";
+import { RefreshCcw, Square, Video } from "lucide-react";
 import { useState } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 import { useReactMediaRecorder } from "react-media-recorder";
@@ -20,6 +21,8 @@ type Props = {
 
 export default function MobileVideoRecorder({ field }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const orientation = useOrientation();
+
   const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
   const {
     startRecording,
@@ -55,6 +58,16 @@ export default function MobileVideoRecorder({ field }: Props) {
   });
 
   const isRecording = status === "recording";
+  const isLandscape = orientation.type.startsWith("landscape");
+
+  if (isLandscape) {
+    return (
+      <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">
+        <RefreshCcw />
+        Please rotate your device to portrait mode to record a video.
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">
