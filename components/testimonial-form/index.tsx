@@ -9,7 +9,6 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
-import useMobileDetect from "@/hooks/use-mobile-detect";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -25,6 +24,8 @@ import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { AudioRecorder, VideoRecorder } from "./recorder";
+import { compressVideo } from "@/lib/media/video";
+import { compressAudio } from "@/lib/media/audio";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
@@ -33,7 +34,6 @@ export default function TestimonialForm() {
   });
   const navigation = useNavigate();
   const uploadFile = useUploadFile(api.r2);
-  const isMobile = useMobileDetect();
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
 
@@ -49,29 +49,41 @@ export default function TestimonialForm() {
     form.watch("mediaFile") == null && form.watch("writtenText") === "";
 
   async function onSubmit(values: Testimonial) {
+    let toastId: string | number | undefined;
     try {
       // Step 1: Validate Turnstile token
+      toastId = toast.loading("Verifying");
       const turnstileToken = values.turnstileToken;
       const isHuman = await validateTurnstileToken({
         data: { turnstileToken },
       });
+      toast.dismiss(toastId);
       if (!isHuman) {
-        toast.error("Human verification failed. Please try again.");
-        return;
+        throw new Error("Human verification failed");
       }
 
       // Step 2:
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        storageId = await uploadFile(values.mediaFile);
+        const isVideo = values.mediaFile.type.startsWith("video");
+
+        toastId = toast.loading("Compressing video");
+        const compressed = isVideo
+          ? await compressVideo(values.mediaFile)
+          : await compressAudio(values.mediaFile);
+        toast.dismiss(toastId);
+
+        toastId = toast.loading("Uploading video");
+        storageId = await uploadFile(compressed);
+        toast.dismiss(toastId);
         if (!storageId) {
           throw new Error("Failed to upload audio file");
         }
-        if (values.mediaFile.type.startsWith("audio")) {
-          media_type = "audio";
-        } else if (values.mediaFile.type.startsWith("video")) {
+        if (isVideo) {
           media_type = "video";
+        } else {
+          media_type = "audio";
         }
       }
 
@@ -90,9 +102,11 @@ export default function TestimonialForm() {
       form.reset();
       navigation({ to: "/testimonials/$id", params: { id } });
     } catch (error) {
+      toast.dismiss(toastId);
       console.error("Error submitting testimonial:", error);
       toast.error("Failed to submit testimonial", {
-        description: "Please try again later.",
+        description:
+          error instanceof Error ? error.message : "Please try again later.",
       });
     }
   }
