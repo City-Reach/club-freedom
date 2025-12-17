@@ -40,12 +40,8 @@ export const fillProcessingStatus = migrations.define({
       return {};
     }
 
-    if (!doc.testimonialText) {
-      return { processingStatus: "transcriptionError" as const };
-    }
-
-    if (!doc.title || !doc.summary) {
-      return { processingStatus: "summaryError" as const };
+    if (!doc.testimonialText || !doc.title || !doc.summary) {
+      return { processingStatus: "error" as const };
     }
 
     return { processingStatus: "completed" as const };

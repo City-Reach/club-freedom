@@ -36,7 +36,7 @@ export const summarizeText = action({
     } catch (error) {
       await ctx.runMutation(api.testimonials.updateProcessingStatus, {
         id: testimonialId,
-        processingStatus: "summaryError",
+        processingStatus: "error",
       });
       postHogClient.captureException(error, `summarizeText-${testimonialId}`, {
         testimonialId: testimonialId,
@@ -69,7 +69,7 @@ export const transcribe = action({
     } catch (error) {
       await ctx.runMutation(api.testimonials.updateProcessingStatus, {
         id: testimonialId,
-        processingStatus: "transcriptionError",
+        processingStatus: "error",
       });
       postHogClient.captureException(error, `transcribe-${testimonialId}`, {
         testimonialId: testimonialId,

@@ -4,8 +4,7 @@ import { v } from "convex/values";
 export const processingStatusSchema = v.union(
   v.literal("ongoing"),
   v.literal("completed"),
-  v.literal("transcriptionError"),
-  v.literal("summaryError"),
+  v.literal("error"),
 );
 
 export default defineSchema({

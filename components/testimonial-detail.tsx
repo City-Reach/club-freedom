@@ -12,7 +12,6 @@ import {
   Item,
   ItemActions,
   ItemContent,
-  ItemDescription,
   ItemMedia,
   ItemTitle,
 } from "./ui/item";
@@ -69,31 +68,34 @@ export default function TestimonialDetail({ id }: Props) {
 
   return (
     <div className="flex flex-col gap-8">
-      {testimonial.processingStatus === "summaryError" ||
-        (testimonial.processingStatus === "transcriptionError" && (
-          <Item variant="outline" size="sm">
-            <ItemMedia className="text-destructive">
-              <AlertCircle className="size-5" />
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle className="text-destructive">Error</ItemTitle>
-              <ItemDescription className="text-destructive">
-                Failed to process testimonial.
-              </ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <Button
-                variant="outline"
-                size="sm"
-                className="cursor-pointer"
-                onClick={() => retryProcessing({ id })}
-              >
-                Try again
-              </Button>
-            </ItemActions>
-          </Item>
-        ))}
-      <h1 className="text-2xl font-bold">{title}</h1>
+      {testimonial.processingStatus === "error" && (
+        <Item variant="outline" size="sm">
+          <ItemMedia className="text-destructive">
+            <AlertCircle className="size-5" />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle className="text-destructive">
+              Failed to process testimonial.
+            </ItemTitle>
+          </ItemContent>
+          <ItemActions>
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer"
+              onClick={() => retryProcessing({ id })}
+            >
+              Try again
+            </Button>
+          </ItemActions>
+        </Item>
+      )}
+      <h1 className="text-2xl font-bold">
+        {title}
+        {!testimonial.title && testimonial.processingStatus === "ongoing" && (
+          <Spinner className="inline align-baseline size-5 ml-1" />
+        )}
+      </h1>
       {testimonial.mediaUrl && testimonial.media_type === "audio" && (
         <audio className="w-full" controls src={testimonial.mediaUrl} />
       )}

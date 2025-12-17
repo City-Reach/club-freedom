@@ -158,7 +158,7 @@ export const retryProcessing = mutation({
     const testimonial = await ctx.db.get(id);
     if (!testimonial) return;
     const status = testimonial.processingStatus;
-    if (status !== "summaryError" && status !== "transcriptionError") return;
+    if (status !== "error") return;
 
     await ctx.db.patch(id, { processingStatus: "ongoing" });
 
