@@ -38,24 +38,30 @@ export default function MobileVideoRecorder({ field }: Props) {
   const orientation = useOrientation();
 
   const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
-  const { startRecording, stopRecording, clearBlobUrl, status, mediaBlobUrl } =
-    useReactMediaRecorder({
-      ...MEDIA_CONSTRAINTS,
-      customMediaStream: previewStream ?? undefined,
-      blobPropertyBag: {
-        type: mp4Supported ? "video/mp4" : "video/webm",
-      },
-      mediaRecorderOptions: {
-        mimeType: mp4Supported ? "video/mp4" : "video/webm",
-      },
-      onStop: (_, blob) => {
-        const videoFile = new File([blob], `video-recording-${Date.now()}`, {
-          type: blob.type ?? "video/webm",
-        });
-        field.onChange(videoFile);
-        setIsOpen(false);
-      },
-    });
+  const {
+    startRecording,
+    stopRecording,
+    clearBlobUrl,
+    status,
+    mediaBlobUrl,
+    error,
+  } = useReactMediaRecorder({
+    ...MEDIA_CONSTRAINTS,
+    customMediaStream: previewStream ?? undefined,
+    blobPropertyBag: {
+      type: mp4Supported ? "video/mp4" : "video/webm",
+    },
+    mediaRecorderOptions: {
+      mimeType: mp4Supported ? "video/mp4" : "video/webm",
+    },
+    onStop: (_, blob) => {
+      const videoFile = new File([blob], `video-recording-${Date.now()}`, {
+        type: blob.type ?? "video/webm",
+      });
+      field.onChange(videoFile);
+      setIsOpen(false);
+    },
+  });
 
   const handleOpenCamera = async () => {
     try {
@@ -85,6 +91,22 @@ export default function MobileVideoRecorder({ field }: Props) {
       <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">
         <RefreshCcw />
         Please rotate your device to portrait mode to record a video.
+      </div>
+    );
+  }
+
+  if (error || status === "permission_denied") {
+    return (
+      <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">
+        <div className="text-center text-destructive">
+          <p className="font-semibold">Camera access denied or unavailable</p>
+          <p className="text-sm mt-2">
+            {window.location.protocol === "http:" &&
+            !window.location.hostname.includes("localhost")
+              ? "Camera access requires HTTPS or localhost. Try accessing via localhost or enable HTTPS."
+              : "Please allow camera access and try again."}
+          </p>
+        </div>
       </div>
     );
   }
