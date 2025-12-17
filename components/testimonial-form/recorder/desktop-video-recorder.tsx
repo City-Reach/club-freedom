@@ -1,13 +1,9 @@
 import { Square, Video } from "lucide-react";
-import {
-  useReactMediaRecorder,
-} from "react-media-recorder";
-import { Button } from "../ui/button";
+import { useController } from "react-hook-form";
+import { useReactMediaRecorder } from "react-media-recorder";
+import { Button } from "@/components/ui/button";
+import type { Testimonial } from "@/lib/schema";
 import TimeElapsed from "./time-elapsed";
-
-type Props = {
-  onRecordingComplete: (videoFile?: File) => void;
-};
 
 const MEDIA_CONSTRAINTS = {
   video: {
@@ -21,8 +17,12 @@ const MEDIA_CONSTRAINTS = {
   audio: true,
 } satisfies MediaStreamConstraints;
 
-export default function VideoRecorder({ onRecordingComplete }: Props) {
+export default function VideoRecorder() {
   const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
+  const { field } = useController<Testimonial>({
+    name: "mediaFile",
+  });
+
   const {
     status,
     startRecording,
@@ -43,7 +43,7 @@ export default function VideoRecorder({ onRecordingComplete }: Props) {
       const videoFile = new File([blob], `video-recording-${Date.now()}`, {
         type: blob.type ?? "video/webm",
       });
-      onRecordingComplete(videoFile);
+      field.onChange(videoFile);
     },
   });
 
@@ -124,7 +124,7 @@ export default function VideoRecorder({ onRecordingComplete }: Props) {
             variant="outline"
             onClick={() => {
               clearBlobUrl();
-              onRecordingComplete(undefined);
+              field.onChange(undefined);
             }}
           >
             Clear

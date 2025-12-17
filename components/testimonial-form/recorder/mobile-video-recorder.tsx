@@ -2,22 +2,18 @@ import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { useOrientation } from "@uidotdev/usehooks";
 import { RefreshCcw, Square, Video } from "lucide-react";
 import { useState } from "react";
-import type { ControllerRenderProps } from "react-hook-form";
+import { useController } from "react-hook-form";
 import { useReactMediaRecorder } from "react-media-recorder";
-import type { Testimonial } from "@/lib/schema";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-} from "../ui/alert-dialog";
-import { Button } from "../ui/button";
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import type { Testimonial } from "@/lib/schema";
 import TimeElapsed from "./time-elapsed";
-
-type Props = {
-  field: ControllerRenderProps<Testimonial, "mediaFile">;
-};
 
 const MEDIA_CONSTRAINTS = {
   video: {
@@ -32,9 +28,13 @@ const MEDIA_CONSTRAINTS = {
   audio: true,
 } satisfies MediaStreamConstraints;
 
-export default function MobileVideoRecorder({ field }: Props) {
+export default function MobileVideoRecorder() {
+  const { field } = useController<Testimonial>({
+    name: "mediaFile",
+  });
   const [isOpen, setIsOpen] = useState(false);
-  const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
+  const [previewMediaStream, setPreviewMediaStream] =
+    useState<MediaStream | null>(null);
   const orientation = useOrientation();
 
   const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
@@ -45,9 +45,9 @@ export default function MobileVideoRecorder({ field }: Props) {
     status,
     mediaBlobUrl,
     error,
+    previewStream,
   } = useReactMediaRecorder({
     ...MEDIA_CONSTRAINTS,
-    customMediaStream: previewStream ?? undefined,
     blobPropertyBag: {
       type: mp4Supported ? "video/mp4" : "video/webm",
     },
@@ -63,27 +63,42 @@ export default function MobileVideoRecorder({ field }: Props) {
     },
   });
 
+  const isRecording = status === "recording";
+
   const handleOpenCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia(
-        MEDIA_CONSTRAINTS
-      );
-      setPreviewStream(() => stream);
+      const stream =
+        await navigator.mediaDevices.getUserMedia(MEDIA_CONSTRAINTS);
+      setPreviewMediaStream(stream);
       setIsOpen(true);
-    } catch (error) {
-      console.error("Error accessing camera:", error);
+    } catch (err) {
+      console.error("Failed to get media stream:", err);
     }
   };
 
   const handleCloseDialog = (open: boolean) => {
-    if (!open && previewStream && !isRecording) {
-      previewStream.getTracks().forEach((track) => track.stop());
-      setPreviewStream(null);
+    if (!open) {
+      // Clean up preview stream when closing
+      if (previewMediaStream) {
+        previewMediaStream.getTracks().forEach((track) => void track.stop());
+        setPreviewMediaStream(null);
+      }
     }
     setIsOpen(open);
   };
 
-  const isRecording = status === "recording";
+  const handleStartRecording = () => {
+    startRecording();
+    // Clean up preview stream after recording starts
+    // The recording stream will take over immediately
+    if (previewMediaStream) {
+      setTimeout(() => {
+        previewMediaStream.getTracks().forEach((track) => void track.stop());
+        setPreviewMediaStream(null);
+      }, 100);
+    }
+  };
+
   const isLandscape = orientation.type.startsWith("landscape");
 
   if (isLandscape) {
@@ -145,20 +160,21 @@ export default function MobileVideoRecorder({ field }: Props) {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <div className="absolute inset-0">
-              {previewStream ? (
-                <div className="relative mt-auto">
-                  <video
-                    autoPlay
-                    ref={(ref) => {
-                      if (ref) {
-                        ref.srcObject = previewStream;
-                      }
-                    }}
-                    muted
-                    playsInline
-                    className="w-full"
-                  />
-                </div>
+              {(isRecording ? previewStream : previewMediaStream) ? (
+                <video
+                  autoPlay
+                  ref={(ref) => {
+                    if (ref) {
+                      // Use recording stream when recording, preview stream otherwise
+                      ref.srcObject = isRecording
+                        ? previewStream
+                        : previewMediaStream;
+                    }
+                  }}
+                  muted
+                  playsInline
+                  className="w-full"
+                />
               ) : (
                 <div className="bg-black aspect-9/16 w-full mt-auto"></div>
               )}
@@ -170,7 +186,7 @@ export default function MobileVideoRecorder({ field }: Props) {
                   size="icon"
                   className="size-12 rounded-full"
                   type="button"
-                  onClick={startRecording}
+                  onClick={handleStartRecording}
                 >
                   <Video className="size-6" />
                 </Button>
