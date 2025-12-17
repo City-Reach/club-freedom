@@ -75,7 +75,7 @@ export default function TestimonialDetail({ id }: Props) {
           onClick={downloadTranscription}
           disabled={!testimonial.testimonialText}
         >
-          {testimonial.media_id
+          {testimonial.storageId
             ? "Download Transcription"
             : "Download Testimonial"}
         </Button>
@@ -106,7 +106,7 @@ export default function TestimonialDetail({ id }: Props) {
       </div>
       <div>
         <h3 className="font-bold flex items-center gap-1.5">
-          {testimonial.media_id ? "Transcription" : "Testimonial"}
+          {testimonial.storageId ? "Transcription" : "Testimonial"}
           {!testimonial.testimonialText && <Spinner></Spinner>}
         </h3>
 

@@ -6,7 +6,6 @@ export default defineSchema({
     name: v.string(),
     email: v.optional(v.string()),
     media_type: v.string(),
-    createdAt: v.optional(v.float64()),
     storageId: v.optional(v.string()),
     title: v.optional(v.string()),
     testimonialText: v.optional(v.string()),

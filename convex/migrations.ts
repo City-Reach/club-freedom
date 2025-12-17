@@ -26,14 +26,6 @@ export const backFillSearchText = migrations.define({
   },
 });
 
-export const unsetCreatedAt = migrations.define({
-  table: "testimonials",
-  migrateOne() {
-    return { createdAt: undefined };
-  },
-});
-
 export const runMigration = migrations.runner([
   internal.migrations.backFillSearchText,
-  internal.migrations.unsetCreatedAt,
 ]);
