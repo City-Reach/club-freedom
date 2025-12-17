@@ -14,7 +14,8 @@ type Props = {
 
 export default function TestimonialDetail({ id }: Props) {
   const testimonial = useQuery(api.testimonials.getTestimonialById, { id });
-  const canApprove = useQuery(api.auth.checkUserPermissions, {
+
+  const userCanApprove = useQuery(api.auth.checkUserPermissions, {
     permissions: {
       testimonial: ["approve"],
     },
@@ -29,6 +30,9 @@ export default function TestimonialDetail({ id }: Props) {
   }
 
   const approvalText = getApprovalStatusText(testimonial.approved);
+  const canApprove =
+    testimonial.processingStatus === "ongoing" && userCanApprove;
+
   const downloadTranscription = () => {
     const element = document.createElement("a");
     const file = new Blob(
@@ -50,9 +54,11 @@ export default function TestimonialDetail({ id }: Props) {
     }
   };
 
+  const title = testimonial.title || `Testimonial from ${testimonial.name}`;
+
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-bold">{testimonial.name}'s Testimonial</h1>
+      <h1 className="text-2xl font-bold">{title}</h1>
       {testimonial.mediaUrl && testimonial.media_type === "audio" && (
         <audio className="w-full" controls src={testimonial.mediaUrl} />
       )}
@@ -93,31 +99,39 @@ export default function TestimonialDetail({ id }: Props) {
       </div>
       <div className="space-y-0">
         <h3 className="font-bold flex items-center gap-1.5">
-          Summary{!testimonial.summary && <Spinner></Spinner>}
+          Summary{" "}
+          {!testimonial.summary &&
+            testimonial.processingStatus === "ongoing" && <Spinner />}
         </h3>
 
         {testimonial.summary ? (
           <p>{testimonial.summary}</p>
-        ) : (
+        ) : testimonial.processingStatus === "ongoing" ? (
           <p className="text-muted-foreground">
             Summary will be available soon.
           </p>
+        ) : (
+          <p className="text-destructive">Summary not available.</p>
         )}
       </div>
       <div>
         <h3 className="font-bold flex items-center gap-1.5">
           {testimonial.storageId ? "Transcription" : "Testimonial"}
-          {!testimonial.testimonialText && <Spinner></Spinner>}
+          {!testimonial.testimonialText &&
+            testimonial.processingStatus === "ongoing" && <Spinner />}
         </h3>
 
         {testimonial.testimonialText ? (
           <p>{testimonial.testimonialText}</p>
-        ) : (
+        ) : testimonial.processingStatus === "ongoing" ? (
           <p className="text-muted-foreground">
             Transcription will be available soon.
           </p>
+        ) : (
+          <p className="text-destructive">Transcription not available.</p>
         )}
       </div>
+
       {canApprove && (
         <div className="flex gap-2">
           <Button
