@@ -26,13 +26,12 @@ export async function summarize(input: string, name: string) {
       messages: [
         {
           role: "system",
-          content: `You are an AI Assistant tasked with summarizing testimonials from volunteers who are sharing their
-        experiences about working with the less fortunate. Summarize their testimonials within one paragraph and generate a title.
-        You will get text as input. There is no need to include sources. Include the volunteer's name in the summary.`,
+          content: `You are an AI Assistant tasked with summarizing testimonials. Ensure the summary is shorter than the testimonial and generate a title.
+        You will get text as input. There is no need to include sources. Include the testimonial giver's name in the summary.`,
         },
         {
           role: "user",
-          content: `The name of the volunteer is ${name}. ${input}`,
+          content: `The name of the testimonial giver is ${name}. ${input}`,
         },
       ],
       response_format: zodResponseFormat(
