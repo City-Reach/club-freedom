@@ -19,43 +19,63 @@ type Props = {
   field: ControllerRenderProps<Testimonial, "mediaFile">;
 };
 
+const MEDIA_CONSTRAINTS = {
+  video: {
+    frameRate: {
+      ideal: 24,
+      max: 30,
+    },
+    width: 1280,
+    height: 720,
+    facingMode: "user",
+  },
+  audio: true,
+} satisfies MediaStreamConstraints;
+
 export default function MobileVideoRecorder({ field }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
   const orientation = useOrientation();
 
   const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
-  const {
-    startRecording,
-    stopRecording,
-    clearBlobUrl,
-    status,
-    mediaBlobUrl,
-    previewStream,
-  } = useReactMediaRecorder({
-    video: {
-      frameRate: {
-        ideal: 24,
-        max: 30,
+  const { startRecording, stopRecording, clearBlobUrl, status, mediaBlobUrl } =
+    useReactMediaRecorder({
+      ...MEDIA_CONSTRAINTS,
+      customMediaStream: previewStream ?? undefined,
+      blobPropertyBag: {
+        type: mp4Supported ? "video/mp4" : "video/webm",
       },
-      width: 1280,
-      height: 720,
-      facingMode: "user",
-    },
-    audio: true,
-    blobPropertyBag: {
-      type: mp4Supported ? "video/mp4" : "video/webm",
-    },
-    mediaRecorderOptions: {
-      mimeType: mp4Supported ? "video/mp4" : "video/webm",
-    },
-    onStop: (_, blob) => {
-      const videoFile = new File([blob], `video-recording-${Date.now()}`, {
-        type: blob.type ?? "video/webm",
-      });
-      field.onChange(videoFile);
-      setIsOpen(false);
-    },
-  });
+      mediaRecorderOptions: {
+        mimeType: mp4Supported ? "video/mp4" : "video/webm",
+      },
+      onStop: (_, blob) => {
+        const videoFile = new File([blob], `video-recording-${Date.now()}`, {
+          type: blob.type ?? "video/webm",
+        });
+        field.onChange(videoFile);
+        setIsOpen(false);
+      },
+    });
+
+  const handleOpenCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(
+        MEDIA_CONSTRAINTS
+      );
+      setPreviewStream(() => stream);
+      setIsOpen(true);
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+    }
+  };
+
+  const handleCloseDialog = (open: boolean) => {
+    if (!open && previewStream && !isRecording) {
+      previewStream.getTracks().forEach((track) => track.stop());
+      setPreviewStream(null);
+    }
+    setIsOpen(open);
+  };
 
   const isRecording = status === "recording";
   const isLandscape = orientation.type.startsWith("landscape");
@@ -75,7 +95,7 @@ export default function MobileVideoRecorder({ field }: Props) {
         <video controls src={mediaBlobUrl} className="w-full" />
       )}
       <div className="flex items-center gap-3">
-        <Button type="button" onClick={() => setIsOpen(true)}>
+        <Button type="button" onClick={handleOpenCamera}>
           Open camera
         </Button>
         {mediaBlobUrl && (
@@ -93,17 +113,17 @@ export default function MobileVideoRecorder({ field }: Props) {
         )}
       </div>
 
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialog open={isOpen} onOpenChange={handleCloseDialog}>
         <AlertDialogContent className="rounded-none max-w-screen h-screen px-0">
           <div className="relative">
             <AlertDialogHeader className="p-6 bg-foreground/80 text-background absolute top-0 inset-x-0 z-20">
-              <AlertDialogDescription>
+              <AlertDialogDescription className="text-background">
                 Please record your testimonial video. Make sure you are in a
                 quiet environment with good lighting.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <div className="absolute inset-0">
-              {isRecording && previewStream ? (
+              {previewStream ? (
                 <div className="relative mt-auto">
                   <video
                     autoPlay
