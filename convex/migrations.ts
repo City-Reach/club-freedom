@@ -3,7 +3,6 @@ import { components, internal } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 
 export const migrations = new Migrations<DataModel>(components.migrations);
-export const run = migrations.runner();
 
 export const setDefaultApprovedValue = migrations.define({
   table: "testimonials",
@@ -27,5 +26,35 @@ export const backFillSearchText = migrations.define({
 });
 
 export const runMigration = migrations.runner([
-  internal.migrations.backFillSearchText,
+  internal.migrations.fillProcessingStatus,
 ]);
+
+export const undoMigration = migrations.runner([
+  internal.migrations.unsetProcessingStatus,
+]);
+
+export const fillProcessingStatus = migrations.define({
+  table: "testimonials",
+  migrateOne: (_, doc) => {
+    if (doc.processingStatus) {
+      return {};
+    }
+
+    if (!doc.testimonialText) {
+      return { processingStatus: "transcriptionError" as const };
+    }
+
+    if (!doc.title || !doc.summary) {
+      return { processingStatus: "summaryError" as const };
+    }
+
+    return { processingStatus: "completed" as const };
+  },
+});
+
+export const unsetProcessingStatus = migrations.define({
+  table: "testimonials",
+  migrateOne: () => {
+    return { processingStatus: undefined };
+  },
+});
