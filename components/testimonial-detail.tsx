@@ -1,12 +1,21 @@
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery } from "convex/react";
 import { formatDistance } from "date-fns";
+import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { getApprovalStatusText } from "@/utils/testimonial-utils";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "./ui/item";
 
 type Props = {
   id: Id<"testimonials">;
@@ -58,6 +67,25 @@ export default function TestimonialDetail({ id }: Props) {
 
   return (
     <div className="flex flex-col gap-8">
+      {testimonial.processingStatus === "summaryError" ||
+        (testimonial.processingStatus === "transcriptionError" && (
+          <Item variant="outline" size="sm">
+            <ItemMedia className="text-destructive">
+              <AlertCircle className="size-5" />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle className="text-destructive">Error</ItemTitle>
+              <ItemDescription className="text-destructive">
+                Failed to process testimonial.
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Button variant="outline" size="sm">
+                Try again
+              </Button>
+            </ItemActions>
+          </Item>
+        ))}
       <h1 className="text-2xl font-bold">{title}</h1>
       {testimonial.mediaUrl && testimonial.media_type === "audio" && (
         <audio className="w-full" controls src={testimonial.mediaUrl} />
