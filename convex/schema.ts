@@ -5,7 +5,6 @@ export default defineSchema({
   testimonials: defineTable({
     name: v.string(),
     email: v.optional(v.string()),
-    media_id: v.optional(v.id("_storage")),
     media_type: v.string(),
     createdAt: v.optional(v.float64()),
     storageId: v.optional(v.string()),
