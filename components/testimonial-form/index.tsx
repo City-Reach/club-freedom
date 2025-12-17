@@ -9,6 +9,8 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
+import { compressAudio } from "@/lib/media/audio";
+import { compressVideo } from "@/lib/media/video";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -24,8 +26,6 @@ import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { AudioRecorder, VideoRecorder } from "./recorder";
-import { compressVideo } from "@/lib/media/video";
-import { compressAudio } from "@/lib/media/audio";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
