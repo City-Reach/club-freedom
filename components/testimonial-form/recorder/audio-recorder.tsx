@@ -6,6 +6,7 @@ import type { Testimonial } from "@/lib/schema";
 import TimeElapsed from "./time-elapsed";
 
 export default function AudioRecorder() {
+  const mp4Supported = MediaRecorder.isTypeSupported("audio/mp4");
   const { field } = useController<Testimonial>({
     name: "mediaFile",
   });
@@ -19,10 +20,10 @@ export default function AudioRecorder() {
   } = useReactMediaRecorder({
     audio: true,
     blobPropertyBag: {
-      type: "audio/webm",
+      type: mp4Supported ? "audio/mp4" : "audio/webm",
     },
     mediaRecorderOptions: {
-      mimeType: "audio/webm",
+      mimeType: mp4Supported ? "audio/mp4" : "audio/webm",
     },
     onStop: (_, blob) => {
       const audioFile = new File([blob], `audio-recording-${Date.now()}`, {

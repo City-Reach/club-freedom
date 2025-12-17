@@ -10,6 +10,10 @@ import {
 } from "mediabunny";
 
 export const compressAudio = async (file: File) => {
+  if (!("AudioEncoder" in window)) {
+    return file;
+  }
+
   const input = new Input({
     formats: ALL_FORMATS,
     source: new BlobSource(file),
