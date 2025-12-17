@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
+import { processingStatusSchema } from "./schema";
 
 export const getTestimonials = query({
   args: {
@@ -73,6 +74,7 @@ export const postTestimonial = mutation({
       storageId,
       media_type,
       testimonialText: text,
+      processingStatus: "ongoing",
     });
     return id;
   },
@@ -135,5 +137,15 @@ export const updateSummaryAndTitle = mutation({
   },
   handler: async (ctx, { id, summary, title }) => {
     await ctx.db.patch(id, { summary, title });
+  },
+});
+
+export const updateProcessingStatus = mutation({
+  args: {
+    id: v.id("testimonials"),
+    processingStatus: processingStatusSchema,
+  },
+  handler: async (ctx, { id, processingStatus }) => {
+    await ctx.db.patch(id, { processingStatus });
   },
 });

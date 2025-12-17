@@ -1,6 +1,13 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+export const processingStatusSchema = v.union(
+  v.literal("ongoing"),
+  v.literal("completed"),
+  v.literal("transcriptionError"),
+  v.literal("summaryError"),
+);
+
 export default defineSchema({
   testimonials: defineTable({
     name: v.string(),
@@ -12,14 +19,7 @@ export default defineSchema({
     summary: v.optional(v.string()),
     searchText: v.optional(v.string()),
     approved: v.optional(v.boolean()), // Whether the testimonial is approved for display
-    processingStatus: v.optional(
-      v.union(
-        v.literal("ongoing"),
-        v.literal("completed"),
-        v.literal("transcription_error"),
-        v.literal("summary_error"),
-      ),
-    ),
+    processingStatus: v.optional(processingStatusSchema),
   }).searchIndex("search_posts", {
     searchField: "searchText",
   }),

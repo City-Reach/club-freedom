@@ -26,10 +26,18 @@ export const summarizeText = action({
           summary: resp.summary,
           title: resp.title,
         });
+        await ctx.runMutation(api.testimonials.updateProcessingStatus, {
+          id: testimonialId,
+          processingStatus: "completed",
+        });
       } else {
         throw new Error("Testimonial not found");
       }
     } catch (error) {
+      await ctx.runMutation(api.testimonials.updateProcessingStatus, {
+        id: testimonialId,
+        processingStatus: "summaryError",
+      });
       postHogClient.captureException(error, `summarizeText-${testimonialId}`, {
         testimonialId: testimonialId,
         text: text,
@@ -59,6 +67,10 @@ export const transcribe = action({
         text: transcribedText,
       });
     } catch (error) {
+      await ctx.runMutation(api.testimonials.updateProcessingStatus, {
+        id: testimonialId,
+        processingStatus: "transcriptionError",
+      });
       postHogClient.captureException(error, `transcribe-${testimonialId}`, {
         testimonialId: testimonialId,
         mediaUrl: mediaUrl,
