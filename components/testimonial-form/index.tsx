@@ -9,7 +9,6 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
-import useMobileDetect from "@/hooks/use-mobile-detect";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -33,7 +32,6 @@ export default function TestimonialForm() {
   });
   const navigation = useNavigate();
   const uploadFile = useUploadFile(api.r2);
-  const isMobile = useMobileDetect();
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
 
@@ -56,8 +54,7 @@ export default function TestimonialForm() {
         data: { turnstileToken },
       });
       if (!isHuman) {
-        toast.error("Human verification failed. Please try again.");
-        return;
+        throw new Error("Human verification failed");
       }
 
       // Step 2:
@@ -91,8 +88,9 @@ export default function TestimonialForm() {
       navigation({ to: "/testimonials/$id", params: { id } });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
       toast.error("Failed to submit testimonial", {
-        description: "Please try again later.",
+        description: message,
       });
     }
   }
