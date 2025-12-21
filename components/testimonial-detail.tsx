@@ -41,7 +41,7 @@ export default function TestimonialDetail({ id }: Props) {
 
   const approvalText = getApprovalStatusText(testimonial.approved);
   const canApprove =
-    testimonial.processingStatus === "ongoing" && userCanApprove;
+    testimonial.processingStatus === "completed" && userCanApprove;
 
   const downloadTranscription = () => {
     const element = document.createElement("a");
