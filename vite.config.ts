@@ -5,12 +5,19 @@ import viteReact from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const loadedEnv = loadEnv(mode, process.cwd(), "");
   Object.assign(process.env, loadedEnv);
 
   import("./env/client");
-  import("./env/server");
+
+  if (command === "build" && mode === "production") {
+    import("./env/build");
+  }
+
+  if (command === "serve") {
+    import("./env/server");
+  }
 
   return {
     server: {

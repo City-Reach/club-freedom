@@ -1,0 +1,12 @@
+import { createEnv } from "@t3-oss/env-core";
+import z from "zod";
+
+export const env = createEnv({
+  server: {
+    CONVEX_DEPLOYMENT_KEY: z.string(),
+    POSTHOG_CLI_HOST: z.url(),
+    POSTHOG_CLI_ENV_ID: z.string(),
+    POSTHOG_CLI_TOKEN: z.string(),
+  },
+  runtimeEnv: process.env,
+});
