@@ -18,7 +18,8 @@ const MEDIA_CONSTRAINTS = {
 } satisfies MediaStreamConstraints;
 
 export default function VideoRecorder() {
-  const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
+  const vp9Supported = MediaRecorder.isTypeSupported("video/webm; codecs=vp9");
+
   const { field } = useController<Testimonial>({
     name: "mediaFile",
   });
@@ -34,14 +35,16 @@ export default function VideoRecorder() {
   } = useReactMediaRecorder({
     ...MEDIA_CONSTRAINTS,
     blobPropertyBag: {
-      type: mp4Supported ? "video/mp4" : "video/webm",
+      type: "video/webm",
     },
     mediaRecorderOptions: {
-      mimeType: mp4Supported ? "video/mp4" : "video/webm",
+      mimeType: vp9Supported ? "video/webm; codecs=vp9" : "video/webm",
+      audioBitsPerSecond: 128000,
+      videoBitsPerSecond: 1500000,
     },
     onStop: (_, blob) => {
       const videoFile = new File([blob], `video-recording-${Date.now()}`, {
-        type: blob.type ?? "video/webm",
+        type: "video/webm",
       });
       field.onChange(videoFile);
     },

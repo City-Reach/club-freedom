@@ -1,4 +1,3 @@
-import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { useOrientation } from "@uidotdev/usehooks";
 import { RefreshCcw, Square, Video } from "lucide-react";
 import { useState } from "react";
@@ -6,6 +5,7 @@ import { useController } from "react-hook-form";
 import { useReactMediaRecorder } from "react-media-recorder";
 import {
   AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -37,7 +37,8 @@ export default function MobileVideoRecorder() {
     useState<MediaStream | null>(null);
   const orientation = useOrientation();
 
-  const mp4Supported = MediaRecorder.isTypeSupported("video/mp4");
+  const vp9Supported = MediaRecorder.isTypeSupported("video/webm; codecs=vp9");
+
   const {
     startRecording,
     stopRecording,
@@ -49,14 +50,16 @@ export default function MobileVideoRecorder() {
   } = useReactMediaRecorder({
     ...MEDIA_CONSTRAINTS,
     blobPropertyBag: {
-      type: mp4Supported ? "video/mp4" : "video/webm",
+      type: "video/webm",
     },
     mediaRecorderOptions: {
-      mimeType: mp4Supported ? "video/mp4" : "video/webm",
+      mimeType: vp9Supported ? "video/webm; codecs=vp9" : "video/webm",
+      audioBitsPerSecond: 128000,
+      videoBitsPerSecond: 1500000,
     },
     onStop: (_, blob) => {
       const videoFile = new File([blob], `video-recording-${Date.now()}`, {
-        type: blob.type ?? "video/webm",
+        type: "video/webm",
       });
       field.onChange(videoFile);
       setIsOpen(false);
