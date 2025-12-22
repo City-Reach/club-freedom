@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
   Object.assign(process.env, loadedEnv);
 
   import("./env/client");
+  import("./env/server");
 
   return {
     server: {
