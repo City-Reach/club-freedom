@@ -2,6 +2,7 @@ import { Square, Video } from "lucide-react";
 import { useController } from "react-hook-form";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { Button } from "@/components/ui/button";
+import { type MediaConfig } from "@/lib/media";
 import type { Testimonial } from "@/lib/schema";
 import TimeElapsed from "./time-elapsed";
 
@@ -17,9 +18,7 @@ const MEDIA_CONSTRAINTS = {
   audio: true,
 } satisfies MediaStreamConstraints;
 
-export default function VideoRecorder() {
-  const vp9Supported = MediaRecorder.isTypeSupported("video/webm; codecs=vp9");
-
+export default function DesktopVideoRecorder({ type, mimeType }: MediaConfig) {
   const { field } = useController<Testimonial>({
     name: "mediaFile",
   });
@@ -34,17 +33,16 @@ export default function VideoRecorder() {
     error,
   } = useReactMediaRecorder({
     ...MEDIA_CONSTRAINTS,
-    blobPropertyBag: {
-      type: "video/webm",
-    },
+    blobPropertyBag: { type },
     mediaRecorderOptions: {
-      mimeType: vp9Supported ? "video/webm; codecs=vp9" : "video/webm",
-      audioBitsPerSecond: 128000,
-      videoBitsPerSecond: 1500000,
+      mimeType,
+      audioBitsPerSecond: 128000, // 128 kbps
+      videoBitsPerSecond: 2500000, // 2.5 Mbps
     },
     onStop: (_, blob) => {
+      console.log("File size:", blob.size / (1024 * 1024), "MB");
       const videoFile = new File([blob], `video-recording-${Date.now()}`, {
-        type: "video/webm",
+        type,
       });
       field.onChange(videoFile);
     },

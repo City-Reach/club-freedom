@@ -11,7 +11,9 @@ import {
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { getVideoConfig, type MediaConfig } from "@/lib/media";
 import type { Testimonial } from "@/lib/schema";
+import { UnsupportedVideo } from "./error";
 import TimeElapsed from "./time-elapsed";
 
 const MEDIA_CONSTRAINTS = {
@@ -27,7 +29,7 @@ const MEDIA_CONSTRAINTS = {
   audio: true,
 } satisfies MediaStreamConstraints;
 
-export default function MobileVideoRecorder() {
+export default function MobileVideoRecorder({ type, mimeType }: MediaConfig) {
   const { field } = useController<Testimonial>({
     name: "mediaFile",
   });
@@ -35,8 +37,6 @@ export default function MobileVideoRecorder() {
   const [previewMediaStream, setPreviewMediaStream] =
     useState<MediaStream | null>(null);
   const orientation = useOrientation();
-
-  const vp9Supported = MediaRecorder.isTypeSupported("video/webm; codecs=vp9");
 
   const {
     startRecording,
@@ -48,17 +48,16 @@ export default function MobileVideoRecorder() {
     previewStream,
   } = useReactMediaRecorder({
     ...MEDIA_CONSTRAINTS,
-    blobPropertyBag: {
-      type: "video/webm",
-    },
+    blobPropertyBag: { type },
     mediaRecorderOptions: {
-      mimeType: vp9Supported ? "video/webm; codecs=vp9" : "video/webm",
-      audioBitsPerSecond: 128000,
-      videoBitsPerSecond: 1500000,
+      mimeType,
+      audioBitsPerSecond: 128000, // 128 kbps
+      videoBitsPerSecond: 2500000, // 2.5 Mbps
     },
     onStop: (_, blob) => {
+      console.log("File size:", blob.size / (1024 * 1024), "MB");
       const videoFile = new File([blob], `video-recording-${Date.now()}`, {
-        type: "video/webm",
+        type,
       });
       field.onChange(videoFile);
       setIsOpen(false);
@@ -175,7 +174,7 @@ export default function MobileVideoRecorder() {
                   }}
                   muted
                   playsInline
-                  className="w-full"
+                  className="w-full aspect-9/16 mt-auto"
                 />
               ) : (
                 <div className="bg-black aspect-9/16 w-full mt-auto"></div>
