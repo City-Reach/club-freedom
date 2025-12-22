@@ -5,7 +5,6 @@ import { useController } from "react-hook-form";
 import { useReactMediaRecorder } from "react-media-recorder";
 import {
   AlertDialog,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -204,9 +203,14 @@ export default function MobileVideoRecorder() {
                   <Square className="size-6" />
                 </Button>
               )}
-              <AlertDialogCancel asChild disabled={isRecording}>
-                <Button variant="ghost">Close</Button>
-              </AlertDialogCancel>
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={isRecording}
+                onClick={() => handleCloseDialog(false)}
+              >
+                Close
+              </Button>
             </AlertDialogFooter>
           </div>
         </AlertDialogContent>
