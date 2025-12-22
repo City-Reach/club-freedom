@@ -9,6 +9,7 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
+import { env } from "@/env/client";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { AudioRecorder, VideoRecorder } from "../recorder";
@@ -259,7 +260,7 @@ export default function TestimonialForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <Turnstile
-                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                siteKey={env.VITE_TURNSTILE_SITE_KEY}
                 onSuccess={(token: string) => field.onChange(token)}
                 onExpire={() => field.onChange("")}
                 options={{ size: "flexible" }}
