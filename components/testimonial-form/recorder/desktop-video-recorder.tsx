@@ -2,7 +2,7 @@ import { Square, Video } from "lucide-react";
 import { useController } from "react-hook-form";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { Button } from "@/components/ui/button";
-import { type MediaConfig } from "@/lib/media";
+import type { MediaConfig } from "@/lib/media";
 import type { Testimonial } from "@/lib/schema";
 import TimeElapsed from "./time-elapsed";
 
