@@ -105,7 +105,7 @@ export default function MobileVideoRecorder() {
     return (
       <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">
         <RefreshCcw />
-        Please rotate your device to portrait mode to record a video.
+        Please use your device in portrait mode for video testimonial service.
       </div>
     );
   }
