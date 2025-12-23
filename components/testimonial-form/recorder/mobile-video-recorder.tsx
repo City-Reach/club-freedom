@@ -21,8 +21,8 @@ const MEDIA_CONSTRAINTS = {
       ideal: 24,
       max: 30,
     },
-    width: 1280,
-    height: 720,
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
     facingMode: "user",
   },
   audio: true,
@@ -159,7 +159,7 @@ export default function MobileVideoRecorder({ type, mimeType }: MediaConfig) {
                 quiet environment with good lighting.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-black content-center">
               {(isRecording ? previewStream : previewMediaStream) ? (
                 <video
                   autoPlay
@@ -173,10 +173,10 @@ export default function MobileVideoRecorder({ type, mimeType }: MediaConfig) {
                   }}
                   muted
                   playsInline
-                  className="w-full aspect-9/16 mt-auto"
+                  className="w-full"
                 />
               ) : (
-                <div className="bg-black aspect-9/16 w-full mt-auto"></div>
+                <div className="w-full"></div>
               )}
             </div>
             <AlertDialogFooter className="flex flex-row items-center justify-between absolute bottom-0 left-0 right-0 z-20 p-6 bg-foreground/80 text-background">
