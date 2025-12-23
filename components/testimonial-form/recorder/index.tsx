@@ -1,4 +1,3 @@
-import { ClientOnly } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import { getVideoConfig } from "@/lib/media";
@@ -11,11 +10,9 @@ const LazyAudioRecorder = lazy(() => import("./audio-recorder"));
 
 export function AudioRecorder() {
   return (
-    <ClientOnly>
-      <Suspense fallback={<LoadingAudioRecorder />}>
-        <LazyAudioRecorder />
-      </Suspense>
-    </ClientOnly>
+    <Suspense fallback={<LoadingAudioRecorder />}>
+      <LazyAudioRecorder />
+    </Suspense>
   );
 }
 
@@ -28,14 +25,12 @@ export function VideoRecorder() {
   }
 
   return (
-    <ClientOnly>
-      <Suspense fallback={<LoadingVideoRecorder />}>
-        {isMobile ? (
-          <LazyMobileVideoRecorder {...config} />
-        ) : (
-          <LazyDesktopVideoRecorder {...config} />
-        )}
-      </Suspense>
-    </ClientOnly>
+    <Suspense fallback={<LoadingVideoRecorder />}>
+      {isMobile ? (
+        <LazyMobileVideoRecorder {...config} />
+      ) : (
+        <LazyDesktopVideoRecorder {...config} />
+      )}
+    </Suspense>
   );
 }

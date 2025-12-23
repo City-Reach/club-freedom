@@ -1,7 +1,7 @@
 import { useUploadFile } from "@convex-dev/r2/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useNavigate } from "@tanstack/react-router";
+import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { useState } from "react";
@@ -194,7 +194,9 @@ export default function TestimonialForm() {
                       Please find a quiet place to record your audio
                       testimonial.
                     </FieldDescription>
-                    <AudioRecorder />
+                    <ClientOnly>
+                      <AudioRecorder />
+                    </ClientOnly>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -215,7 +217,9 @@ export default function TestimonialForm() {
                       Please find a quiet place to record your video
                       testimonial.
                     </FieldDescription>
-                    <VideoRecorder />
+                    <ClientOnly>
+                      <VideoRecorder />
+                    </ClientOnly>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

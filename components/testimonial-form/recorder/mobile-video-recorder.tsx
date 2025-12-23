@@ -11,9 +11,8 @@ import {
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { getVideoConfig, type MediaConfig } from "@/lib/media";
+import type { MediaConfig } from "@/lib/media";
 import type { Testimonial } from "@/lib/schema";
-import { UnsupportedVideo } from "./error";
 import TimeElapsed from "./time-elapsed";
 
 const MEDIA_CONSTRAINTS = {
