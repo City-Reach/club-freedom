@@ -11,15 +11,19 @@ import { action } from "./_generated/server";
 import { r2 } from "./r2";
 
 export const generateMediaDownloadUrl = action({
-  args: { id: v.id("testimonials") },
-  handler: async (ctx, { id }) => {
+  args: { id: v.id("testimonials"), organizationId: v.string() },
+  handler: async (ctx, { id, organizationId }) => {
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
         { id },
       );
 
-      if (!testimonial || !testimonial.storageId) {
+      if (
+        !testimonial ||
+        !testimonial.storageId ||
+        testimonial.organizationId !== organizationId
+      ) {
         throw new Error(`Testimonial not found or has no media for id ${id}`);
       }
 

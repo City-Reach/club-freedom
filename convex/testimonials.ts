@@ -1,3 +1,4 @@
+import { APIError } from "better-auth";
 import { type PaginationResult, paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
@@ -90,12 +91,17 @@ export const updateTestimonialApproval = mutation({
     approved: v.boolean(),
   },
   handler: async (ctx, { id, approved }) => {
-    const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
+    const testimonial = await ctx.db.get(id);
+    if (!testimonial || !testimonial.organizationId) {
+      throw new APIError("NOT_FOUND");
+    }
+
+    const canApprove = await ctx.runQuery(api.organization.checkPermission, {
       permissions: { testimonial: ["approve"] },
     });
 
     if (!canApprove) {
-      throw new Error("Forbidden");
+      throw new APIError("FORBIDDEN");
     }
 
     await ctx.db.patch(id, { approved });

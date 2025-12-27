@@ -8,7 +8,8 @@ import {
   adminOptions,
   type PermissionCheck,
   type Role,
-} from "@/lib/auth/permissions";
+} from "@/lib/auth/permissions/admin";
+import { organizationOptions } from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -67,6 +68,7 @@ export const createAuth = (
             },
           },
         },
+        ...organizationOptions,
       }),
     ],
     trustedOrigins: [siteUrl],
