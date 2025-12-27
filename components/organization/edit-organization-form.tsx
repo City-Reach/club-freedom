@@ -1,10 +1,8 @@
-import { convexQuery } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { authClient } from "@/lib/auth/auth-client";
 import {
   type Organization,
@@ -16,16 +14,16 @@ import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 
 type Props = {
-  organization: Organization & { id: string };
+  organization: Doc<"organization">;
 };
 
 export default function EditOrganizationForm({ organization }: Props) {
+  const { name, slug } = organization;
   const form = useForm<Organization>({
     resolver: zodResolver(organizationSchema),
-    defaultValues: organization,
+    defaultValues: { name, slug },
   });
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const onSubmit = async (formData: Organization) => {
     const name =
@@ -35,7 +33,7 @@ export default function EditOrganizationForm({ organization }: Props) {
 
     const { data: updatedOrganization, error } =
       await authClient.organization.update({
-        organizationId: organization.id,
+        organizationId: organization._id,
         data: {
           name,
           slug,
@@ -51,30 +49,13 @@ export default function EditOrganizationForm({ organization }: Props) {
 
     toast.success("Organization updated successfully");
 
-    const organizationBySlugQuery = (slug: string) =>
-      convexQuery(api.organization.getOrganizationBySlug, {
-        slug,
-      });
-
-    await Promise.all([
-      queryClient.removeQueries(organizationBySlugQuery(organization.slug)),
-      queryClient.removeQueries(
-        organizationBySlugQuery(updatedOrganization.slug),
-      ),
-    ]);
-
-    await Promise.all([
-      queryClient.ensureQueryData(
-        organizationBySlugQuery(updatedOrganization.slug),
-      ),
-    ]);
-
     if (updatedOrganization.slug !== organization.slug) {
       await router.navigate({
         to: ".",
         params: { orgSlug: updatedOrganization.slug },
       });
     }
+
     await router.invalidate();
   };
 
