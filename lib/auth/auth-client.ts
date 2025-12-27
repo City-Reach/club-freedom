@@ -2,6 +2,7 @@ import { convexClient } from "@convex-dev/better-auth/client/plugins";
 import {
   adminClient,
   inferAdditionalFields,
+  inferOrgAdditionalFields,
   organizationClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
@@ -15,6 +16,8 @@ export const authClient = createAuthClient({
     adminClient(adminOptions),
     organizationClient(organizationOptions),
     convexClient(),
-    organizationClient(),
+    organizationClient({
+      schema: inferOrgAdditionalFields<typeof auth>(),
+    }),
   ],
 });

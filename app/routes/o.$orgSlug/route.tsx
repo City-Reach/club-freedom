@@ -4,7 +4,7 @@ import NotFound from "@/components/not-found";
 import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$orgSlug")({
-  component: () => <Outlet />,
+  component: Component,
   notFoundComponent: () => <NotFound />,
   beforeLoad: async ({ context, params }) => {
     const organization = await context.queryClient.ensureQueryData(
@@ -18,3 +18,15 @@ export const Route = createFileRoute("/o/$orgSlug")({
     return { organization };
   },
 });
+
+function Component() {
+  const { organization } = Route.useRouteContext();
+  return (
+    <>
+      <head>
+        <title>{organization.name}</title>
+      </head>
+      <Outlet />
+    </>
+  );
+}
