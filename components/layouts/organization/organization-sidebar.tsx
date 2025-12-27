@@ -1,4 +1,3 @@
-import { useRouteContext } from "@tanstack/react-router";
 import type { ComponentProps } from "react";
 import {
   Sidebar,

@@ -1,4 +1,4 @@
-import { Link, useParams, useRouteContext } from "@tanstack/react-router";
+import { Link, useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { ExternalLink, Settings, UserRoundCog } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
@@ -11,10 +11,10 @@ import {
 export default function OrganizationSidebarNavSecondary(
   props: ComponentProps<typeof SidebarGroup>,
 ) {
-  const { orgSlug } = useParams({
+  const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
-  const { user } = useRouteContext({
+  const { user } = useLoaderData({
     from: "/o/$orgSlug/_dashboard",
   });
 
@@ -25,7 +25,7 @@ export default function OrganizationSidebarNavSecondary(
           <SidebarMenuButton tooltip="Settings" asChild>
             <Link
               to="/o/$orgSlug/settings"
-              params={{ orgSlug }}
+              params={{ orgSlug: organization.slug }}
               className="[&.active]:not-hover:bg-muted"
             >
               <Settings />
@@ -33,7 +33,8 @@ export default function OrganizationSidebarNavSecondary(
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        {user?.role === "admin" && (
+        {/* Admin Role */}
+        {user.role === "admin" && (
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip={{
