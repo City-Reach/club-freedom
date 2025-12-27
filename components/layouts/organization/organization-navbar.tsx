@@ -1,17 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "convex/react";
-import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import UserDropDown from "@/components/user-dropdown";
-import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { authClient } from "@/lib/auth/auth-client";
 
 type Props = {
   organization: Doc<"organization">;
 };
 
 export default function OrganizationNavbar({ organization }: Props) {
-  const user = useQuery(api.auth.getCurrentUser);
+  const { data } = authClient.useSession();
 
   return (
     <header className="border-b px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
@@ -28,7 +26,7 @@ export default function OrganizationNavbar({ organization }: Props) {
             alt="city-reach-logo"
           ></img>
         </Link>
-        {user && (
+        {data && (
           <div className="flex items-center gap-4">
             <Button variant="link" asChild>
               <Link
@@ -41,8 +39,9 @@ export default function OrganizationNavbar({ organization }: Props) {
           </div>
         )}
       </div>
-      {user && <UserDropDown user={user} />}
-      {user === null && (
+      {data ? (
+        <UserDropDown />
+      ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>
         </Button>

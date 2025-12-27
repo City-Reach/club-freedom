@@ -14,9 +14,6 @@ import OrganizationSidebarNavSecondary from "./organization-sidebar-nav-secondar
 export default function OrganizationSidebar({
   ...props
 }: ComponentProps<typeof Sidebar>) {
-  const { user } = useRouteContext({
-    from: "/o/$orgSlug/_dashboard",
-  });
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -27,7 +24,7 @@ export default function OrganizationSidebar({
         <OrganizationSidebarNavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <UserNavigation user={user} />
+        <UserNavigation />
       </SidebarFooter>
     </Sidebar>
   );
