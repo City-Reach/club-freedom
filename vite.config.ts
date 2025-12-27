@@ -5,7 +5,7 @@ import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: {
     port: 3000,
     host: "0.0.0.0",
@@ -29,4 +29,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-});
+  esbuild: {
+    drop: mode === "production" ? ["console"] : [],
+  },
+}));
