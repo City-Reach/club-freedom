@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import TestonomialForm from "@/components/forms/testinomial-form";
-import OrganizationNavbar from "@/components/layouts/organization/organization-navbar";
+import OrganizationNavbar from "@/components/organization/organization-navbar";
 
 export const Route = createFileRoute("/o/$orgSlug/")({
   component: TestimonialSubmissionPage,
