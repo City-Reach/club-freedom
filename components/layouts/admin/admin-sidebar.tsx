@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { Shield } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
@@ -26,14 +26,14 @@ export default function AdminSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg">
-              <Link to="/">
+              <div>
                 <div className="border-2 border-accent flex aspect-square size-8 items-center justify-center rounded-lg p-0.5">
                   <Shield className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-medium">Admin</span>
                 </div>
-              </Link>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
