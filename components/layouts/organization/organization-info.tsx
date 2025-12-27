@@ -1,6 +1,6 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useSidebar } from "@/components/ui/sidebar";
 import { api } from "@/convex/_generated/api";
 
@@ -9,7 +9,10 @@ export default function OrganizationInfo() {
   const { orgSlug } = useParams({
     from: "/o/$orgSlug",
   });
-  const { data: organization } = useSuspenseQuery(
+  const { organization: preloadOrganization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
+  const { data: liveOrganization } = useSuspenseQuery(
     convexQuery(api.organization.getOrganizationBySlug, { slug: orgSlug }),
   );
 
@@ -17,9 +20,20 @@ export default function OrganizationInfo() {
     return null;
   }
 
-  if (!organization) {
-    return null;
+  const organization = liveOrganization || preloadOrganization;
+
+  if (organization.logo) {
+    return (
+      <div className="h-8">
+        <img
+          src={organization.logo}
+          alt={organization.name}
+          height={32}
+          className="size-full"
+        />
+      </div>
+    );
   }
 
-  return <span className="flex flex-col gap-4">{organization.name}</span>;
+  return <span>{organization.name}</span>;
 }
