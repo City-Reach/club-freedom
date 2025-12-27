@@ -10,6 +10,7 @@ import OrganizationLayout from "@/components/layouts/organization";
 import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
+  ssr: false,
   component: RouteComponent,
   beforeLoad: async ({ context }) => {
     const userId = context.userId;

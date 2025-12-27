@@ -25,6 +25,16 @@ export const getAllOrganizations = query({
   },
 });
 
+export const isUserInOrganization = query({
+  args: { organizationId: v.string(), userId: v.string() },
+  handler: async (ctx, { organizationId, userId }) => {
+    return await ctx.runQuery(
+      components.betterAuth.organization.isInOrganization,
+      { organizationId, userId },
+    );
+  },
+});
+
 export const setActiveOrganization = mutation({
   args: {
     organizationSlug: v.optional(v.string()),

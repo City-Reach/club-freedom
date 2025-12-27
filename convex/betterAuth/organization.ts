@@ -14,3 +14,20 @@ export const getOrganization = query({
     return organization;
   },
 });
+
+export const isInOrganization = query({
+  args: {
+    organizationId: v.string(),
+    userId: v.string(),
+  },
+  returns: v.boolean(),
+  handler: async (ctx, { organizationId, userId }) => {
+    const found = await ctx.db
+      .query("member")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("organizationId"), organizationId))
+      .first();
+
+    return !!found;
+  },
+});

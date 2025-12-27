@@ -1528,5 +1528,12 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         },
         Name
       >;
+      isInOrganization: FunctionReference<
+        "query",
+        "internal",
+        { organizationId: string; userId: string },
+        boolean,
+        Name
+      >;
     };
   };

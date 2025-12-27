@@ -1777,6 +1777,12 @@ export declare const components: {
           slug: string;
         }
       >;
+      isInOrganization: FunctionReference<
+        "query",
+        "internal",
+        { organizationId: string; userId: string },
+        boolean
+      >;
     };
   };
   resend: {
