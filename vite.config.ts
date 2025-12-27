@@ -43,5 +43,8 @@ export default defineConfig(({ mode, command }) => {
     build: {
       sourcemap: true,
     },
+    esbuild: {
+      drop: mode === "production" ? ["console"] : [],
+    },
   };
 });

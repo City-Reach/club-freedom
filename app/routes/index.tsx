@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import TestonomialForm from "@/components/forms/testinomial-form";
 import Navbar from "@/components/navbar";
+import TestimonialForm from "@/components/testimonial-form";
 import { getCurrentUser } from "../functions/auth";
 
 export const Route = createFileRoute("/")({
@@ -27,7 +27,7 @@ function Home() {
             "Let your light shine before others" – Matthew 5:16
           </p>
         </div>
-        <TestonomialForm />
+        <TestimonialForm />
       </main>
     </>
   );
