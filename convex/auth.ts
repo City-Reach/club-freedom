@@ -56,7 +56,18 @@ export const createAuth = (
       // The Convex plugin is required for Convex compatibility
       convex(),
       admin(adminOptions),
-      organization(),
+      organization({
+        schema: {
+          organization: {
+            additionalFields: {
+              icon: {
+                type: "string",
+                required: false,
+              },
+            },
+          },
+        },
+      }),
     ],
     trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions);
