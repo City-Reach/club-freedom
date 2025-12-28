@@ -1,3 +1,6 @@
+import { useNavigate } from "@tanstack/react-router";
+import { UserRoundIcon } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,11 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserRoundIcon } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
-import { useNavigate } from "@tanstack/react-router";
-import { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { authClient } from "@/lib/auth/auth-client";
 
 type Props = {
   user: Doc<"user">;
@@ -21,7 +21,7 @@ export default function UserDropDown({ user }: Props) {
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    navigate({ to: "/sign-in" });
+    await navigate({ to: "/sign-in" });
   };
 
   return (
