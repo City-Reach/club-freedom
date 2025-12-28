@@ -1,11 +1,26 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import EditOrganizationForm from "@/components/organization/edit-organization-form";
 import OrganizationIconCropper from "@/components/organization/organization-icon-cropper";
 import OrganizationLogoForm from "@/components/organization/organization-logo-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard/settings")({
   component: RouteComponent,
+  loader: async ({ context }) => {
+    const { data } = await authClient.organization.hasPermission({
+      organizationId: context.organization._id,
+      permissions: {
+        organization: ["update"],
+      },
+    });
+    if (!data?.success) {
+      throw redirect({
+        to: "/o/$orgSlug",
+        params: { orgSlug: context.organization.slug },
+      });
+    }
+  },
 });
 
 function RouteComponent() {
