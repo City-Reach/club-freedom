@@ -16,7 +16,7 @@ const envSchema = z.object({
 const env = envSchema.parse(process.env);
 
 const PR_TITLE_REGEX = new RegExp(
-  `^\\[${env.NOTION_UNIQUE_ID_PREFIX}-(\\d+)\\]`
+  `^\\[${env.NOTION_UNIQUE_ID_PREFIX}-(\\d+)\\]`,
 );
 
 // Step 1: Get the PR and extract the task ID from the title
@@ -33,7 +33,7 @@ const taskIdMatch = prTitle.match(PR_TITLE_REGEX);
 
 if (!taskIdMatch) {
   console.warn(
-    `PR title does not match the expected format: [${env.NOTION_UNIQUE_ID_PREFIX}-<ID>]`
+    `PR title does not match the expected format: [${env.NOTION_UNIQUE_ID_PREFIX}-<ID>]`,
   );
   exit(0);
 }
