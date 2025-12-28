@@ -1,6 +1,7 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { MessageSquare, Shield, Users2 } from "lucide-react";
 import type { ComponentProps } from "react";
+import HasOrganizationPermission from "@/components/organization/has-organization-permission";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -29,30 +30,36 @@ export default function OrganizationSidebarNav(
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Moderator" asChild>
-            <Link
-              to="/o/$orgSlug/moderator"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <Shield />
-              <span>Moderator</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Members" asChild>
-            <Link
-              to="/o/$orgSlug/members"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <Users2 />
-              <span>Members</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        <HasOrganizationPermission permissions={{ testimonial: ["approve"] }}>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Moderator" asChild>
+              <Link
+                to="/o/$orgSlug/moderator"
+                params={{ orgSlug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <Shield />
+                <span>Moderator</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </HasOrganizationPermission>
+        <HasOrganizationPermission
+          permissions={{ invitation: ["create"], member: ["update", "delete"] }}
+        >
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Members" asChild>
+              <Link
+                to="/o/$orgSlug/members"
+                params={{ orgSlug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <Users2 />
+                <span>Members</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </HasOrganizationPermission>
       </SidebarMenu>
     </SidebarGroup>
   );

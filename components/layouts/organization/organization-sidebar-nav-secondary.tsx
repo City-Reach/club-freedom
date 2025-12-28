@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import HasOrganizationPermission from "@/components/organization/has-organization-permission";
 
 export default function OrganizationSidebarNavSecondary(
   props: ComponentProps<typeof SidebarGroup>,
@@ -21,18 +22,20 @@ export default function OrganizationSidebarNavSecondary(
   return (
     <SidebarGroup {...props}>
       <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Settings" asChild>
-            <Link
-              to="/o/$orgSlug/settings"
-              params={{ orgSlug: organization.slug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <Settings />
-              <span>Settings</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        <HasOrganizationPermission permissions={{ organization: ["update"] }}>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Settings" asChild>
+              <Link
+                to="/o/$orgSlug/settings"
+                params={{ orgSlug: organization.slug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <Settings />
+                <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </HasOrganizationPermission>
         {/* Admin Role */}
         {user.role === "admin" && (
           <SidebarMenuItem>
