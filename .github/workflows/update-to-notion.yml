@@ -5,6 +5,8 @@ on:
 jobs:
   update-on-notion:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
