@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
+import { processingStatusSchema } from "./schema";
 
 export const getTestimonials = query({
   args: {
@@ -73,7 +74,7 @@ export const postTestimonial = mutation({
       storageId,
       media_type,
       testimonialText: text,
-      createdAt: Date.now(),
+      processingStatus: "ongoing",
     });
     return id;
   },
@@ -136,5 +137,42 @@ export const updateSummaryAndTitle = mutation({
   },
   handler: async (ctx, { id, summary, title }) => {
     await ctx.db.patch(id, { summary, title });
+  },
+});
+
+export const updateProcessingStatus = mutation({
+  args: {
+    id: v.id("testimonials"),
+    processingStatus: processingStatusSchema,
+  },
+  handler: async (ctx, { id, processingStatus }) => {
+    await ctx.db.patch(id, { processingStatus });
+  },
+});
+
+export const retryProcessing = mutation({
+  args: {
+    id: v.id("testimonials"),
+  },
+  handler: async (ctx, { id }) => {
+    const testimonial = await ctx.db.get(id);
+    if (!testimonial) return;
+    const status = testimonial.processingStatus;
+    if (status !== "error") return;
+
+    await ctx.db.patch(id, { processingStatus: "ongoing" });
+
+    if (!testimonial.testimonialText) {
+      const mediaUrl = `${process.env.R2_PUBLIC_URL}/${testimonial.storageId}`;
+      await ctx.scheduler.runAfter(0, api.ai.transcribe, {
+        testimonialId: id,
+        mediaUrl,
+      });
+    } else if (!testimonial.summary || !testimonial.title) {
+      await ctx.scheduler.runAfter(0, api.ai.summarizeText, {
+        testimonialId: id,
+        text: testimonial.testimonialText,
+      });
+    }
   },
 });

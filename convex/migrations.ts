@@ -1,10 +1,8 @@
 import { Migrations } from "@convex-dev/migrations";
-import { api, components, internal } from "./_generated/api";
+import { components, internal } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
-import { internalAction } from "./_generated/server";
 
 export const migrations = new Migrations<DataModel>(components.migrations);
-export const run = migrations.runner();
 
 export const setDefaultApprovedValue = migrations.define({
   table: "testimonials",
@@ -27,40 +25,32 @@ export const backFillSearchText = migrations.define({
   },
 });
 
-export const unsetCreatedAt = migrations.define({
+export const runMigration = migrations.runner([
+  internal.migrations.fillProcessingStatus,
+]);
+
+export const undoMigration = migrations.runner([
+  internal.migrations.unsetProcessingStatus,
+]);
+
+export const fillProcessingStatus = migrations.define({
   table: "testimonials",
-  migrateOne() {
-    return { createdAt: undefined };
+  migrateOne: (_, doc) => {
+    if (doc.processingStatus) {
+      return {};
+    }
+
+    if (!doc.testimonialText || !doc.title || !doc.summary) {
+      return { processingStatus: "error" as const };
+    }
+
+    return { processingStatus: "completed" as const };
   },
 });
 
-export const runMigration = migrations.runner([
-  internal.migrations.backFillSearchText,
-  internal.migrations.unsetCreatedAt,
-]);
-
-export const migrateToR2 = internalAction({
-  async handler(ctx) {
-    const medias = await ctx.runQuery(api.internal.r2.foundMediaForMigrations);
-    console.log("Number medias to migrate:", medias.length);
-    for (const media of medias) {
-      if (!media.mediaId || !media.mediaType) {
-        continue;
-      }
-      const storageId = await ctx.runAction(
-        internal.internal.r2.uploadToR2Action,
-        {
-          mediaId: media.mediaId,
-          mediaType: media.mediaType.contentType,
-        },
-      );
-      if (storageId) {
-        await ctx.runMutation(api.internal.r2.updateStorageId, {
-          testimonialId: media._id,
-          mediaId: media.mediaId,
-          storageId,
-        });
-      }
-    }
+export const unsetProcessingStatus = migrations.define({
+  table: "testimonials",
+  migrateOne: () => {
+    return { processingStatus: undefined };
   },
 });
