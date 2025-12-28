@@ -5,10 +5,11 @@ import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
 import {
-  adminOptions,
+  adminRBAC,
   type PermissionCheck,
   type Role,
-} from "@/lib/auth/permissions";
+} from "@/lib/auth/permissions/admin";
+import { organizationRBAC } from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -55,7 +56,9 @@ export const createAuth = (
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex(),
-      admin(adminOptions),
+      admin({
+        ...adminRBAC,
+      }),
       organization({
         schema: {
           organization: {
@@ -67,6 +70,7 @@ export const createAuth = (
             },
           },
         },
+        ...organizationRBAC,
       }),
     ],
     trustedOrigins: [siteUrl],
