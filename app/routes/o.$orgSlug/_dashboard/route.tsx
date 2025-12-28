@@ -46,10 +46,17 @@ function RouteComponent() {
 }
 
 function PendingComponent() {
+  const { organization } = Route.useRouteContext();
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen gap-6">
+    <div className="flex flex-col items-center justify-center w-screen h-screen gap-12">
+      {organization.logo && (
+        <img
+          src={organization.logo}
+          alt={organization.name}
+          className="w-full max-w-100"
+        />
+      )}
       <Spinner className="size-12" />
-      <p>Loading organization dashboard...</p>
     </div>
   );
 }
