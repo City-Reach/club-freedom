@@ -17,7 +17,8 @@
     "deploy:preview": "pnpm run build && wrangler deploy --env preview",
     "deploy:production": "pnpm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "run_in_isolation": "tsx",
+    "script:run": "tsx",
+    "update:notion": "tsx ./scripts/notion.ts",
     "upload-sourcemaps": "posthog-cli sourcemap inject --directory ./dist/server/assets --project club-freedom --version 1.0.0 && posthog-cli sourcemap upload --directory ./dist/server/assets"
   },
   "dependencies": {
@@ -76,10 +77,12 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@actions/github": "^6.0.1",
     "@biomejs/biome": "2.3.8",
     "@fontsource-variable/open-sans": "^5.2.7",
     "@fontsource-variable/roboto-mono": "^5.2.8",
     "@fontsource/open-sans": "^5.2.7",
+    "@notionhq/client": "^5.6.0",
     "@posthog/cli": "^0.5.16",
     "@tailwindcss/vite": "^4.1.17",
     "@tanstack/router-cli": "^1.136.11",
