@@ -15,9 +15,9 @@
     "incremental": true,
 
     "paths": {
-      "@/*": ["./*"],
-    },
+      "@/*": ["./*"]
+    }
   },
   "include": ["vite-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "scripts"],
+  "exclude": ["node_modules", "scripts"]
 }
