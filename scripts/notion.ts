@@ -20,7 +20,7 @@ const PR_TITLE_REGEX = new RegExp(
 );
 
 // Step 1: Get the PR and extract the task ID from the title
-const pullRequest = await context.payload.pull_request;
+const pullRequest = context.payload.pull_request;
 
 if (!pullRequest) {
   console.log("No pull request found in the context");
@@ -33,9 +33,9 @@ const taskIdMatch = prTitle.match(PR_TITLE_REGEX);
 
 if (!taskIdMatch) {
   console.warn(
-    `PR title does not match the expected format: [${env.NOTION_UNIQUE_ID_PREFIX}-<ID>]`,
+    `PR title does not match the expected format: [${env.NOTION_UNIQUE_ID_PREFIX}-<ID>] <PR Title Name>`,
   );
-  exit(0);
+  exit(1);
 }
 
 const taskId = parseInt(taskIdMatch[1], 10);
