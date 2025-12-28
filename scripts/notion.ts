@@ -75,7 +75,7 @@ await notion.pages.update({
   page_id: found.id,
   properties: {
     [statusPropertyName]: {
-      select: {
+      status: {
         name: "In Progress",
       },
     },
