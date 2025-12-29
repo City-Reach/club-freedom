@@ -156,8 +156,8 @@ export default function MobileVideoRecorder({ type, mimeType }: MediaConfig) {
             <AlertDialogHeader className="p-6 bg-foreground/80 text-background absolute top-0 inset-x-0 z-20">
               <AlertDialogDescription className="text-background">
                 Please record your testimonial video. Make sure you are in a
-                quiet environment with good lighting.
-                quiet environment with good lighting.
+                quiet environment with good lighting. quiet environment with
+                good lighting.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <div className="absolute inset-0 bg-black content-center">
