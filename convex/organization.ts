@@ -26,26 +26,13 @@ export const getAllOrganizations = query({
   },
 });
 
-export const setActiveOrganization = mutation({
-  args: {
-    organizationSlug: v.optional(v.string()),
-    organizationId: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const { headers, auth } = await authComponent.getAuth(createAuth, ctx);
-    try {
-      const data = await auth.api.setActiveOrganization({
-        headers,
-        body: {
-          organizationId: args.organizationId,
-          organizationSlug: args.organizationSlug,
-        },
-      });
-      return data !== null;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
+export const isUserInOrganization = query({
+  args: { organizationId: v.string(), userId: v.string() },
+  handler: async (ctx, { organizationId, userId }) => {
+    return await ctx.runQuery(
+      components.betterAuth.organization.isInOrganization,
+      { organizationId, userId },
+    );
   },
 });
 

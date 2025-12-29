@@ -9,13 +9,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { authClient } from "@/lib/auth/auth-client";
 
-type Props = {
-  user: Doc<"user">;
-};
+export default function UserDropDown() {
+  const { data, isPending } = authClient.useSession();
 
-export default function UserDropDown({ user }: Props) {
+  if (isPending) {
+    return (
+      <Avatar>
+        <AvatarFallback>
+          <UserRoundIcon size={16} />
+        </AvatarFallback>
+      </Avatar>
+    );
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  const user = data.user;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

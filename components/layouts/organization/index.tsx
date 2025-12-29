@@ -1,4 +1,3 @@
-import { useRouteContext } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import {
   SidebarInset,
@@ -14,9 +13,6 @@ export default function OrganizationLayout({
 }: {
   children: ReactNode;
 }) {
-  const { user } = useRouteContext({
-    from: "/o/$orgSlug/_dashboard",
-  });
   return (
     <SidebarProvider>
       <OrganizationSidebar collapsible="icon" />
@@ -27,7 +23,7 @@ export default function OrganizationLayout({
             <OrganizationInfo />
           </div>
           <div className="ml-auto">
-            <UserDropDown user={user} />
+            <UserDropDown />
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>

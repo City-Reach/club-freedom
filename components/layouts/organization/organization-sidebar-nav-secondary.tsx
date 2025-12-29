@@ -1,6 +1,7 @@
-import { Link, useParams, useRouteContext } from "@tanstack/react-router";
+import { Link, useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { ExternalLink, Settings, UserRoundCog } from "lucide-react";
 import type { ComponentProps } from "react";
+import HasOrganizationPermission from "@/components/organization/has-organization-permission";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -11,29 +12,32 @@ import {
 export default function OrganizationSidebarNavSecondary(
   props: ComponentProps<typeof SidebarGroup>,
 ) {
-  const { orgSlug } = useParams({
+  const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
-  const { user } = useRouteContext({
+  const { user } = useLoaderData({
     from: "/o/$orgSlug/_dashboard",
   });
 
   return (
     <SidebarGroup {...props}>
       <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Settings" asChild>
-            <Link
-              to="/o/$orgSlug/settings"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <Settings />
-              <span>Settings</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        {user?.role === "admin" && (
+        <HasOrganizationPermission permissions={{ organization: ["update"] }}>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Settings" asChild>
+              <Link
+                to="/o/$orgSlug/settings"
+                params={{ orgSlug: organization.slug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <Settings />
+                <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </HasOrganizationPermission>
+        {/* Admin Role */}
+        {user.role === "admin" && (
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip={{
