@@ -2,13 +2,14 @@ import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
-import { admin } from "better-auth/plugins";
+import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
 import {
-  adminOptions,
+  adminRBAC,
   type PermissionCheck,
   type Role,
-} from "@/lib/auth/permissions";
+} from "@/lib/auth/permissions/admin";
+import { organizationRBAC } from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -30,6 +31,7 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   const siteUrl = process.env.SITE_URL!;
+  const localUrl = process.env.LOCAL_URL || "";
 
   return {
     baseURL: siteUrl,
@@ -51,9 +53,24 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         authConfig,
         jwksRotateOnTokenGenerationError: true,
       }),
-      admin(adminOptions),
+      admin({
+        ...adminRBAC,
+      }),
+      organization({
+        schema: {
+          organization: {
+            additionalFields: {
+              icon: {
+                type: "string",
+                required: false,
+              },
+            },
+          },
+        },
+        ...organizationRBAC,
+      }),
     ],
-    trustedOrigins: [siteUrl],
+    trustedOrigins: [siteUrl, localUrl],
   } satisfies BetterAuthOptions;
 };
 
