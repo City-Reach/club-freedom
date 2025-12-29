@@ -12,8 +12,8 @@ const MEDIA_CONSTRAINTS = {
       ideal: 24,
       max: 30,
     },
-    width: 1280,
-    height: 720,
+    width: { ideal: 1280, min: 1280, max: 1920 },
+    height: { ideal: 720, min: 720, max: 1080 },
   },
   audio: true,
 } satisfies MediaStreamConstraints;
