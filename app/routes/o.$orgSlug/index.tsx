@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getCurrentUser } from "@/app/functions/auth";
-import TestonomialForm from "@/components/forms/testinomial-form";
-
 import OrganizationNavbar from "@/components/organization/organization-navbar";
+import TestimonialForm from "@/components/testimonial-form";
 
 export const Route = createFileRoute("/o/$orgSlug/")({
   component: TestimonialSubmissionPage,
@@ -29,7 +28,7 @@ function TestimonialSubmissionPage() {
             "Let your light shine before others" – Matthew 5:16
           </p>
         </div>
-        <TestonomialForm organizationId={organization?._id || ""} />
+        <TestimonialForm organizationId={organization._id} />
       </main>
     </>
   );

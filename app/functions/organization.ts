@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import z from "zod";
 import { api } from "@/convex/_generated/api";
-import { fetchMutation } from "@/lib/auth/auth-server";
+import { fetchAuthMutation } from "@/lib/auth/auth-server";
 
 export const setActiveOrganization = createServerFn({ method: "POST" })
   .inputValidator(
@@ -10,7 +10,7 @@ export const setActiveOrganization = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data: { organizationId } }) => {
-    const success = await fetchMutation(
+    const success = await fetchAuthMutation(
       api.organization.setActiveOrganization,
       {
         organizationId,

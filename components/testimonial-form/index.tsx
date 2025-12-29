@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
-import { type Testimonial, testimonialSchema } from "@/lib/schema";
+import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -26,7 +26,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { AudioRecorder, VideoRecorder } from "./recorder";
 
-export default function TestimonialForm() {
+type Props = {
+  organizationId: string;
+};
+
+export default function TestimonialForm({ organizationId }: Props) {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: { name: "", email: "", writtenText: "", consent: false },
@@ -80,6 +84,7 @@ export default function TestimonialForm() {
         storageId: storageId,
         media_type: media_type,
         text: values.writtenText,
+        organizationId,
       });
 
       toast.success("Testimonial submitted successfully!", {

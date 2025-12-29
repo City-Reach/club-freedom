@@ -4,7 +4,7 @@ import { Mic, Square } from "lucide-react";
 import { useController } from "react-hook-form";
 import { ReactMediaRecorder } from "react-media-recorder";
 import { Button } from "@/components/ui/button";
-import type { Testimonial } from "@/lib/schema";
+import type { Testimonial } from "@/lib/schema/testimonials";
 import TimeElapsed from "./time-elapsed";
 
 export default function AudioRecorder() {

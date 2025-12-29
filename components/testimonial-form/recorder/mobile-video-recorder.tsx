@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import type { MediaConfig } from "@/lib/media";
-import type { Testimonial } from "@/lib/schema";
+import type { Testimonial } from "@/lib/schema/testimonials";
 import TimeElapsed from "./time-elapsed";
 
 const MEDIA_CONSTRAINTS = {

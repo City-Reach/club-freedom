@@ -15,7 +15,7 @@ export const getUserById = createServerFn()
     }),
   )
   .handler(async ({ data }) => {
-    const user = await fetchQuery(api.auth.getUserById, {
+    const user = await fetchAuthQuery(api.auth.getUserById, {
       userId: data.userId,
     });
     return user;
