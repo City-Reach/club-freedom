@@ -1,5 +1,10 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useLoaderData,
+} from "@tanstack/react-router";
 import OrganizationLayout from "@/components/layouts/organization";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
@@ -44,15 +49,19 @@ function RouteComponent() {
 }
 
 function PendingComponent() {
-  const { organization } = Route.useRouteContext();
+  const { organization } = useLoaderData({
+    from: "/o/$orgSlug",
+  });
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen gap-12">
-      {organization.logo && (
+      {organization.logo ? (
         <img
           src={organization.logo}
           alt={organization.name}
           className="w-full max-w-100"
         />
+      ) : (
+        `Accessing to ${organization.name}`
       )}
       <Spinner className="size-12" />
     </div>
