@@ -13,8 +13,10 @@ export function getRouter() {
   const convex = new ConvexReactClient(CONVEX_URL, {
     unsavedChangesWarning: false,
   });
-  const convexQueryClient = new ConvexQueryClient(convex);
-  const queryClient: QueryClient = new QueryClient({
+  const convexQueryClient = new ConvexQueryClient(convex, {
+    expectAuth: true,
+  });
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         queryKeyHashFn: convexQueryClient.hashFn(),
@@ -29,11 +31,6 @@ export function getRouter() {
       defaultPreload: "intent",
       scrollRestoration: true,
       context: { queryClient, convexClient: convex, convexQueryClient },
-      Wrap: ({ children }) => (
-        <ConvexProvider client={convexQueryClient.convexClient}>
-          {children}
-        </ConvexProvider>
-      ),
     }),
     queryClient,
   );
