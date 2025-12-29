@@ -35,9 +35,19 @@ export default function OrganizationSidebarHeader() {
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <Link to="/o/$orgSlug" params={{ orgSlug }}>
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-              <Building className="size-4" />
-            </div>
+            {currentOrganization.icon ? (
+              <img
+                alt={currentOrganization.name}
+                src={currentOrganization.icon}
+                width={32}
+                height={32}
+                className="rounded-lg bg-sidebar"
+              />
+            ) : (
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <Building className="size-4" />
+              </div>
+            )}
             <span className="truncate font-medium">
               {currentOrganization.name}
             </span>
