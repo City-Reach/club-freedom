@@ -10,9 +10,6 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
   component: RouteComponent,
   pendingComponent: PendingComponent,
   loader: async ({ context }) => {
-    const userId = context.userId;
-    if (!userId) throw redirect({ to: "/sign-in" });
-
     const { data, error } = await authClient.getSession();
     if (!data || error) {
       throw redirect({ to: "/sign-in" });
@@ -21,7 +18,7 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
     const isInOrganization = context.queryClient.ensureQueryData(
       convexQuery(api.organization.isUserInOrganization, {
         organizationId: context.organization._id,
-        userId,
+        userId: data.user.id,
       }),
     );
 
@@ -33,6 +30,7 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
 
     return {
       user: data.user,
+      organization: context.organization,
     };
   },
 });

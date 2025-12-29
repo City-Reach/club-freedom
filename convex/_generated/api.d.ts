@@ -15,7 +15,6 @@ import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as internal_createAdminUser from "../internal/createAdminUser.js";
 import type * as internal_organizations from "../internal/organizations.js";
-import type * as internal_r2 from "../internal/r2.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
 import type * as organization from "../organization.js";
@@ -36,7 +35,6 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "internal/createAdminUser": typeof internal_createAdminUser;
   "internal/organizations": typeof internal_organizations;
-  "internal/r2": typeof internal_r2;
   media: typeof media;
   migrations: typeof migrations;
   organization: typeof organization;
@@ -347,6 +345,7 @@ export declare const components: {
             | {
                 data: {
                   createdAt: number;
+                  expiresAt?: null | number;
                   privateKey: string;
                   publicKey: string;
                 };
@@ -542,7 +541,12 @@ export declare const components: {
                 model: "jwks";
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -827,7 +831,12 @@ export declare const components: {
                 model: "jwks";
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -954,6 +963,7 @@ export declare const components: {
         "query",
         "internal",
         {
+          join?: any;
           limit?: number;
           model:
             | "user"
@@ -1004,6 +1014,7 @@ export declare const components: {
         "query",
         "internal",
         {
+          join?: any;
           model:
             | "user"
             | "session"
@@ -1239,12 +1250,18 @@ export declare const components: {
                 model: "jwks";
                 update: {
                   createdAt?: number;
+                  expiresAt?: null | number;
                   privateKey?: string;
                   publicKey?: string;
                 };
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -1596,12 +1613,18 @@ export declare const components: {
                 model: "jwks";
                 update: {
                   createdAt?: number;
+                  expiresAt?: null | number;
                   privateKey?: string;
                   publicKey?: string;
                 };
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"

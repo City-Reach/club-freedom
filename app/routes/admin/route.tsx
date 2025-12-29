@@ -7,10 +7,7 @@ export const Route = createFileRoute("/admin")({
   ssr: false,
   component: RouteComponent,
   pendingComponent: PendingComponent,
-  loader: async ({ context }) => {
-    const userId = context.userId;
-    if (!userId) throw redirect({ to: "/sign-in" });
-
+  loader: async () => {
     const { data, error } = await authClient.getSession();
 
     if (!data || error) {
@@ -20,6 +17,10 @@ export const Route = createFileRoute("/admin")({
     if (data.user.role !== "admin") {
       throw redirect({ to: "/" });
     }
+
+    return {
+      user: data.user,
+    };
   },
 });
 

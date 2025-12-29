@@ -1,12 +1,20 @@
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery } from "convex/react";
 import { formatDistance } from "date-fns";
+import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { getApprovalStatusText } from "@/utils/testimonial-utils";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemMedia,
+  ItemTitle,
+} from "./ui/item";
 
 type Props = {
   id: Id<"testimonials">;
@@ -14,7 +22,8 @@ type Props = {
 
 export default function TestimonialDetail({ id }: Props) {
   const testimonial = useQuery(api.testimonials.getTestimonialById, { id });
-  const canApprove = useQuery(api.auth.checkUserPermissions, {
+
+  const userCanApprove = useQuery(api.auth.checkUserPermissions, {
     permissions: {
       testimonial: ["approve"],
     },
@@ -24,11 +33,16 @@ export default function TestimonialDetail({ id }: Props) {
     api.testimonials.updateTestimonialApproval,
   );
 
+  const retryProcessing = useMutation(api.testimonials.retryProcessing);
+
   if (!testimonial) {
     return <div>Loading testimonial...</div>;
   }
 
   const approvalText = getApprovalStatusText(testimonial.approved);
+  const canApprove =
+    testimonial.processingStatus === "completed" && userCanApprove;
+
   const downloadTranscription = () => {
     const element = document.createElement("a");
     const file = new Blob(
@@ -50,9 +64,38 @@ export default function TestimonialDetail({ id }: Props) {
     }
   };
 
+  const title = testimonial.title || `Testimonial from ${testimonial.name}`;
+
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-bold">{testimonial.name}'s Testimonial</h1>
+      {testimonial.processingStatus === "error" && (
+        <Item variant="outline" size="sm">
+          <ItemMedia className="text-destructive">
+            <AlertCircle className="size-5" />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle className="text-destructive">
+              Failed to process testimonial.
+            </ItemTitle>
+          </ItemContent>
+          <ItemActions>
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer"
+              onClick={() => retryProcessing({ id })}
+            >
+              Try again
+            </Button>
+          </ItemActions>
+        </Item>
+      )}
+      <h1 className="text-2xl font-bold">
+        {title}
+        {!testimonial.title && testimonial.processingStatus === "ongoing" && (
+          <Spinner className="inline align-baseline size-5 ml-1" />
+        )}
+      </h1>
       {testimonial.mediaUrl && testimonial.media_type === "audio" && (
         <audio className="w-full" controls src={testimonial.mediaUrl} />
       )}
@@ -75,7 +118,7 @@ export default function TestimonialDetail({ id }: Props) {
           onClick={downloadTranscription}
           disabled={!testimonial.testimonialText}
         >
-          {testimonial.media_id
+          {testimonial.storageId
             ? "Download Transcription"
             : "Download Testimonial"}
         </Button>
@@ -93,31 +136,39 @@ export default function TestimonialDetail({ id }: Props) {
       </div>
       <div className="space-y-0">
         <h3 className="font-bold flex items-center gap-1.5">
-          Summary{!testimonial.summary && <Spinner></Spinner>}
+          Summary{" "}
+          {!testimonial.summary &&
+            testimonial.processingStatus === "ongoing" && <Spinner />}
         </h3>
 
         {testimonial.summary ? (
           <p>{testimonial.summary}</p>
-        ) : (
+        ) : testimonial.processingStatus === "ongoing" ? (
           <p className="text-muted-foreground">
             Summary will be available soon.
           </p>
+        ) : (
+          <p className="text-destructive">Summary not available.</p>
         )}
       </div>
       <div>
         <h3 className="font-bold flex items-center gap-1.5">
-          {testimonial.media_id ? "Transcription" : "Testimonial"}
-          {!testimonial.testimonialText && <Spinner></Spinner>}
+          {testimonial.storageId ? "Transcription" : "Testimonial"}
+          {!testimonial.testimonialText &&
+            testimonial.processingStatus === "ongoing" && <Spinner />}
         </h3>
 
         {testimonial.testimonialText ? (
           <p>{testimonial.testimonialText}</p>
-        ) : (
+        ) : testimonial.processingStatus === "ongoing" ? (
           <p className="text-muted-foreground">
             Transcription will be available soon.
           </p>
+        ) : (
+          <p className="text-destructive">Transcription not available.</p>
         )}
       </div>
+
       {canApprove && (
         <div className="flex gap-2">
           <Button

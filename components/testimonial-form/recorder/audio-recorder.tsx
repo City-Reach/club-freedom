@@ -1,16 +1,18 @@
 "use client";
 
 import { Mic, Square } from "lucide-react";
+import { useController } from "react-hook-form";
 import { ReactMediaRecorder } from "react-media-recorder";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
+import type { Testimonial } from "@/lib/schema/testimonials";
 import TimeElapsed from "./time-elapsed";
 
-type Props = {
-  onRecordingComplete: (audioFile?: File) => void;
-};
-
-export default function AudioRecorder({ onRecordingComplete }: Props) {
+export default function AudioRecorder() {
   const mp4Supported = MediaRecorder.isTypeSupported("audio/mp4");
+  const { field } = useController<Testimonial>({
+    name: "mediaFile",
+  });
+
   return (
     <ReactMediaRecorder
       audio
@@ -24,7 +26,7 @@ export default function AudioRecorder({ onRecordingComplete }: Props) {
         const audioFile = new File([blob], `audio-recording-${Date.now()}`, {
           type: blob.type ?? "audio/webm",
         });
-        onRecordingComplete(audioFile);
+        field.onChange(audioFile);
       }}
       render={({
         status,
@@ -80,7 +82,7 @@ export default function AudioRecorder({ onRecordingComplete }: Props) {
                   variant="outline"
                   onClick={() => {
                     clearBlobUrl();
-                    onRecordingComplete(undefined);
+                    field.onChange(undefined);
                   }}
                 >
                   Clear
