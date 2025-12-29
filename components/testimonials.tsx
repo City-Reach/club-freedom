@@ -36,8 +36,8 @@ export function Testimonials() {
   const sortedResults = results
     ? [...results].sort(
         (a, b) =>
-          (b._creationTime ?? b.createdAt ?? 0) -
-          (a._creationTime ?? a.createdAt ?? 0),
+          (b._creationTime ?? b._creationTime ?? 0) -
+          (a._creationTime ?? a._creationTime ?? 0),
       )
     : results;
 

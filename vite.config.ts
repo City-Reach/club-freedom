@@ -46,5 +46,8 @@ export default defineConfig(({ mode, command }) => {
     esbuild: {
       drop: mode === "production" ? ["console"] : [],
     },
+    ssr: {
+      noExternal: ["@convex-dev/better-auth"],
+    },
   };
 });

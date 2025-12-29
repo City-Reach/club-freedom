@@ -1,8 +1,4 @@
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
-import {
-  fetchSession,
-  getCookieName,
-} from "@convex-dev/better-auth/react-start";
 import type { ConvexQueryClient } from "@convex-dev/react-query";
 import { PostHogProvider } from "@posthog/react";
 import type { QueryClient } from "@tanstack/react-query";
@@ -16,24 +12,17 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
-import { getCookie, getRequest } from "@tanstack/react-start/server";
 import type { ConvexReactClient } from "convex/react";
 import ErrorBoundary from "@/components/error-boundary";
 import NotFound from "@/components/not-found";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/env/client";
 import { authClient } from "@/lib/auth/auth-client";
+import { getToken } from "@/lib/auth/auth-server";
 import appCss from "../globals.css?url";
 
-const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
-  const { createAuth } = await import("../../convex/auth");
-  const { session } = await fetchSession(getRequest());
-  const sessionCookieName = getCookieName(createAuth);
-  const token = getCookie(sessionCookieName);
-  return {
-    userId: session?.user.id,
-    token,
-  };
+const getAuth = createServerFn({ method: "GET" }).handler(async () => {
+  return await getToken();
 });
 
 export const Route = createRootRouteWithContext<{
@@ -57,13 +46,13 @@ export const Route = createRootRouteWithContext<{
   beforeLoad: async (ctx) => {
     // all queries, mutations and action made with TanStack Query will be
     // authenticated by an identity token.
-    const { userId, token } = await fetchAuth();
+    const token = await getAuth();
     // During SSR only (the only time serverHttpClient exists),
     // set the auth token to make HTTP queries with.
     if (token) {
       ctx.context.convexQueryClient.serverHttpClient?.setAuth(token);
     }
-    return { userId, token };
+    return { isAuthenticated: !!token, token };
   },
   component: RootComponent,
   notFoundComponent: NotFound,
@@ -89,6 +78,7 @@ function RootComponent() {
       <ConvexBetterAuthProvider
         client={context.convexClient}
         authClient={authClient}
+        initialToken={context.token}
       >
         <RootDocument>
           <Outlet />
