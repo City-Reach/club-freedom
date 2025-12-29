@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { env } from "@/env/client";
 import { authClient } from "@/lib/auth/auth-client";
 import { emailSchema } from "@/lib/schema";
 import { Field, FieldError, FieldLabel } from "../ui/field";
@@ -27,7 +28,7 @@ export function RequestPasswordResetForm() {
     await authClient.requestPasswordReset(
       {
         email: data.email,
-        redirectTo: `${import.meta.env.VITE_SITE_URL}/reset-password`,
+        redirectTo: `${env.VITE_SITE_URL}/reset-password`,
       },
       {
         onSuccess() {

@@ -16,6 +16,7 @@ import type { ConvexReactClient } from "convex/react";
 import ErrorBoundary from "@/components/error-boundary";
 import NotFound from "@/components/not-found";
 import { Toaster } from "@/components/ui/sonner";
+import { env } from "@/env/client";
 import { authClient } from "@/lib/auth/auth-client";
 import { getToken } from "@/lib/auth/auth-server";
 import appCss from "../globals.css?url";
@@ -63,7 +64,7 @@ export const Route = createRootRouteWithContext<{
 });
 
 const postHogOptions = {
-  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+  api_host: env.VITE_PUBLIC_POSTHOG_HOST,
   defaults: "2025-11-30",
 } as const;
 
@@ -71,7 +72,7 @@ function RootComponent() {
   const context = useRouteContext({ from: Route.id });
   return (
     <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      apiKey={env.VITE_PUBLIC_POSTHOG_KEY}
       options={postHogOptions}
     >
       <ConvexBetterAuthProvider

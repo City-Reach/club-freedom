@@ -1,3 +1,4 @@
 import { ConvexHttpClient } from "convex/browser";
+import { env } from "@/env/client";
 
-export const convex = new ConvexHttpClient(process.env.VITE_CONVEX_URL!);
+export const convex = new ConvexHttpClient(env.VITE_CONVEX_URL);
