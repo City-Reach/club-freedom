@@ -4,7 +4,7 @@ import { Spinner } from "../ui/spinner";
 export const TestimonialTitle = () => {
   const { testimonial } = useTestimonialContext();
   const title = testimonial.title || `Testimonial from ${testimonial.name}`;
-  
+
   return (
     <h1 className="text-2xl font-bold">
       {title}

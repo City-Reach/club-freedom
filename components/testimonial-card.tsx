@@ -34,7 +34,7 @@ export function TestimonialCard({
             params={{ id: testimonial._id }}
             className="hover:underline"
           >
-            <CardTitle className="">{testimonial.title}</CardTitle>
+            <CardTitle>{testimonial.title}</CardTitle>
           </Link>
           <div className="flex items-center gap-2">
             {showApprovalStatus && (

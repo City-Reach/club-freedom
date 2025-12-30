@@ -1,13 +1,13 @@
-import { createFileRoute, redirect, useParams } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   createStandardSchemaV1,
   debounce,
   parseAsString,
   useQueryStates,
 } from "nuqs";
+import { Testimonials } from "@/components/testimonials";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
-import { Testimonials } from "@/components/testimonials";
 
 export const testimonialSearchParams = {
   q: parseAsString.withDefault(""),
@@ -30,12 +30,13 @@ export const Route = createFileRoute("/testimonials/")({
       },
     });
 
-    return { canApprove: canApproveResult.data?.success };
+    return { canApprove: canApproveResult.data?.success || false };
   },
 });
 
 function TestimonialsPage() {
   const search = Route.useSearch();
+  const { canApprove } = Route.useLoaderData();
   return (
     <main className="container mx-auto px-4">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -51,7 +52,7 @@ function TestimonialsPage() {
       </div>
       <div className="w-full space-y-8 max-w-lg mx-auto pb-24">
         <TestimonialSearchInput />
-        <Testimonials search={search.q} />
+        <Testimonials search={search.q} canApprove={canApprove} />
       </div>
     </main>
   );

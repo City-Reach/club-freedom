@@ -1,20 +1,24 @@
-import { usePaginatedQuery, useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { useEffect, useRef } from "react";
+import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
-import { TestimonialCard } from "./testimonial-card";
+import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
+import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
+import TestimonialCardMedia from "./testimonial-card/testimonial-card-media";
+import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
+import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
+import TestimonialCardText from "./testimonial-card/testimonial-card-text";
+import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
+import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
 type Props = {
   search: string;
+  canApprove?: boolean;
 };
 
-export function Testimonials({ search }: Props) {
+export function Testimonials({ search, canApprove = false }: Props) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const canApprove = useQuery(api.auth.checkUserPermissions, {
-    permissions: {
-      testimonial: ["approve"],
-    },
-  });
 
   const searchQuery = search.trim();
 
@@ -23,14 +27,6 @@ export function Testimonials({ search }: Props) {
     { searchQuery: searchQuery ? searchQuery : undefined },
     { initialNumItems: 5 },
   );
-
-  const sortedResults = results
-    ? [...results].sort(
-        (a, b) =>
-          (b._creationTime ?? b._creationTime ?? 0) -
-          (a._creationTime ?? a._creationTime ?? 0),
-      )
-    : results;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -53,24 +49,45 @@ export function Testimonials({ search }: Props) {
     };
   }, [status, loadMore]);
 
+  const TestimonialList = () =>
+    results.map((testimonial) => (
+      <TestimonialContext.Provider
+        key={testimonial._id}
+        value={{ testimonial }}
+      >
+        <TestimonialCardShell>
+          <CardHeader>
+            <div className="flex justify-between">
+              <TestimonialCardTitle />
+              {canApprove && <TestimonialCardApproval />}
+            </div>
+            <TestimonialCardInfo />
+          </CardHeader>
+          <CardContent>
+            {testimonial.mediaUrl ? (
+              <div className="space-y-2">
+                <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
+                <TestimonialCardSummary />
+              </div>
+            ) : (
+              <TestimonialCardText />
+            )}
+          </CardContent>
+        </TestimonialCardShell>
+      </TestimonialContext.Provider>
+    ));
+
   return (
     <>
-      {sortedResults?.map((testimonial) => (
-        <TestimonialCard
-          key={testimonial._id}
-          testimonial={testimonial}
-          showApprovalStatus={canApprove}
-        />
-      ))}
-
+      <TestimonialList />
       <div className="w-full text-center">
         {status !== "Exhausted" ? (
           <Spinner className="size-12 mx-auto" />
         ) : (
           "End of results"
         )}
+        <div ref={loadMoreRef} className="h-10" />
       </div>
-      <div ref={loadMoreRef} className="h-10" />
     </>
   );
 }

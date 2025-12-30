@@ -1,5 +1,5 @@
-import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { formatDistance } from "date-fns";
+import { useTestimonialContext } from "@/contexts/testimonial-context";
 
 export default function TestimonialMetadata() {
   const { testimonial } = useTestimonialContext();
