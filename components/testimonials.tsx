@@ -1,35 +1,26 @@
-"use client";
-
 import { usePaginatedQuery, useQuery } from "convex/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { api } from "@/convex/_generated/api";
 import { TestimonialCard } from "./testimonial-card";
-import { Input } from "./ui/input";
+import { Spinner } from "./ui/spinner";
 
-export function Testimonials() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+type Props = {
+  search: string;
+};
+
+export function Testimonials({ search }: Props) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 400);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchQuery]);
-
   const canApprove = useQuery(api.auth.checkUserPermissions, {
     permissions: {
       testimonial: ["approve"],
     },
   });
 
+  const searchQuery = search.trim();
+
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
-    { searchQuery: debouncedQuery },
+    { searchQuery: searchQuery ? searchQuery : undefined },
     { initialNumItems: 5 },
   );
 
@@ -64,11 +55,6 @@ export function Testimonials() {
 
   return (
     <>
-      <Input
-        placeholder="Search testimonials..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
       {sortedResults?.map((testimonial) => (
         <TestimonialCard
           key={testimonial._id}
@@ -76,6 +62,14 @@ export function Testimonials() {
           showApprovalStatus={canApprove}
         />
       ))}
+
+      <div className="w-full text-center">
+        {status !== "Exhausted" ? (
+          <Spinner className="size-12 mx-auto" />
+        ) : (
+          "End of results"
+        )}
+      </div>
       <div ref={loadMoreRef} className="h-10" />
     </>
   );
