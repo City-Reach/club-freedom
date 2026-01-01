@@ -1,8 +1,9 @@
 import { defineConfig } from "@trigger.dev/sdk";
+import { ffmpeg } from "@trigger.dev/build/extensions/core";
 
 export default defineConfig({
   // Your project ref from the Trigger.dev dashboard
-  project: process.env.TRIGGER_PROJECT_REF || "", // e.g., "proj_abc123"
+  project: process.env.TRIGGER_PROJECT_REF || "",
 
   // Directories containing your tasks
   dirs: ["./src/trigger"], // Customize based on your project structure
@@ -21,7 +22,8 @@ export default defineConfig({
 
   // Build configuration (optional)
   build: {
-    extensions: [], // Build extensions go here
+    extensions: [ffmpeg()], // Build extensions go here
+    external: ["fluent-ffmpeg"], // When a package is excluded from the bundle, it will be added to a dynamically generated package.json file in the build directory
   },
 
   // Max duration of a task in seconds

@@ -1,4 +1,4 @@
-import { useUploadFile } from "@convex-dev/r2/react";
+import { useUploadFile } from "@/hooks/use-upload-file";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
@@ -24,6 +24,8 @@ import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { AudioRecorder, VideoRecorder } from "./recorder";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { triggerTaskServerFn } from "@/app/functions/triggerTask";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
@@ -31,9 +33,13 @@ export default function TestimonialForm() {
     defaultValues: { name: "", email: "", writtenText: "", consent: false },
   });
   const navigation = useNavigate();
-  const uploadFile = useUploadFile(api.r2);
+  const uploadFile = useUploadFile();
+  const generateUploadUrl = useConvexMutation(
+    api.uploadTempFile.generateTempUploadUrl,
+  );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
+  const triggerTask = useServerFn(triggerTaskServerFn);
 
   const [tabValue, setTabValue] = useState("video");
 
@@ -61,10 +67,14 @@ export default function TestimonialForm() {
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        storageId = await uploadFile(values.mediaFile);
-        if (!storageId) {
-          throw new Error("Failed to upload audio file");
+        const { url, key } = await generateUploadUrl();
+        if (!key) {
+          throw new Error("Failed to generate media key");
         }
+        await uploadFile({ file: values.mediaFile, url, key });
+        const task = await triggerTask();
+        console.log("Trigger Task Response:", task);
+        storageId = key;
         if (values.mediaFile.type.startsWith("audio")) {
           media_type = "audio";
         } else if (values.mediaFile.type.startsWith("video")) {

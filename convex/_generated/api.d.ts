@@ -18,6 +18,7 @@ import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
 import type * as r2 from "../r2.js";
 import type * as testimonials from "../testimonials.js";
+import type * as uploadTempFile from "../uploadTempFile.js";
 
 import type {
   ApiFromModules,
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   migrations: typeof migrations;
   r2: typeof r2;
   testimonials: typeof testimonials;
+  uploadTempFile: typeof uploadTempFile;
 }>;
 
 /**
