@@ -4,9 +4,10 @@ import type { helloWorld } from "@/src/trigger/example";
 
 
 export const triggerTaskServerFn = createServerFn()
-  .handler(async ({ data }) => {
-    const handle = await tasks.trigger<typeof helloWorld>("hello-world", {name: "Nicholas"});
+    .inputValidator((data: { name: string }) => data)
+    .handler(async ({ data }) => {
+        const handle = await tasks.trigger<typeof helloWorld>("hello-world", {name: data.name});
 
-  //return a success response with the handle
-  return Response.json(handle);
+    //return a success response with the handle
+    return Response.json(handle);
 });

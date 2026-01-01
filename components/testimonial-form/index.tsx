@@ -72,7 +72,9 @@ export default function TestimonialForm() {
           throw new Error("Failed to generate media key");
         }
         await uploadFile({ file: values.mediaFile, url, key });
-        const task = await triggerTask();
+        const task = await triggerTask({
+          data: { name: values.name },
+        })
         console.log("Trigger Task Response:", task);
         storageId = key;
         if (values.mediaFile.type.startsWith("audio")) {
