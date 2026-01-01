@@ -1,5 +1,5 @@
-import { defineConfig } from "@trigger.dev/sdk";
 import { ffmpeg } from "@trigger.dev/build/extensions/core";
+import { defineConfig } from "@trigger.dev/sdk";
 
 export default defineConfig({
   // Your project ref from the Trigger.dev dashboard
