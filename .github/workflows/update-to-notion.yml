@@ -1,6 +1,12 @@
 name: Update to Notion
 on:
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+      - edited
 
 jobs:
   update-on-notion:

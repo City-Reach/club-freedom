@@ -4,14 +4,11 @@ import AuthLayout from "@/components/layouts/auth-layout";
 export const Route = createFileRoute("/_auth")({
   component: RouteComponent,
   loader: async ({ context }) => {
-    if (context.userId) {
+    if (context.isAuthenticated) {
       throw redirect({
         to: "/",
       });
     }
-    return {
-      userId: context.userId,
-    };
   },
 });
 
