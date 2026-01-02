@@ -14,5 +14,6 @@ export function hasPermissionQuery(permissions: PermissionCheck) {
       }
       return data.success;
     },
+    staleTime: Infinity,
   });
 }
