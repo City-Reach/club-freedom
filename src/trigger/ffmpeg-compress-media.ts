@@ -1,7 +1,7 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
-  DeleteObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { logger, task } from "@trigger.dev/sdk";
@@ -25,8 +25,13 @@ const s3Client = new S3Client({
 
 export const ffmpegCompressVideo = task({
   id: "ffmpeg-compress-video",
-  run: async (payload: { mediaKey: string }) => {
-    const { mediaKey } = payload;
+  run: async (payload: {
+    name: string;
+    email: string | undefined;
+    text: string;
+    mediaKey: string;
+  }) => {
+    const { name, email, text, mediaKey } = payload;
 
     // Generate temporary file names
     const tempDirectory = os.tmpdir();
@@ -93,16 +98,83 @@ export const ffmpegCompressVideo = task({
     await s3Client.send(new PutObjectCommand(uploadParams));
     logger.log(`Compressed video saved to your r2 bucket`, { r2Key });
 
+    // Notify Convex HTTP action to create a testimonial for this uploaded media
+    try {
+      const convexDeployment = process.env.CONVEX_DEPLOYMENT_NAME;
+
+      const convexBaseUrl = convexDeployment
+        ? `https://${convexDeployment}.convex.site`
+        : undefined;
+
+      if (!convexBaseUrl) {
+        logger.log(
+          "CONVEX deployment name not set; skipping POST to Convex HTTP action",
+        );
+      } else {
+        let inferredMediaType = "video";
+        if (ContentType?.startsWith("audio/")) {
+          inferredMediaType = "audio";
+        }
+
+        const postPayload = {
+          name: name,
+          email: email,
+          storageId: r2Key,
+          media_type: inferredMediaType,
+          text: text,
+        } as const;
+
+        const res = await fetch(`${convexBaseUrl}/testimonials`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(postPayload),
+        });
+
+        if (res.ok) {
+          const data = await res.json().catch(() => null);
+          logger.log("Posted testimonial via Convex HTTP action", {
+            url: `${convexBaseUrl}/testimonials`,
+            result: data,
+          });
+        } else {
+          const text = await res.text().catch(() => "<no body>");
+          logger.error("Failed to POST to Convex HTTP action", {
+            status: res.status,
+            body: text,
+            url: `${convexBaseUrl}/testimonials`,
+          });
+        }
+      }
+    } catch (err) {
+      logger.error("Error while calling Convex HTTP action", {
+        error: (err as any)?.message ?? err,
+      });
+    }
+
     // Delete temporary files and the original object in parallel
     const deleteOutputPromise = fsPromises
       .unlink(outputPath)
-      .then(() => logger.log(`Temporary compressed video file deleted`, { outputPath }))
-      .catch((err) => logger.error(`Failed to delete temporary compressed video file`, { outputPath, error: err?.message ?? err }));
+      .then(() =>
+        logger.log(`Temporary compressed video file deleted`, { outputPath }),
+      )
+      .catch((err) =>
+        logger.error(`Failed to delete temporary compressed video file`, {
+          outputPath,
+          error: err?.message ?? err,
+        }),
+      );
 
     const deleteInputPromise = fsPromises
       .unlink(inputPath)
-      .then(() => logger.log(`Temporary input video file deleted`, { inputPath }))
-      .catch((err) => logger.error(`Failed to delete temporary input video file`, { inputPath, error: err?.message ?? err }));
+      .then(() =>
+        logger.log(`Temporary input video file deleted`, { inputPath }),
+      )
+      .catch((err) =>
+        logger.error(`Failed to delete temporary input video file`, {
+          inputPath,
+          error: err?.message ?? err,
+        }),
+      );
 
     const deleteR2Promise = s3Client
       .send(
@@ -113,15 +185,27 @@ export const ffmpegCompressVideo = task({
       )
       .then(({ DeleteMarker }) => {
         if (DeleteMarker) {
-          logger.log(`Temporary original video file in R2 deleted`, { mediaKey });
+          logger.log(`Temporary original video file in R2 deleted`, {
+            mediaKey,
+          });
         } else {
-          logger.error(`Failed to delete temporary original video file in R2`, { mediaKey });
+          logger.error(`Failed to delete temporary original video file in R2`, {
+            mediaKey,
+          });
         }
       })
-      .catch((err) => logger.error(`Failed to delete temporary original video file in R2`, { mediaKey, error: err?.message ?? err }));
+      .catch((err) =>
+        logger.error(`Failed to delete temporary original video file in R2`, {
+          mediaKey,
+          error: err?.message ?? err,
+        }),
+      );
 
-    await Promise.all([deleteOutputPromise, deleteInputPromise, deleteR2Promise]);
-
+    await Promise.all([
+      deleteOutputPromise,
+      deleteInputPromise,
+      deleteR2Promise,
+    ]);
 
     // Return the compressed video buffer and r2 key
     return {

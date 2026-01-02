@@ -74,7 +74,12 @@ export default function TestimonialForm() {
         }
         await uploadFile({ file: values.mediaFile, url, key });
         const task = await triggerTask({
-          data: { name: values.name },
+          data: {
+            name: values.name,
+            email: values.email ? values.email : undefined,
+            text: values.writtenText,
+            mediaKey: key,
+          },
         });
         console.log("Trigger Task Response:", task);
         storageId = key;
