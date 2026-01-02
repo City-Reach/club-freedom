@@ -12,7 +12,7 @@ jobs:
   update-on-notion:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: read
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,6 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Update Notion
+        id: notion
         run: pnpm update:notion
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
@@ -38,3 +39,13 @@ jobs:
           NOTION_UNIQUE_ID_PREFIX: ${{ vars.NOTION_UNIQUE_ID_PREFIX }}
           NOTION_STATUS_PROPERTY_NAME: ${{ vars.NOTION_STATUS_PROPERTY_NAME }}
           NOTION_PR_PROPERTY_NAME: ${{ vars.NOTION_PR_PROPERTY_NAME }}
+
+      - name: Comment PR
+        if: always()
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            <!-- notion-task-status -->
+            ${{ steps.notion.outputs.message }}
+          edit-mode: replace
