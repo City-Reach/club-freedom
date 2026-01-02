@@ -40,10 +40,20 @@ jobs:
           NOTION_STATUS_PROPERTY_NAME: ${{ vars.NOTION_STATUS_PROPERTY_NAME }}
           NOTION_PR_PROPERTY_NAME: ${{ vars.NOTION_PR_PROPERTY_NAME }}
 
-      - name: Comment PR
+      - name: Find Comment
         if: always()
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/find-comment@v3
+        id: fc
         with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "<!-- notion-task-status -->"
+
+      - name: Create or Update Comment
+        if: always()
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             <!-- notion-task-status -->
