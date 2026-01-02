@@ -41,7 +41,14 @@ if (!taskIdMatch) {
   // Set output for GitHub Actions
   setOutput(
     "message",
-    `❌ **Invalid PR Title Format**\n\nYour PR title does not match the expected format.\n\n**Expected format**: \`[${env.NOTION_UNIQUE_ID_PREFIX}-<ID>] <PR Title Name>\`\n**Current title**: \`${prTitle}\`\n\nPlease update your PR title to include a valid Notion task ID.`,
+    `❌ **Invalid PR Title Format**
+
+Your PR title does not match the expected format.
+
+**Expected format**: \`[${env.NOTION_UNIQUE_ID_PREFIX}-<ID>] <PR Title Name>\`
+**Current title**: \`${prTitle}\`
+
+Please update your PR title to include a valid Notion task ID.`,
   );
 
   exit(1);
@@ -70,7 +77,13 @@ if (!found || found.object !== "page") {
   // Set output for GitHub Actions
   setOutput(
     "message",
-    `⚠️ **Notion Task Not Found**\n\nNo Notion task found with ID: \`${env.NOTION_UNIQUE_ID_PREFIX}-${taskId}\`\n\nPlease verify that:\n- The task ID in the PR title is correct\n- The task exists in the Notion database`,
+    `⚠️ **Notion Task Not Found**
+
+No Notion task found with ID: \`${env.NOTION_UNIQUE_ID_PREFIX}-${taskId}\`
+
+Please verify that:
+- The task ID in the PR title is correct
+- The task exists in the Notion database`,
   );
 
   exit(1);
@@ -101,5 +114,10 @@ console.log("Successfully updated Notion task");
 const notionPageUrl = `https://www.notion.so/${found.id.replace(/-/g, "")}`;
 setOutput(
   "message",
-  `✅ **Notion Task Found and Updated**\n\nSuccessfully linked PR to Notion task: \`${env.NOTION_UNIQUE_ID_PREFIX}-${taskId}\`\n\n- **Status**: ${taskStatus}\n- **Notion Page**: [View Task](${notionPageUrl})`,
+  `✅ **Notion Task Found and Updated**
+
+Successfully linked PR to Notion task: \`${env.NOTION_UNIQUE_ID_PREFIX}-${taskId}\`
+
+- **Status**: ${taskStatus}
+- **Notion Page**: [View Task](${notionPageUrl})`,
 );
