@@ -5,10 +5,10 @@ import {
   parseAsString,
   useQueryStates,
 } from "nuqs";
+import { Suspense } from "react";
 import { Testimonials } from "@/components/testimonials";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
-import { Suspense } from "react";
 
 export const testimonialSearchParams = {
   q: parseAsString.withDefault(""),

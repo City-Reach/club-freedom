@@ -1,7 +1,9 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { usePaginatedQuery } from "convex/react";
 import { useEffect, useRef } from "react";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
+import { hasPermissionQuery } from "@/lib/query";
 import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
 import TestimonialCardMedia from "./testimonial-card/testimonial-card-media";
@@ -11,8 +13,6 @@ import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { hasPermissionQuery } from "@/lib/query";
 
 type Props = {
   search: string;
