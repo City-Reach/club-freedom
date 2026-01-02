@@ -13,12 +13,12 @@ export default function TestimonialCardInfo() {
       {" · "}
       <Tooltip>
         <TooltipTrigger>
-          <span className="underline">
+          <span className="cursor-help">
             {formatDistanceToNow(_creationTime, { addSuffix: true })}
           </span>
         </TooltipTrigger>
         <TooltipContent side="bottom">
-          <p>{format(_creationTime, "PPpp")}</p>
+          <p>{format(_creationTime, "PPp")}</p>
         </TooltipContent>
       </Tooltip>
     </CardDescription>

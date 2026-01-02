@@ -6,8 +6,8 @@ import { AlertCircle, ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
 import TestimonialDownload from "@/components/testimonial-detail/testimonial-download";
+import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
-import TestimonialMetadata from "@/components/testimonial-detail/testimonial-metadata";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
 import TestimonialSummary from "@/components/testimonial-detail/testimonial-summary";
 import TestimonialText from "@/components/testimonial-detail/testimonial-text";
@@ -96,7 +96,7 @@ function TestimonialDetails() {
           )}
           <TestimonialDownload />
         </div>
-        <TestimonialMetadata />
+        <TestimonialInfo />
         <TestimonialSummary />
         <TestimonialText />
       </div>
