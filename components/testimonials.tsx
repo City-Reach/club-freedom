@@ -11,13 +11,19 @@ import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { hasPermissionQuery } from "@/lib/query";
 
 type Props = {
   search: string;
-  canApprove?: boolean;
 };
 
-export function Testimonials({ search, canApprove = false }: Props) {
+export function Testimonials({ search }: Props) {
+  const { data: canApprove } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["approve"],
+    }),
+  );
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const searchQuery = search.trim();

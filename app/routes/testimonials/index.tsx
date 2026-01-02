@@ -8,6 +8,7 @@ import {
 import { Testimonials } from "@/components/testimonials";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
+import { Suspense } from "react";
 
 export const testimonialSearchParams = {
   q: parseAsString.withDefault(""),
@@ -52,7 +53,7 @@ function TestimonialsPage() {
       </div>
       <div className="w-full space-y-8 max-w-lg mx-auto pb-24">
         <TestimonialSearchInput />
-        <Testimonials search={search.q} canApprove={canApprove} />
+        <Testimonials search={search.q} />
       </div>
     </main>
   );
