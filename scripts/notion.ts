@@ -81,9 +81,7 @@ if (!found || found.object !== "page") {
 
 No Notion task found with ID: \`${env.NOTION_UNIQUE_ID_PREFIX}-${taskId}\`
 
-Please verify that:
-- The task ID in the PR title is correct
-- The task exists in the Notion database`,
+Please verify that the task exists in the Notion database`,
   );
 
   exit(1);
