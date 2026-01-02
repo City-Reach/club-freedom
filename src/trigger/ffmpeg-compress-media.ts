@@ -1,6 +1,7 @@
 import {
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { logger, task } from "@trigger.dev/sdk";
@@ -53,12 +54,11 @@ export const ffmpegCompressVideo = task({
       .on("error", (err) => logger.error(err.message));
     writeStream.write(await Body.transformToByteArray());
     logger.log("Downloaded video saved to temporary path", { inputPath });
-
     // Compress the video
     await new Promise((resolve, reject) => {
       ffmpeg(inputPath)
         .outputOptions([
-          "-c:v libx264", // Use H.264 codec
+          // "-c:v libx264", // Use H.264 codec
           "-crf 28", // Higher CRF for more compression (28 is near the upper limit for acceptable quality)
           "-preset veryslow", // Slowest preset for best compression
           //   "-vf scale=iw/2:ih/2", // Reduce resolution to 320p width (height auto-calculated)
@@ -81,7 +81,7 @@ export const ffmpegCompressVideo = task({
     logger.log(`Temporary compressed video file created`, { outputPath });
 
     // Create the r2Key for the extracted audio, using the base name of the output path
-    const r2Key = `processed-videos/${path.basename(outputPath)}`;
+    const r2Key = path.basename(outputPath);
 
     const uploadParams = {
       Bucket: process.env.R2_BUCKET,
@@ -93,13 +93,38 @@ export const ffmpegCompressVideo = task({
     await s3Client.send(new PutObjectCommand(uploadParams));
     logger.log(`Compressed video saved to your r2 bucket`, { r2Key });
 
-    // Delete the temporary compressed video file
-    await fsPromises.unlink(outputPath);
-    logger.log(`Temporary compressed video file deleted`, { outputPath });
+    // Delete temporary files and the original object in parallel
+    const deleteOutputPromise = fsPromises
+      .unlink(outputPath)
+      .then(() => logger.log(`Temporary compressed video file deleted`, { outputPath }))
+      .catch((err) => logger.error(`Failed to delete temporary compressed video file`, { outputPath, error: err?.message ?? err }));
+
+    const deleteInputPromise = fsPromises
+      .unlink(inputPath)
+      .then(() => logger.log(`Temporary input video file deleted`, { inputPath }))
+      .catch((err) => logger.error(`Failed to delete temporary input video file`, { inputPath, error: err?.message ?? err }));
+
+    const deleteR2Promise = s3Client
+      .send(
+        new DeleteObjectCommand({
+          Bucket: process.env.R2_BUCKET,
+          Key: mediaKey,
+        }),
+      )
+      .then(({ DeleteMarker }) => {
+        if (DeleteMarker) {
+          logger.log(`Temporary original video file in R2 deleted`, { mediaKey });
+        } else {
+          logger.error(`Failed to delete temporary original video file in R2`, { mediaKey });
+        }
+      })
+      .catch((err) => logger.error(`Failed to delete temporary original video file in R2`, { mediaKey, error: err?.message ?? err }));
+
+    await Promise.all([deleteOutputPromise, deleteInputPromise, deleteR2Promise]);
+
 
     // Return the compressed video buffer and r2 key
     return {
-      Bucket: process.env.R2_BUCKET,
       r2Key,
     };
   },
