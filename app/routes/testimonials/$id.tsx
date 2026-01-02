@@ -3,15 +3,14 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Authenticated } from "convex/react";
 import { AlertCircle, ChevronLeft } from "lucide-react";
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
+import TestimonialDownload from "@/components/testimonial-detail/testimonial-download";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
-import TestimonialMediaDownload from "@/components/testimonial-detail/testimonial-media-download";
 import TestimonialMetadata from "@/components/testimonial-detail/testimonial-metadata";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
 import TestimonialSummary from "@/components/testimonial-detail/testimonial-summary";
 import TestimonialText from "@/components/testimonial-detail/testimonial-text";
-import TestimonialTextDownload from "@/components/testimonial-detail/testimonial-text-download";
 import { TestimonialTitle } from "@/components/testimonial-detail/testimonial-title";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -88,15 +87,14 @@ function TestimonialDetails() {
           <TestimonialProcessingError />
         )}
         <TestimonialTitle />
-        {canApprove && testimonial.processingStatus === "completed" && (
-          <TestimonialApproval />
-        )}
         {testimonial.mediaUrl && (
           <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
         )}
         <div className="flex gap-2">
-          {testimonial.storageId && <TestimonialMediaDownload />}
-          <TestimonialTextDownload />
+          {canApprove && testimonial.processingStatus === "completed" && (
+            <TestimonialApproval />
+          )}
+          <TestimonialDownload />
         </div>
         <TestimonialMetadata />
         <TestimonialSummary />
