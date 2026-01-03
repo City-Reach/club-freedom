@@ -57,37 +57,34 @@ export function Testimonials({ search }: Props) {
     };
   }, [status, loadMore]);
 
-  const TestimonialList = () =>
-    results.map((testimonial) => (
-      <TestimonialContext.Provider
-        key={testimonial._id}
-        value={{ testimonial }}
-      >
-        <TestimonialCardShell>
-          <CardHeader>
-            <div className="flex justify-between">
-              <TestimonialCardTitle />
-              {canApprove && <TestimonialCardApproval />}
-            </div>
-            <TestimonialCardInfo />
-          </CardHeader>
-          <CardContent>
-            {testimonial.mediaUrl ? (
-              <div className="space-y-2">
-                <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
-                <TestimonialCardSummary />
-              </div>
-            ) : (
-              <TestimonialCardText />
-            )}
-          </CardContent>
-        </TestimonialCardShell>
-      </TestimonialContext.Provider>
-    ));
-
   return (
     <>
-      <TestimonialList />
+      {results.map((testimonial) => (
+        <TestimonialContext.Provider
+          key={testimonial._id}
+          value={{ testimonial }}
+        >
+          <TestimonialCardShell>
+            <CardHeader>
+              <div className="flex justify-between">
+                <TestimonialCardTitle />
+                {canApprove && <TestimonialCardApproval />}
+              </div>
+              <TestimonialCardInfo />
+            </CardHeader>
+            <CardContent>
+              {testimonial.mediaUrl ? (
+                <div className="space-y-2">
+                  <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
+                  <TestimonialCardSummary />
+                </div>
+              ) : (
+                <TestimonialCardText />
+              )}
+            </CardContent>
+          </TestimonialCardShell>
+        </TestimonialContext.Provider>
+      ))}
       <div ref={loadMoreRef} />
     </>
   );
