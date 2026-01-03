@@ -26,7 +26,7 @@ export default defineConfig({
     external: ["fluent-ffmpeg", "@aws-sdk/client-s3", "mime-types"],
   },
 
-  machine: "medium-2x",
+  // machine: "medium-2x",
 
   // Max duration of a task in seconds
   maxDuration: 3600,

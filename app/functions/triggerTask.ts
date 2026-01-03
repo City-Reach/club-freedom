@@ -1,12 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { tasks } from "@trigger.dev/sdk";
-import type { ffmpegCompressVideo } from "@/src/trigger/ffmpeg-compress-media";
+import type { ffmpegCompressMedia } from "@/src/trigger/ffmpeg-compress-media";
 
 export const triggerTaskServerFn = createServerFn()
   .inputValidator((data: { testimonialId: string; mediaKey: string }) => data)
   .handler(async ({ data }) => {
-    const handle = await tasks.trigger<typeof ffmpegCompressVideo>(
-      "ffmpeg-compress-video",
+    const handle = await tasks.trigger<typeof ffmpegCompressMedia>(
+      "ffmpeg-compress-media",
       {
         testimonialId: data.testimonialId,
         mediaKey: data.mediaKey,
