@@ -12,46 +12,48 @@ import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary"
 import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
 import { CardContent, CardHeader } from "./ui/card";
-import { Spinner } from "./ui/spinner";
 
 type Props = {
   search: string;
 };
 
 export function Testimonials({ search }: Props) {
-  const { data: canApprove } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["approve"],
-    }),
-  );
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-
   const searchQuery = search.trim();
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
     { searchQuery: searchQuery ? searchQuery : undefined },
-    { initialNumItems: 5 },
+    { initialNumItems: 20 },
   );
 
+  const { data: canApprove } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["approve"],
+    }),
+  );
+
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    const element = loadMoreRef.current;
+    if (!element || status !== "CanLoadMore") return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && status === "CanLoadMore") {
+        if (entries[0].isIntersecting) {
           loadMore(5);
         }
       },
-      { threshold: 0.1 },
+      {
+        threshold: 0,
+        rootMargin: "400px",
+      },
     );
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
+    observer.observe(element);
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
+      observer.disconnect();
     };
   }, [status, loadMore]);
 
@@ -86,14 +88,7 @@ export function Testimonials({ search }: Props) {
   return (
     <>
       <TestimonialList />
-      <div className="w-full text-center">
-        {status !== "Exhausted" ? (
-          <Spinner className="size-12 mx-auto" />
-        ) : (
-          "End of results"
-        )}
-        <div ref={loadMoreRef} className="h-10" />
-      </div>
+      <div ref={loadMoreRef} />
     </>
   );
 }

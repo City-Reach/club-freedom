@@ -5,10 +5,8 @@ import {
   parseAsString,
   useQueryStates,
 } from "nuqs";
-import { Suspense } from "react";
 import { Testimonials } from "@/components/testimonials";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth/auth-client";
 
 export const testimonialSearchParams = {
   q: parseAsString.withDefault(""),
@@ -24,20 +22,11 @@ export const Route = createFileRoute("/testimonials/")({
         to: "/sign-in",
       });
     }
-
-    const canApproveResult = await authClient.admin.hasPermission({
-      permissions: {
-        testimonial: ["approve"],
-      },
-    });
-
-    return { canApprove: canApproveResult.data?.success || false };
   },
 });
 
 function TestimonialsPage() {
   const search = Route.useSearch();
-  const { canApprove } = Route.useLoaderData();
   return (
     <main className="container mx-auto px-4">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -51,7 +40,7 @@ function TestimonialsPage() {
           </p>
         </div>
       </div>
-      <div className="w-full space-y-8 max-w-lg mx-auto pb-24">
+      <div className="w-full space-y-8 max-w-lg mx-auto">
         <TestimonialSearchInput />
         <Testimonials search={search.q} />
       </div>
