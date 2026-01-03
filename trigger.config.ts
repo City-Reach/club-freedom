@@ -23,10 +23,10 @@ export default defineConfig({
   // Build configuration (optional)
   build: {
     extensions: [ffmpeg()], // Build extensions go here
-    external: ["fluent-ffmpeg", "@aws-sdk/client-s3", "mime-types"],
+    external: ["fluent-ffmpeg", "@aws-sdk/client-s3"],
   },
 
-  // machine: "medium-2x",
+  machine: "medium-2x", //remove this while testing locally
 
   // Max duration of a task in seconds
   maxDuration: 3600,

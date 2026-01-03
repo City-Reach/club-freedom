@@ -8,7 +8,6 @@ import { logger, task } from "@trigger.dev/sdk";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import fsPromises from "fs/promises";
-import mime from "mime-types";
 import os from "os";
 import path from "path";
 
@@ -21,6 +20,11 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
   },
 });
+
+function afterLastSlash(str: string): string {
+  const index = str.lastIndexOf('/');
+  return index !== -1 ? str.slice(index + 1) : str;
+}
 
 async function ffmpegCompressAudio(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
@@ -63,45 +67,44 @@ export const ffmpegCompressMedia = task({
       : mediaKey;
     let inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
     let outputPath = path.join(tempDirectory, `compressed_${edittedMediaKey}`);
-
-    const { Body, ContentType } = await s3Client.send(
-      new GetObjectCommand({
-        Bucket: process.env.R2_BUCKET,
-        Key: mediaKey,
-      }),
-    );
-    if (!Body) {
-      throw new Error("Failed to fetch media");
-    }
-    const isAudio = Boolean(ContentType && ContentType.startsWith("audio/"));
-    const isVideo = Boolean(ContentType && ContentType.startsWith("video/"));
-    const extFromMime = ContentType ? mime.extension(ContentType) : "webm";
-    inputPath = `${inputPath}.${extFromMime}`;
-    outputPath = `${outputPath}.${extFromMime}`;
-    const writeStream = fs
-      .createWriteStream(inputPath)
-      .on("error", (err) => logger.error(err.message));
-    writeStream.write(await Body.transformToByteArray());
-
-    if (isVideo) {
-      await ffmpegCompressVideo(inputPath, outputPath);
-    }
-    if (isAudio) {
-      await ffmpegCompressAudio(inputPath, outputPath);
-    }
-
-    const compressedMedia = await fsPromises.readFile(outputPath);
-    const r2Key = path.basename(outputPath);
-    const uploadParams = {
-      Bucket: process.env.R2_BUCKET,
-      Key: r2Key,
-      Body: compressedMedia,
-      ContentType: ContentType,
-    };
-    await s3Client.send(new PutObjectCommand(uploadParams));
-
-    // Notify Convex HTTP action to update a testimonial for this uploaded media
     try {
+
+      const { Body, ContentType } = await s3Client.send(
+        new GetObjectCommand({
+          Bucket: process.env.R2_BUCKET,
+          Key: mediaKey,
+        }),
+      );
+      if (!Body) {
+        throw new Error("Failed to fetch media");
+      }
+      const isAudio = Boolean(ContentType && ContentType.startsWith("audio/"));
+      const isVideo = Boolean(ContentType && ContentType.startsWith("video/"));
+      const extFromMime = ContentType ? afterLastSlash(ContentType) : "webm";
+      inputPath = `${inputPath}.${extFromMime}`;
+      outputPath = `${outputPath}.${extFromMime}`;
+      const writeStream = fs
+        .createWriteStream(inputPath)
+        .on("error", (err) => logger.error(err.message));
+      writeStream.write(await Body.transformToByteArray());
+      if (isVideo) {
+        await ffmpegCompressVideo(inputPath, outputPath);
+      }
+      if (isAudio) {
+        await ffmpegCompressAudio(inputPath, outputPath);
+      }
+
+      const compressedMedia = await fsPromises.readFile(outputPath);
+      const r2Key = path.basename(outputPath);
+      const uploadParams = {
+        Bucket: process.env.R2_BUCKET,
+        Key: r2Key,
+        Body: compressedMedia,
+        ContentType: ContentType,
+      };
+      await s3Client.send(new PutObjectCommand(uploadParams));
+
+      // Notify Convex HTTP action to update a testimonial for this uploaded media
       const convexDeployment = process.env.CONVEX_DEPLOYMENT_NAME;
       const convexBaseUrl = convexDeployment
         ? `https://${convexDeployment}.convex.site`
@@ -132,43 +135,39 @@ export const ffmpegCompressMedia = task({
           });
         }
       }
+      
     } catch (err) {
-      logger.error("Error while calling Convex HTTP action", {
-        error: (err as any)?.message ?? err,
-      });
-    }
+      logger.error(`Error while compressing media: ${(err as any)?.message ?? err}`);
+      console.error(`Error while compressing media: ${(err as any)?.message ?? err}`);
+    } finally {
+      // Delete temporary files and the original object in parallel
+      const deleteOutputPromise = fsPromises.unlink(outputPath).catch((err) =>
+        logger.error(`Failed to delete temporary compressed video file`, {
+          outputPath,
+          error: err?.message ?? err,
+        }),
+      );
 
-    // Delete temporary files and the original object in parallel
-    const deleteOutputPromise = fsPromises.unlink(outputPath).catch((err) =>
-      logger.error(`Failed to delete temporary compressed video file`, {
-        outputPath,
-        error: err?.message ?? err,
-      }),
-    );
+      const deleteInputPromise = fsPromises.unlink(inputPath).catch((err) =>
+        logger.error(`Failed to delete temporary input video file`, {
+          inputPath,
+          error: err?.message ?? err,
+        }),
+      );
 
-    const deleteInputPromise = fsPromises.unlink(inputPath).catch((err) =>
-      logger.error(`Failed to delete temporary input video file`, {
-        inputPath,
-        error: err?.message ?? err,
-      }),
-    );
-
-    const deleteR2Promise = s3Client.send(
+      const deleteR2Promise = s3Client.send(
       new DeleteObjectCommand({
         Bucket: process.env.R2_BUCKET,
         Key: mediaKey,
       }),
     );
 
-    await Promise.all([
-      deleteOutputPromise,
-      deleteInputPromise,
-      deleteR2Promise,
-    ]);
-
-    // Return the compressed video buffer and r2 key
-    return {
-      r2Key,
-    };
+      await Promise.all([
+        deleteOutputPromise,
+        deleteInputPromise,
+        deleteR2Promise,
+      ]);
+    }
+    return
   },
 });
