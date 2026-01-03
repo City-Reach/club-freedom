@@ -3,25 +3,17 @@ import { tasks } from "@trigger.dev/sdk";
 import type { ffmpegCompressVideo } from "@/src/trigger/ffmpeg-compress-media";
 
 export const triggerTaskServerFn = createServerFn()
-  .inputValidator(
-    (data: {
-      name: string;
-      email: string | undefined;
-      text: string;
-      mediaKey: string;
-    }) => data,
-  )
+  .inputValidator((data: { testimonialId: string; mediaKey: string }) => data)
   .handler(async ({ data }) => {
     const handle = await tasks.trigger<typeof ffmpegCompressVideo>(
       "ffmpeg-compress-video",
       {
-        name: data.name,
-        email: data.email,
-        text: data.text,
+        testimonialId: data.testimonialId,
         mediaKey: data.mediaKey,
       },
     );
 
     //return a success response with the handle
-    return Response.json(handle);
+    const resp = Response.json(handle);
+    return resp;
   });

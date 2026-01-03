@@ -73,15 +73,6 @@ export default function TestimonialForm() {
           throw new Error("Failed to generate media key");
         }
         await uploadFile({ file: values.mediaFile, url, key });
-        const task = await triggerTask({
-          data: {
-            name: values.name,
-            email: values.email ? values.email : undefined,
-            text: values.writtenText,
-            mediaKey: key,
-          },
-        });
-        console.log("Trigger Task Response:", task);
         storageId = key;
         if (values.mediaFile.type.startsWith("audio")) {
           media_type = "audio";
@@ -98,6 +89,16 @@ export default function TestimonialForm() {
         media_type: media_type,
         text: values.writtenText,
       });
+
+      //Step 4: trigger media processing task if media file exists
+      if (storageId) {
+        const task = await triggerTask({
+          data: {
+            testimonialId: id,
+            mediaKey: storageId,
+          },
+        });
+      }
 
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",

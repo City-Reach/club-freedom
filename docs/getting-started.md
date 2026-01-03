@@ -113,7 +113,9 @@ Then manually set the user's role in the `betterAuth.users` table.
 
 Follow the _Cloudflare Account_ section in the [Convex R2 documentation](https://www.convex.dev/components/cloudflare-r2#cloudflare-account) to connect R2 to Convex.
 
-## Testing Trigger.dev
+## Testing Trigger.dev media processing job
 
 Add the `TRIGGER_SECRET_KEY` and `TRIGGER_PROJECT_REF` to your local environment variables file.
 Install FFmpeg on your machine
+
+If you get ffmpeg errors, you can debug by running ffmpeg commands in your terminal. You should get more in-depth errors there.

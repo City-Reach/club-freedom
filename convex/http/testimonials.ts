@@ -1,9 +1,9 @@
 import { api } from "../_generated/api";
 import { httpAction } from "../_generated/server";
 
-export const postTestimonialHttpAction = httpAction(async (ctx, req) => {
-  if (req.method !== "POST") {
-    return new Response("Method must be POST", { status: 405 });
+export const putTestimonialHttpAction = httpAction(async (ctx, req) => {
+  if (req.method !== "PUT") {
+    return new Response("Method must be PUT", { status: 405 });
   }
 
   let body: any;
@@ -12,25 +12,16 @@ export const postTestimonialHttpAction = httpAction(async (ctx, req) => {
   } catch (err) {
     return new Response("Invalid JSON", { status: 400 });
   }
-
-  const { name, email, storageId, media_type, text } = body || {};
-
-  if (!name || !media_type) {
-    return new Response("Missing required fields: name or media_type", {
-      status: 400,
-    });
-  }
+  const { testimonialId, storageId } = body || {};
 
   try {
-    const id = await ctx.runMutation(api.testimonials.postTestimonial, {
-      name,
-      email,
+    //todo change this to put
+    await ctx.runMutation(api.testimonials.updateTestimonialStorageId, {
+      id: testimonialId,
       storageId,
-      media_type,
-      text,
     });
 
-    return new Response(JSON.stringify({ id }), {
+    return new Response(JSON.stringify({ testimonialId }), {
       status: 201,
       headers: { "Content-Type": "application/json" },
     });

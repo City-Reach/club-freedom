@@ -23,8 +23,10 @@ export default defineConfig({
   // Build configuration (optional)
   build: {
     extensions: [ffmpeg()], // Build extensions go here
-    external: ["fluent-ffmpeg"], // When a package is excluded from the bundle, it will be added to a dynamically generated package.json file in the build directory
+    external: ["fluent-ffmpeg", "@aws-sdk/client-s3", "mime-types"],
   },
+
+  machine: "medium-2x",
 
   // Max duration of a task in seconds
   maxDuration: 3600,

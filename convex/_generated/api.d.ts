@@ -13,6 +13,7 @@ import type * as auth from "../auth.js";
 import type * as email from "../email.js";
 import type * as functions from "../functions.js";
 import type * as http from "../http.js";
+import type * as http_testimonials from "../http/testimonials.js";
 import type * as internal_createAdminUser from "../internal/createAdminUser.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   email: typeof email;
   functions: typeof functions;
   http: typeof http;
+  "http/testimonials": typeof http_testimonials;
   "internal/createAdminUser": typeof internal_createAdminUser;
   media: typeof media;
   migrations: typeof migrations;

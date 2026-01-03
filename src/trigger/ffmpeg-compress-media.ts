@@ -25,23 +25,18 @@ const s3Client = new S3Client({
 
 export const ffmpegCompressVideo = task({
   id: "ffmpeg-compress-video",
-  run: async (payload: {
-    name: string;
-    email: string | undefined;
-    text: string;
-    mediaKey: string;
-  }) => {
-    const { name, email, text, mediaKey } = payload;
+  run: async (payload: { testimonialId: string; mediaKey: string }) => {
+    const { mediaKey, testimonialId } = payload;
 
     // Generate temporary file names
     const tempDirectory = os.tmpdir();
-    let inputPath = path.join(tempDirectory, `input_${Date.now()}_${mediaKey}`);
-    let outputPath = path.join(
-      tempDirectory,
-      `output_${Date.now()}_${mediaKey}`,
-    );
+    const edittedMediaKey = mediaKey.startsWith("temp/")
+      ? mediaKey.slice("temp/".length)
+      : mediaKey;
+    let inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
+    let outputPath = path.join(tempDirectory, `compressed_${edittedMediaKey}`);
 
-    // Fetch the video
+    // Fetch the video and download it to temporary file
     const { Body, ContentType, ContentEncoding } = await s3Client.send(
       new GetObjectCommand({
         Bucket: process.env.R2_BUCKET,
@@ -53,21 +48,32 @@ export const ffmpegCompressVideo = task({
     }
     const extFromMime = ContentType ? mime.extension(ContentType) : "mp4";
     inputPath = `${inputPath}.${extFromMime}`;
+    const outputPathWithoutExtension = outputPath;
     outputPath = `${outputPath}.${extFromMime}`;
     const writeStream = fs
       .createWriteStream(inputPath)
       .on("error", (err) => logger.error(err.message));
-    writeStream.write(await Body.transformToByteArray());
-    logger.log("Downloaded video saved to temporary path", { inputPath });
+    const writeStreamSucceeded = writeStream.write(
+      await Body.transformToByteArray(),
+    );
+    if (writeStreamSucceeded) {
+      logger.log("Downloaded video saved to temporary path", { inputPath });
+    } else {
+      logger.error("Failed to write video to temporary path");
+      // throw new Error("Failed to write video to temporary path");
+    }
+    logger.log(`inputPath: ${inputPath}`);
+    logger.log(`outputPath: ${outputPath}`);
+
     // Compress the video
     await new Promise((resolve, reject) => {
       ffmpeg(inputPath)
         .outputOptions([
-          // "-c:v libx264", // Use H.264 codec
+          // "-c:v libx264", // Use H.264 codec for mp4
           "-crf 28", // Higher CRF for more compression (28 is near the upper limit for acceptable quality)
           "-preset veryslow", // Slowest preset for best compression
           //   "-vf scale=iw/2:ih/2", // Reduce resolution to 320p width (height auto-calculated)
-          "-c:a aac", // Use AAC for audio
+          // "-c:a aac", // Use AAC for audio for mp4
           "-b:a 64k", // Reduce audio bitrate to 64k
           "-ac 1", // Convert to mono audio
         ])
@@ -76,6 +82,8 @@ export const ffmpegCompressVideo = task({
         .on("error", reject)
         .run();
     });
+
+    //todo compress audio if media is audio
 
     // Read the compressed video
     const compressedVideo = await fsPromises.readFile(outputPath);
@@ -86,7 +94,7 @@ export const ffmpegCompressVideo = task({
     logger.log(`Temporary compressed video file created`, { outputPath });
 
     // Create the r2Key for the extracted audio, using the base name of the output path
-    const r2Key = path.basename(outputPath);
+    const r2Key = path.basename(outputPathWithoutExtension);
 
     const uploadParams = {
       Bucket: process.env.R2_BUCKET,
@@ -98,7 +106,7 @@ export const ffmpegCompressVideo = task({
     await s3Client.send(new PutObjectCommand(uploadParams));
     logger.log(`Compressed video saved to your r2 bucket`, { r2Key });
 
-    // Notify Convex HTTP action to create a testimonial for this uploaded media
+    // Notify Convex HTTP action to update a testimonial for this uploaded media
     try {
       const convexDeployment = process.env.CONVEX_DEPLOYMENT_NAME;
 
@@ -108,40 +116,31 @@ export const ffmpegCompressVideo = task({
 
       if (!convexBaseUrl) {
         logger.log(
-          "CONVEX deployment name not set; skipping POST to Convex HTTP action",
+          "CONVEX deployment name not set; skipping PUT to Convex HTTP action",
         );
       } else {
-        let inferredMediaType = "video";
-        if (ContentType?.startsWith("audio/")) {
-          inferredMediaType = "audio";
-        }
-
-        const postPayload = {
-          name: name,
-          email: email,
+        const updatePayload = {
+          testimonialId: testimonialId,
           storageId: r2Key,
-          media_type: inferredMediaType,
-          text: text,
         } as const;
-
-        const res = await fetch(`${convexBaseUrl}/testimonials`, {
-          method: "POST",
+        const res = await fetch(`${convexBaseUrl}/putTestimonialHttpAction`, {
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(postPayload),
+          body: JSON.stringify(updatePayload),
         });
 
         if (res.ok) {
           const data = await res.json().catch(() => null);
           logger.log("Posted testimonial via Convex HTTP action", {
-            url: `${convexBaseUrl}/testimonials`,
+            url: `${convexBaseUrl}/putTestimonialHttpAction`,
             result: data,
           });
         } else {
           const text = await res.text().catch(() => "<no body>");
-          logger.error("Failed to POST to Convex HTTP action", {
+          logger.error("Failed to PUT to Convex HTTP action", {
             status: res.status,
             body: text,
-            url: `${convexBaseUrl}/testimonials`,
+            url: `${convexBaseUrl}/putTestimonialHttpAction`,
           });
         }
       }

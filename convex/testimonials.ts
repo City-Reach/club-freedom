@@ -80,6 +80,17 @@ export const postTestimonial = mutation({
   },
 });
 
+export const updateTestimonialStorageId = mutation({
+  args: {
+    id: v.id("testimonials"),
+    storageId: v.string(),
+  },
+  handler: async (ctx, { id, storageId }) => {
+    await ctx.db.patch(id, { storageId });
+    return { id, storageId };
+  },
+});
+
 export const updateTestimonialApproval = mutation({
   args: {
     id: v.id("testimonials"),

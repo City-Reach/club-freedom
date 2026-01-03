@@ -33,7 +33,7 @@ export default function TestimonialDetail({ id }: Props) {
     api.testimonials.updateTestimonialApproval,
   );
 
-  const retryProcessing = useMutation(api.testimonials.retryProcessing);
+  const retryProcessing = useMutation(api.testimonials.retryProcessing); //todo change this to retry trigger.dev task
 
   if (!testimonial) {
     return <div>Loading testimonial...</div>;

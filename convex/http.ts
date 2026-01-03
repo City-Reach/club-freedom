@@ -1,15 +1,15 @@
 import { httpRouter } from "convex/server";
 import { authComponent, createAuth } from "./auth";
-import { postTestimonialHttpAction } from "./http/testimonials";
+import { putTestimonialHttpAction } from "./http/testimonials";
 
 const http = httpRouter();
 
 authComponent.registerRoutes(http, createAuth);
 
 http.route({
-  path: "/postTestimonialHttpAction",
-  method: "POST",
-  handler: postTestimonialHttpAction,
+  path: "/putTestimonialHttpAction",
+  method: "PUT",
+  handler: putTestimonialHttpAction,
 });
 
 export default http;
