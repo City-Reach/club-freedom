@@ -12,7 +12,6 @@ import mime from "mime-types";
 import os from "os";
 import path from "path";
 
-// Initialize S3 client
 const s3Client = new S3Client({
   // How to authenticate to R2: https://developers.cloudflare.com/r2/api/s3/tokens/
   region: "auto",
@@ -48,22 +47,13 @@ export const ffmpegCompressVideo = task({
     }
     const extFromMime = ContentType ? mime.extension(ContentType) : "mp4";
     inputPath = `${inputPath}.${extFromMime}`;
-    const outputPathWithoutExtension = outputPath;
     outputPath = `${outputPath}.${extFromMime}`;
     const writeStream = fs
       .createWriteStream(inputPath)
       .on("error", (err) => logger.error(err.message));
-    const writeStreamSucceeded = writeStream.write(
+    writeStream.write(
       await Body.transformToByteArray(),
     );
-    if (writeStreamSucceeded) {
-      logger.log("Downloaded video saved to temporary path", { inputPath });
-    } else {
-      logger.error("Failed to write video to temporary path");
-      // throw new Error("Failed to write video to temporary path");
-    }
-    logger.log(`inputPath: ${inputPath}`);
-    logger.log(`outputPath: ${outputPath}`);
 
     // Compress the video
     await new Promise((resolve, reject) => {
@@ -87,24 +77,19 @@ export const ffmpegCompressVideo = task({
 
     // Read the compressed video
     const compressedVideo = await fsPromises.readFile(outputPath);
-    const compressedSize = compressedVideo.length;
-
-    // Log compression results
-    logger.log(`Compressed video size: ${compressedSize} bytes`);
-    logger.log(`Temporary compressed video file created`, { outputPath });
 
     // Create the r2Key for the extracted audio, using the base name of the output path
-    const r2Key = path.basename(outputPathWithoutExtension);
+    const r2Key = path.basename(outputPath);
 
     const uploadParams = {
       Bucket: process.env.R2_BUCKET,
       Key: r2Key,
       Body: compressedVideo,
+      ContentType: ContentType,
     };
 
     // Upload the video to R2 and get the URL
     await s3Client.send(new PutObjectCommand(uploadParams));
-    logger.log(`Compressed video saved to your r2 bucket`, { r2Key });
 
     // Notify Convex HTTP action to update a testimonial for this uploaded media
     try {
@@ -115,7 +100,7 @@ export const ffmpegCompressVideo = task({
         : undefined;
 
       if (!convexBaseUrl) {
-        logger.log(
+        logger.error(
           "CONVEX deployment name not set; skipping PUT to Convex HTTP action",
         );
       } else {
@@ -131,10 +116,6 @@ export const ffmpegCompressVideo = task({
 
         if (res.ok) {
           const data = await res.json().catch(() => null);
-          logger.log("Posted testimonial via Convex HTTP action", {
-            url: `${convexBaseUrl}/putTestimonialHttpAction`,
-            result: data,
-          });
         } else {
           const text = await res.text().catch(() => "<no body>");
           logger.error("Failed to PUT to Convex HTTP action", {
@@ -153,9 +134,6 @@ export const ffmpegCompressVideo = task({
     // Delete temporary files and the original object in parallel
     const deleteOutputPromise = fsPromises
       .unlink(outputPath)
-      .then(() =>
-        logger.log(`Temporary compressed video file deleted`, { outputPath }),
-      )
       .catch((err) =>
         logger.error(`Failed to delete temporary compressed video file`, {
           outputPath,
@@ -165,9 +143,6 @@ export const ffmpegCompressVideo = task({
 
     const deleteInputPromise = fsPromises
       .unlink(inputPath)
-      .then(() =>
-        logger.log(`Temporary input video file deleted`, { inputPath }),
-      )
       .catch((err) =>
         logger.error(`Failed to delete temporary input video file`, {
           inputPath,
@@ -184,9 +159,6 @@ export const ffmpegCompressVideo = task({
       )
       .then(({ DeleteMarker }) => {
         if (DeleteMarker) {
-          logger.log(`Temporary original video file in R2 deleted`, {
-            mediaKey,
-          });
         } else {
           logger.error(`Failed to delete temporary original video file in R2`, {
             mediaKey,
