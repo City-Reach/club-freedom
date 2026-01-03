@@ -8,11 +8,15 @@ export default function TestimonialMedia({ mediaUrl }: Props) {
   const { testimonial } = useTestimonialContext();
 
   if (testimonial.media_type === "audio") {
-    return <audio src={mediaUrl} controls className="w-full" />;
+    return (
+      <audio src={mediaUrl} controls className="w-full" preload="metadata" />
+    );
   }
 
   if (testimonial.media_type === "video") {
-    return <video src={mediaUrl} controls className="w-full" />;
+    return (
+      <video src={mediaUrl} controls className="w-full" preload="metadata" />
+    );
   }
 
   return null;

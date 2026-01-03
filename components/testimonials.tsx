@@ -46,7 +46,7 @@ export function Testimonials({ search }: Props) {
       },
       {
         threshold: 0,
-        rootMargin: "400px",
+        rootMargin: "100px",
       },
     );
 
