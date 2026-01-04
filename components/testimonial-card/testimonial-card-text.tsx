@@ -30,10 +30,13 @@ export default function TestimonialCardText() {
       {isOverflowing && (
         <Button
           size="sm"
-          className="px-0"
+          className="px-0 cursor-pointer"
           variant="link"
           role="button"
-          onClick={() => setExpanded((expand) => !expand)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded((expand) => !expand);
+          }}
         >
           View {expanded ? "less" : "more"}
         </Button>
