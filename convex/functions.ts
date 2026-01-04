@@ -42,7 +42,6 @@ triggers.register("testimonials", async (ctx, change) => {
   await ctx.db.patch(change.id, { searchText: newSearchText });
 });
 
-
 // Trigger when the transcript changes
 triggers.register("testimonials", async (ctx, change) => {
   const oldText = change.oldDoc?.testimonialText;

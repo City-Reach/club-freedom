@@ -47,19 +47,21 @@ export async function transcribeAudio(media_path: string) {
     file: fs.createReadStream(media_path),
     model: "whisper-large-v3",
   });
-  logger.log("triggered transcription from transcribeAudio");
   return transcription.text;
 }
-
+const ffmpegCompressionOptions = [
+  "-preset veryslow", // Slowest preset for best compression
+  "-b:a 64k", // Reduce audio bitrate to 64k
+  "-ac 1", // Convert to mono audio
+];
+const ffmpegAudioCompressionptions = [
+  ...ffmpegCompressionOptions,
+  "-ar 16000", // Set audio sample rate to 16kHz
+];
 async function ffmpegCompressAudio(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
-      .outputOptions([
-        "-preset veryslow", // Slowest preset for best compression
-        "-b:a 64k", // Reduce audio bitrate to 64k
-        "-ar 16000", // Set audio sample rate to 16kHz
-        "-ac 1", // Convert to mono audio
-      ])
+      .outputOptions(ffmpegAudioCompressionptions)
       .output(outputPath)
       .on("end", resolve)
       .on("error", reject)
@@ -69,11 +71,21 @@ async function ffmpegCompressAudio(inputPath: string, outputPath: string) {
 async function ffmpegCompressVideo(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
+      .outputOptions([...ffmpegCompressionOptions, "-crf 28"])
+      .output(outputPath)
+      .on("end", resolve)
+      .on("error", reject)
+      .run();
+  });
+}
+
+async function extractAudio(inputPath: string, outputPath: string) {
+  await new Promise((resolve, reject) => {
+    ffmpeg(inputPath)
       .outputOptions([
-        "-crf 28", // Higher CRF for more compression (28 is near the upper limit for acceptable quality)
-        "-preset veryslow", // Slowest preset for best compression
-        "-b:a 64k", // Reduce audio bitrate to 64k
-        "-ac 1", // Convert to mono audio
+        "-vn", // Disable video output
+        "-ar 16000", // Set audio sample rate to 44.1 kHz
+        "-ac 1", // Set audio channels to stereo
       ])
       .output(outputPath)
       .on("end", resolve)
@@ -99,6 +111,11 @@ export const ffmpegProcessMedia = task({
       tempDirectory,
       `compressed_${edittedMediaKey}`,
     );
+    let audioExtractionOutputPath = path.join(
+      tempDirectory,
+      `extracted_audio_${edittedMediaKey}`,
+    );
+
     const convexMutationArgs: FunctionArgs<
       typeof api.testimonials.updateTestimonial
     > = {
@@ -120,6 +137,7 @@ export const ffmpegProcessMedia = task({
       const extFromMime = ContentType ? afterLastSlash(ContentType) : "webm";
       inputPath = `${inputPath}.${extFromMime}`;
       compressionOutputPath = `${compressionOutputPath}.${extFromMime}`;
+      audioExtractionOutputPath = `${audioExtractionOutputPath}.${extFromMime}`;
       const writeStream = fs
         .createWriteStream(inputPath)
         .on("error", (err) => logger.error(err.message));
@@ -144,18 +162,15 @@ export const ffmpegProcessMedia = task({
           ContentType: ContentType,
         };
         await s3Client.send(new PutObjectCommand(uploadParams));
-
         convexMutationArgs.storageId = r2Key;
-
-        await s3Client.send(
-          new DeleteObjectCommand({
-            Bucket: process.env.R2_BUCKET,
-            Key: mediaKey,
-          }),
-        );
       }
 
-      const transcribePath = isMediaTemp ? compressionOutputPath : inputPath;
+      let transcribePath = isMediaTemp ? compressionOutputPath : inputPath;
+      if (isVideo) {
+        await extractAudio(transcribePath, audioExtractionOutputPath);
+        transcribePath = audioExtractionOutputPath;
+      }
+
       const transcribedText = await transcribeAudio(transcribePath);
       convexMutationArgs.testimonialText = transcribedText;
 
@@ -165,6 +180,12 @@ export const ffmpegProcessMedia = task({
           logger.error(err.message);
           throw new Error(err.message);
         });
+      await s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: process.env.R2_BUCKET,
+          Key: mediaKey,
+        }),
+      );
     } catch (err) {
       logger.error(
         `Error while compressing media: ${(err as any)?.message ?? err}`,
@@ -180,21 +201,21 @@ export const ffmpegProcessMedia = task({
       // Delete temporary files and the original object in parallel
       const deleteOutputPromise = fsPromises
         .unlink(compressionOutputPath)
-        .catch((err) =>
-          logger.error(`Failed to delete temporary compressed video file`, {
-            compressionOutputPath,
-            error: err?.message ?? err,
-          }),
-        );
+        .catch((err) => logger.error(err.message));
 
-      const deleteInputPromise = fsPromises.unlink(inputPath).catch((err) =>
-        logger.error(`Failed to delete temporary input video file`, {
-          inputPath,
-          error: err?.message ?? err,
-        }),
-      );
+      const deleteInputPromise = fsPromises
+        .unlink(inputPath)
+        .catch((err) => logger.error(err.message));
 
-      await Promise.all([deleteOutputPromise, deleteInputPromise]);
+      const deleteExtractedAudioPromise = fsPromises
+        .unlink(audioExtractionOutputPath)
+        .catch((err) => logger.error(err.message));
+
+      await Promise.all([
+        deleteInputPromise,
+        deleteOutputPromise,
+        deleteExtractedAudioPromise,
+      ]);
     }
     return;
   },
