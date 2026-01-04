@@ -130,7 +130,6 @@ export const getTestimonialById = query({
     };
   },
 });
-
 export const updateTestimonial = mutation({
   args: {
     _id: v.id("testimonials"),

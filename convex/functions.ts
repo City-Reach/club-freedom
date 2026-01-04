@@ -42,43 +42,6 @@ triggers.register("testimonials", async (ctx, change) => {
   await ctx.db.patch(change.id, { searchText: newSearchText });
 });
 
-// Only trigger when storageId changes
-triggers.register("testimonials", async (ctx, change) => {
-  const oldStorageId = change.oldDoc?.storageId;
-  const storageId = change.newDoc?.storageId;
-
-  if (oldStorageId === storageId || storageId?.startsWith("temp/")) {
-    return;
-  }
-  console.log("oldStorageId: ", oldStorageId);
-  console.log("storageId: ", storageId);
-  if (!storageId) {
-    console.log(
-      `New testimonial inserted with id ${change.id} but no media ID.`,
-    );
-    return;
-  }
-
-  const id = change.id;
-  const mediaUrl = await r2.getUrl(storageId);
-
-  if (!mediaUrl) {
-    console.log(
-      `New testimonial inserted with id ${id} but failed to get media URL for storage ID ${storageId}.`,
-    );
-    return;
-  }
-  //todo trigger the compression task and move transcribe logic to trigger.dev
-  // await ctx.scheduler.runAfter(0, api.triggerTask.triggerMediaProcessing, {
-  //   testimonialId: id,
-  //   mediaUrl,
-  // });
-  // Schedule transcription as an action (runs in Node.js environment)
-  await ctx.scheduler.runAfter(0, api.ai.transcribe, {
-    testimonialId: id,
-    mediaUrl,
-  });
-});
 
 // Trigger when the transcript changes
 triggers.register("testimonials", async (ctx, change) => {

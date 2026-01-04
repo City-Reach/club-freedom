@@ -5,16 +5,17 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { logger, task } from "@trigger.dev/sdk";
+import { ConvexHttpClient } from "convex/browser";
+import type { FunctionArgs } from "convex/server";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import fsPromises from "fs/promises";
+import OpenAI from "openai";
 import os from "os";
 import path from "path";
-import OpenAI from "openai";
-import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-
+import type { Id } from "@/convex/_generated/dataModel";
+import { tempTestimonialFolder } from "@/lib/constants";
 
 const convexHttpClient = new ConvexHttpClient(process.env.CONVEX_URL || "");
 
@@ -37,7 +38,7 @@ const transcribeClient = new OpenAI({
 });
 
 function afterLastSlash(str: string): string {
-  const index = str.lastIndexOf('/');
+  const index = str.lastIndexOf("/");
   return index !== -1 ? str.slice(index + 1) : str;
 }
 
@@ -46,7 +47,7 @@ export async function transcribeAudio(media_path: string) {
     file: fs.createReadStream(media_path),
     model: "whisper-large-v3",
   });
-  logger.log("triggered transcription from transcribeAudio")
+  logger.log("triggered transcription from transcribeAudio");
   return transcription.text;
 }
 
@@ -80,19 +81,31 @@ async function ffmpegCompressVideo(inputPath: string, outputPath: string) {
       .run();
   });
 }
-export const ffmpegCompressMedia = task({
-  id: "ffmpeg-compress-media",
-  run: async (payload: { testimonialId: Id<"testimonials">; mediaKey: string }) => {
+export const ffmpegProcessMedia = task({
+  id: "ffmpeg-process-media",
+  run: async (payload: {
+    testimonialId: Id<"testimonials">;
+    mediaKey: string;
+  }) => {
     const { mediaKey, testimonialId } = payload;
     //Generate file names
     const tempDirectory = os.tmpdir();
-    const edittedMediaKey = mediaKey.startsWith("temp/")
-      ? mediaKey.slice("temp/".length)
+    const isMediaTemp = mediaKey.startsWith(tempTestimonialFolder);
+    const edittedMediaKey = isMediaTemp
+      ? mediaKey.slice(tempTestimonialFolder.length)
       : mediaKey;
     let inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
-    let outputPath = path.join(tempDirectory, `compressed_${edittedMediaKey}`);
+    let compressionOutputPath = path.join(
+      tempDirectory,
+      `compressed_${edittedMediaKey}`,
+    );
+    const convexMutationArgs: FunctionArgs<
+      typeof api.testimonials.updateTestimonial
+    > = {
+      _id: testimonialId,
+    };
     try {
-
+      //Retrieve file from r2 and save it locally
       const { Body, ContentType } = await s3Client.send(
         new GetObjectCommand({
           Bucket: process.env.R2_BUCKET,
@@ -106,61 +119,73 @@ export const ffmpegCompressMedia = task({
       const isVideo = Boolean(ContentType && ContentType.startsWith("video/"));
       const extFromMime = ContentType ? afterLastSlash(ContentType) : "webm";
       inputPath = `${inputPath}.${extFromMime}`;
-      outputPath = `${outputPath}.${extFromMime}`;
+      compressionOutputPath = `${compressionOutputPath}.${extFromMime}`;
       const writeStream = fs
         .createWriteStream(inputPath)
         .on("error", (err) => logger.error(err.message));
       writeStream.write(await Body.transformToByteArray());
-      if (isVideo) {
-        await ffmpegCompressVideo(inputPath, outputPath);
-      }
-      if (isAudio) {
-        await ffmpegCompressAudio(inputPath, outputPath);
-      }
 
-      const compressedMedia = await fsPromises.readFile(outputPath);
-      const r2Key = path.basename(outputPath);
-      const uploadParams = {
-        Bucket: process.env.R2_BUCKET,
-        Key: r2Key,
-        Body: compressedMedia,
-        ContentType: ContentType,
-      };
-      await s3Client.send(new PutObjectCommand(uploadParams));
-
-      await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
-        _id: testimonialId,
-        storageId: r2Key,
-      }).catch((err) => {
-        logger.error(err.message)
-        throw new Error(err.message);
-      });
-
-      // const transcribedText = await transcribeAudio(outputPath);
-
-      //http for updating testimonial text and processing status
-
-      await s3Client.send(
-        new DeleteObjectCommand({
+      //only compress if file from r2 is a temp file
+      if (isMediaTemp) {
+        if (isVideo) {
+          await ffmpegCompressVideo(inputPath, compressionOutputPath);
+        }
+        if (isAudio) {
+          await ffmpegCompressAudio(inputPath, compressionOutputPath);
+        }
+        const compressedMedia = await fsPromises.readFile(
+          compressionOutputPath,
+        );
+        const r2Key = path.basename(compressionOutputPath);
+        const uploadParams = {
           Bucket: process.env.R2_BUCKET,
-          Key: mediaKey,
-      }));
-      
+          Key: r2Key,
+          Body: compressedMedia,
+          ContentType: ContentType,
+        };
+        await s3Client.send(new PutObjectCommand(uploadParams));
+
+        convexMutationArgs.storageId = r2Key;
+
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET,
+            Key: mediaKey,
+          }),
+        );
+      }
+
+      const transcribePath = isMediaTemp ? compressionOutputPath : inputPath;
+      const transcribedText = await transcribeAudio(transcribePath);
+      convexMutationArgs.testimonialText = transcribedText;
+
+      await convexHttpClient
+        .mutation(api.testimonials.updateTestimonial, convexMutationArgs)
+        .catch((err) => {
+          logger.error(err.message);
+          throw new Error(err.message);
+        });
     } catch (err) {
-      logger.error(`Error while compressing media: ${(err as any)?.message ?? err}`);
-      console.error(`Error while compressing media: ${(err as any)?.message ?? err}`);
+      logger.error(
+        `Error while compressing media: ${(err as any)?.message ?? err}`,
+      );
+      console.error(
+        `Error while compressing media: ${(err as any)?.message ?? err}`,
+      );
       await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
         _id: testimonialId,
         processingStatus: "error",
-      })
+      });
     } finally {
       // Delete temporary files and the original object in parallel
-      const deleteOutputPromise = fsPromises.unlink(outputPath).catch((err) =>
-        logger.error(`Failed to delete temporary compressed video file`, {
-          outputPath,
-          error: err?.message ?? err,
-        }),
-      );
+      const deleteOutputPromise = fsPromises
+        .unlink(compressionOutputPath)
+        .catch((err) =>
+          logger.error(`Failed to delete temporary compressed video file`, {
+            compressionOutputPath,
+            error: err?.message ?? err,
+          }),
+        );
 
       const deleteInputPromise = fsPromises.unlink(inputPath).catch((err) =>
         logger.error(`Failed to delete temporary input video file`, {
@@ -169,11 +194,8 @@ export const ffmpegCompressMedia = task({
         }),
       );
 
-      await Promise.all([
-        deleteOutputPromise,
-        deleteInputPromise,
-      ]);
+      await Promise.all([deleteOutputPromise, deleteInputPromise]);
     }
-    return
+    return;
   },
 });

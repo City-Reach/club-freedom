@@ -23,7 +23,13 @@ export default defineConfig({
   // Build configuration (optional)
   build: {
     extensions: [ffmpeg()], // Build extensions go here
-    external: ["fluent-ffmpeg", "@aws-sdk/client-s3", "openai", "convex/browser"],
+    external: [
+      "fluent-ffmpeg",
+      "@aws-sdk/client-s3",
+      "openai",
+      "convex/browser",
+      "convex/server",
+    ],
   },
 
   machine: "medium-2x", //remove this while testing locally
