@@ -1,5 +1,5 @@
-import { Infer, v } from "convex/values";
 import { S3Client } from "@aws-sdk/client-s3";
+import { type Infer, v } from "convex/values";
 
 export const r2ConfigValidator = v.object({
   bucket: v.string(),

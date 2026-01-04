@@ -1,19 +1,16 @@
 "use client";
 
-import { Testimonials } from "@/components/testimonials";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Testimonials } from "@/components/testimonials";
 
 export const Route = createFileRoute("/testimonials/")({
   component: TestimonialsPage,
   loader: async ({ context }) => {
-    if (!context.userId) {
+    if (!context.isAuthenticated) {
       throw redirect({
         to: "/sign-in",
       });
     }
-    return {
-      userId: context.userId,
-    };
   },
 });
 

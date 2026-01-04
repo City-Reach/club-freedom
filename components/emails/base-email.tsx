@@ -3,10 +3,10 @@ import {
   Container,
   Head,
   Html,
-  Link,
-  Text,
   Img,
+  Link,
   Preview,
+  Text,
 } from "@react-email/components";
 import React from "react";
 
@@ -111,11 +111,7 @@ export function BaseEmail({
               </React.Fragment>
             ))}
             {footerLinks.length > 0 && <br />}
-            {footerText || (
-              <>
-                {brandName}
-              </>
-            )}
+            {footerText || <>{brandName}</>}
           </Text>
         </Container>
       </Body>

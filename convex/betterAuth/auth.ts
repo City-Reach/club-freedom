@@ -1,12 +1,12 @@
-import { query } from "./_generated/server";
-import { doc } from "convex-helpers/validators";
-import schema from "./schema";
 import { v } from "convex/values";
+import { doc } from "convex-helpers/validators";
 import { createAuth } from "../auth";
-import { getStaticAuth } from "@convex-dev/better-auth";
+import { query } from "./_generated/server";
+import schema from "./schema";
 
 // Export a static instance for Better Auth schema generation
-export const auth = getStaticAuth(createAuth);
+/* biome-ignore  lint: expected anu */
+export const auth = createAuth({} as any);
 
 // Example of an in-component function
 // Feel free to edit, omit, etc.
