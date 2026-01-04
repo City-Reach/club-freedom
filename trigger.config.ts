@@ -29,6 +29,7 @@ export default defineConfig({
       "openai",
       "convex/browser",
       "convex/server",
+      "posthog-node",
     ],
   },
 

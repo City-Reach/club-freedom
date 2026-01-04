@@ -16,6 +16,7 @@ import path from "path";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { tempTestimonialFolder } from "@/lib/constants";
+import { postHogClient } from "@/utils/posthog-convex";
 
 const convexHttpClient = new ConvexHttpClient(process.env.CONVEX_URL || "");
 
@@ -195,6 +196,10 @@ export const ffmpegProcessMedia = task({
       await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
         _id: testimonialId,
         processingStatus: "error",
+      });
+      postHogClient.captureException(err, `media-process-${testimonialId}`, {
+        testimonialId: testimonialId,
+        mediaKey: mediaKey,
       });
     } finally {
       // Delete temporary files and the original object in parallel
