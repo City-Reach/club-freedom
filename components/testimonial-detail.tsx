@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "convex/react";
 import { formatDistance } from "date-fns";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { triggerTaskServerFn } from "@/app/functions/triggerTask";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
@@ -22,7 +24,7 @@ type Props = {
 
 export default function TestimonialDetail({ id }: Props) {
   const testimonial = useQuery(api.testimonials.getTestimonialById, { id });
-
+  const triggerTask = useServerFn(triggerTaskServerFn);
   const userCanApprove = useQuery(api.auth.checkUserPermissions, {
     permissions: {
       testimonial: ["approve"],
@@ -33,7 +35,21 @@ export default function TestimonialDetail({ id }: Props) {
     api.testimonials.updateTestimonialApproval,
   );
 
-  const retryProcessing = useMutation(api.testimonials.retryProcessing); //todo change this to retry trigger.dev task
+  const updateTestimonial = useMutation(api.testimonials.updateTestimonial);
+  const retrySummarizing = useMutation(api.testimonials.retrySummarizing);
+
+  async function retryProcessing({ id }: { id: Id<"testimonials"> }) {
+    await updateTestimonial({ _id: id, processingStatus: "ongoing" });
+    if (testimonial && testimonial.storageId) {
+      await triggerTask({
+        data: {
+          testimonialId: id,
+          mediaKey: testimonial?.storageId,
+        },
+      });
+    }
+    await retrySummarizing({ id });
+  }
 
   if (!testimonial) {
     return <div>Loading testimonial...</div>;

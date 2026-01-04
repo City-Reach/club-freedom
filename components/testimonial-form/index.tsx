@@ -92,7 +92,7 @@ export default function TestimonialForm() {
 
       //Step 4: trigger media processing task if media file exists
       if (storageId) {
-        const task = await triggerTask({
+        await triggerTask({
           data: {
             testimonialId: id,
             mediaKey: storageId,

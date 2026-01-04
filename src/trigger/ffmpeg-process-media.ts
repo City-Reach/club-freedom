@@ -180,17 +180,16 @@ export const ffmpegProcessMedia = task({
           logger.error(err.message);
           throw new Error(err.message);
         });
-      await s3Client.send(
-        new DeleteObjectCommand({
-          Bucket: process.env.R2_BUCKET,
-          Key: mediaKey,
-        }),
-      );
+      if (isMediaTemp) {
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET,
+            Key: mediaKey,
+          }),
+        );
+      }
     } catch (err) {
       logger.error(
-        `Error while compressing media: ${(err as any)?.message ?? err}`,
-      );
-      console.error(
         `Error while compressing media: ${(err as any)?.message ?? err}`,
       );
       await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
