@@ -13,15 +13,21 @@ export default function TestimonialCardShell({
 
   return (
     <Card
-      onClick={() =>
-        navigate({
+      role="link"
+      onClick={async () => {
+        // Don't navigate if user is selecting text
+        const selection = window.getSelection();
+        if (selection && selection.toString().length > 0) {
+          return;
+        }
+
+        await navigate({
           to: "/testimonials/$id",
           params: {
             id: testimonial._id,
           },
-        })
-      }
-      role="link"
+        });
+      }}
       className={cn(className, "hover:bg-muted/25 cursor-pointer")}
       {...props}
     />
