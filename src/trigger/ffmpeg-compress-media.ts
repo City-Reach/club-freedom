@@ -10,6 +10,13 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import os from "os";
 import path from "path";
+import OpenAI from "openai";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+
+
+const convexHttpClient = new ConvexHttpClient(process.env.CONVEX_URL || "");
 
 const s3Client = new S3Client({
   // How to authenticate to R2: https://developers.cloudflare.com/r2/api/s3/tokens/
@@ -21,9 +28,26 @@ const s3Client = new S3Client({
   },
 });
 
+const transcribeClient = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/groq`,
+  defaultHeaders: {
+    "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
+  },
+});
+
 function afterLastSlash(str: string): string {
   const index = str.lastIndexOf('/');
   return index !== -1 ? str.slice(index + 1) : str;
+}
+
+export async function transcribeAudio(media_path: string) {
+  const transcription = await transcribeClient.audio.transcriptions.create({
+    file: fs.createReadStream(media_path),
+    model: "whisper-large-v3",
+  });
+  logger.log("triggered transcription from transcribeAudio")
+  return transcription.text;
 }
 
 async function ffmpegCompressAudio(inputPath: string, outputPath: string) {
@@ -105,36 +129,23 @@ export const ffmpegCompressMedia = task({
       await s3Client.send(new PutObjectCommand(uploadParams));
 
       // Notify Convex HTTP action to update a testimonial for this uploaded media
-      const convexDeployment = process.env.CONVEX_DEPLOYMENT_NAME;
-      const convexBaseUrl = convexDeployment
-        ? `https://${convexDeployment}.convex.site`
-        : undefined;
+      await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
+        _id: testimonialId as Id<"testimonials">,
+        storageId: r2Key,
+      }).catch((err) => {
+        logger.error(err.message)
+        throw new Error(err.message);
+      });
 
-      if (!convexBaseUrl) {
-        logger.error(
-          "CONVEX deployment name not set; skipping PUT to Convex HTTP action",
-        );
-      } else {
-        const updatePayload = {
-          testimonialId: testimonialId,
-          storageId: r2Key,
-        } as const;
-        const res = await fetch(`${convexBaseUrl}/putTestimonialHttpAction`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatePayload),
-        });
-        if (res.ok) {
-          const data = await res.json().catch(() => null);
-        } else {
-          const text = await res.text().catch(() => "<no body>");
-          logger.error("Failed to PUT to Convex HTTP action", {
-            status: res.status,
-            body: text,
-            url: `${convexBaseUrl}/putTestimonialHttpAction`,
-          });
-        }
-      }
+      // const transcribedText = await transcribeAudio(outputPath);
+
+      //http for updating testimonial text and processing status
+
+      await s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: process.env.R2_BUCKET,
+          Key: mediaKey,
+      }));
       
     } catch (err) {
       logger.error(`Error while compressing media: ${(err as any)?.message ?? err}`);
@@ -155,17 +166,9 @@ export const ffmpegCompressMedia = task({
         }),
       );
 
-      const deleteR2Promise = s3Client.send(
-      new DeleteObjectCommand({
-        Bucket: process.env.R2_BUCKET,
-        Key: mediaKey,
-      }),
-    );
-
       await Promise.all([
         deleteOutputPromise,
         deleteInputPromise,
-        deleteR2Promise,
       ]);
     }
     return

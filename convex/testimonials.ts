@@ -4,6 +4,7 @@ import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { processingStatusSchema } from "./schema";
+import removeUndefinedFromRecord from "./utils";
 
 export const getTestimonials = query({
   args: {
@@ -130,6 +131,18 @@ export const getTestimonialById = query({
   },
 });
 
+export const updateTestimonial = mutation({
+  args: {
+    _id: v.id("testimonials"),
+    storageId: v.optional(v.string()),
+    testimonialText: v.optional(v.string()),
+    processingStatus: v.optional(processingStatusSchema),
+  },
+  handler: async (ctx, args) => {
+    const cleaned = removeUndefinedFromRecord(ctx, args);
+    await ctx.db.patch(args._id, cleaned);
+  },
+});
 export const updateTranscription = mutation({
   args: {
     id: v.id("testimonials"),
