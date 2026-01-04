@@ -82,7 +82,7 @@ async function ffmpegCompressVideo(inputPath: string, outputPath: string) {
 }
 export const ffmpegCompressMedia = task({
   id: "ffmpeg-compress-media",
-  run: async (payload: { testimonialId: string; mediaKey: string }) => {
+  run: async (payload: { testimonialId: Id<"testimonials">; mediaKey: string }) => {
     const { mediaKey, testimonialId } = payload;
     //Generate file names
     const tempDirectory = os.tmpdir();
@@ -128,9 +128,8 @@ export const ffmpegCompressMedia = task({
       };
       await s3Client.send(new PutObjectCommand(uploadParams));
 
-      // Notify Convex HTTP action to update a testimonial for this uploaded media
       await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
-        _id: testimonialId as Id<"testimonials">,
+        _id: testimonialId,
         storageId: r2Key,
       }).catch((err) => {
         logger.error(err.message)
@@ -150,6 +149,10 @@ export const ffmpegCompressMedia = task({
     } catch (err) {
       logger.error(`Error while compressing media: ${(err as any)?.message ?? err}`);
       console.error(`Error while compressing media: ${(err as any)?.message ?? err}`);
+      await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
+        _id: testimonialId,
+        processingStatus: "error",
+      })
     } finally {
       // Delete temporary files and the original object in parallel
       const deleteOutputPromise = fsPromises.unlink(outputPath).catch((err) =>
