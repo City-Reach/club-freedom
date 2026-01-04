@@ -27,7 +27,7 @@ export default function TestimonialCardText() {
       >
         {testimonial.testimonialText}
       </p>
-      {isOverflowing && (
+      {isOverflowing && !expanded && (
         <Button
           size="sm"
           className="px-0 cursor-pointer"
@@ -35,10 +35,10 @@ export default function TestimonialCardText() {
           role="button"
           onClick={(e) => {
             e.stopPropagation();
-            setExpanded((expand) => !expand);
+            setExpanded(true);
           }}
         >
-          View {expanded ? "less" : "more"}
+          View more
         </Button>
       )}
     </div>
