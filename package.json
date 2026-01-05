@@ -7,7 +7,7 @@
     "dev": "concurrently --kill-others --names vite,convex pnpm:dev:vite pnpm:dev:convex",
     "dev:vite": "vite dev",
     "dev:convex": "convex dev",
-    "build:preview": "vite build --mode preview",
+    "build:preview": "vite build --mode preview && tsc --noEmit",
     "build": "vite build && tsc --noEmit",
     "preview": "vite preview",
     "lint": "biome lint",
