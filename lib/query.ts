@@ -6,13 +6,10 @@ export function hasPermissionQuery(permissions: PermissionCheck) {
   return queryOptions({
     queryKey: ["hasPermission", permissions],
     queryFn: async () => {
-      const { data, error } = await authClient.admin.hasPermission({
+      const { data } = await authClient.admin.hasPermission({
         permissions,
       });
-      if (error) {
-        throw error;
-      }
-      return data.success;
+      return data?.success || false;
     },
     staleTime: Infinity,
   });
