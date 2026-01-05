@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { tasks } from "@trigger.dev/sdk";
 import type { Id } from "@/convex/_generated/dataModel";
-import type { ffmpegProcessMedia } from "@/src/trigger/ffmpeg-process-media";
+import type { ffmpegProcessMedia } from "@/trigger/ffmpeg-process-media";
 
 export const triggerTaskServerFn = createServerFn()
   .inputValidator(

@@ -6,7 +6,7 @@ export default defineConfig({
   project: process.env.TRIGGER_PROJECT_REF || "",
 
   // Directories containing your tasks
-  dirs: ["./src/trigger"], // Customize based on your project structure
+  dirs: ["./trigger"], // Customize based on your project structure
 
   // Retry configuration
   retries: {
