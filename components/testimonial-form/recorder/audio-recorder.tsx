@@ -1,11 +1,10 @@
-"use client";
-
 import { Mic, Square } from "lucide-react";
 import { useController } from "react-hook-form";
 import { ReactMediaRecorder } from "react-media-recorder";
 import { Button } from "@/components/ui/button";
+import { AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS } from "@/lib/media";
 import type { Testimonial } from "@/lib/schema";
-import TimeElapsed from "./time-elapsed";
+import RecorderTimer from "./recorder-timer";
 
 export default function AudioRecorder() {
   const mp4Supported = MediaRecorder.isTypeSupported("audio/mp4");
@@ -49,7 +48,13 @@ export default function AudioRecorder() {
               />
             )}
 
-            {isRecording && <TimeElapsed isRecording={isRecording} />}
+            {isRecording && (
+              <RecorderTimer
+                isRecording={isRecording}
+                limit={AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS}
+                onTimeout={stopRecording}
+              />
+            )}
 
             {/* Controls */}
             <div className="flex items-center gap-3">

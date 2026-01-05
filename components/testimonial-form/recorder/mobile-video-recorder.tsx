@@ -11,9 +11,12 @@ import {
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import type { MediaConfig } from "@/lib/media";
+import {
+  type MediaConfig,
+  VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
+} from "@/lib/media";
 import type { Testimonial } from "@/lib/schema";
-import TimeElapsed from "./time-elapsed";
+import RecorderTimer from "./recorder-timer";
 
 const MEDIA_CONSTRAINTS = {
   video: {
@@ -180,7 +183,11 @@ export default function MobileVideoRecorder({ type, mimeType }: MediaConfig) {
               )}
             </div>
             <AlertDialogFooter className="flex flex-row items-center justify-between absolute bottom-0 left-0 right-0 z-20 p-6 bg-foreground/80 text-background">
-              <TimeElapsed isRecording={isRecording} />
+              <RecorderTimer
+                isRecording={isRecording}
+                limit={VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS}
+                onTimeout={stopRecording}
+              />
               {!isRecording ? (
                 <Button
                   size="icon"

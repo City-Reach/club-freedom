@@ -23,3 +23,6 @@ export const getVideoConfig = () => {
     MediaRecorder.isTypeSupported(config.mimeType),
   );
 };
+
+export const VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS = 120;
+export const AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS = 300;
