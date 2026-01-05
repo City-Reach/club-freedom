@@ -15,7 +15,9 @@ export const testimonialSearchParams = {
 export const Route = createFileRoute("/testimonials/")({
   ssr: false,
   component: TestimonialsPage,
-  validateSearch: createStandardSchemaV1(testimonialSearchParams),
+  validateSearch: createStandardSchemaV1(testimonialSearchParams, {
+    partialOutput: true,
+  }),
   loader: async ({ context }) => {
     if (!context.isAuthenticated) {
       throw redirect({
@@ -42,7 +44,7 @@ function TestimonialsPage() {
       </div>
       <div className="w-full space-y-8 max-w-lg mx-auto mb-24">
         <TestimonialSearchInput />
-        <Testimonials search={search.q} />
+        <Testimonials search={search.q ?? ""} />
       </div>
     </main>
   );

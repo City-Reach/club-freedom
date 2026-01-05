@@ -16,7 +16,9 @@ export default function Navbar({ user }: Props) {
         {user && (
           <div className="flex items-center gap-4">
             <Button variant="link" className="cursor-pointer" asChild>
-              <Link to="/testimonials">Testimonials</Link>
+              <Link to="/testimonials" search={{}}>
+                Testimonials
+              </Link>
             </Button>
           </div>
         )}

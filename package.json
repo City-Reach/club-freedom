@@ -98,6 +98,7 @@
   "packageManager": "pnpm@10.22.0",
   "scripts": {
     "auth:generate": "pnpx @better-auth/cli generate --config convex/betterAuth/auth.ts --output convex/betterAuth/generatedSchema.ts",
+    "build:preview": "vite build --mode preview && tsc --noEmit",
     "build": "vite build && tsc --noEmit",
     "cf-typegen": "wrangler types",
     "check": "biome check",
