@@ -115,7 +115,7 @@ Follow the _Cloudflare Account_ section in the [Convex R2 documentation](https:/
 
 ## Testing Trigger.dev media processing job in dev environment
 
-1. Add the `TRIGGER_SECRET_KEY`, `TRIGGER_ACCESS_TOKEN`, `TRIGGER_PROJECT_REF` to your local environment variables file.
+1. Add `TRIGGER_PROJECT_REF` to your local environment variables file.
 2. Set `TRIGGER_SECRET_KEY` in your convex environment.
 3. Install FFmpeg on your machine
 4. Ensure all environment variables in src\trigger\.env.example are configured in your .env file to override the ones in development environment.
