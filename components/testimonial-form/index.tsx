@@ -1,4 +1,4 @@
-import { useUploadFile } from "@convex-dev/r2/react";
+import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
+import { useUploadFile } from "@/hooks/use-upload-file";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -32,7 +33,10 @@ export default function TestimonialForm() {
     defaultValues: { name: "", email: "", writtenText: "", consent: false },
   });
   const navigation = useNavigate();
-  const uploadFile = useUploadFile(api.r2);
+  const uploadFile = useUploadFile();
+  const generateUploadUrl = useConvexMutation(
+    api.uploadTempFile.generateTempUploadUrl,
+  );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
 
@@ -62,10 +66,12 @@ export default function TestimonialForm() {
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        storageId = await uploadFile(values.mediaFile);
-        if (!storageId) {
-          throw new Error("Failed to upload audio file");
+        const { url, key } = await generateUploadUrl();
+        if (!key) {
+          throw new Error("Failed to generate media key");
         }
+        await uploadFile({ file: values.mediaFile, url, key });
+        storageId = key;
         if (values.mediaFile.type.startsWith("audio")) {
           media_type = "audio";
         } else if (values.mediaFile.type.startsWith("video")) {

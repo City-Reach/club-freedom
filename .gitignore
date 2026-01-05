@@ -54,3 +54,6 @@ certificates
 
 # cloudflare
 .wrangler/
+
+# trigger.dev
+.trigger

@@ -112,3 +112,13 @@ Then manually set the user's role in the `betterAuth.users` table.
 ## Setting Up R2 for Convex
 
 Follow the _Cloudflare Account_ section in the [Convex R2 documentation](https://www.convex.dev/components/cloudflare-r2#cloudflare-account) to connect R2 to Convex.
+
+## Testing Trigger.dev media processing job in dev environment
+
+1. Add the `TRIGGER_SECRET_KEY` and `TRIGGER_PROJECT_REF` to your local environment variables file.
+2. Set `TRIGGER_SECRET_KEY` in your convex environment.
+3. Install FFmpeg on your machine
+4. Ensure all environment variables in src\trigger\.env.example are configured in your .env file to override the ones in development environment.
+5. run pnpm dev:trigger to sync your local changes to dev environment
+
+If you get ffmpeg errors, you can debug by running ffmpeg commands in your terminal. You should get more in-depth errors there.
