@@ -42,11 +42,6 @@ const transcribeClient = new OpenAI({
   },
 });
 
-function afterLastSlash(str: string): string {
-  const index = str.lastIndexOf("/");
-  return index !== -1 ? str.slice(index + 1) : str;
-}
-
 export async function transcribeAudio(media_path: string) {
   const transcription = await transcribeClient.audio.transcriptions.create({
     file: fs.createReadStream(media_path),
@@ -69,7 +64,10 @@ const ffmpegAudioCompressionptions = [
 async function ffmpegCompressAudio(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
-      .outputOptions(ffmpegAudioCompressionptions)
+      .outputOptions([
+        ...ffmpegAudioCompressionptions,
+        "-c:a libopus", // Audio codec
+      ])
       .output(outputPath)
       .on("end", resolve)
       .on("error", reject)
@@ -80,7 +78,12 @@ async function ffmpegCompressAudio(inputPath: string, outputPath: string) {
 async function ffmpegCompressVideo(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
-      .outputOptions([...ffmpegCompressionOptions, "-crf 28"])
+      .outputOptions([
+        ...ffmpegCompressionOptions,
+        "-crf 28", // Constant Rate Factor for video quality
+        "-c:v libvpx-vp9", // Video codec
+        "-c:a libopus", // Audio codec
+      ])
       .output(outputPath)
       .on("end", resolve)
       .on("error", reject)
@@ -92,9 +95,9 @@ async function extractAudio(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
       .outputOptions([
+        ...ffmpegAudioCompressionptions,
+        "-c:a libopus", // Audio codec
         "-vn", // Disable video output
-        "-ar 16000", // Set audio sample rate to 44.1 kHz
-        "-ac 1", // Set audio channels to stereo
       ])
       .output(outputPath)
       .on("end", resolve)
@@ -117,14 +120,14 @@ export const ffmpegProcessMedia = task({
     const edittedMediaKey = isMediaTemp
       ? mediaKey.slice(TEMP_TESTIMONIAL_FOLDER.length)
       : mediaKey;
-    let inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
-    let compressionOutputPath = path.join(
+    const inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
+    const compressionOutputPath = path.join(
       tempDirectory,
-      `compressed_${edittedMediaKey}`,
+      `compressed_${edittedMediaKey}.webm`,
     );
-    let audioExtractionOutputPath = path.join(
+    const audioExtractionOutputPath = path.join(
       tempDirectory,
-      `extracted_audio_${edittedMediaKey}`,
+      `extracted_audio_${edittedMediaKey}.webm`,
     );
 
     const convexMutationArgs: FunctionArgs<
@@ -147,13 +150,9 @@ export const ffmpegProcessMedia = task({
 
       logger.info(`Media fetched from R2`);
 
-      const isAudio = Boolean(ContentType?.startsWith("audio/"));
-      const isVideo = Boolean(ContentType?.startsWith("video/"));
-      const extFromMime = ContentType ? afterLastSlash(ContentType) : "webm";
+      const isAudio = ContentType?.startsWith("audio/");
+      const isVideo = ContentType?.startsWith("video/");
 
-      inputPath = `${inputPath}.${extFromMime}`;
-      compressionOutputPath = `${compressionOutputPath}.${extFromMime}`;
-      audioExtractionOutputPath = `${audioExtractionOutputPath}.${extFromMime}`;
       const writeStream = fs
         .createWriteStream(inputPath)
         .on("error", (err) => logger.error(err.message));
@@ -179,7 +178,7 @@ export const ffmpegProcessMedia = task({
           Bucket: process.env.R2_BUCKET,
           Key: r2Key,
           Body: compressedMedia,
-          ContentType: ContentType,
+          ContentType: isVideo ? "video/webm" : "audio/webm",
         };
         await s3Client.send(new PutObjectCommand(uploadParams));
         await convexHttpClient.mutation(api.r2.syncMetadata, { key: r2Key });
