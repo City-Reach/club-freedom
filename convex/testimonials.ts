@@ -95,7 +95,7 @@ export const updateTestimonialStorageId = mutation({
 export const updateTestimonialApproval = mutation({
   args: {
     id: v.id("testimonials"),
-    approved: v.boolean(),
+    approved: v.optional(v.boolean()),
   },
   handler: async (ctx, { id, approved }) => {
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
