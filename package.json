@@ -106,6 +106,7 @@
     "deploy:preview": "pnpm run build && wrangler deploy --env preview",
     "deploy:production": "pnpm run build && wrangler deploy",
     "deploy:trigger": "trigger deploy",
+    "deploy:triggerprod": "pnpx trigger.dev@latest deploy",
     "dev": "concurrently --names \"vite,convex,trigger\" \"vite dev\" \"convex dev\" \"trigger dev\"",
     "dev:trigger": "trigger dev",
     "format": "biome format",
