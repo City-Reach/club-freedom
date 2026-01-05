@@ -1,5 +1,5 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
@@ -25,7 +25,7 @@ export default function TestimonialDetail({ id }: Props) {
     }),
   );
 
-  const { data: canApprove } = useSuspenseQuery(
+  const { data: canApprove } = useQuery(
     hasPermissionQuery({
       testimonial: ["approve"],
     }),
