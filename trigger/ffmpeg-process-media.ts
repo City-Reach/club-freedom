@@ -1,3 +1,7 @@
+import fs from "node:fs";
+import fsPromises from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import {
   DeleteObjectCommand,
   GetObjectCommand,
@@ -8,34 +12,35 @@ import { logger, task } from "@trigger.dev/sdk";
 import { ConvexHttpClient } from "convex/browser";
 import type { FunctionArgs } from "convex/server";
 import ffmpeg from "fluent-ffmpeg";
-import fs from "fs";
-import fsPromises from "fs/promises";
 import OpenAI from "openai";
-import os from "os";
-import path from "path";
+import { PostHog } from "posthog-node";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { env } from "@/env/trigger";
 import {
   ffmpegProcessMediaTriggerId,
   tempTestimonialFolder,
 } from "@/lib/constants";
-import { postHogClient } from "@/utils/posthog-convex";
 
-const convexHttpClient = new ConvexHttpClient(process.env.CONVEX_URL || "");
+const convexHttpClient = new ConvexHttpClient(env.CONVEX_URL);
 
 const s3Client = new S3Client({
   // How to authenticate to R2: https://developers.cloudflare.com/r2/api/s3/tokens/
   region: "auto",
-  endpoint: process.env.R2_ENDPOINT,
+  endpoint: env.R2_ENDPOINT,
   credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
+    accessKeyId: env.R2_ACCESS_KEY_ID,
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
   },
 });
 
+const postHogClient = new PostHog(env.POSTHOG_API_KEY, {
+  host: env.POSTHOG_HOST,
+});
+
 const transcribeClient = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/groq`,
+  apiKey: env.GROQ_API_KEY,
+  baseURL: `${env.AI_GATEWAY_ENDPOINT}/groq`,
   defaultHeaders: {
     "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
   },
@@ -136,8 +141,8 @@ export const ffmpegProcessMedia = task({
       if (!Body) {
         throw new Error("Failed to fetch media");
       }
-      const isAudio = Boolean(ContentType && ContentType.startsWith("audio/"));
-      const isVideo = Boolean(ContentType && ContentType.startsWith("video/"));
+      const isAudio = Boolean(ContentType?.startsWith("audio/"));
+      const isVideo = Boolean(ContentType?.startsWith("video/"));
       const extFromMime = ContentType ? afterLastSlash(ContentType) : "webm";
       inputPath = `${inputPath}.${extFromMime}`;
       compressionOutputPath = `${compressionOutputPath}.${extFromMime}`;
