@@ -17,10 +17,7 @@ import { PostHog } from "posthog-node";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { env } from "@/env/trigger";
-import {
-  ffmpegProcessMediaTriggerId,
-  tempTestimonialFolder,
-} from "@/lib/constants";
+import { TEMP_TESTIMONIAL_FOLDER } from "@/lib/constants";
 
 const convexHttpClient = new ConvexHttpClient(env.CONVEX_URL);
 
@@ -103,7 +100,7 @@ async function extractAudio(inputPath: string, outputPath: string) {
   });
 }
 export const ffmpegProcessMedia = task({
-  id: ffmpegProcessMediaTriggerId,
+  id: "ffmpeg-process-media",
   run: async (payload: {
     testimonialId: Id<"testimonials">;
     mediaKey: string;
@@ -111,9 +108,9 @@ export const ffmpegProcessMedia = task({
     const { mediaKey, testimonialId } = payload;
     //Generate file names
     const tempDirectory = os.tmpdir();
-    const isMediaTemp = mediaKey.startsWith(tempTestimonialFolder);
+    const isMediaTemp = mediaKey.startsWith(TEMP_TESTIMONIAL_FOLDER);
     const edittedMediaKey = isMediaTemp
-      ? mediaKey.slice(tempTestimonialFolder.length)
+      ? mediaKey.slice(TEMP_TESTIMONIAL_FOLDER.length)
       : mediaKey;
     let inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
     let compressionOutputPath = path.join(

@@ -5,7 +5,7 @@ import {
   customMutation,
 } from "convex-helpers/server/customFunctions";
 import { Triggers } from "convex-helpers/server/triggers";
-import { tempTestimonialFolder } from "@/lib/constants";
+import { TEMP_TESTIMONIAL_FOLDER } from "@/lib/constants";
 import { api } from "./_generated/api";
 /* eslint-enable no-restricted-imports */
 import type { DataModel } from "./_generated/dataModel";
@@ -48,7 +48,7 @@ triggers.register("testimonials", async (ctx, change) => {
   const oldMediaId = change.oldDoc?.storageId;
   const mediaId = change.newDoc?.storageId;
 
-  if (oldMediaId === mediaId || !mediaId?.startsWith(tempTestimonialFolder)) {
+  if (oldMediaId === mediaId || !mediaId?.startsWith(TEMP_TESTIMONIAL_FOLDER)) {
     return;
   }
 
