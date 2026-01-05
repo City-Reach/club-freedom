@@ -5,6 +5,7 @@ import {
   customMutation,
 } from "convex-helpers/server/customFunctions";
 import { Triggers } from "convex-helpers/server/triggers";
+import { tempTestimonialFolder } from "@/lib/constants";
 import { api } from "./_generated/api";
 /* eslint-enable no-restricted-imports */
 import type { DataModel } from "./_generated/dataModel";
@@ -40,6 +41,39 @@ triggers.register("testimonials", async (ctx, change) => {
   }
   const newSearchText = [email, name, summary, text, title].join(" ");
   await ctx.db.patch(change.id, { searchText: newSearchText });
+});
+
+// Only trigger when media_id changes
+triggers.register("testimonials", async (ctx, change) => {
+  const oldMediaId = change.oldDoc?.storageId;
+  const mediaId = change.newDoc?.storageId;
+
+  if (oldMediaId === mediaId || !mediaId?.startsWith(tempTestimonialFolder)) {
+    return;
+  }
+
+  if (!mediaId) {
+    console.log(
+      `New testimonial inserted with id ${change.id} but no media ID.`,
+    );
+    return;
+  }
+
+  const id = change.id;
+  const mediaUrl = await r2.getUrl(mediaId);
+
+  if (!mediaUrl) {
+    console.log(
+      `New testimonial inserted with id ${id} but failed to get media URL for storage ID ${mediaId}.`,
+    );
+    return;
+  }
+
+  // Schedule transcription as an action (runs in Node.js environment)
+  await ctx.scheduler.runAfter(0, api.mediaProcessing.processMedia, {
+    testimonialId: id,
+    mediaKey: mediaId,
+  });
 });
 
 // Trigger when the transcript changes

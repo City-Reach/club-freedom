@@ -15,7 +15,10 @@ import os from "os";
 import path from "path";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { tempTestimonialFolder } from "@/lib/constants";
+import {
+  ffmpegProcessMediaTriggerId,
+  tempTestimonialFolder,
+} from "@/lib/constants";
 import { postHogClient } from "@/utils/posthog-convex";
 
 const convexHttpClient = new ConvexHttpClient(process.env.CONVEX_URL || "");
@@ -95,7 +98,7 @@ async function extractAudio(inputPath: string, outputPath: string) {
   });
 }
 export const ffmpegProcessMedia = task({
-  id: "ffmpeg-process-media",
+  id: ffmpegProcessMediaTriggerId,
   run: async (payload: {
     testimonialId: Id<"testimonials">;
     mediaKey: string;

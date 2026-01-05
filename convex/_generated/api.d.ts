@@ -15,6 +15,7 @@ import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as internal_createAdminUser from "../internal/createAdminUser.js";
 import type * as media from "../media.js";
+import type * as mediaProcessing from "../mediaProcessing.js";
 import type * as migrations from "../migrations.js";
 import type * as r2 from "../r2.js";
 import type * as testimonials from "../testimonials.js";
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "internal/createAdminUser": typeof internal_createAdminUser;
   media: typeof media;
+  mediaProcessing: typeof mediaProcessing;
   migrations: typeof migrations;
   r2: typeof r2;
   testimonials: typeof testimonials;

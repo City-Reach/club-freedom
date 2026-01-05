@@ -7,7 +7,6 @@ import { useMutation } from "convex/react";
 import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { triggerTaskServerFn } from "@/app/functions/triggerTask";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
@@ -40,7 +39,6 @@ export default function TestimonialForm() {
   );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
-  const triggerTask = useServerFn(triggerTaskServerFn);
 
   const [tabValue, setTabValue] = useState("video");
 
@@ -89,16 +87,6 @@ export default function TestimonialForm() {
         media_type: media_type,
         text: values.writtenText,
       });
-
-      //Step 4: trigger media processing task if media file exists
-      if (storageId) {
-        triggerTask({
-          data: {
-            testimonialId: id,
-            mediaKey: storageId,
-          },
-        });
-      }
 
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
