@@ -31,7 +31,7 @@ export function SignInForm() {
       },
       {
         onSuccess() {
-          navigate({ to: "/testimonials" });
+          navigate({ to: "/testimonials", search: {} });
         },
         onError(ctx) {
           toast.error("Failed to sign in", {
