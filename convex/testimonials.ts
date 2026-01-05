@@ -173,7 +173,7 @@ export const updateProcessingStatus = mutation({
   },
 });
 
-export const retrySummarizing = mutation({
+export const retryProcessing = mutation({
   args: {
     id: v.id("testimonials"),
   },
@@ -184,6 +184,14 @@ export const retrySummarizing = mutation({
     if (status !== "error") return;
 
     await ctx.db.patch(id, { processingStatus: "ongoing" });
+
+    if (testimonial.storageId && !testimonial.testimonialText) {
+      await ctx.scheduler.runAfter(0, api.mediaProcessing.processMedia, {
+        mediaKey: testimonial.storageId,
+        testimonialId: id,
+      });
+      return;
+    }
 
     if (!testimonial.summary || !testimonial.title) {
       await ctx.scheduler.runAfter(0, api.ai.summarizeText, {
