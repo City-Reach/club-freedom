@@ -199,7 +199,7 @@ export const ffmpegProcessMedia = task({
       }
     } catch (err) {
       logger.error(
-        `Error while compressing media: ${(err as any)?.message ?? err}`,
+        `Error while compressing media: ${err instanceof Error ? err.message : err}`,
       );
       await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
         _id: testimonialId,
