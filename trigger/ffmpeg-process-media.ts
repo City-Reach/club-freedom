@@ -46,6 +46,7 @@ export async function transcribeAudio(media_path: string) {
   const transcription = await transcribeClient.audio.transcriptions.create({
     file: fs.createReadStream(media_path),
     model: "whisper-large-v3",
+    language: "en",
   });
   return transcription.text;
 }
