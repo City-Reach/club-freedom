@@ -36,17 +36,20 @@ This guide walks through setting up the Club Freedom Testimonial Platform for lo
 
 4. Set up local domains and HTTPS (see the [Local Domains and HTTPS](./configuration.md#local-domains-and-https-setup) guide).
 
-5. Run the development servers. You can start the Vite frontend and Convex backend in separate terminals:
+5. Run the development servers. You can start the frontend `vite`, backend `convex` and backend `trigger.dev` in separate terminals:
 
    ```bash
    # Vite dev server
-   pnpm vite dev
+   pnpm dev:vite
 
    # Convex sync engine
-   pnpm convex dev
+   pnpm dev:convex
+
+   # Trigger.dev dev server
+   pnpm dev:trigger
    ```
 
-   Or run both concurrently:
+   Or run all concurrently:
 
    ```bash
    pnpm dev
