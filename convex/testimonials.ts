@@ -138,7 +138,7 @@ export const updateTestimonial = mutation({
     processingStatus: v.optional(processingStatusSchema),
   },
   handler: async (ctx, args) => {
-    const cleaned = removeUndefinedFromRecord(ctx, args);
+    const cleaned = removeUndefinedFromRecord(args);
     await ctx.db.patch(args._id, cleaned);
   },
 });
