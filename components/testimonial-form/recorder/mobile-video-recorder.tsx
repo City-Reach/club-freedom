@@ -132,7 +132,7 @@ export default function MobileVideoRecorder({ type, mimeType }: MediaConfig) {
   return (
     <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">
       {!isRecording && mediaBlobUrl && (
-        <video controls src={mediaBlobUrl} className="w-full" />
+        <video controls src={mediaBlobUrl} playsInline className="w-full" />
       )}
       <div className="flex items-center gap-3">
         <Button type="button" onClick={handleOpenCamera}>
