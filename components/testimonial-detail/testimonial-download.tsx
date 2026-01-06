@@ -45,7 +45,6 @@ const useTestimonialDownload = () => {
     // Create a temporary anchor element to trigger download
     const element = document.createElement("a");
     element.href = downloadURL;
-    element.download = `testimonial-${testimonial._creationTime}-${testimonial.name}.${testimonial.media_type === "video" ? "mp4" : "mp3"}`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
