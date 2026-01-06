@@ -4,6 +4,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
+import { formatDistance } from "date-fns";
 import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,6 +12,10 @@ import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
 import { useUploadFile } from "@/hooks/use-upload-file";
+import {
+  AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS,
+  VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
+} from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -26,11 +31,6 @@ import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { AudioRecorder, VideoRecorder } from "./recorder";
-import { formatDistance } from "date-fns";
-import {
-  AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS,
-  VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
-} from "@/lib/media";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
