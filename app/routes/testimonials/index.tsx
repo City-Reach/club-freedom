@@ -19,11 +19,11 @@ export const Route = createFileRoute("/testimonials/")({
     partialOutput: true,
   }),
   loader: async ({ context }) => {
-    if (!context.isAuthenticated) {
-      throw redirect({
-        to: "/sign-in",
-      });
-    }
+    // if (!context.isAuthenticated) {
+    //   throw redirect({
+    //     to: "/sign-in",
+    //   });
+    // }
   },
 });
 
