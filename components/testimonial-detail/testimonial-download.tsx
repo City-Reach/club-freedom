@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { useAction } from "convex/react";
 import {
   AudioLinesIcon,
   ChevronDown,
@@ -6,7 +6,9 @@ import {
   FileText,
   VideoIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
+import { api } from "@/convex/_generated/api";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -15,8 +17,9 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-const useTestimonialTextDownload = () => {
+const useTestimonialDownload = () => {
   const { testimonial } = useTestimonialContext();
+  const generateDownloadMedia = useAction(api.media.generateMediaDownloadUrl);
 
   const downloadTextFile = () => {
     if (!testimonial.testimonialText) return;
@@ -32,15 +35,32 @@ const useTestimonialTextDownload = () => {
     document.body.removeChild(element);
   };
 
+  const downloadMedia = async () => {
+    const downloadURL = await generateDownloadMedia({ id: testimonial._id });
+    if (!downloadURL) {
+      toast.error("Media download failed");
+      return;
+    }
+
+    // Create a temporary anchor element to trigger download
+    const element = document.createElement("a");
+    element.href = downloadURL;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
   return {
     canDownload: !!testimonial.testimonialText,
     downloadTextFile,
+    downloadMedia,
   };
 };
 
 export default function TestimonialDownload() {
   const { testimonial } = useTestimonialContext();
-  const { canDownload, downloadTextFile } = useTestimonialTextDownload();
+  const { canDownload, downloadTextFile, downloadMedia } =
+    useTestimonialDownload();
   const hasMedia = testimonial.storageId;
 
   return (
@@ -52,21 +72,20 @@ export default function TestimonialDownload() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {hasMedia !== "text" && (
-          <DropdownMenuItem asChild>
-            <Link
-              to="/testimonials/$id/media-download"
-              params={{ id: testimonial._id }}
-            >
-              {testimonial.media_type === "video" ? (
-                <VideoIcon />
-              ) : (
-                <AudioLinesIcon />
-              )}
-              Download {testimonial.media_type === "video" ? "Video" : "Audio"}
-            </Link>
+          <DropdownMenuItem onClick={downloadMedia} className="cursor-pointer">
+            {testimonial.media_type === "video" ? (
+              <VideoIcon />
+            ) : (
+              <AudioLinesIcon />
+            )}
+            Download {testimonial.media_type === "video" ? "Video" : "Audio"}
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem disabled={!canDownload} onClick={downloadTextFile}>
+        <DropdownMenuItem
+          disabled={!canDownload}
+          onClick={downloadTextFile}
+          className="cursor-pointer"
+        >
           <FileText />
           Download {hasMedia ? "Trascription" : "Testimonial"}
         </DropdownMenuItem>

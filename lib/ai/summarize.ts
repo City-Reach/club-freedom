@@ -11,8 +11,8 @@ type SummaryResponse = z.infer<typeof SummaryResponseSchema>;
 
 export async function summarize(input: string, name: string) {
   const aiClient = new OpenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/compat`,
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/groq`,
     defaultHeaders: {
       "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
     },
@@ -20,8 +20,8 @@ export async function summarize(input: string, name: string) {
 
   try {
     const completion = await aiClient.chat.completions.create({
-      model: "google-ai-studio/gemini-2.5-flash",
-      reasoning_effort: "none",
+      model: "openai/gpt-oss-120b",
+      reasoning_effort: "medium",
 
       messages: [
         {

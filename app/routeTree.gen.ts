@@ -18,7 +18,6 @@ import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
-import { Route as TestimonialsIdMediaDownloadRouteImport } from './routes/testimonials/$id.media-download'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
 const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
@@ -65,12 +64,6 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const TestimonialsIdMediaDownloadRoute =
-  TestimonialsIdMediaDownloadRouteImport.update({
-    id: '/media-download',
-    path: '/media-download',
-    getParentRoute: () => TestimonialsIdRoute,
-  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -84,10 +77,9 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
+  '/testimonials/$id': typeof TestimonialsIdRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -95,10 +87,9 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
+  '/testimonials/$id': typeof TestimonialsIdRoute
   '/testimonials': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -109,10 +100,9 @@ export interface FileRoutesById {
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
-  '/testimonials/$id': typeof TestimonialsIdRouteWithChildren
+  '/testimonials/$id': typeof TestimonialsIdRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/testimonials/$id/media-download': typeof TestimonialsIdMediaDownloadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -126,7 +116,6 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials/'
     | '/api/auth/$'
-    | '/testimonials/$id/media-download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -137,7 +126,6 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials'
     | '/api/auth/$'
-    | '/testimonials/$id/media-download'
   id:
     | '__root__'
     | '/'
@@ -150,7 +138,6 @@ export interface FileRouteTypes {
     | '/testimonials/$id'
     | '/testimonials/'
     | '/api/auth/$'
-    | '/testimonials/$id/media-download'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -226,13 +213,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/testimonials/$id/media-download': {
-      id: '/testimonials/$id/media-download'
-      path: '/media-download'
-      fullPath: '/testimonials/$id/media-download'
-      preLoaderRoute: typeof TestimonialsIdMediaDownloadRouteImport
-      parentRoute: typeof TestimonialsIdRoute
-    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -259,25 +239,13 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface TestimonialsIdRouteChildren {
-  TestimonialsIdMediaDownloadRoute: typeof TestimonialsIdMediaDownloadRoute
-}
-
-const TestimonialsIdRouteChildren: TestimonialsIdRouteChildren = {
-  TestimonialsIdMediaDownloadRoute: TestimonialsIdMediaDownloadRoute,
-}
-
-const TestimonialsIdRouteWithChildren = TestimonialsIdRoute._addFileChildren(
-  TestimonialsIdRouteChildren,
-)
-
 interface TestimonialsRouteRouteChildren {
-  TestimonialsIdRoute: typeof TestimonialsIdRouteWithChildren
+  TestimonialsIdRoute: typeof TestimonialsIdRoute
   TestimonialsIndexRoute: typeof TestimonialsIndexRoute
 }
 
 const TestimonialsRouteRouteChildren: TestimonialsRouteRouteChildren = {
-  TestimonialsIdRoute: TestimonialsIdRouteWithChildren,
+  TestimonialsIdRoute: TestimonialsIdRoute,
   TestimonialsIndexRoute: TestimonialsIndexRoute,
 }
 

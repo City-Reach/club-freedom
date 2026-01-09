@@ -9,13 +9,27 @@ export default function TestimonialMedia({ mediaUrl }: Props) {
 
   if (testimonial.media_type === "audio") {
     return (
-      <audio src={mediaUrl} controls className="w-full" preload="metadata" />
+      <audio
+        src={mediaUrl}
+        controls
+        className="w-full"
+        preload="metadata"
+        controlsList="nodownload"
+        onContextMenu={(e) => e.preventDefault()}
+      />
     );
   }
 
   if (testimonial.media_type === "video") {
     return (
-      <video src={mediaUrl} controls className="w-full" preload="metadata" />
+      <video
+        src={mediaUrl}
+        controls
+        className="w-full"
+        preload="metadata"
+        controlsList="nodownload"
+        onContextMenu={(e) => e.preventDefault()}
+      />
     );
   }
 

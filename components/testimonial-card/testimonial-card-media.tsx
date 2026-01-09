@@ -9,12 +9,26 @@ export default function TestimonialCardMedia({ mediaUrl }: Props) {
 
   if (testimonial.media_type === "audio")
     return (
-      <audio className="w-full" controls src={mediaUrl} preload="metadata" />
+      <audio
+        className="w-full"
+        controls
+        src={mediaUrl}
+        preload="metadata"
+        controlsList="nodownload"
+        onContextMenu={(e) => e.preventDefault()}
+      />
     );
 
   if (testimonial.media_type === "video")
     return (
-      <video className="w-full" controls src={mediaUrl} preload="metadata" />
+      <video
+        className="w-full"
+        controls
+        src={mediaUrl}
+        preload="metadata"
+        controlsList="nodownload"
+        onContextMenu={(e) => e.preventDefault()}
+      />
     );
 
   return null;
