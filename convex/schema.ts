@@ -9,7 +9,7 @@ export const processingStatusSchema = v.union(
 
 export default defineSchema({
   testimonials: defineTable({
-    name: v.string(),
+    name: v.optional(v.string()),
     email: v.optional(v.string()),
     media_type: v.string(),
     storageId: v.optional(v.string()),
