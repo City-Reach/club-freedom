@@ -86,7 +86,7 @@ export default function TestimonialForm() {
 
       // Step 3: Save testimonial data with storage ID
       const id = await postTestimonial({
-        name: values.name,
+        name: values.name ? values.name : undefined,
         email: values.email ? values.email : undefined,
         storageId: storageId,
         media_type: media_type,
@@ -119,7 +119,9 @@ export default function TestimonialForm() {
             name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                <FieldLabel htmlFor={field.name}>
+                  Name <small>(optional)</small>
+                </FieldLabel>
                 <Input
                   {...field}
                   placeholder="Jane"
