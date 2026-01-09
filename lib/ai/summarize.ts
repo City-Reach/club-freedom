@@ -9,7 +9,7 @@ const SummaryResponseSchema = z.object({
 
 type SummaryResponse = z.infer<typeof SummaryResponseSchema>;
 
-export async function summarize(input: string, name: string) {
+export async function summarize(input: string, name: string | undefined) {
   const user_content = name
     ? `The name of the testimonial giver is ${name}. ${input}`
     : input;
