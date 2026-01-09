@@ -1,7 +1,6 @@
-"use node";
-
 import { v } from "convex/values";
-import { ffmpegProcessMediaTriggerId } from "@/lib/constants";
+import { triggerTask } from "@/lib/trigger";
+import type { ffmpegProcessMedia } from "@/trigger/ffmpeg-process-media";
 import { action } from "./_generated/server";
 
 export const processMedia = action({
@@ -9,20 +8,10 @@ export const processMedia = action({
     testimonialId: v.id("testimonials"),
     mediaKey: v.string(),
   },
-  handler: async (ctx, args) => {
-    await fetch(
-      `https://api.trigger.dev/api/v1/tasks/${ffmpegProcessMediaTriggerId}/trigger`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.TRIGGER_SECRET_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          payload: args,
-        }),
-      },
-    );
-    return;
+  handler: async (_ctx, { mediaKey, testimonialId }) => {
+    await triggerTask<typeof ffmpegProcessMedia>("ffmpeg-process-media", {
+      mediaKey,
+      testimonialId,
+    });
   },
 });

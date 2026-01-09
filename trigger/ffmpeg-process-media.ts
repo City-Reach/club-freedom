@@ -1,5 +1,8 @@
+import fs from "node:fs";
+import fsPromises from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import {
-  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -8,74 +11,80 @@ import { logger, task } from "@trigger.dev/sdk";
 import { ConvexHttpClient } from "convex/browser";
 import type { FunctionArgs } from "convex/server";
 import ffmpeg from "fluent-ffmpeg";
-import fs from "fs";
-import fsPromises from "fs/promises";
 import OpenAI from "openai";
-import os from "os";
-import path from "path";
+import { PostHog } from "posthog-node";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import {
-  ffmpegProcessMediaTriggerId,
-  tempTestimonialFolder,
-} from "@/lib/constants";
-import { postHogClient } from "@/utils/posthog-convex";
+import { env } from "@/env/trigger";
+import { TEMP_TESTIMONIAL_FOLDER } from "@/lib/constants";
 
-const convexHttpClient = new ConvexHttpClient(process.env.CONVEX_URL || "");
+const convexHttpClient = new ConvexHttpClient(env.CONVEX_URL);
 
 const s3Client = new S3Client({
   // How to authenticate to R2: https://developers.cloudflare.com/r2/api/s3/tokens/
   region: "auto",
-  endpoint: process.env.R2_ENDPOINT,
+  endpoint: env.R2_ENDPOINT,
   credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
+    accessKeyId: env.R2_ACCESS_KEY_ID,
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
   },
+});
+
+const postHogClient = new PostHog(env.POSTHOG_API_KEY, {
+  host: env.POSTHOG_HOST,
 });
 
 const transcribeClient = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/groq`,
+  apiKey: env.GROQ_API_KEY,
+  baseURL: `${env.AI_GATEWAY_ENDPOINT}/groq`,
   defaultHeaders: {
-    "cf-aig-authorization": `Bearer ${process.env.AI_GATEWAY_API_TOKEN}`,
+    "cf-aig-authorization": `Bearer ${env.AI_GATEWAY_API_TOKEN}`,
   },
 });
-
-function afterLastSlash(str: string): string {
-  const index = str.lastIndexOf("/");
-  return index !== -1 ? str.slice(index + 1) : str;
-}
 
 export async function transcribeAudio(media_path: string) {
   const transcription = await transcribeClient.audio.transcriptions.create({
     file: fs.createReadStream(media_path),
     model: "whisper-large-v3",
+    language: "en",
   });
   return transcription.text;
 }
+
 const ffmpegCompressionOptions = [
   "-preset veryslow", // Slowest preset for best compression
   "-b:a 64k", // Reduce audio bitrate to 64k
   "-ac 1", // Convert to mono audio
 ];
+
 const ffmpegAudioCompressionptions = [
   ...ffmpegCompressionOptions,
   "-ar 16000", // Set audio sample rate to 16kHz
 ];
+
 async function ffmpegCompressAudio(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
-      .outputOptions(ffmpegAudioCompressionptions)
+      .outputOptions([
+        ...ffmpegAudioCompressionptions,
+        "-c:a libopus", // Audio codec
+      ])
       .output(outputPath)
       .on("end", resolve)
       .on("error", reject)
       .run();
   });
 }
+
 async function ffmpegCompressVideo(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
-      .outputOptions([...ffmpegCompressionOptions, "-crf 28"])
+      .outputOptions([
+        ...ffmpegCompressionOptions,
+        "-crf 28", // Constant Rate Factor for video quality
+        "-c:v libvpx-vp9", // Video codec
+        "-c:a libopus", // Audio codec
+      ])
       .output(outputPath)
       .on("end", resolve)
       .on("error", reject)
@@ -87,9 +96,9 @@ async function extractAudio(inputPath: string, outputPath: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(inputPath)
       .outputOptions([
+        ...ffmpegAudioCompressionptions,
+        "-c:a libopus", // Audio codec
         "-vn", // Disable video output
-        "-ar 16000", // Set audio sample rate to 44.1 kHz
-        "-ac 1", // Set audio channels to stereo
       ])
       .output(outputPath)
       .on("end", resolve)
@@ -97,27 +106,29 @@ async function extractAudio(inputPath: string, outputPath: string) {
       .run();
   });
 }
+
 export const ffmpegProcessMedia = task({
-  id: ffmpegProcessMediaTriggerId,
+  id: "ffmpeg-process-media",
   run: async (payload: {
     testimonialId: Id<"testimonials">;
     mediaKey: string;
   }) => {
     const { mediaKey, testimonialId } = payload;
-    //Generate file names
+
+    // Generate file names
     const tempDirectory = os.tmpdir();
-    const isMediaTemp = mediaKey.startsWith(tempTestimonialFolder);
+    const isMediaTemp = mediaKey.startsWith(TEMP_TESTIMONIAL_FOLDER);
     const edittedMediaKey = isMediaTemp
-      ? mediaKey.slice(tempTestimonialFolder.length)
+      ? mediaKey.slice(TEMP_TESTIMONIAL_FOLDER.length)
       : mediaKey;
-    let inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
-    let compressionOutputPath = path.join(
+    const inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
+    const compressionOutputPath = path.join(
       tempDirectory,
-      `compressed_${edittedMediaKey}`,
+      `compressed_${edittedMediaKey}.webm`,
     );
-    let audioExtractionOutputPath = path.join(
+    const audioExtractionOutputPath = path.join(
       tempDirectory,
-      `extracted_audio_${edittedMediaKey}`,
+      `extracted_audio_${edittedMediaKey}.webm`,
     );
 
     const convexMutationArgs: FunctionArgs<
@@ -125,23 +136,24 @@ export const ffmpegProcessMedia = task({
     > = {
       _id: testimonialId,
     };
+
     try {
-      //Retrieve file from r2 and save it locally
+      // Retrieve file from r2 and save it locally
       const { Body, ContentType } = await s3Client.send(
         new GetObjectCommand({
-          Bucket: process.env.R2_BUCKET,
+          Bucket: env.R2_BUCKET,
           Key: mediaKey,
         }),
       );
       if (!Body) {
         throw new Error("Failed to fetch media");
       }
-      const isAudio = Boolean(ContentType && ContentType.startsWith("audio/"));
-      const isVideo = Boolean(ContentType && ContentType.startsWith("video/"));
-      const extFromMime = ContentType ? afterLastSlash(ContentType) : "webm";
-      inputPath = `${inputPath}.${extFromMime}`;
-      compressionOutputPath = `${compressionOutputPath}.${extFromMime}`;
-      audioExtractionOutputPath = `${audioExtractionOutputPath}.${extFromMime}`;
+
+      logger.info(`Media fetched from R2`);
+
+      const isAudio = ContentType?.startsWith("audio/");
+      const isVideo = ContentType?.startsWith("video/");
+
       const writeStream = fs
         .createWriteStream(inputPath)
         .on("error", (err) => logger.error(err.message));
@@ -151,51 +163,59 @@ export const ffmpegProcessMedia = task({
       if (isMediaTemp) {
         if (isVideo) {
           await ffmpegCompressVideo(inputPath, compressionOutputPath);
+          logger.info("Video compressed");
         }
         if (isAudio) {
           await ffmpegCompressAudio(inputPath, compressionOutputPath);
+          logger.info("Audio compressed");
         }
+
         const compressedMedia = await fsPromises.readFile(
           compressionOutputPath,
         );
+
         const r2Key = path.basename(compressionOutputPath);
         const uploadParams = {
           Bucket: process.env.R2_BUCKET,
           Key: r2Key,
           Body: compressedMedia,
-          ContentType: ContentType,
+          ContentType: isVideo ? "video/webm" : "audio/webm",
         };
         await s3Client.send(new PutObjectCommand(uploadParams));
+        await convexHttpClient.mutation(api.r2.syncMetadata, { key: r2Key });
         convexMutationArgs.storageId = r2Key;
+        logger.info(`File uploaded to R2: ${r2Key}`);
       }
 
       let transcribePath = isMediaTemp ? compressionOutputPath : inputPath;
+
       if (isVideo) {
         await extractAudio(transcribePath, audioExtractionOutputPath);
         transcribePath = audioExtractionOutputPath;
+        logger.info("Audio extracted from video");
       }
 
-      const transcribedText = await transcribeAudio(transcribePath);
-      convexMutationArgs.testimonialText = transcribedText;
+      convexMutationArgs.testimonialText =
+        await transcribeAudio(transcribePath);
+      logger.info("Transcription completed");
 
-      await convexHttpClient
-        .mutation(api.testimonials.updateTestimonial, convexMutationArgs)
-        .catch((err) => {
-          logger.error(err.message);
-          throw new Error(err.message);
-        });
+      await convexHttpClient.mutation(
+        api.testimonials.updateTestimonial,
+        convexMutationArgs,
+      );
+      logger.info("Testimonial updated successfully");
+
       if (isMediaTemp) {
-        await s3Client.send(
-          new DeleteObjectCommand({
-            Bucket: process.env.R2_BUCKET,
-            Key: mediaKey,
-          }),
-        );
+        await convexHttpClient.mutation(api.r2.deleteObject, {
+          key: mediaKey,
+        });
+        logger.info("Old media deleted successfully");
       }
     } catch (err) {
       logger.error(
-        `Error while compressing media: ${(err as any)?.message ?? err}`,
+        `Error while compressing media: ${err instanceof Error ? err.message : err}`,
       );
+
       await convexHttpClient.mutation(api.testimonials.updateTestimonial, {
         _id: testimonialId,
         processingStatus: "error",

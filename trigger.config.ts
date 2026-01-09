@@ -2,8 +2,8 @@ import { ffmpeg } from "@trigger.dev/build/extensions/core";
 import { defineConfig } from "@trigger.dev/sdk";
 
 export default defineConfig({
-  // Your project ref from the Trigger.dev dashboard
-  project: process.env.TRIGGER_PROJECT_REF || "",
+  // Automatically configure with TRIGGER_PROJECT_REF env variable
+  project: "",
 
   // Directories containing your tasks
   dirs: ["./trigger"], // Customize based on your project structure
