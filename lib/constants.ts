@@ -1,2 +1,1 @@
-export const tempTestimonialFolder = "temp/";
-export const ffmpegProcessMediaTriggerId = "ffmpeg-process-media";
+export const TEMP_TESTIMONIAL_FOLDER = "temp/";
