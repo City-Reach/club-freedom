@@ -1,4 +1,5 @@
 import { useBlocker } from "@tanstack/react-router";
+import type { RefObject } from "react";
 import { useFormContext } from "react-hook-form";
 import type { Testimonial } from "@/lib/schema";
 import {
@@ -12,12 +13,20 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 
-export default function TestimonialFormBlocker() {
+type Props = {
+  isSubmittedSuccessfully: RefObject<boolean>;
+};
+
+export default function TestimonialFormBlocker({
+  isSubmittedSuccessfully,
+}: Props) {
   const form = useFormContext<Testimonial>();
 
   const { status, reset, proceed } = useBlocker({
-    shouldBlockFn: () => form.formState.isDirty,
-    enableBeforeUnload: form.formState.isDirty,
+    shouldBlockFn: () =>
+      form.formState.isDirty && !isSubmittedSuccessfully.current,
+    enableBeforeUnload:
+      form.formState.isDirty && !isSubmittedSuccessfully.current,
     withResolver: true,
   });
 
@@ -25,9 +34,9 @@ export default function TestimonialFormBlocker() {
     <AlertDialog open={status === "blocked"}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>You are not finished</AlertDialogTitle>
+          <AlertDialogTitle>You are not completed the form</AlertDialogTitle>
           <AlertDialogDescription>
-            You have unsaved changes. Are you sure you want to leave?
+            All your changes will be lost. Are you sure you want to leave?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

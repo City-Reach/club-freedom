@@ -5,7 +5,8 @@ import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
-import { useState } from "react";
+
+import { useRef, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
@@ -53,6 +54,7 @@ export default function TestimonialForm() {
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
   const [tabValue, setTabValue] = useState("video");
+  const isSubmittedSuccessfully = useRef(false);
 
   const handleTabChange = (value: string) => {
     setTabValue(value);
@@ -103,7 +105,8 @@ export default function TestimonialForm() {
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
       });
-      form.reset();
+      // Mark as submitted successfully before navigation to bypass blocker
+      isSubmittedSuccessfully.current = true;
       navigation({ to: "/testimonials/$id", params: { id } });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
@@ -116,7 +119,9 @@ export default function TestimonialForm() {
 
   return (
     <FormProvider {...form}>
-      <TestimonialFormBlocker />
+      <TestimonialFormBlocker
+        isSubmittedSuccessfully={isSubmittedSuccessfully}
+      />
       <div className="w-full max-w-lg">
         <form
           onSubmit={form.handleSubmit(onSubmit)}
