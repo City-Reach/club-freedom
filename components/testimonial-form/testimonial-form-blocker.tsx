@@ -14,13 +14,15 @@ import {
 
 export default function TestimonialFormBlocker() {
   const form = useFormContext<Testimonial>();
+  const hasUnsavedTestimonial = () => {
+    const hasText = !!form.watch("writtenText");
+    const hasMedia = !!form.watch("mediaFile");
+    return hasText || hasMedia;
+  };
 
   const { status, reset, proceed } = useBlocker({
-    shouldBlockFn: () => {
-      const hasText = !!form.watch("writtenText");
-      const hasMedia = !!form.watch("mediaFile");
-      return hasText || hasMedia;
-    },
+    shouldBlockFn: hasUnsavedTestimonial,
+    enableBeforeUnload: hasUnsavedTestimonial,
     withResolver: true,
   });
 
