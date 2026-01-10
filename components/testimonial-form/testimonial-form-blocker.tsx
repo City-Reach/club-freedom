@@ -19,7 +19,6 @@ export default function TestimonialFormBlocker() {
     shouldBlockFn: () => {
       const hasText = !!form.watch("writtenText");
       const hasMedia = !!form.watch("mediaFile");
-      console.log({ hasMedia, hasText });
       return hasText || hasMedia;
     },
     withResolver: true,
