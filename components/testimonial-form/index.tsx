@@ -41,7 +41,6 @@ export default function TestimonialForm() {
       email: "",
       writtenText: "",
       consent: false,
-      mediaFile: undefined,
       turnstileToken: "",
     },
   });
@@ -296,15 +295,11 @@ export default function TestimonialForm() {
           <Controller
             control={form.control}
             name="turnstileToken"
-            render={({ fieldState }) => (
+            render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <Turnstile
                   siteKey={env.VITE_TURNSTILE_SITE_KEY}
-                  onSuccess={(token: string) =>
-                    form.setValue("turnstileToken", token, {
-                      shouldDirty: false,
-                    })
-                  }
+                  onSuccess={(token) => field.onChange(token)}
                   onExpire={() => form.resetField("turnstileToken")}
                   options={{ size: "flexible" }}
                 />
