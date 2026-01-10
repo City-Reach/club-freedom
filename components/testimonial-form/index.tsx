@@ -31,11 +31,18 @@ import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { AudioRecorder, VideoRecorder } from "./recorder";
+import TestimonialFormBlocker from "./testimonial-form-blocker";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
-    defaultValues: { name: "", email: "", writtenText: "", consent: false },
+    defaultValues: {
+      name: "",
+      email: "",
+      writtenText: "",
+      consent: false,
+      turnstileToken: "",
+    },
   });
   const navigation = useNavigate();
   const uploadFile = useUploadFile();
@@ -44,7 +51,6 @@ export default function TestimonialForm() {
   );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
-
   const [tabValue, setTabValue] = useState("video");
 
   const handleTabChange = (value: string) => {
@@ -93,11 +99,12 @@ export default function TestimonialForm() {
         text: values.writtenText,
       });
 
+      form.reset();
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
       });
-      form.reset();
-      navigation({ to: "/testimonials/$id", params: { id } });
+
+      await navigation({ to: "/testimonials/$id", params: { id } });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -109,6 +116,7 @@ export default function TestimonialForm() {
 
   return (
     <FormProvider {...form}>
+      <TestimonialFormBlocker />
       <div className="w-full max-w-lg">
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -291,8 +299,8 @@ export default function TestimonialForm() {
               <Field data-invalid={fieldState.invalid}>
                 <Turnstile
                   siteKey={env.VITE_TURNSTILE_SITE_KEY}
-                  onSuccess={(token: string) => field.onChange(token)}
-                  onExpire={() => field.onChange("")}
+                  onSuccess={(token) => field.onChange(token)}
+                  onExpire={() => form.resetField("turnstileToken")}
                   options={{ size: "flexible" }}
                 />
                 {fieldState.invalid && (
