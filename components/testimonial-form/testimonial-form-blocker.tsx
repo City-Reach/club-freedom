@@ -1,5 +1,4 @@
 import { useBlocker } from "@tanstack/react-router";
-import type { RefObject } from "react";
 import { useFormContext } from "react-hook-form";
 import type { Testimonial } from "@/lib/schema";
 import {
@@ -13,20 +12,16 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 
-type Props = {
-  isSubmittedSuccessfully: RefObject<boolean>;
-};
-
-export default function TestimonialFormBlocker({
-  isSubmittedSuccessfully,
-}: Props) {
+export default function TestimonialFormBlocker() {
   const form = useFormContext<Testimonial>();
 
   const { status, reset, proceed } = useBlocker({
-    shouldBlockFn: () =>
-      form.formState.isDirty && !isSubmittedSuccessfully.current,
-    enableBeforeUnload:
-      form.formState.isDirty && !isSubmittedSuccessfully.current,
+    shouldBlockFn: () => {
+      const hasText = !!form.watch("writtenText");
+      const hasMedia = !!form.watch("mediaFile");
+      console.log({ hasMedia, hasText });
+      return hasText || hasMedia;
+    },
     withResolver: true,
   });
 
@@ -34,9 +29,10 @@ export default function TestimonialFormBlocker({
     <AlertDialog open={status === "blocked"}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>You are not completed the form</AlertDialogTitle>
+          <AlertDialogTitle>You have unsaved testimonial</AlertDialogTitle>
           <AlertDialogDescription>
-            All your changes will be lost. Are you sure you want to leave?
+            Your testimonial will be lost if you leave this page. Are you sure
+            you want to leave?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
