@@ -4,6 +4,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
+import { formatDistance } from "date-fns";
 import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,6 +12,10 @@ import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
 import { useUploadFile } from "@/hooks/use-upload-file";
+import {
+  AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS,
+  VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
+} from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -81,7 +86,7 @@ export default function TestimonialForm() {
 
       // Step 3: Save testimonial data with storage ID
       const id = await postTestimonial({
-        name: values.name,
+        name: values.name ? values.name : undefined,
         email: values.email ? values.email : undefined,
         storageId: storageId,
         media_type: media_type,
@@ -114,7 +119,9 @@ export default function TestimonialForm() {
             name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                <FieldLabel htmlFor={field.name}>
+                  Name <small>(optional)</small>
+                </FieldLabel>
                 <Input
                   {...field}
                   placeholder="Jane"
@@ -201,6 +208,15 @@ export default function TestimonialForm() {
                       Please find a quiet place to record your audio
                       testimonial.
                     </FieldDescription>
+                    <FieldDescription>
+                      Time limit:{" "}
+                      <strong>
+                        {formatDistance(
+                          0,
+                          AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
+                        )}
+                      </strong>
+                    </FieldDescription>
                     <ClientOnly>
                       <AudioRecorder />
                     </ClientOnly>
@@ -223,6 +239,15 @@ export default function TestimonialForm() {
                     <FieldDescription>
                       Please find a quiet place to record your video
                       testimonial.
+                    </FieldDescription>
+                    <FieldDescription>
+                      Time limit:{" "}
+                      <strong>
+                        {formatDistance(
+                          0,
+                          VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
+                        )}
+                      </strong>
                     </FieldDescription>
                     <ClientOnly>
                       <VideoRecorder />

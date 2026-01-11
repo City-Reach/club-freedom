@@ -71,7 +71,7 @@ export default function TestimonialDownload() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        {hasMedia !== "text" && (
+        {hasMedia && (
           <DropdownMenuItem onClick={downloadMedia} className="cursor-pointer">
             {testimonial.media_type === "video" ? (
               <VideoIcon />
@@ -87,7 +87,7 @@ export default function TestimonialDownload() {
           className="cursor-pointer"
         >
           <FileText />
-          Download {hasMedia ? "Trascription" : "Testimonial"}
+          Download {hasMedia ? "Transcription" : "Testimonial"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
