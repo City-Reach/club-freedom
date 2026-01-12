@@ -1,12 +1,14 @@
 import type { TurnstileServerValidationResponse } from "@marsidev/react-turnstile";
 import { createServerFn } from "@tanstack/react-start";
+import z from "zod";
 import { env } from "@/env/server";
-import { testimonialSchema } from "@/lib/schema";
-
-const tokenValidator = testimonialSchema.pick({ turnstileToken: true });
 
 export const validateTurnstileTokenServerFn = createServerFn()
-  .inputValidator(tokenValidator)
+  .inputValidator(
+    z.object({
+      turnstileToken: z.string().min(1),
+    }),
+  )
   .handler(async ({ data }) => {
     const secretKey = env.TURNSTILE_SECRET_KEY;
     const verifyEndpoint = env.TURNSTILE_VERIFY_ENDPOINT;
