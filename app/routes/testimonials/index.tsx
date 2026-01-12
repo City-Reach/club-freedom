@@ -18,13 +18,6 @@ export const Route = createFileRoute("/testimonials/")({
   validateSearch: createStandardSchemaV1(testimonialSearchParams, {
     partialOutput: true,
   }),
-  loader: async ({ context }) => {
-    // if (!context.isAuthenticated) {
-    //   throw redirect({
-    //     to: "/sign-in",
-    //   });
-    // }
-  },
 });
 
 function TestimonialsPage() {

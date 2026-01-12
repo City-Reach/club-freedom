@@ -4,19 +4,19 @@ import Navbar from "@/components/navbar";
 
 export const Route = createFileRoute("/testimonials")({
   component: RouteComponent,
-  // loader: async () => {
-  //   const user = await getCurrentUser();
-  //   return {
-  //     user,
-  //   };
-  // },
+  loader: async () => {
+    const user = await getCurrentUser();
+    return {
+      user,
+    };
+  },
 });
 
 function RouteComponent() {
-
+  const { user } = Route.useLoaderData();
   return (
     <>
-      <Navbar user={null} />
+      <Navbar user={user} />
       <Outlet />
     </>
   );
