@@ -31,6 +31,12 @@ export default function TestimonialDetail({ id }: Props) {
     }),
   );
 
+  const { data: canDownload } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["download"],
+    }),
+  );
+
   if (testimonial === null) {
     return (
       <main className="max-w-xl mx-auto py-12 px-8 space-y-4">
@@ -54,7 +60,7 @@ export default function TestimonialDetail({ id }: Props) {
           {canApprove && testimonial.processingStatus === "completed" && (
             <TestimonialApproval />
           )}
-          <TestimonialDownload />
+          {canDownload && <TestimonialDownload />}
         </div>
         <TestimonialInfo />
         <TestimonialSummary />
