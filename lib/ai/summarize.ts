@@ -9,11 +9,7 @@ const SummaryResponseSchema = z.object({
 
 type SummaryResponse = z.infer<typeof SummaryResponseSchema>;
 
-export async function summarize(input: string, name: string | undefined) {
-  const user_content = name
-    ? `The name of the testimonial giver is ${name}. ${input}`
-    : input;
-
+export async function summarize(input: string, name: string) {
   const aiClient = new OpenAI({
     apiKey: process.env.GROQ_API_KEY,
     baseURL: `${process.env.AI_GATEWAY_ENDPOINT}/groq`,
@@ -31,12 +27,11 @@ export async function summarize(input: string, name: string | undefined) {
         {
           role: "system",
           content: `You are an AI Assistant tasked with summarizing testimonials. Ensure the summary is shorter than the testimonial and generate a title.
-            You will get text as input. There is no need to include sources. If the testimonial giver's name is mentioned, include 
-            it in the summary.`,
+            You will get text as input. There is no need to include sources. Include the testimonial giver's name in the summary.`,
         },
         {
           role: "user",
-          content: user_content,
+          content: `The name of the testimonial giver is ${name}. ${input}`,
         },
       ],
       response_format: zodResponseFormat(
