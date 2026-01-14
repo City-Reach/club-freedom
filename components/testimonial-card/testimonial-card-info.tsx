@@ -1,6 +1,5 @@
 import { format, formatDistanceToNow } from "date-fns";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
-import { ANONYMOUS } from "@/lib/constants";
 import { CardDescription } from "../ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
@@ -10,7 +9,7 @@ export default function TestimonialCardInfo() {
 
   return (
     <CardDescription>
-      <strong>{name || ANONYMOUS}</strong>
+            <strong>{name}</strong>
       {" · "}
       <Tooltip>
         <TooltipTrigger>
