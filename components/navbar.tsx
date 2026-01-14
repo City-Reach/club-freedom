@@ -13,22 +13,21 @@ export default function Navbar({ user }: Props) {
     <header className="border-b px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
       <div className="flex items-center gap-4">
         <Logo />
-        {
-          <div className="flex items-center gap-4">
-            <Button variant="link" className="cursor-pointer" asChild>
-              <Link to="/testimonials" search={{}}>
-                Testimonials
-              </Link>
-            </Button>
-          </div>
-        }
+        <div className="flex items-center gap-4">
+          <Button variant="link" className="cursor-pointer" asChild>
+            <Link to="/testimonials" search={{}}>
+              Testimonials
+            </Link>
+          </Button>
+        </div>
       </div>
-      {user && <UserDropDown user={user} />}
-      {user === null && (
-        <Button asChild>
+
+      {user ?
+        <UserDropDown user={user} /> :
+        (<Button asChild>
           <Link to="/sign-in">Sign in</Link>
-        </Button>
-      )}
+        </Button>)
+      }
     </header>
   );
 }
