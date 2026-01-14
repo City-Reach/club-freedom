@@ -9,7 +9,7 @@ export default function TestimonialCardInfo() {
 
   return (
     <CardDescription>
-            <strong>{name}</strong>
+      <strong>{name}</strong>
       {" · "}
       <Tooltip>
         <TooltipTrigger>
