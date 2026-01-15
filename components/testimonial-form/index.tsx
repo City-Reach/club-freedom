@@ -70,7 +70,7 @@ export default function TestimonialForm() {
         data: { turnstileToken },
       });
       if (!isHuman.success) {
-        throw new Error(isHuman.error);
+        throw new Error(isHuman["error-codes"].join(", "));
       }
 
       // Step 2:

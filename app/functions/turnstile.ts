@@ -23,16 +23,14 @@ export const validateTurnstileTokenServerFn = createServerFn()
           response: encodeURIComponent(data.turnstileToken),
         }),
       });
-
       const responseData =
         (await response.json()) as TurnstileServerValidationResponse;
       console.log({ ...data, ...responseData });
-
-      return { success: responseData.success, error: "" };
+      return responseData;
     } catch (error) {
       if (error instanceof Error) {
-        return { success: false, error: error.message };
+        return { success: false, "error-codes": [error.message] };
       }
-      return { success: false, error: "Human Verification Failed" };
+      return { success: false, "error-codes": ["internal-error"] };
     }
   });
