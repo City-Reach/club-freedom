@@ -11,28 +11,27 @@ export const validateTurnstileTokenServerFn = createServerFn()
   )
   .handler(async ({ data }) => {
     const secretKey = env.TURNSTILE_SECRET_KEY;
-    const verifyEndpoint = env.TURNSTILE_VERIFY_ENDPOINT;
+    const verifyEndpoint =
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify";
     try {
       const response = await fetch(verifyEndpoint, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams({
-          secret: encodeURIComponent(secretKey),
-          response: encodeURIComponent(data.turnstileToken),
+        body: JSON.stringify({
+          secret: secretKey,
+          response: data.turnstileToken,
         }),
       });
-
       const responseData =
         (await response.json()) as TurnstileServerValidationResponse;
       console.log({ ...data, ...responseData });
-
-      return { success: responseData.success, error: "" };
+      return responseData;
     } catch (error) {
       if (error instanceof Error) {
-        return { success: false, error: error.message };
+        return { success: false, "error-codes": [error.message] };
       }
-      return { success: false, error: "Human Verification Failed" };
+      return { success: false, "error-codes": ["internal-error"] };
     }
   });
