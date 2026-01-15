@@ -11,7 +11,8 @@ export const validateTurnstileTokenServerFn = createServerFn()
   )
   .handler(async ({ data }) => {
     const secretKey = env.TURNSTILE_SECRET_KEY;
-    const verifyEndpoint = env.TURNSTILE_VERIFY_ENDPOINT;
+    const verifyEndpoint =
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify";
     try {
       const response = await fetch(verifyEndpoint, {
         method: "POST",
