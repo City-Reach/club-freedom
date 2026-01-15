@@ -12,20 +12,26 @@ export const validateTurnstileTokenServerFn = createServerFn()
   .handler(async ({ data }) => {
     const secretKey = env.TURNSTILE_SECRET_KEY;
     const verifyEndpoint = env.TURNSTILE_VERIFY_ENDPOINT;
+    try {
+      const response = await fetch(verifyEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          secret: encodeURIComponent(secretKey),
+          response: encodeURIComponent(data.turnstileToken),
+        }),
+      });
 
-    const response = await fetch(verifyEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        secret: encodeURIComponent(secretKey),
-        response: encodeURIComponent(data.turnstileToken),
-      }),
-    });
+      const responseData =
+        (await response.json()) as TurnstileServerValidationResponse;
 
-    const responseData =
-      (await response.json()) as TurnstileServerValidationResponse;
-
-    return responseData.success;
+      return { success: responseData.success, error: "" };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, error: error.message };
+      }
+      return { success: false, error: "Human Verification Failed" };
+    }
   });
