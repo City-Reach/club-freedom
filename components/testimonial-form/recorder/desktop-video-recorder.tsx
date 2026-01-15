@@ -43,7 +43,6 @@ export default function DesktopVideoRecorder({ type, mimeType }: MediaConfig) {
       videoBitsPerSecond: 2_500_000, // 2.5 Mbps
     },
     onStop: (_, blob) => {
-      console.log("File size:", blob.size / (1024 * 1024), "MB");
       const videoFile = new File([blob], `video-recording-${Date.now()}`, {
         type,
       });
