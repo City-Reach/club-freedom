@@ -26,6 +26,7 @@ export const validateTurnstileTokenServerFn = createServerFn()
 
       const responseData =
         (await response.json()) as TurnstileServerValidationResponse;
+      console.log({ ...data, ...responseData });
 
       return { success: responseData.success, error: "" };
     } catch (error) {
