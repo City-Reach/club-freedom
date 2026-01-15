@@ -12,7 +12,7 @@ export const validateTurnstileTokenServerFn = createServerFn()
   .handler(async ({ data }) => {
     const secretKey = env.TURNSTILE_SECRET_KEY;
     const verifyEndpoint = env.TURNSTILE_VERIFY_ENDPOINT;
-    try{
+    try {
       const response = await fetch(verifyEndpoint, {
         method: "POST",
         headers: {
@@ -27,11 +27,11 @@ export const validateTurnstileTokenServerFn = createServerFn()
       const responseData =
         (await response.json()) as TurnstileServerValidationResponse;
 
-      return {success: responseData.success, error: ""};
-    } catch (error){
-      if (error instanceof Error){
+      return { success: responseData.success, error: "" };
+    } catch (error) {
+      if (error instanceof Error) {
         return { success: false, error: error.message };
       }
-      return { success: false, error: 'Human Verification Failed'}
+      return { success: false, error: "Human Verification Failed" };
     }
   });
