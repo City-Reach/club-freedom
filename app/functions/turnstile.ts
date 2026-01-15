@@ -16,11 +16,11 @@ export const validateTurnstileTokenServerFn = createServerFn()
       const response = await fetch(verifyEndpoint, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams({
-          secret: encodeURIComponent(secretKey),
-          response: encodeURIComponent(data.turnstileToken),
+        body: JSON.stringify({
+          secret: secretKey,
+          response: data.turnstileToken,
         }),
       });
       const responseData =
