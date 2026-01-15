@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Authenticated } from "convex/react";
 import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
 import TestimonialDetail from "@/components/testimonial-detail";
@@ -15,14 +14,12 @@ function Component() {
   const { id } = Route.useParams();
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
-      <Authenticated>
-        <Button variant="link" className="px-0!" asChild>
-          <Link to="..">
-            <ChevronLeft />
-            Back
-          </Link>
-        </Button>
-      </Authenticated>
+    <Button variant="link" className="px-0!" asChild>
+      <Link to="..">
+        <ChevronLeft />
+        Back
+      </Link>
+    </Button>
       <Suspense fallback={<PendingTestimonialDetail />}>
         <TestimonialDetail id={id as Id<"testimonials">} />
       </Suspense>
