@@ -36,7 +36,6 @@ export function Testimonials({ search }: Props) {
     rootMargin: "400px",
     onChange: (inView) => {
       if (results.length && inView && status === "CanLoadMore") {
-        console.log("Loading more testimonials...", Date.now());
         loadMore(5);
       }
     },
