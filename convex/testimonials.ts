@@ -13,13 +13,6 @@ export const getTestimonials = query({
   },
   handler: async (ctx, { paginationOpts, searchQuery }) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      return {
-        page: [] as never[],
-        isDone: true,
-        continueCursor: "",
-      } satisfies PaginationResult<never>;
-    }
 
     const testimonialQuery = ctx.db.query("testimonials");
 
