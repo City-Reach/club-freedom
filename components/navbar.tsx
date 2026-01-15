@@ -22,12 +22,13 @@ export default function Navbar({ user }: Props) {
         </div>
       </div>
 
-      {user ?
-        <UserDropDown user={user} /> :
-        (<Button asChild>
+      {user ? (
+        <UserDropDown user={user} />
+      ) : (
+        <Button asChild>
           <Link to="/sign-in">Sign in</Link>
-        </Button>)
-      }
+        </Button>
+      )}
     </header>
   );
 }
