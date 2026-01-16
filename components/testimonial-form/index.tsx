@@ -69,9 +69,8 @@ export default function TestimonialForm() {
       const isHuman = await validateTurnstileToken({
         data: { turnstileToken },
       });
-      console.log(isHuman);
-      if (!isHuman.success) {
-        throw new Error(isHuman["error-codes"].join(", "));
+      if (!isHuman) {
+        throw new Error("Human verification failed");
       }
 
       // Step 2:
