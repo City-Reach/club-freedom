@@ -2,8 +2,9 @@ import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
-import { admin, organization } from "better-auth/plugins";
+import { admin as adminPlugin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
+import { ac, admin, member, owner } from "@/lib/auth/orgPermissions";
 import {
   adminOptions,
   type PermissionCheck,
@@ -51,8 +52,14 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         authConfig,
         jwksRotateOnTokenGenerationError: true,
       }),
-      admin(adminOptions),
+      adminPlugin(adminOptions),
       organization({
+        ac,
+        roles: {
+          member,
+          admin,
+          owner,
+        },
         schema: {
           organization: {
             additionalFields: {
@@ -122,7 +129,13 @@ export const checkUserPermissions = query({
           permissions: args.permissions || {},
         },
       });
-      return success;
+      const orgPerms = await auth.api.hasPermission({
+        headers,
+        body: {
+          permissions: args.permissions || {},
+        },
+      });
+      return success || orgPerms.success;
     } catch (err) {
       console.error(err);
       return false;
