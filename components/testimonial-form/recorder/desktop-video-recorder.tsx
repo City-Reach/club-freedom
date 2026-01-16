@@ -2,9 +2,12 @@ import { Square, Video } from "lucide-react";
 import { useController } from "react-hook-form";
 import { useReactMediaRecorder } from "react-media-recorder";
 import { Button } from "@/components/ui/button";
-import type { MediaConfig } from "@/lib/media";
+import {
+  type MediaConfig,
+  VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
+} from "@/lib/media";
 import type { Testimonial } from "@/lib/schema/testimonials";
-import TimeElapsed from "./time-elapsed";
+import RecorderTimer from "./recorder-timer";
 
 const MEDIA_CONSTRAINTS = {
   video: {
@@ -36,8 +39,8 @@ export default function DesktopVideoRecorder({ type, mimeType }: MediaConfig) {
     blobPropertyBag: { type },
     mediaRecorderOptions: {
       mimeType,
-      audioBitsPerSecond: 128000, // 128 kbps
-      videoBitsPerSecond: 2500000, // 2.5 Mbps
+      audioBitsPerSecond: 128_000, // 128 kbps
+      videoBitsPerSecond: 2_500_000, // 2.5 Mbps
     },
     onStop: (_, blob) => {
       console.log("File size:", blob.size / (1024 * 1024), "MB");
@@ -69,10 +72,12 @@ export default function DesktopVideoRecorder({ type, mimeType }: MediaConfig) {
   return (
     <div className="flex flex-col p-4 border items-center rounded-lg gap-4 w-full">
       {/* Video Preview */}
-      {isRecording && previewStream && (
+      {isRecording && (
         <div className="relative">
-          <TimeElapsed
+          <RecorderTimer
+            limit={VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS}
             isRecording={isRecording}
+            onTimeout={stopRecording}
             className="absolute top-2 left-2"
           />
           <video

@@ -5,6 +5,7 @@ import {
   customMutation,
 } from "convex-helpers/server/customFunctions";
 import { Triggers } from "convex-helpers/server/triggers";
+import { TEMP_TESTIMONIAL_FOLDER } from "@/lib/constants";
 import { api } from "./_generated/api";
 /* eslint-enable no-restricted-imports */
 import type { DataModel } from "./_generated/dataModel";
@@ -47,7 +48,7 @@ triggers.register("testimonials", async (ctx, change) => {
   const oldMediaId = change.oldDoc?.storageId;
   const mediaId = change.newDoc?.storageId;
 
-  if (oldMediaId === mediaId) {
+  if (oldMediaId === mediaId || !mediaId?.startsWith(TEMP_TESTIMONIAL_FOLDER)) {
     return;
   }
 
@@ -69,9 +70,9 @@ triggers.register("testimonials", async (ctx, change) => {
   }
 
   // Schedule transcription as an action (runs in Node.js environment)
-  await ctx.scheduler.runAfter(0, api.ai.transcribe, {
+  await ctx.scheduler.runAfter(0, api.mediaProcessing.processMedia, {
     testimonialId: id,
-    mediaUrl,
+    mediaKey: mediaId,
   });
 });
 

@@ -13,6 +13,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import type { ConvexReactClient } from "convex/react";
+import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
 import ErrorBoundary from "@/components/error-boundary";
 import NotFound from "@/components/not-found";
 import { Toaster } from "@/components/ui/sonner";
@@ -72,16 +73,18 @@ function RootComponent() {
       apiKey={env.VITE_PUBLIC_POSTHOG_KEY}
       options={postHogOptions}
     >
-      <ConvexBetterAuthProvider
-        client={context.convexClient}
-        authClient={authClient}
-        initialToken={context.token}
-      >
-        <RootDocument>
-          <Outlet />
-          <Toaster richColors position="bottom-center" />
-        </RootDocument>
-      </ConvexBetterAuthProvider>
+      <NuqsAdapter>
+        <ConvexBetterAuthProvider
+          client={context.convexClient}
+          authClient={authClient}
+          initialToken={context.token}
+        >
+          <RootDocument>
+            <Outlet />
+            <Toaster richColors position="bottom-center" />
+          </RootDocument>
+        </ConvexBetterAuthProvider>
+      </NuqsAdapter>
     </PostHogProvider>
   );
 }
