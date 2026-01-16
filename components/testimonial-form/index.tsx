@@ -1,15 +1,21 @@
-import { useUploadFile } from "@convex-dev/r2/react";
+import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
+import { formatDistance } from "date-fns";
 import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
+import { useUploadFile } from "@/hooks/use-upload-file";
+import {
+  AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS,
+  VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
+} from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -25,17 +31,26 @@ import { Spinner } from "../ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Textarea } from "../ui/textarea";
 import { AudioRecorder, VideoRecorder } from "./recorder";
+import TestimonialFormBlocker from "./testimonial-form-blocker";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
-    defaultValues: { name: "", email: "", writtenText: "", consent: false },
+    defaultValues: {
+      name: "",
+      email: "",
+      writtenText: "",
+      consent: false,
+      turnstileToken: "",
+    },
   });
   const navigation = useNavigate();
-  const uploadFile = useUploadFile(api.r2);
+  const uploadFile = useUploadFile();
+  const generateUploadUrl = useConvexMutation(
+    api.uploadTempFile.generateTempUploadUrl,
+  );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
-
   const [tabValue, setTabValue] = useState("video");
 
   const handleTabChange = (value: string) => {
@@ -62,10 +77,12 @@ export default function TestimonialForm() {
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        storageId = await uploadFile(values.mediaFile);
-        if (!storageId) {
-          throw new Error("Failed to upload audio file");
+        const { url, key } = await generateUploadUrl();
+        if (!key) {
+          throw new Error("Failed to generate media key");
         }
+        await uploadFile({ file: values.mediaFile, url, key });
+        storageId = key;
         if (values.mediaFile.type.startsWith("audio")) {
           media_type = "audio";
         } else if (values.mediaFile.type.startsWith("video")) {
@@ -82,11 +99,12 @@ export default function TestimonialForm() {
         text: values.writtenText,
       });
 
+      form.reset();
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
       });
-      form.reset();
-      navigation({ to: "/testimonials/$id", params: { id } });
+
+      await navigation({ to: "/testimonials/$id", params: { id } });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -98,6 +116,7 @@ export default function TestimonialForm() {
 
   return (
     <FormProvider {...form}>
+      <TestimonialFormBlocker />
       <div className="w-full max-w-lg">
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -195,6 +214,15 @@ export default function TestimonialForm() {
                       Please find a quiet place to record your audio
                       testimonial.
                     </FieldDescription>
+                    <FieldDescription>
+                      Time limit:{" "}
+                      <strong>
+                        {formatDistance(
+                          0,
+                          AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
+                        )}
+                      </strong>
+                    </FieldDescription>
                     <ClientOnly>
                       <AudioRecorder />
                     </ClientOnly>
@@ -217,6 +245,15 @@ export default function TestimonialForm() {
                     <FieldDescription>
                       Please find a quiet place to record your video
                       testimonial.
+                    </FieldDescription>
+                    <FieldDescription>
+                      Time limit:{" "}
+                      <strong>
+                        {formatDistance(
+                          0,
+                          VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
+                        )}
+                      </strong>
                     </FieldDescription>
                     <ClientOnly>
                       <VideoRecorder />
@@ -260,8 +297,8 @@ export default function TestimonialForm() {
               <Field data-invalid={fieldState.invalid}>
                 <Turnstile
                   siteKey={env.VITE_TURNSTILE_SITE_KEY}
-                  onSuccess={(token: string) => field.onChange(token)}
-                  onExpire={() => field.onChange("")}
+                  onSuccess={(token) => field.onChange(token)}
+                  onExpire={() => form.resetField("turnstileToken")}
                   options={{ size: "flexible" }}
                 />
                 {fieldState.invalid && (

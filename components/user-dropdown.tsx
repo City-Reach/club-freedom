@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { UserRoundIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -18,9 +19,11 @@ type Props = {
 
 export default function UserDropDown({ user }: Props) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const handleSignOut = async () => {
     await authClient.signOut();
+    await queryClient.invalidateQueries();
     await navigate({ to: "/sign-in" });
   };
 

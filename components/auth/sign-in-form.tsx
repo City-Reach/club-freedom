@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -14,6 +15,7 @@ type SignIn = z.infer<typeof signInSchema>;
 
 export function SignInForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const form = useForm<SignIn>({
     defaultValues: {
@@ -30,8 +32,9 @@ export function SignInForm() {
         password: data.password,
       },
       {
-        onSuccess() {
-          navigate({ to: "/testimonials" });
+        async onSuccess() {
+          await queryClient.invalidateQueries();
+          navigate({ to: "/testimonials", search: {} });
         },
         onError(ctx) {
           toast.error("Failed to sign in", {
