@@ -4,6 +4,7 @@ import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
 import { processingStatusSchema } from "./schema";
+import removeUndefinedFromRecord from "./utils";
 
 export const getTestimonials = query({
   args: {
@@ -12,13 +13,6 @@ export const getTestimonials = query({
   },
   handler: async (ctx, { paginationOpts, searchQuery }) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      return {
-        page: [] as never[],
-        isDone: true,
-        continueCursor: "",
-      } satisfies PaginationResult<never>;
-    }
 
     const testimonialQuery = ctx.db.query("testimonials");
 
@@ -85,10 +79,21 @@ export const postTestimonial = mutation({
   },
 });
 
+export const updateTestimonialStorageId = mutation({
+  args: {
+    id: v.id("testimonials"),
+    storageId: v.string(),
+  },
+  handler: async (ctx, { id, storageId }) => {
+    await ctx.db.patch(id, { storageId });
+    return { id, storageId };
+  },
+});
+
 export const updateTestimonialApproval = mutation({
   args: {
     id: v.id("testimonials"),
-    approved: v.boolean(),
+    approved: v.optional(v.boolean()),
   },
   handler: async (ctx, { id, approved }) => {
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
@@ -123,7 +128,18 @@ export const getTestimonialById = query({
     };
   },
 });
-
+export const updateTestimonial = mutation({
+  args: {
+    _id: v.id("testimonials"),
+    storageId: v.optional(v.string()),
+    testimonialText: v.optional(v.string()),
+    processingStatus: v.optional(processingStatusSchema),
+  },
+  handler: async (ctx, args) => {
+    const cleaned = removeUndefinedFromRecord(args);
+    await ctx.db.patch(args._id, cleaned);
+  },
+});
 export const updateTranscription = mutation({
   args: {
     id: v.id("testimonials"),
@@ -167,16 +183,18 @@ export const retryProcessing = mutation({
 
     await ctx.db.patch(id, { processingStatus: "ongoing" });
 
-    if (!testimonial.testimonialText) {
-      const mediaUrl = `${process.env.R2_PUBLIC_URL}/${testimonial.storageId}`;
-      await ctx.scheduler.runAfter(0, api.ai.transcribe, {
+    if (testimonial.storageId && !testimonial.testimonialText) {
+      await ctx.scheduler.runAfter(0, api.mediaProcessing.processMedia, {
+        mediaKey: testimonial.storageId,
         testimonialId: id,
-        mediaUrl,
       });
-    } else if (!testimonial.summary || !testimonial.title) {
+      return;
+    }
+
+    if (!testimonial.summary || !testimonial.title) {
       await ctx.scheduler.runAfter(0, api.ai.summarizeText, {
         testimonialId: id,
-        text: testimonial.testimonialText,
+        text: testimonial.testimonialText || "",
       });
     }
   },

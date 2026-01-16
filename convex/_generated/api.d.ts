@@ -16,10 +16,13 @@ import type * as http from "../http.js";
 import type * as internal_createAdminUser from "../internal/createAdminUser.js";
 import type * as internal_organizations from "../internal/organizations.js";
 import type * as media from "../media.js";
+import type * as mediaProcessing from "../mediaProcessing.js";
 import type * as migrations from "../migrations.js";
 import type * as organization from "../organization.js";
 import type * as r2 from "../r2.js";
 import type * as testimonials from "../testimonials.js";
+import type * as uploadTempFile from "../uploadTempFile.js";
+import type * as utils from "../utils.js";
 
 import type {
   ApiFromModules,
@@ -36,10 +39,13 @@ declare const fullApi: ApiFromModules<{
   "internal/createAdminUser": typeof internal_createAdminUser;
   "internal/organizations": typeof internal_organizations;
   media: typeof media;
+  mediaProcessing: typeof mediaProcessing;
   migrations: typeof migrations;
   organization: typeof organization;
   r2: typeof r2;
   testimonials: typeof testimonials;
+  uploadTempFile: typeof uploadTempFile;
+  utils: typeof utils;
 }>;
 
 /**

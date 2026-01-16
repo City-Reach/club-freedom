@@ -22,8 +22,10 @@ export default function Navbar({ user, organization }: Props) {
           </div>
         )}
       </div>
-      {user && <UserDropDown user={user} />}
-      {user === null && (
+
+      {user ? (
+        <UserDropDown user={user} />
+      ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>
         </Button>
