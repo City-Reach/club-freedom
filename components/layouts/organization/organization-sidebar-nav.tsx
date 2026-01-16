@@ -15,21 +15,10 @@ export default function OrganizationSidebarNav(
   const { orgSlug } = useParams({
     from: "/o/$orgSlug",
   });
+
   return (
     <SidebarGroup {...props}>
       <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Testimonials" asChild>
-            <Link
-              to="/o/$orgSlug/testimonials"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <MessageSquare />
-              <span>Testimonials</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
         <HasOrganizationPermission permissions={{ testimonial: ["approve"] }}>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Moderator" asChild>

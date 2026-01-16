@@ -22,12 +22,11 @@ export default function HasOrganizationPermission({
       { permissions, organizationId: organization._id },
     ],
     queryFn: async () => {
-      const { data, error } = await authClient.organization.hasPermission({
+      const { data } = await authClient.organization.hasPermission({
         organizationId: organization._id,
         permissions,
       });
-      if (error) throw error;
-      return data.success;
+      return data?.success || false;
     },
   });
 
