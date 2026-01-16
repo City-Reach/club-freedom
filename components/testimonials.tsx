@@ -3,6 +3,7 @@ import { usePaginatedQuery } from "convex/react";
 import { useInView } from "react-intersection-observer";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/betterAuth/_generated/dataModel";
 import { hasPermissionQuery } from "@/lib/query";
 import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
@@ -16,13 +17,14 @@ import { Spinner } from "./ui/spinner";
 
 type Props = {
   search: string;
+  orgId: Id<"organization">;
 };
 
-export function Testimonials({ search }: Props) {
+export function Testimonials({ search, orgId }: Props) {
   const searchQuery = search.trim();
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
-    { searchQuery: searchQuery ? searchQuery : undefined },
+    { orgId, searchQuery: searchQuery ? searchQuery : undefined },
     { initialNumItems: 10 },
   );
 

@@ -24,5 +24,6 @@ export default defineSchema({
     .index("organizationId", ["organizationId"])
     .searchIndex("search_posts", {
       searchField: "searchText",
+      filterFields: ["organizationId"],
     }),
 });

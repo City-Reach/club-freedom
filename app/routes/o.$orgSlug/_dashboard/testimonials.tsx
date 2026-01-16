@@ -1,3 +1,5 @@
+import { convexQuery } from "@convex-dev/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   createStandardSchemaV1,
@@ -7,6 +9,8 @@ import {
 } from "nuqs";
 import { Testimonials } from "@/components/testimonials";
 import { Input } from "@/components/ui/input";
+import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 export const testimonialSearchParams = {
   q: parseAsString.withDefault(""),
@@ -21,6 +25,16 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials")({
 
 function TestimonialsPage() {
   const search = Route.useSearch();
+  const { orgSlug } = Route.useParams();
+  const { organization: preloadOrganization } = Route.useRouteContext();
+  const { data: liveOrganization } = useSuspenseQuery(
+    convexQuery(api.organization.getOrganizationBySlug, {
+      slug: orgSlug,
+    }),
+  );
+  const { _id } = (liveOrganization ||
+    preloadOrganization) as Doc<"organization">;
+
   return (
     <main className="container mx-auto px-4">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -36,7 +50,7 @@ function TestimonialsPage() {
       </div>
       <div className="w-full space-y-8 max-w-lg mx-auto mb-24">
         <TestimonialSearchInput />
-        <Testimonials search={search.q ?? ""} />
+        <Testimonials search={search.q ?? ""} orgId={_id} />
       </div>
     </main>
   );
