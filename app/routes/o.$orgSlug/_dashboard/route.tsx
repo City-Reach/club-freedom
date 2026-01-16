@@ -1,13 +1,6 @@
-import { convexQuery } from "@convex-dev/react-query";
-import {
-  createFileRoute,
-  Outlet,
-  redirect,
-  useLoaderData,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import OrganizationLayout from "@/components/layouts/organization";
 import { Spinner } from "@/components/ui/spinner";
-import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
@@ -15,26 +8,24 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
   component: RouteComponent,
   pendingComponent: PendingComponent,
   loader: async ({ context }) => {
-    const { data, error } = await authClient.getSession();
-    if (!data || error) {
+    const { data: currentSession, error: sessionError } =
+      await authClient.getSession();
+    if (!currentSession || sessionError) {
       throw redirect({ to: "/sign-in" });
     }
 
-    const isInOrganization = context.queryClient.ensureQueryData(
-      convexQuery(api.organization.isUserInOrganization, {
-        organizationId: context.organization._id,
-        userId: data.user.id,
-      }),
-    );
+    const { error } = await authClient.organization.setActive({
+      organizationId: context.organization._id,
+    });
 
-    if (!isInOrganization)
+    if (error)
       throw redirect({
         to: "/o/$orgSlug",
         params: { orgSlug: context.organization.slug },
       });
 
     return {
-      user: data.user,
+      user: currentSession.user,
       organization: context.organization,
     };
   },
@@ -49,9 +40,7 @@ function RouteComponent() {
 }
 
 function PendingComponent() {
-  const { organization } = useLoaderData({
-    from: "/o/$orgSlug",
-  });
+  const { organization } = Route.useRouteContext();
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen gap-12">
       {organization.logo ? (

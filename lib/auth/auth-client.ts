@@ -9,8 +9,9 @@ import { createAuthClient } from "better-auth/react";
 import type { auth } from "@/convex/betterAuth/auth";
 import { adminRBAC } from "./permissions/admin";
 import { organizationRBAC } from "./permissions/organization";
+import type { InferUserFromClient } from "better-auth";
 
-export const authClient = createAuthClient({
+const clientOption = {
   plugins: [
     inferAdditionalFields<typeof auth>(),
     adminClient(adminRBAC),
@@ -20,4 +21,8 @@ export const authClient = createAuthClient({
       ...organizationRBAC,
     }),
   ],
-});
+};
+
+export const authClient = createAuthClient(clientOption);
+
+export type User = InferUserFromClient<typeof clientOption>;

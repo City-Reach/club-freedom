@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
-import UserDropDown from "../user-dropdown";
 import OrganizationLogo from "./organization-logo";
+import OrganizationUserDropdown from "./organization-user-dropdown";
 
 type Props = {
   organization: Doc<"organization">;
@@ -28,7 +28,7 @@ export default function OrganiztionNavbar({ organization }: Props) {
         </div>
       </div>
       {data ? (
-        <UserDropDown />
+        <OrganizationUserDropdown user={data.user} />
       ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>

@@ -7,12 +7,15 @@ import {
 import UserDropDown from "@/components/user-dropdown";
 import OrganizationInfo from "./organization-info";
 import OrganizationSidebar from "./organization-sidebar";
+import { authClient } from "@/lib/auth/auth-client";
+import OrganizationUserDropdown from "@/components/organization/organization-user-dropdown";
 
 export default function OrganizationLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  const { data } = authClient.useSession();
   return (
     <SidebarProvider>
       <OrganizationSidebar collapsible="icon" />
@@ -23,7 +26,7 @@ export default function OrganizationLayout({
             <OrganizationInfo />
           </div>
           <div className="ml-auto">
-            <UserDropDown />
+            {data?.user && <OrganizationUserDropdown user={data.user} />}
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
