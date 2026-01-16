@@ -29,8 +29,9 @@ export default function OrganiztionNavbar({ organization }: Props) {
           </div>
         )}
       </div>
-      {data && <UserDropDown />}
-      {data === null && (
+      {data ? (
+        <UserDropDown />
+      ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>
         </Button>
