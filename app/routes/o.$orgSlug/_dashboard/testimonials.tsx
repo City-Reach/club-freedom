@@ -1,31 +1,26 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  createStandardSchemaV1,
+  debounce,
+  parseAsString,
+  useQueryStates,
+} from "nuqs";
 import { Testimonials } from "@/components/testimonials";
-import { auth } from "@/convex/betterAuth/auth";
+import { Input } from "@/components/ui/input";
 
+export const testimonialSearchParams = {
+  q: parseAsString.withDefault(""),
+};
 export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials")({
+  ssr: false,
   component: TestimonialsPage,
-  errorComponent: ({ error }) => {
-    if (error.message === "UNAUTHORIZED") {
-      return <>Unauthorized</>;
-    }
-    // fallback for other errors
-    return <div>Something went wrong: {error.message}</div>;
-  },
-  loader: async ({ params, context }) => {
-    if (!context.userId) {
-      throw redirect({
-        to: "/sign-in",
-      });
-    }
-
-    return { userRole: context.user.role };
-  },
+  validateSearch: createStandardSchemaV1(testimonialSearchParams, {
+    partialOutput: true,
+  }),
 });
 
 function TestimonialsPage() {
-  // if ((!organizations || organizations.some(org => org.slug === orgSlug)) && userRole != "admin") {
-  //   throw new Error("UNAUTHORIZED")
-  // }
+  const search = Route.useSearch();
   return (
     <main className="container mx-auto px-4">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -39,9 +34,28 @@ function TestimonialsPage() {
           </p>
         </div>
       </div>
-      <div className="w-full space-y-8 max-w-lg mx-auto pb-24">
-        <Testimonials />
+      <div className="w-full space-y-8 max-w-lg mx-auto mb-24">
+        <TestimonialSearchInput />
+        <Testimonials search={search.q ?? ""} />
       </div>
     </main>
+  );
+}
+
+function TestimonialSearchInput() {
+  const [search, setSearch] = useQueryStates(testimonialSearchParams);
+  return (
+    <Input
+      value={search.q}
+      placeholder="Search testimonials"
+      onChange={(e) => {
+        setSearch(
+          { q: e.target.value },
+          {
+            limitUrlUpdates: debounce(500),
+          },
+        );
+      }}
+    />
   );
 }
