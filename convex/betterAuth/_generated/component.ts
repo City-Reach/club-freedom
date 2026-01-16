@@ -89,6 +89,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             | {
                 data: {
                   createdAt: number;
+                  expiresAt?: null | number;
                   privateKey: string;
                   publicKey: string;
                 };
@@ -97,6 +98,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             | {
                 data: {
                   createdAt: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name: string;
@@ -284,7 +286,12 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "jwks";
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -316,6 +323,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -569,7 +577,12 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "jwks";
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -601,6 +614,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -696,6 +710,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "query",
         "internal",
         {
+          join?: any;
           limit?: number;
           model:
             | "user"
@@ -747,6 +762,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "query",
         "internal",
         {
+          join?: any;
           model:
             | "user"
             | "session"
@@ -983,12 +999,18 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "jwks";
                 update: {
                   createdAt?: number;
+                  expiresAt?: null | number;
                   privateKey?: string;
                   publicKey?: string;
                 };
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -1014,6 +1036,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1027,6 +1050,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1339,12 +1363,18 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "jwks";
                 update: {
                   createdAt?: number;
+                  expiresAt?: null | number;
                   privateKey?: string;
                   publicKey?: string;
                 };
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -1370,6 +1400,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1383,6 +1414,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1521,6 +1553,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           _creationTime: number;
           _id: string;
           createdAt: number;
+          icon?: null | string;
           logo?: null | string;
           metadata?: null | string;
           name: string;

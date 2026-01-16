@@ -1,21 +1,17 @@
 import type { TurnstileServerValidationResponse } from "@marsidev/react-turnstile";
 import { createServerFn } from "@tanstack/react-start";
-import { testimonialSchema } from "@/lib/schema/testimonials";
-
-const tokenValidator = testimonialSchema.pick({ turnstileToken: true });
+import z from "zod";
+import { env } from "@/env/server";
 
 export const validateTurnstileTokenServerFn = createServerFn()
-  .inputValidator(tokenValidator)
+  .inputValidator(
+    z.object({
+      turnstileToken: z.string().min(1),
+    }),
+  )
   .handler(async ({ data }) => {
-    const secretKey = process.env.TURNSTILE_SECRET_KEY;
-    const verifyEndpoint = process.env.TURNSTILE_VERIFY_ENDPOINT;
-    if (!secretKey) {
-      throw new Error("Turnstile secret key is not configured");
-    }
-
-    if (!verifyEndpoint) {
-      throw new Error("Turnstile verify endpoint is not configured");
-    }
+    const secretKey = env.TURNSTILE_SECRET_KEY;
+    const verifyEndpoint = env.TURNSTILE_VERIFY_ENDPOINT;
 
     const response = await fetch(verifyEndpoint, {
       method: "POST",

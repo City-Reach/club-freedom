@@ -15,12 +15,14 @@ import type * as functions from "../functions.js";
 import type * as http from "../http.js";
 import type * as internal_createAdminUser from "../internal/createAdminUser.js";
 import type * as internal_organizations from "../internal/organizations.js";
-import type * as internal_r2 from "../internal/r2.js";
 import type * as media from "../media.js";
+import type * as mediaProcessing from "../mediaProcessing.js";
 import type * as migrations from "../migrations.js";
 import type * as organization from "../organization.js";
 import type * as r2 from "../r2.js";
 import type * as testimonials from "../testimonials.js";
+import type * as uploadTempFile from "../uploadTempFile.js";
+import type * as utils from "../utils.js";
 
 import type {
   ApiFromModules,
@@ -36,12 +38,14 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "internal/createAdminUser": typeof internal_createAdminUser;
   "internal/organizations": typeof internal_organizations;
-  "internal/r2": typeof internal_r2;
   media: typeof media;
+  mediaProcessing: typeof mediaProcessing;
   migrations: typeof migrations;
   organization: typeof organization;
   r2: typeof r2;
   testimonials: typeof testimonials;
+  uploadTempFile: typeof uploadTempFile;
+  utils: typeof utils;
 }>;
 
 /**
@@ -347,6 +351,7 @@ export declare const components: {
             | {
                 data: {
                   createdAt: number;
+                  expiresAt?: null | number;
                   privateKey: string;
                   publicKey: string;
                 };
@@ -355,6 +360,7 @@ export declare const components: {
             | {
                 data: {
                   createdAt: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name: string;
@@ -541,7 +547,12 @@ export declare const components: {
                 model: "jwks";
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -573,6 +584,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -825,7 +837,12 @@ export declare const components: {
                 model: "jwks";
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -857,6 +874,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -951,6 +969,7 @@ export declare const components: {
         "query",
         "internal",
         {
+          join?: any;
           limit?: number;
           model:
             | "user"
@@ -1001,6 +1020,7 @@ export declare const components: {
         "query",
         "internal",
         {
+          join?: any;
           model:
             | "user"
             | "session"
@@ -1236,12 +1256,18 @@ export declare const components: {
                 model: "jwks";
                 update: {
                   createdAt?: number;
+                  expiresAt?: null | number;
                   privateKey?: string;
                   publicKey?: string;
                 };
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -1267,6 +1293,7 @@ export declare const components: {
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1280,6 +1307,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1591,12 +1619,18 @@ export declare const components: {
                 model: "jwks";
                 update: {
                   createdAt?: number;
+                  expiresAt?: null | number;
                   privateKey?: string;
                   publicKey?: string;
                 };
                 where?: Array<{
                   connector?: "AND" | "OR";
-                  field: "publicKey" | "privateKey" | "createdAt" | "_id";
+                  field:
+                    | "publicKey"
+                    | "privateKey"
+                    | "createdAt"
+                    | "expiresAt"
+                    | "_id";
                   operator?:
                     | "lt"
                     | "lte"
@@ -1622,6 +1656,7 @@ export declare const components: {
                 model: "organization";
                 update: {
                   createdAt?: number;
+                  icon?: null | string;
                   logo?: null | string;
                   metadata?: null | string;
                   name?: string;
@@ -1635,6 +1670,7 @@ export declare const components: {
                     | "logo"
                     | "createdAt"
                     | "metadata"
+                    | "icon"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1771,6 +1807,7 @@ export declare const components: {
           _creationTime: number;
           _id: string;
           createdAt: number;
+          icon?: null | string;
           logo?: null | string;
           metadata?: null | string;
           name: string;

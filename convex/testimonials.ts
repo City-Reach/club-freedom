@@ -3,6 +3,8 @@ import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
+import { processingStatusSchema } from "./schema";
+import removeUndefinedFromRecord from "./utils";
 
 export const getTestimonials = query({
   args: {
@@ -11,13 +13,6 @@ export const getTestimonials = query({
   },
   handler: async (ctx, { paginationOpts, searchQuery }) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      return {
-        page: [] as never[],
-        isDone: true,
-        continueCursor: "",
-      } satisfies PaginationResult<never>;
-    }
 
     const testimonialQuery = ctx.db.query("testimonials");
 
@@ -77,17 +72,28 @@ export const postTestimonial = mutation({
       storageId,
       media_type,
       testimonialText: text,
-      createdAt: Date.now(),
       organizationId,
+      processingStatus: "ongoing",
     });
     return id;
+  },
+});
+
+export const updateTestimonialStorageId = mutation({
+  args: {
+    id: v.id("testimonials"),
+    storageId: v.string(),
+  },
+  handler: async (ctx, { id, storageId }) => {
+    await ctx.db.patch(id, { storageId });
+    return { id, storageId };
   },
 });
 
 export const updateTestimonialApproval = mutation({
   args: {
     id: v.id("testimonials"),
-    approved: v.boolean(),
+    approved: v.optional(v.boolean()),
   },
   handler: async (ctx, { id, approved }) => {
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
@@ -122,7 +128,18 @@ export const getTestimonialById = query({
     };
   },
 });
-
+export const updateTestimonial = mutation({
+  args: {
+    _id: v.id("testimonials"),
+    storageId: v.optional(v.string()),
+    testimonialText: v.optional(v.string()),
+    processingStatus: v.optional(processingStatusSchema),
+  },
+  handler: async (ctx, args) => {
+    const cleaned = removeUndefinedFromRecord(args);
+    await ctx.db.patch(args._id, cleaned);
+  },
+});
 export const updateTranscription = mutation({
   args: {
     id: v.id("testimonials"),
@@ -141,5 +158,44 @@ export const updateSummaryAndTitle = mutation({
   },
   handler: async (ctx, { id, summary, title }) => {
     await ctx.db.patch(id, { summary, title });
+  },
+});
+
+export const updateProcessingStatus = mutation({
+  args: {
+    id: v.id("testimonials"),
+    processingStatus: processingStatusSchema,
+  },
+  handler: async (ctx, { id, processingStatus }) => {
+    await ctx.db.patch(id, { processingStatus });
+  },
+});
+
+export const retryProcessing = mutation({
+  args: {
+    id: v.id("testimonials"),
+  },
+  handler: async (ctx, { id }) => {
+    const testimonial = await ctx.db.get(id);
+    if (!testimonial) return;
+    const status = testimonial.processingStatus;
+    if (status !== "error") return;
+
+    await ctx.db.patch(id, { processingStatus: "ongoing" });
+
+    if (testimonial.storageId && !testimonial.testimonialText) {
+      await ctx.scheduler.runAfter(0, api.mediaProcessing.processMedia, {
+        mediaKey: testimonial.storageId,
+        testimonialId: id,
+      });
+      return;
+    }
+
+    if (!testimonial.summary || !testimonial.title) {
+      await ctx.scheduler.runAfter(0, api.ai.summarizeText, {
+        testimonialId: id,
+        text: testimonial.testimonialText || "",
+      });
+    }
   },
 });

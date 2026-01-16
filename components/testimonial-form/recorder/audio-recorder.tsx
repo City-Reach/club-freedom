@@ -1,16 +1,17 @@
-"use client";
-
 import { Mic, Square } from "lucide-react";
+import { useController } from "react-hook-form";
 import { ReactMediaRecorder } from "react-media-recorder";
-import { Button } from "../ui/button";
-import TimeElapsed from "./time-elapsed";
+import { Button } from "@/components/ui/button";
+import { AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS } from "@/lib/media";
+import type { Testimonial } from "@/lib/schema/testimonials";
+import RecorderTimer from "./recorder-timer";
 
-type Props = {
-  onRecordingComplete: (audioFile?: File) => void;
-};
-
-export default function AudioRecorder({ onRecordingComplete }: Props) {
+export default function AudioRecorder() {
   const mp4Supported = MediaRecorder.isTypeSupported("audio/mp4");
+  const { field } = useController<Testimonial>({
+    name: "mediaFile",
+  });
+
   return (
     <ReactMediaRecorder
       audio
@@ -24,7 +25,7 @@ export default function AudioRecorder({ onRecordingComplete }: Props) {
         const audioFile = new File([blob], `audio-recording-${Date.now()}`, {
           type: blob.type ?? "audio/webm",
         });
-        onRecordingComplete(audioFile);
+        field.onChange(audioFile);
       }}
       render={({
         status,
@@ -47,7 +48,13 @@ export default function AudioRecorder({ onRecordingComplete }: Props) {
               />
             )}
 
-            {isRecording && <TimeElapsed isRecording={isRecording} />}
+            {isRecording && (
+              <RecorderTimer
+                isRecording={isRecording}
+                limit={AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS}
+                onTimeout={stopRecording}
+              />
+            )}
 
             {/* Controls */}
             <div className="flex items-center gap-3">
@@ -80,7 +87,7 @@ export default function AudioRecorder({ onRecordingComplete }: Props) {
                   variant="outline"
                   onClick={() => {
                     clearBlobUrl();
-                    onRecordingComplete(undefined);
+                    field.onChange(undefined);
                   }}
                 >
                   Clear

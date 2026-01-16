@@ -1,4 +1,4 @@
-import { useLoaderData } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import {
   SidebarInset,
@@ -14,7 +14,7 @@ export default function OrganizationLayout({
 }: {
   children: ReactNode;
 }) {
-  const { user } = useLoaderData({
+  const { user } = useRouteContext({
     from: "/o/$orgSlug/_dashboard",
   });
   return (

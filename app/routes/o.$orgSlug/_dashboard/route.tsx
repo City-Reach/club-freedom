@@ -1,9 +1,6 @@
 import { convexQuery } from "@convex-dev/react-query";
-import {
-  createFileRoute,
-  Outlet,
-  redirect,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { setActiveOrganization } from "@/app/functions/organization";
 import OrganizationLayout from "@/components/layouts/organization";
 import { api } from "@/convex/_generated/api";
 
@@ -26,24 +23,18 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
     if (!user) {
       throw redirect({ to: "/sign-in" });
     }
-    const userOrganizations = await context.queryClient.ensureQueryData(
-      convexQuery(api.organization.getAllOrganizations, {}),
-    );
-    if (
-      !userOrganizations.find((org) => org.slug === params.orgSlug) &&
-      user.role != "admin"
-    ) {
-      throw new Error("UNAUTHORIZED");
+
+    const inOrganization = await setActiveOrganization({
+      data: { organizationId: context.organization._id },
+    });
+
+    if (!inOrganization) {
+      throw notFound();
     }
+
     return {
       user,
-      userId,
       organization: context.organization,
-    };
-  },
-  loader: async ({ context }) => {
-    return {
-      user: context.user,
     };
   },
 });

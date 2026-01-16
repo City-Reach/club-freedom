@@ -5,6 +5,7 @@ import { useRouter } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { authClient } from "@/lib/auth/auth-client";
 import {
   type Organization,
@@ -16,7 +17,7 @@ import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 
 type Props = {
-  organization: Organization & { id: string };
+  organization: Doc<"organization">;
 };
 
 export default function EditOrganizationForm({ organization }: Props) {
@@ -35,7 +36,7 @@ export default function EditOrganizationForm({ organization }: Props) {
 
     const { data: updatedOrganization, error } =
       await authClient.organization.update({
-        organizationId: organization.id,
+        organizationId: organization._id,
         data: {
           name,
           slug,
@@ -56,24 +57,17 @@ export default function EditOrganizationForm({ organization }: Props) {
         slug,
       });
 
-    const allOrganizationsQuery = convexQuery(
-      api.organization.getAllOrganizations,
-      {},
-    );
-
     await Promise.all([
       queryClient.removeQueries(organizationBySlugQuery(organization.slug)),
       queryClient.removeQueries(
         organizationBySlugQuery(updatedOrganization.slug),
       ),
-      queryClient.removeQueries(allOrganizationsQuery),
     ]);
 
     await Promise.all([
       queryClient.ensureQueryData(
         organizationBySlugQuery(updatedOrganization.slug),
       ),
-      queryClient.ensureQueryData(allOrganizationsQuery),
     ]);
 
     if (updatedOrganization.slug !== organization.slug) {
