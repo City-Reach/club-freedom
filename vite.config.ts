@@ -43,6 +43,9 @@ export default defineConfig(({ mode, command }) => {
     build: {
       sourcemap: true,
     },
+    esbuild: {
+      drop: mode === "production" ? ["console"] : [],
+    },
     ssr: {
       noExternal: ["@convex-dev/better-auth"],
     },
