@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
+import OrganizationUserDropdown from "@/components/organization/organization-user-dropdown";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import UserDropDown from "@/components/user-dropdown";
+
+import { authClient } from "@/lib/auth/auth-client";
 import OrganizationInfo from "./organization-info";
 import OrganizationSidebar from "./organization-sidebar";
-import { authClient } from "@/lib/auth/auth-client";
-import OrganizationUserDropdown from "@/components/organization/organization-user-dropdown";
 
 export default function OrganizationLayout({
   children,

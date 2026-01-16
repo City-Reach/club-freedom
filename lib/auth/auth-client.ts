@@ -1,4 +1,5 @@
 import { convexClient } from "@convex-dev/better-auth/client/plugins";
+import type { InferUserFromClient } from "better-auth";
 import {
   adminClient,
   inferAdditionalFields,
@@ -9,7 +10,6 @@ import { createAuthClient } from "better-auth/react";
 import type { auth } from "@/convex/betterAuth/auth";
 import { adminRBAC } from "./permissions/admin";
 import { organizationRBAC } from "./permissions/organization";
-import type { InferUserFromClient } from "better-auth";
 
 const clientOption = {
   plugins: [

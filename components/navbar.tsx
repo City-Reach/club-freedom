@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth/auth-client";
 import Logo from "./logo";
 import { Button } from "./ui/button";
 import UserDropDown from "./user-dropdown";
-import { authClient } from "@/lib/auth/auth-client";
 
 export default function Navbar() {
   const { data } = authClient.useSession();
