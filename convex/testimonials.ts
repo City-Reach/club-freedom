@@ -1,4 +1,4 @@
-import { paginationOptsValidator } from "convex/server";
+import { type PaginationResult, paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
@@ -10,23 +10,18 @@ export const getTestimonials = query({
   args: {
     paginationOpts: paginationOptsValidator,
     searchQuery: v.optional(v.string()),
-    organizationId: v.string(),
   },
-  handler: async (ctx, { paginationOpts, searchQuery, organizationId }) => {
+  handler: async (ctx, { paginationOpts, searchQuery }) => {
+    const identity = await ctx.auth.getUserIdentity();
+
     const testimonialQuery = ctx.db.query("testimonials");
 
     const testimonialQuerySearch =
       searchQuery && searchQuery.trim() !== ""
-        ? testimonialQuery
-            .withSearchIndex("search_posts", (q) =>
-              q.search("searchText", searchQuery.trim()),
-            )
-            .filter((q) => q.eq(q.field("organizationId"), organizationId))
-        : testimonialQuery
-            .withIndex("organizationId", (q) =>
-              q.eq("organizationId", organizationId),
-            )
-            .order("desc");
+        ? testimonialQuery.withSearchIndex("search_posts", (q) =>
+            q.search("searchText", searchQuery.trim()),
+          )
+        : testimonialQuery.order("desc");
 
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: {
@@ -38,7 +33,8 @@ export const getTestimonials = query({
       .filter((q) => q.neq(q.field("title"), undefined))
       .filter((q) => q.neq(q.field("summary"), undefined))
       .filter((q) => q.neq(q.field("testimonialText"), undefined))
-      .filter((q) => canApprove || q.eq(q.field("approved"), true));
+      .filter((q) => (canApprove ? true : q.eq(q.field("approved"), true)));
+
     const { page, ...rest } =
       await filteredTestimonialQuery.paginate(paginationOpts);
 
@@ -64,19 +60,14 @@ export const postTestimonial = mutation({
     storageId: v.optional(v.string()),
     media_type: v.string(),
     text: v.string(),
-    organizationId: v.string(),
   },
-  handler: async (
-    ctx,
-    { name, email, storageId, media_type, text, organizationId },
-  ) => {
+  handler: async (ctx, { name, email, storageId, media_type, text }) => {
     const id = await ctx.db.insert("testimonials", {
       name,
       email,
       storageId,
       media_type,
       testimonialText: text,
-      organizationId,
       processingStatus: "ongoing",
     });
     return id;
