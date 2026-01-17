@@ -1,8 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/auth-client";
-import type { PermissionCheck } from "@/lib/auth/permissions";
+import type { OrganizationPermissionCheck } from "@/lib/auth/permissions/organization";
 
-export function hasPermissionQuery(permissions: PermissionCheck) {
+export function hasPermissionQuery(permissions: OrganizationPermissionCheck) {
   return queryOptions({
     queryKey: ["hasPermission", permissions],
     queryFn: async () => {

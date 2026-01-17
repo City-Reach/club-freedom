@@ -4,8 +4,8 @@ import NotFound from "@/components/not-found";
 import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$orgSlug")({
-  component: Component,
-  notFoundComponent: () => <NotFound />,
+  component: Outlet,
+  notFoundComponent: NotFound,
   beforeLoad: async ({ context, params }) => {
     const organization = await context.queryClient.ensureQueryData(
       convexQuery(api.organization.getOrganizationBySlug, {
@@ -17,16 +17,28 @@ export const Route = createFileRoute("/o/$orgSlug")({
     }
     return { organization };
   },
+  loader: async ({ context }) => {
+    return { organization: context.organization };
+  },
+  head: (ctx) => {
+    const organization = ctx.loaderData?.organization;
+    if (!organization) {
+      return {};
+    }
+    return {
+      meta: [
+        {
+          title: organization.name,
+        },
+      ],
+      links: [
+        organization.icon
+          ? {
+              rel: "icon",
+              href: organization.icon,
+            }
+          : undefined,
+      ].filter(Boolean),
+    };
+  },
 });
-
-function Component() {
-  const { organization } = Route.useRouteContext();
-  return (
-    <>
-      <head>
-        <title>{organization.name}</title>
-      </head>
-      <Outlet />
-    </>
-  );
-}

@@ -1,35 +1,31 @@
-import { convexQuery } from "@convex-dev/react-query";
-import {
-  createFileRoute,
-  notFound,
-  Outlet,
-  redirect,
-} from "@tanstack/react-router";
-import { setActiveOrganization } from "@/app/functions/organization";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import OrganizationLayout from "@/components/layouts/organization";
-import { api } from "@/convex/_generated/api";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
+  ssr: false,
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
-    const user = await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.getCurrentUser, {}),
-    );
-
-    if (!user) {
+  pendingComponent: PendingComponent,
+  loader: async ({ context }) => {
+    const { data: currentSession, error: sessionError } =
+      await authClient.getSession();
+    if (!currentSession || sessionError) {
       throw redirect({ to: "/sign-in" });
     }
 
-    const inOrganization = await setActiveOrganization({
-      data: { organizationId: context.organization._id },
+    const { error } = await authClient.organization.setActive({
+      organizationId: context.organization._id,
     });
 
-    if (!inOrganization) {
-      throw notFound();
-    }
+    if (error)
+      throw redirect({
+        to: "/o/$orgSlug",
+        params: { orgSlug: context.organization.slug },
+      });
 
     return {
-      user,
+      user: currentSession.user,
       organization: context.organization,
     };
   },
@@ -40,5 +36,23 @@ function RouteComponent() {
     <OrganizationLayout>
       <Outlet />
     </OrganizationLayout>
+  );
+}
+
+function PendingComponent() {
+  const { organization } = Route.useRouteContext();
+  return (
+    <div className="flex flex-col items-center justify-center w-screen h-screen gap-12">
+      {organization.logo ? (
+        <img
+          src={organization.logo}
+          alt={organization.name}
+          className="w-full max-w-100"
+        />
+      ) : (
+        `Accessing to ${organization.name}`
+      )}
+      <Spinner className="size-12" />
+    </div>
   );
 }

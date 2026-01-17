@@ -60,19 +60,14 @@ export const postTestimonial = mutation({
     storageId: v.optional(v.string()),
     media_type: v.string(),
     text: v.string(),
-    organizationId: v.string(),
   },
-  handler: async (
-    ctx,
-    { name, email, storageId, media_type, text, organizationId },
-  ) => {
+  handler: async (ctx, { name, email, storageId, media_type, text }) => {
     const id = await ctx.db.insert("testimonials", {
       name,
       email,
       storageId,
       media_type,
       testimonialText: text,
-      organizationId,
       processingStatus: "ongoing",
     });
     return id;

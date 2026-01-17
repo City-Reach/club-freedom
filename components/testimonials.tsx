@@ -22,7 +22,9 @@ export function Testimonials({ search }: Props) {
   const searchQuery = search.trim();
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
-    { searchQuery: searchQuery ? searchQuery : undefined },
+    {
+      searchQuery: searchQuery ? searchQuery : undefined,
+    },
     { initialNumItems: 10 },
   );
 
