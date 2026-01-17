@@ -4,12 +4,11 @@ import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
+import { adminRBAC } from "@/lib/auth/permissions/admin";
 import {
-  adminRBAC,
-  type PermissionCheck,
-  type Role,
-} from "@/lib/auth/permissions/admin";
-import { organizationRBAC } from "@/lib/auth/permissions/organization";
+  type OrganizationPermissionCheck,
+  organizationRBAC,
+} from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -113,16 +112,14 @@ export const checkUserPermissions = query({
   handler: async (
     ctx,
     args: {
-      role?: Role;
-      permissions?: PermissionCheck;
+      permissions?: OrganizationPermissionCheck;
     },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
     try {
-      const { success } = await auth.api.userHasPermission({
+      const { success } = await auth.api.hasPermission({
         headers,
         body: {
-          role: args.role,
           permissions: args.permissions || {},
         },
       });
