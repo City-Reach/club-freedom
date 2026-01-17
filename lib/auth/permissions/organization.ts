@@ -10,19 +10,19 @@ import {
 } from "better-auth/plugins/organization/access";
 
 const statement = {
-  testimonial: ["approve"],
+  testimonial: ["approve", "download"],
   ...defaultStatements,
 } as const;
 
 const ac = createAccessControl(statement);
 
 const owner = ac.newRole({
-  testimonial: ["approve"],
+  testimonial: ["approve", "download"],
   ...ownerAc.statements,
 });
 
 const admin = ac.newRole({
-  testimonial: ["approve"],
+  testimonial: ["approve", "download"],
   ...adminAc.statements,
 });
 
