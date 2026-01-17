@@ -1,0 +1,50 @@
+name: Code build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+      - staging-multi-org
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build:preview
+        env:
+          VITE_CONVEX_URL: ${{ vars.CONVEX_URL }}
+          VITE_CONVEX_SITE_URL: ${{ vars.CONVEX_SITE_URL }}
+          VITE_SITE_URL: ${{ vars.SITE_URL }}
+          VITE_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+          VITE_PUBLIC_POSTHOG_KEY: ${{ vars.POSTHOG_KEY }}
+          VITE_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+
+      - name: Deploy convex (dry run)
+        run: pnpm convex deploy --dry-run -y
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+
+      - name: Deploy trigger (dry run)
+        run: pnpm trigger deploy --dry-run
+        env:
+          TRIGGER_PROJECT_REF: ${{ vars.TRIGGER_PROJECT_REF }}
+          TRIGGER_ACCESS_TOKEN: ${{ secrets.TRIGGER_ACCESS_TOKEN }}
