@@ -27,7 +27,6 @@ import {
   testimonialTypes,
   useTestimonialFilter,
 } from "./schema";
-import { InputGroup, InputGroupInput } from "../ui/input-group";
 import TestimonialDateInput from "./testimonial-date-input";
 
 type Props = {

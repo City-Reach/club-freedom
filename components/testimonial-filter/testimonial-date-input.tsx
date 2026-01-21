@@ -13,10 +13,11 @@ export function formatDate(date: Date | undefined) {
   if (!date) {
     return "";
   }
-  return date.toLocaleDateString("en", {
+  return date.toLocaleDateString("en-US", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+    timeZone: "UTC",
   });
 }
 
@@ -43,9 +44,10 @@ export default function TestimonialDateInput({ date, onDateChange }: Props) {
         value={value}
         placeholder="MM/DD/YYYY"
         onChange={(e) => {
-          const date = new Date(e.target.value);
           setValue(e.target.value);
+          const date = new Date(e.target.value);
           if (isValidDate(date)) {
+            console.log(date.toUTCString());
             setMonth(date);
             onDateChange(date);
           }
@@ -76,10 +78,15 @@ export default function TestimonialDateInput({ date, onDateChange }: Props) {
           >
             <Calendar
               mode="single"
+              timeZone="UTC"
               selected={date}
               month={month}
               onMonthChange={setMonth}
               onSelect={(date) => {
+                if (!date) {
+                  setOpen(false);
+                  return;
+                }
                 onDateChange(date);
                 setValue(formatDate(date));
                 setOpen(false);

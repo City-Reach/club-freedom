@@ -4,6 +4,7 @@ import TestimonialFilterDialog from "@/components/testimonial-filter/testimonial
 import TestimonialSearchInput from "@/components/testimonial-filter/testimonial-search-input";
 import { Testimonials } from "@/components/testimonials";
 import { Button } from "@/components/ui/button";
+import TestimonialFilterChips from "@/components/testimonial-filter/testimonial-filter-chips";
 
 export const Route = createFileRoute("/testimonials/")({
   ssr: false,
@@ -24,8 +25,8 @@ function TestimonialsPage() {
           </p>
         </div>
       </div>
-      <div className="w-full max-w-lg mx-auto mb-24">
-        <div className="flex pb-8 gap-2">
+      <div className="w-full grid gap-8 max-w-lg mx-auto mb-24">
+        <div className="flex gap-2">
           <TestimonialSearchInput />
           <TestimonialFilterDialog
             trigger={
@@ -35,6 +36,7 @@ function TestimonialsPage() {
             }
           />
         </div>
+        <TestimonialFilterChips />
         <Testimonials />
       </div>
     </main>

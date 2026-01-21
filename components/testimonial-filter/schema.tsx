@@ -28,7 +28,7 @@ export const testimonialFilterParams = {
   author: parseAsString.withDefault(""),
   testimonialTypes: parseAsArrayOf(
     parseAsStringLiteral(testimonialTypes),
-  ).withDefault(["audio", "text", "video"]),
+  ).withDefault([]),
   before: parseAsIsoDate,
   after: parseAsIsoDate,
 };
