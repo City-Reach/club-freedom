@@ -2,6 +2,7 @@ import {
   createStandardSchemaV1,
   type inferParserType,
   parseAsArrayOf,
+  parseAsIsoDate,
   parseAsString,
   parseAsStringLiteral,
   useQueryStates,
@@ -28,6 +29,8 @@ export const testimonialFilterParams = {
   testimonialTypes: parseAsArrayOf(
     parseAsStringLiteral(testimonialTypes),
   ).withDefault(["audio", "text", "video"]),
+  before: parseAsIsoDate,
+  after: parseAsIsoDate,
 };
 
 export const testimonialFilterSchema = createStandardSchemaV1(

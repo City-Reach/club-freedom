@@ -27,6 +27,8 @@ import {
   testimonialTypes,
   useTestimonialFilter,
 } from "./schema";
+import { InputGroup, InputGroupInput } from "../ui/input-group";
+import TestimonialDateInput from "./testimonial-date-input";
 
 type Props = {
   trigger: ReactNode;
@@ -102,6 +104,39 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
               </FieldSet>
             )}
           />
+          <FieldSet>
+            <FieldLegend>Submission Date</FieldLegend>
+            <FieldGroup>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Controller
+                  control={form.control}
+                  name="before"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>Before</FieldLabel>
+                      <TestimonialDateInput
+                        date={field.value || undefined}
+                        onDateChange={field.onChange}
+                      />
+                    </Field>
+                  )}
+                />
+                <Controller
+                  control={form.control}
+                  name="after"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>After</FieldLabel>
+                      <TestimonialDateInput
+                        date={field.value || undefined}
+                        onDateChange={field.onChange}
+                      />
+                    </Field>
+                  )}
+                />
+              </div>
+            </FieldGroup>
+          </FieldSet>
         </form>
         <DialogFooter>
           <DialogClose asChild>
