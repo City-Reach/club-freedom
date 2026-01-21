@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
-import TestimonialFilterChips from "@/components/testimonial-filter/testimonial-filter-chips";
-import TestimonialFilterDialog from "@/components/testimonial-filter/testimonial-filter-dialog";
-import TestimonialSearchInput from "@/components/testimonial-filter/testimonial-search-input";
+import TestimonialFilterChips from "@/components/testimonial-search/testimonial-filter-chips";
+import TestimonialSearchDialog from "@/components/testimonial-search/testimonial-search-dialog";
+import TestimonialSearchInput from "@/components/testimonial-search/testimonial-search-input";
 import { Testimonials } from "@/components/testimonials";
 import { Button } from "@/components/ui/button";
 
@@ -28,7 +28,7 @@ function TestimonialsPage() {
       <div className="w-full grid gap-8 max-w-lg mx-auto mb-24">
         <div className="flex gap-2">
           <TestimonialSearchInput />
-          <TestimonialFilterDialog
+          <TestimonialSearchDialog
             trigger={
               <Button variant="outline" size="icon">
                 <SlidersHorizontal />

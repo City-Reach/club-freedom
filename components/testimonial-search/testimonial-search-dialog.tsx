@@ -35,7 +35,7 @@ type Props = {
   trigger: ReactNode;
 };
 
-export default function TestimonialFilterDialog({ trigger }: Props) {
+export default function TestimonialSearchDialog({ trigger }: Props) {
   const [filter, setFilter] = useTestimonialFilter();
   const form = useForm({
     defaultValues: filter,
