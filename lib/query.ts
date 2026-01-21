@@ -9,7 +9,10 @@ export function hasPermissionQuery(permissions: PermissionCheck) {
       const { data } = await authClient.admin.hasPermission({
         permissions,
       });
-      return data?.success || false;
+      const orgPerms = await authClient.organization.hasPermission({
+        permissions,
+      });
+      return data?.success || orgPerms.data?.success || false;
     },
     staleTime: Infinity,
   });

@@ -1,4 +1,4 @@
-import { type PaginationResult, paginationOptsValidator } from "convex/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
@@ -10,18 +10,21 @@ export const getTestimonials = query({
   args: {
     paginationOpts: paginationOptsValidator,
     searchQuery: v.optional(v.string()),
+    orgId: v.string(),
   },
-  handler: async (ctx, { paginationOpts, searchQuery }) => {
-    const identity = await ctx.auth.getUserIdentity();
-
+  handler: async (ctx, { paginationOpts, searchQuery, orgId }) => {
     const testimonialQuery = ctx.db.query("testimonials");
 
     const testimonialQuerySearch =
       searchQuery && searchQuery.trim() !== ""
         ? testimonialQuery.withSearchIndex("search_posts", (q) =>
-            q.search("searchText", searchQuery.trim()),
+            q
+              .search("searchText", searchQuery.trim())
+              .eq("organizationId", orgId),
           )
-        : testimonialQuery.order("desc");
+        : testimonialQuery
+            .withIndex("organizationId", (q) => q.eq("organizationId", orgId))
+            .order("desc");
 
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: {
