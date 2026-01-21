@@ -77,7 +77,10 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
             render={({ field, fieldState }) => (
               <FieldSet>
                 <FieldLegend variant="label">Testimonial Types</FieldLegend>
-                <FieldGroup data-slot="checkbox-group">
+                <FieldGroup
+                  data-slot="checkbox-group"
+                  className="grid sm:grid-cols-3"
+                >
                   {testimonialTypes.map((type) => (
                     <Field key={type} orientation="horizontal">
                       <Checkbox
