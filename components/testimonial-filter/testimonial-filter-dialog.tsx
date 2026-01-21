@@ -1,4 +1,4 @@
-import { useQueryStates } from "nuqs";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
@@ -12,21 +12,19 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import {
-  testimonialFilter,
-  type TestimonialFilter,
   testimonialFilterSchema,
+  useTestimonialFilter,
 } from "./schema";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 
 type Props = {
   trigger: ReactNode;
 };
 
 export default function TestimonialFilterDialog({ trigger }: Props) {
-  const [filter, setFilter] = useQueryStates(testimonialFilterSchema);
-  const form = useForm<TestimonialFilter>({
+  const [filter, setFilter] = useTestimonialFilter();
+  const form = useForm({
     defaultValues: filter,
-    resolver: standardSchemaResolver(testimonialFilter),
+    resolver: standardSchemaResolver(testimonialFilterSchema),
   });
 
   return (
@@ -40,7 +38,9 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
           className="flex"
           id="testimonial-filter"
           onSubmit={form.handleSubmit((value) => setFilter(value))}
-        ></form>
+        >
+          
+        </form>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline" type="button">

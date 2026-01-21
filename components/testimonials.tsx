@@ -4,7 +4,6 @@ import { useInView } from "react-intersection-observer";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import { hasPermissionQuery } from "@/lib/query";
-import type { TestimonialFilter } from "./testimonial-filter/schema";
 import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
 import TestimonialCardMedia from "./testimonial-card/testimonial-card-media";
@@ -12,15 +11,16 @@ import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
 import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
-import { CardHeader, CardContent } from "./ui/card";
+import type { TestimonialFilter } from "./testimonial-filter/schema";
+import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
 type Props = {
-  filter: TestimonialFilter;
+  filter: Partial<TestimonialFilter>;
 };
 
 export function Testimonials({ filter }: Props) {
-  const searchQuery = filter.q.trim();
+  const searchQuery = filter.q?.trim() ?? "";
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
     { searchQuery: searchQuery ? searchQuery : undefined },

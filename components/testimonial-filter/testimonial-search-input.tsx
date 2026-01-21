@@ -1,12 +1,12 @@
-import { debounce, useQueryStates } from "nuqs";
+import { debounce } from "nuqs";
 import type { ComponentProps } from "react";
 import { Input } from "../ui/input";
-import { testimonialFilterSchema } from "./schema";
+import { useTestimonialFilter } from "./schema";
 
 export default function TestimonialSearchInput(
   props: ComponentProps<typeof Input>,
 ) {
-  const [search, setSearch] = useQueryStates(testimonialFilterSchema);
+  const [search, setSearch] = useTestimonialFilter();
   return (
     <Input
       value={search.q}
