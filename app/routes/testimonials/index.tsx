@@ -1,10 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SlidersHorizontal } from "lucide-react";
-import TestimonialFilterChips from "@/components/testimonial-search/testimonial-filter-chips";
-import TestimonialSearchDialog from "@/components/testimonial-search/testimonial-search-dialog";
+import TestimonialFilter from "@/components/testimonial-search/testimonial-filter";
 import TestimonialSearchInput from "@/components/testimonial-search/testimonial-search-input";
 import { Testimonials } from "@/components/testimonials";
-import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/testimonials/")({
   ssr: false,
@@ -28,15 +25,8 @@ function TestimonialsPage() {
       <div className="w-full grid gap-8 max-w-lg mx-auto mb-24">
         <div className="flex gap-2">
           <TestimonialSearchInput />
-          <TestimonialSearchDialog
-            trigger={
-              <Button variant="outline" size="icon">
-                <SlidersHorizontal />
-              </Button>
-            }
-          />
         </div>
-        <TestimonialFilterChips />
+        <TestimonialFilter />
         <Testimonials />
       </div>
     </main>

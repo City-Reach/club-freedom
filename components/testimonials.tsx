@@ -12,7 +12,7 @@ import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
 import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
-import { useTestimonialFilter } from "./testimonial-filter/schema";
+import { useTestimonialFilter } from "./testimonial-search/schema";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
