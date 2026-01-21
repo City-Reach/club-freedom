@@ -1,13 +1,33 @@
 import {
   createStandardSchemaV1,
   type inferParserType,
+  parseAsArrayOf,
   parseAsString,
+  parseAsStringLiteral,
   useQueryStates,
 } from "nuqs";
+
+export const testimonialTypes = ["video", "audio", "text"] as const;
+
+export const getTestimonialTypeLabel = (
+  type: (typeof testimonialTypes)[number],
+) => {
+  switch (type) {
+    case "text":
+      return "Text";
+    case "video":
+      return "Video";
+    case "audio":
+      return "Audio";
+  }
+};
 
 export const testimonialFilterParams = {
   q: parseAsString.withDefault(""),
   author: parseAsString.withDefault(""),
+  testimonialTypes: parseAsArrayOf(
+    parseAsStringLiteral(testimonialTypes),
+  ).withDefault(["audio", "text", "video"]),
 };
 
 export const testimonialFilterSchema = createStandardSchemaV1(

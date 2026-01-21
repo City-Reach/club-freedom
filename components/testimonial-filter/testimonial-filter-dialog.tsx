@@ -2,6 +2,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import type { ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   Dialog,
   DialogClose,
@@ -11,9 +12,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { testimonialFilterSchema, useTestimonialFilter } from "./schema";
-import { Field, FieldError, FieldLabel } from "../ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "../ui/field";
 import { Input } from "../ui/input";
+import {
+  getTestimonialTypeLabel,
+  testimonialFilterSchema,
+  testimonialTypes,
+  useTestimonialFilter,
+} from "./schema";
 
 type Props = {
   trigger: ReactNode;
@@ -34,7 +47,7 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
           <DialogTitle>Filter</DialogTitle>
         </DialogHeader>
         <form
-          className="flex gap-2"
+          className="grid gap-4"
           id="testimonial-filter"
           onSubmit={form.handleSubmit((value) => setFilter(value))}
         >
@@ -54,6 +67,39 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
                   <FieldError errors={[fieldState.error]} />
                 )}
               </Field>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="testimonialTypes"
+            render={({ field, fieldState }) => (
+              <FieldSet>
+                <FieldLegend variant="label">Testimonial Types</FieldLegend>
+                <FieldGroup data-slot="checkbox-group">
+                  {testimonialTypes.map((type) => (
+                    <Field key={type} orientation="horizontal">
+                      <Checkbox
+                        id={`testimonial-checkbox-${type}`}
+                        name={field.name}
+                        aria-invalid={fieldState.invalid}
+                        checked={field.value?.includes(type)}
+                        onCheckedChange={(checked) => {
+                          const newValue = checked
+                            ? [...(field.value || []), type]
+                            : field.value?.filter((value) => value !== type);
+                          field.onChange(newValue);
+                        }}
+                      />
+                      <FieldLabel
+                        htmlFor={`testimonial-checkbox-${type}`}
+                        className="font-normal"
+                      >
+                        {getTestimonialTypeLabel(type)}
+                      </FieldLabel>
+                    </Field>
+                  ))}
+                </FieldGroup>
+              </FieldSet>
             )}
           />
         </form>
