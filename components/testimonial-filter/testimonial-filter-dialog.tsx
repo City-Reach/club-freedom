@@ -15,6 +15,7 @@ import {
 } from "../ui/dialog";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -50,13 +51,34 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Filter</DialogTitle>
+          <DialogTitle>Advanced Search</DialogTitle>
         </DialogHeader>
         <form
           className="grid gap-4"
           id="testimonial-filter"
           onSubmit={form.handleSubmit((value) => setFilter(value))}
         >
+          <Controller
+            control={form.control}
+            name="q"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Testimonials</FieldLabel>
+                <FieldDescription>
+                  Search for testimonials by author, summary, or content.
+                </FieldDescription>
+                <Input
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  placeholder=""
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
           <Controller
             control={form.control}
             name="author"
