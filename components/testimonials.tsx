@@ -44,7 +44,7 @@ export function Testimonials({ filter }: Props) {
   });
 
   return (
-    <>
+    <div className="grid gap-8">
       {results.map((testimonial) => (
         <TestimonialContext.Provider
           key={testimonial._id}
@@ -80,6 +80,6 @@ export function Testimonials({ filter }: Props) {
           <Spinner className="size-8 mx-auto" />
         )}
       </div>
-    </>
+    </div>
   );
 }
