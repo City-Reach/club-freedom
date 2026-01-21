@@ -22,7 +22,13 @@ export function Testimonials() {
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
-    { searchQuery: searchQuery ? searchQuery : undefined },
+    {
+      searchQuery: searchQuery ? searchQuery : undefined,
+      filters: {
+        author: filter.author,
+        types: filter.testimonialTypes,
+      },
+    },
     { initialNumItems: 10 },
   );
 

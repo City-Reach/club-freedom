@@ -1,4 +1,4 @@
-import { type PaginationResult, paginationOptsValidator } from "convex/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
@@ -10,10 +10,14 @@ export const getTestimonials = query({
   args: {
     paginationOpts: paginationOptsValidator,
     searchQuery: v.optional(v.string()),
+    filters: v.optional(
+      v.object({
+        author: v.optional(v.string()),
+        types: v.optional(v.array(v.string())),
+      }),
+    ),
   },
-  handler: async (ctx, { paginationOpts, searchQuery }) => {
-    const identity = await ctx.auth.getUserIdentity();
-
+  handler: async (ctx, { paginationOpts, searchQuery = "", filters = {} }) => {
     const testimonialQuery = ctx.db.query("testimonials");
 
     const testimonialQuerySearch =
@@ -29,11 +33,27 @@ export const getTestimonials = query({
       },
     });
 
-    const filteredTestimonialQuery = testimonialQuerySearch
+    const readyTestimonialQuery = testimonialQuerySearch
       .filter((q) => q.neq(q.field("title"), undefined))
       .filter((q) => q.neq(q.field("summary"), undefined))
       .filter((q) => q.neq(q.field("testimonialText"), undefined))
       .filter((q) => (canApprove ? true : q.eq(q.field("approved"), true)));
+
+    const filteredTestimonialQuery = readyTestimonialQuery
+      .filter((q) => {
+        if (!filters.types || filters.types.length === 0) {
+          return true;
+        }
+        return q.or(
+          ...filters.types.map((type) => q.eq(q.field("media_type"), type)),
+        );
+      })
+      .filter((q) => {
+        if (!filters.author?.trim()) {
+          return true;
+        }
+        return q.eq(q.field("name"), filters.author);
+      });
 
     const { page, ...rest } =
       await filteredTestimonialQuery.paginate(paginationOpts);
