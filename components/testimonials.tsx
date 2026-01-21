@@ -27,6 +27,8 @@ export function Testimonials() {
       filters: {
         author: filter.author,
         types: filter.testimonialTypes,
+        before: filter.before?.getTime() || undefined,
+        after: filter.after?.getTime() || undefined,
       },
     },
     { initialNumItems: 10 },

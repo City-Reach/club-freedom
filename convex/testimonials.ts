@@ -14,6 +14,8 @@ export const getTestimonials = query({
       v.object({
         author: v.optional(v.string()),
         types: v.optional(v.array(v.string())),
+        before: v.optional(v.float64()),
+        after: v.optional(v.float64()),
       }),
     ),
   },
@@ -53,6 +55,18 @@ export const getTestimonials = query({
           return true;
         }
         return q.eq(q.field("name"), filters.author);
+      })
+      .filter((q) => {
+        if (!filters.before) {
+          return true;
+        }
+        return q.lt(q.field("_creationTime"), filters.before);
+      })
+      .filter((q) => {
+        if (!filters.after) {
+          return true;
+        }
+        return q.gt(q.field("_creationTime"), filters.after);
       });
 
     const { page, ...rest } =
