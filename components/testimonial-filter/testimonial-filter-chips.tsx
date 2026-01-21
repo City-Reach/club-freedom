@@ -2,38 +2,77 @@ import { XIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { getTestimonialTypeLabel, useTestimonialFilter } from "./schema";
 import { formatDate } from "./testimonial-date-input";
+import { Button } from "../ui/button";
+import { set } from "zod/v3";
 
 export default function TestimonialFilterChips() {
   const [filter, setFilter] = useTestimonialFilter();
 
+  const filterIsActive =
+    filter.author ||
+    filter.testimonialTypes.length > 0 ||
+    filter.before ||
+    filter.after;
+
+  if (!filterIsActive) {
+    return null;
+  }
+
   return (
-    <div className="flex gap-2">
-      {filter.author ? (
-        <FilterBadge
-          label={`Author: ${filter.author}`}
-          onReset={() => setFilter((filter) => ({ ...filter, author: null }))}
-        />
-      ) : null}
-      {filter.testimonialTypes?.length ? (
-        <FilterBadge
-          label={`Types: ${filter.testimonialTypes.map(getTestimonialTypeLabel).join(", ")}`}
-          onReset={() =>
-            setFilter((filter) => ({ ...filter, testimonialTypes: [] }))
-          }
-        />
-      ) : null}
-      {filter.before ? (
-        <FilterBadge
-          label={`Before: ${formatDate(filter.before)}`}
-          onReset={() => setFilter((filter) => ({ ...filter, before: null }))}
-        />
-      ) : null}
-      {filter.after ? (
-        <FilterBadge
-          label={`After: ${formatDate(filter.after)}`}
-          onReset={() => setFilter((filter) => ({ ...filter, after: null }))}
-        />
-      ) : null}
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div className="font-semibold">Filters</div>
+        <Button
+          variant="link"
+          size="sm"
+          className="px-0 cursor-pointer"
+          onClick={() => {
+            setFilter((filter) => ({
+              q: filter.q,
+              author: null,
+              testimonialTypes: null,
+              before: null,
+              after: null,
+            }));
+          }}
+        >
+          Reset filter
+        </Button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {filter.author ? (
+          <FilterBadge
+            label={`Author: ${filter.author}`}
+            onReset={() => setFilter((filter) => ({ ...filter, author: null }))}
+          />
+        ) : null}
+        {filter.testimonialTypes.map((type) => (
+          <FilterBadge
+            key={type}
+            label={getTestimonialTypeLabel(type)}
+            onReset={() =>
+              setFilter((filter) => ({
+                ...filter,
+                testimonialTypes: filter.testimonialTypes.filter(
+                  (t) => t !== type,
+                ),
+              }))
+            }
+          />
+        ))}
+        {filter.before ? (
+          <FilterBadge
+            label={`Before ${formatDate(filter.before)}`}
+            onReset={() => setFilter((filter) => ({ ...filter, before: null }))}
+          />
+        ) : null}
+        {filter.after ? (
+          <FilterBadge
+            label={`After ${formatDate(filter.after)}`}
+            onReset={() => setFilter((filter) => ({ ...filter, after: null }))}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
