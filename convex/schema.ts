@@ -19,7 +19,15 @@ export default defineSchema({
     searchText: v.optional(v.string()),
     approved: v.optional(v.boolean()), // Whether the testimonial is approved for display
     processingStatus: v.optional(processingStatusSchema),
-  }).searchIndex("search_posts", {
-    searchField: "searchText",
-  }),
+  })
+    .index("by_name", {
+      fields: ["name"],
+    })
+    .index("by_mediaType", {
+      fields: ["media_type"],
+    })
+    .searchIndex("search_posts", {
+      searchField: "searchText",
+      filterFields: ["media_type", "_creationTime", "name"],
+    }),
 });
