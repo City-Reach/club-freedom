@@ -139,10 +139,10 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <Controller
                   control={form.control}
-                  name="before"
+                  name="after"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Before</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>From</FieldLabel>
                       <TestimonialDateInput
                         date={field.value || undefined}
                         onDateChange={field.onChange}
@@ -152,10 +152,10 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
                 />
                 <Controller
                   control={form.control}
-                  name="after"
+                  name="before"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>After</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>To</FieldLabel>
                       <TestimonialDateInput
                         date={field.value || undefined}
                         onDateChange={field.onChange}
