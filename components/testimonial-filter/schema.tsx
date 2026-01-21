@@ -29,8 +29,8 @@ export const testimonialFilterParams = {
   testimonialTypes: parseAsArrayOf(
     parseAsStringLiteral(testimonialTypes),
   ).withDefault([]),
-  before: parseAsIsoDate,
-  after: parseAsIsoDate,
+  from: parseAsIsoDate,
+  to: parseAsIsoDate,
 };
 
 export const testimonialFilterSchema = createStandardSchemaV1(

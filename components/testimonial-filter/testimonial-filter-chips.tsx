@@ -1,9 +1,8 @@
 import { XIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import { getTestimonialTypeLabel, useTestimonialFilter } from "./schema";
 import { formatDate } from "./testimonial-date-input";
-import { Button } from "../ui/button";
-import { set } from "zod/v3";
 
 export default function TestimonialFilterChips() {
   const [filter, setFilter] = useTestimonialFilter();
@@ -11,8 +10,8 @@ export default function TestimonialFilterChips() {
   const filterIsActive =
     filter.author ||
     filter.testimonialTypes.length > 0 ||
-    filter.before ||
-    filter.after;
+    filter.to ||
+    filter.from;
 
   if (!filterIsActive) {
     return null;
@@ -31,8 +30,8 @@ export default function TestimonialFilterChips() {
               q: filter.q,
               author: null,
               testimonialTypes: null,
-              before: null,
-              after: null,
+              to: null,
+              from: null,
             }));
           }}
         >
@@ -60,16 +59,16 @@ export default function TestimonialFilterChips() {
             }
           />
         ))}
-        {filter.before ? (
+        {filter.to ? (
           <FilterBadge
-            label={`Before ${formatDate(filter.before)}`}
-            onReset={() => setFilter((filter) => ({ ...filter, before: null }))}
+            label={`To ${formatDate(filter.to)}`}
+            onReset={() => setFilter((filter) => ({ ...filter, to: null }))}
           />
         ) : null}
-        {filter.after ? (
+        {filter.from ? (
           <FilterBadge
-            label={`After ${formatDate(filter.after)}`}
-            onReset={() => setFilter((filter) => ({ ...filter, after: null }))}
+            label={`From ${formatDate(filter.from)}`}
+            onReset={() => setFilter((filter) => ({ ...filter, from: null }))}
           />
         ) : null}
       </div>

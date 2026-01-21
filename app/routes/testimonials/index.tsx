@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
+import TestimonialFilterChips from "@/components/testimonial-filter/testimonial-filter-chips";
 import TestimonialFilterDialog from "@/components/testimonial-filter/testimonial-filter-dialog";
 import TestimonialSearchInput from "@/components/testimonial-filter/testimonial-search-input";
 import { Testimonials } from "@/components/testimonials";
 import { Button } from "@/components/ui/button";
-import TestimonialFilterChips from "@/components/testimonial-filter/testimonial-filter-chips";
 
 export const Route = createFileRoute("/testimonials/")({
   ssr: false,

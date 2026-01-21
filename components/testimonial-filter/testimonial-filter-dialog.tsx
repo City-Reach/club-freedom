@@ -139,7 +139,7 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <Controller
                   control={form.control}
-                  name="after"
+                  name="from"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor={field.name}>From</FieldLabel>
@@ -152,7 +152,7 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
                 />
                 <Controller
                   control={form.control}
-                  name="before"
+                  name="to"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor={field.name}>To</FieldLabel>
