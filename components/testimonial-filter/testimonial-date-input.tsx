@@ -1,5 +1,5 @@
 import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "../ui/calendar";
 import {
   InputGroup,
@@ -37,6 +37,11 @@ export default function TestimonialDateInput({ date, onDateChange }: Props) {
   const [open, setOpen] = useState(false);
   const [month, setMonth] = useState<Date | undefined>(date);
   const [value, setValue] = useState(formatDate(date));
+
+  useEffect(() => {
+    setValue(formatDate(date));
+    setMonth(date);
+  }, [date]);
 
   return (
     <InputGroup>

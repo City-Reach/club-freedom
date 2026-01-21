@@ -1,5 +1,6 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -39,6 +40,10 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
     defaultValues: filter,
     resolver: standardSchemaResolver(testimonialFilterSchema),
   });
+
+  useEffect(() => {
+    form.reset(filter);
+  }, [filter, form]);
 
   return (
     <Dialog>
