@@ -20,14 +20,21 @@ export const getTestimonials = query({
     ),
   },
   handler: async (ctx, { paginationOpts, searchQuery = "", filters = {} }) => {
+    const trimmedQuery = searchQuery.trim();
     const testimonialQuery = ctx.db.query("testimonials");
 
-    const testimonialQuerySearch =
-      searchQuery && searchQuery.trim() !== ""
+    const completeTestimonialQuery =
+      trimmedQuery !== ""
         ? testimonialQuery.withSearchIndex("search_posts", (q) =>
-            q.search("searchText", searchQuery.trim()),
+            q
+              .search("searchText", trimmedQuery)
+              .eq("processingStatus", "completed"),
           )
-        : testimonialQuery.order("desc");
+        : testimonialQuery
+            .withIndex("by_processingStatus", (q) =>
+              q.eq("processingStatus", "completed"),
+            )
+            .order("desc");
 
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: {
@@ -35,11 +42,9 @@ export const getTestimonials = query({
       },
     });
 
-    const readyTestimonialQuery = testimonialQuerySearch
-      .filter((q) => q.neq(q.field("title"), undefined))
-      .filter((q) => q.neq(q.field("summary"), undefined))
-      .filter((q) => q.neq(q.field("testimonialText"), undefined))
-      .filter((q) => (canApprove ? true : q.eq(q.field("approved"), true)));
+    const readyTestimonialQuery = completeTestimonialQuery.filter((q) =>
+      canApprove ? true : q.eq(q.field("approved"), true),
+    );
 
     const filteredTestimonialQuery = readyTestimonialQuery
       .filter((q) => {

@@ -20,6 +20,9 @@ export default defineSchema({
     approved: v.optional(v.boolean()), // Whether the testimonial is approved for display
     processingStatus: v.optional(processingStatusSchema),
   })
+    .index("by_processingStatus", {
+      fields: ["processingStatus"],
+    })
     .index("by_name", {
       fields: ["name"],
     })
@@ -28,6 +31,6 @@ export default defineSchema({
     })
     .searchIndex("search_posts", {
       searchField: "searchText",
-      filterFields: ["media_type", "_creationTime", "name"],
+      filterFields: ["media_type", "_creationTime", "name", "processingStatus"],
     }),
 });
