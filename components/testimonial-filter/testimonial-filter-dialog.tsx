@@ -1,6 +1,6 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import type { ReactNode } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -11,10 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import {
-  testimonialFilterSchema,
-  useTestimonialFilter,
-} from "./schema";
+import { testimonialFilterSchema, useTestimonialFilter } from "./schema";
+import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Input } from "../ui/input";
 
 type Props = {
   trigger: ReactNode;
@@ -35,11 +34,28 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
           <DialogTitle>Filter</DialogTitle>
         </DialogHeader>
         <form
-          className="flex"
+          className="flex gap-2"
           id="testimonial-filter"
           onSubmit={form.handleSubmit((value) => setFilter(value))}
         >
-          
+          <Controller
+            control={form.control}
+            name="author"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Author</FieldLabel>
+                <Input
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Author Name"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
         </form>
         <DialogFooter>
           <DialogClose asChild>
@@ -49,7 +65,7 @@ export default function TestimonialFilterDialog({ trigger }: Props) {
           </DialogClose>
           <DialogClose asChild>
             <Button type="submit" form="testimonial-filter">
-              Filter
+              Apply
             </Button>
           </DialogClose>
         </DialogFooter>
