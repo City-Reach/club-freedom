@@ -1,28 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
-import { createStandardSchemaV1, parseAsString } from "nuqs";
-import {
-  testimonialFilterParams,
-  testimonialFilterSchema,
-} from "@/components/testimonial-filter/schema";
 import TestimonialFilterDialog from "@/components/testimonial-filter/testimonial-filter-dialog";
 import TestimonialSearchInput from "@/components/testimonial-filter/testimonial-search-input";
 import { Testimonials } from "@/components/testimonials";
 import { Button } from "@/components/ui/button";
 
-export const testimonialSearchParams = {
-  q: parseAsString.withDefault(""),
-};
-
 export const Route = createFileRoute("/testimonials/")({
   ssr: false,
   component: TestimonialsPage,
-  validateSearch: testimonialFilterSchema,
 });
 
 function TestimonialsPage() {
-  const filter = Route.useSearch();
-  
   return (
     <main className="container mx-auto px-4">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -47,7 +35,7 @@ function TestimonialsPage() {
             }
           />
         </div>
-        <Testimonials filter={filter} />
+        <Testimonials />
       </div>
     </main>
   );

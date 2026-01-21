@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useDebounce } from "@uidotdev/usehooks";
 import { usePaginatedQuery } from "convex/react";
 import { useInView } from "react-intersection-observer";
 import { TestimonialContext } from "@/contexts/testimonial-context";
@@ -11,16 +12,14 @@ import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
 import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
-import type { TestimonialFilter } from "./testimonial-filter/schema";
+import { useTestimonialFilter } from "./testimonial-filter/schema";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
-type Props = {
-  filter: Partial<TestimonialFilter>;
-};
+export function Testimonials() {
+  const [filter] = useTestimonialFilter();
+  const searchQuery = useDebounce(filter.q, 500);
 
-export function Testimonials({ filter }: Props) {
-  const searchQuery = filter.q?.trim() ?? "";
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
     { searchQuery: searchQuery ? searchQuery : undefined },
