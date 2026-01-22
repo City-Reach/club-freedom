@@ -5,42 +5,31 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
-import TestimonialSearchDropdown from "./base/testimonial-search-dropdown";
 import AuthoutInput from "./inputs/author";
 import DateInput from "./inputs/date";
 import FormatInput from "./inputs/format";
-import { getTestimonialTypeLabel, useTestimonialFilter } from "./schema";
+import { getTestimonialFormatLabel, useTestimonialSearchQuery } from "./schema";
+import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
-  const [filter, setFilter] = useTestimonialFilter();
-
-  const filterIsActive =
-    filter.author || filter.formats.length > 0 || filter.to || filter.from;
+  const { searchQuery, setSearchQuery, isActive, reset } =
+    useTestimonialSearchQuery();
 
   return (
     <Collapsible className="min-w-0">
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm">Filters</span>
         <span className="flex items-center ml-auto">
-          {filterIsActive && (
-            <Button
-              variant="link"
-              className="cursor-pointer"
-              onClick={() =>
-                setFilter({
-                  author: "",
-                  formats: [],
-                  from: null,
-                  to: null,
-                })
-              }
-            >
+          {isActive && (
+            <Button variant="link" className="cursor-pointer" onClick={reset}>
               Clear Filter
             </Button>
           )}
           <CollapsibleTrigger>
             <Button variant="ghost" size="icon">
-              <SlidersHorizontal />
+              <span className="relative">
+                <SlidersHorizontal />
+              </span>
             </Button>
           </CollapsibleTrigger>
         </span>
@@ -49,37 +38,37 @@ export default function TestimonialFilters() {
         <div className="flex flex-nowrap gap-2 overflow-x-auto pb-2 scrollbar-thin">
           <TestimonialSearchDropdown
             name="Author"
-            displayValue={filter.author}
-            isEnabled={filter.author !== ""}
-            clear={() => setFilter({ author: "" })}
+            displayValue={searchQuery.author}
+            isEnabled={searchQuery.author !== ""}
+            clear={() => setSearchQuery({ author: "" })}
           >
             {({ setOpen }) => <AuthoutInput onSuccess={() => setOpen(false)} />}
           </TestimonialSearchDropdown>
           <TestimonialSearchDropdown
             name="Format"
-            displayValue={filter.formats
-              .map(getTestimonialTypeLabel)
+            displayValue={searchQuery.formats
+              .map(getTestimonialFormatLabel)
               .join(", ")}
-            isEnabled={filter.formats.length > 0}
-            clear={() => setFilter({ formats: [] })}
+            isEnabled={searchQuery.formats.length > 0}
+            clear={() => setSearchQuery({ formats: [] })}
           >
             {() => <FormatInput />}
           </TestimonialSearchDropdown>
           <TestimonialSearchDropdown
             name="From Date"
-            displayValue={formatDate(filter.from)}
-            isEnabled={filter.from !== null}
-            clear={() => setFilter({ from: null })}
+            displayValue={formatDate(searchQuery.from)}
+            isEnabled={searchQuery.from !== null}
+            clear={() => setSearchQuery({ from: null })}
           >
             {({ setOpen }) => (
               <DateInput
-                date={filter.from}
+                date={searchQuery.from}
                 enabledDate={(date) =>
                   date.getTime() <=
-                  Math.min(Date.now(), filter.to?.getTime() || Infinity)
+                  Math.min(Date.now(), searchQuery.to?.getTime() || Infinity)
                 }
                 onDateChange={(date) => {
-                  setFilter({ from: date });
+                  setSearchQuery({ from: date });
                   setOpen(false);
                 }}
               />
@@ -87,19 +76,19 @@ export default function TestimonialFilters() {
           </TestimonialSearchDropdown>
           <TestimonialSearchDropdown
             name="To Date"
-            displayValue={formatDate(filter.to)}
-            isEnabled={filter.to !== null}
-            clear={() => setFilter({ to: null })}
+            displayValue={formatDate(searchQuery.to)}
+            isEnabled={searchQuery.to !== null}
+            clear={() => setSearchQuery({ to: null })}
           >
             {({ setOpen }) => (
               <DateInput
-                date={filter.to}
+                date={searchQuery.to}
                 enabledDate={(date) =>
                   date.getTime() <= Date.now() &&
-                  date.getTime() >= Math.max(filter.from?.getTime() || 0)
+                  date.getTime() >= Math.max(searchQuery.from?.getTime() || 0)
                 }
                 onDateChange={(date) => {
-                  setFilter({ to: date });
+                  setSearchQuery({ to: date });
                   setOpen(false);
                 }}
               />

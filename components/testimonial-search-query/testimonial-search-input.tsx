@@ -1,20 +1,17 @@
 import type { ComponentProps } from "react";
 import { Input } from "../ui/input";
-import { useTestimonialFilter } from "./schema";
+import { useTestimonialSearchQuery } from "./schema";
 
 export default function TestimonialSearchInput(
   props: ComponentProps<typeof Input>,
 ) {
-  const [search, setSearch] = useTestimonialFilter();
+  const { searchQuery, setSearchQuery } = useTestimonialSearchQuery();
   return (
     <Input
-      value={search.q}
+      value={searchQuery.q}
       placeholder="Search testimonials"
       onChange={(e) => {
-        setSearch((search) => ({
-          ...search,
-          q: e.target.value,
-        }));
+        setSearchQuery({ q: e.target.value });
       }}
       {...props}
     />

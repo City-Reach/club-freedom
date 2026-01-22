@@ -2,17 +2,17 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useTestimonialFilter } from "../schema";
+import { useTestimonialSearchQuery } from "../schema";
 
 type Props = {
   onSuccess?: () => void;
 };
 
 export default function AuthoutInput({ onSuccess }: Props) {
-  const [filter, setFilter] = useTestimonialFilter();
+  const { searchQuery, setSearchQuery } = useTestimonialSearchQuery();
   const form = useForm({
     defaultValues: {
-      author: filter.author,
+      author: searchQuery.author,
     },
   });
 
@@ -20,7 +20,7 @@ export default function AuthoutInput({ onSuccess }: Props) {
     <form
       className="flex flex-col gap-2 p-1"
       onSubmit={form.handleSubmit((values) => {
-        setFilter({ author: values.author });
+        setSearchQuery({ author: values.author });
         onSuccess?.();
       })}
     >

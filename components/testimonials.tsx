@@ -12,23 +12,23 @@ import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
 import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
-import { useTestimonialFilter } from "./testimonial-search/schema";
+import { useTestimonialSearchQuery } from "./testimonial-search-query/schema";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
 export function Testimonials() {
-  const [filter] = useTestimonialFilter();
-  const searchQuery = useDebounce(filter.q, 500);
+  const { searchQuery } = useTestimonialSearchQuery();
+  const searchText = useDebounce(searchQuery.q, 500);
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.testimonials.getTestimonials,
     {
-      searchQuery: searchQuery ? searchQuery : undefined,
+      searchQuery: searchText,
       filters: {
-        author: filter.author,
-        types: filter.formats,
-        before: filter.to?.getTime() || undefined,
-        after: filter.from?.getTime() || undefined,
+        author: searchQuery.author,
+        types: searchQuery.formats,
+        before: searchQuery.to?.getTime() || undefined,
+        after: searchQuery.from?.getTime() || undefined,
       },
     },
     { initialNumItems: 10 },

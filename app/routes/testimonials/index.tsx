@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import TestimonialFilters from "@/components/testimonial-search/testimonial-filters";
-import TestimonialSearchInput from "@/components/testimonial-search/testimonial-search-input";
+import TestimonialFilters from "@/components/testimonial-search-query/testimonial-filters";
+import TestimonialSearchInput from "@/components/testimonial-search-query/testimonial-search-input";
 import { Testimonials } from "@/components/testimonials";
 
 export const Route = createFileRoute("/testimonials/")({

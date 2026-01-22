@@ -1,19 +1,19 @@
 import { DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
 import {
-  getTestimonialTypeLabel,
-  testimonialTypes,
-  useTestimonialFilter,
+  getTestimonialFormatLabel,
+  testimonialFormats,
+  useTestimonialSearchQuery,
 } from "../schema";
 
 export default function FormatInput() {
-  const [filter, setFilter] = useTestimonialFilter();
-  return testimonialTypes.map((format) => (
+  const { searchQuery, setSearchQuery } = useTestimonialSearchQuery();
+  return testimonialFormats.map((format) => (
     <DropdownMenuCheckboxItem
       key={format}
-      checked={filter.formats.includes(format)}
+      checked={searchQuery.formats.includes(format)}
       onSelect={(e) => e.preventDefault()}
       onCheckedChange={(checked) =>
-        setFilter((filter) => ({
+        setSearchQuery((filter) => ({
           ...filter,
           formats: checked
             ? [...filter.formats, format]
@@ -21,7 +21,7 @@ export default function FormatInput() {
         }))
       }
     >
-      {getTestimonialTypeLabel(format)}
+      {getTestimonialFormatLabel(format)}
     </DropdownMenuCheckboxItem>
   ));
 }
