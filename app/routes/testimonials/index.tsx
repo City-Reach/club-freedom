@@ -22,11 +22,11 @@ function TestimonialsPage() {
           </p>
         </div>
       </div>
-      <div className="w-full grid gap-8 max-w-lg mx-auto mb-24">
-        <div className="flex gap-2">
+      <div className="w-full grid gap-8 max-w-lg mx-auto mb-24 min-w-0">
+        <div className="grid min-w-0">
           <TestimonialSearchInput />
+          <TestimonialFilters />
         </div>
-        <TestimonialFilters />
         <Testimonials />
       </div>
     </main>
