@@ -26,9 +26,9 @@ export const getTestimonialTypeLabel = (
 export const testimonialFilterParams = {
   q: parseAsString.withDefault(""),
   author: parseAsString.withDefault(""),
-  testimonialTypes: parseAsArrayOf(
-    parseAsStringLiteral(testimonialTypes),
-  ).withDefault([]),
+  formats: parseAsArrayOf(parseAsStringLiteral(testimonialTypes)).withDefault(
+    [],
+  ),
   from: parseAsIsoDate,
   to: parseAsIsoDate,
 };

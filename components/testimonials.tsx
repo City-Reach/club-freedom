@@ -26,7 +26,7 @@ export function Testimonials() {
       searchQuery: searchQuery ? searchQuery : undefined,
       filters: {
         author: filter.author,
-        types: filter.testimonialTypes,
+        types: filter.formats,
         before: filter.to?.getTime() || undefined,
         after: filter.from?.getTime() || undefined,
       },

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import TestimonialFilter from "@/components/testimonial-search/testimonial-filter";
+import TestimonialFilters from "@/components/testimonial-search/testimonial-filters";
 import TestimonialSearchInput from "@/components/testimonial-search/testimonial-search-input";
 import { Testimonials } from "@/components/testimonials";
 
@@ -26,7 +26,7 @@ function TestimonialsPage() {
         <div className="flex gap-2">
           <TestimonialSearchInput />
         </div>
-        <TestimonialFilter />
+        <TestimonialFilters />
         <Testimonials />
       </div>
     </main>
