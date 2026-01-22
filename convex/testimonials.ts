@@ -42,8 +42,8 @@ export const getTestimonials = query({
       },
     });
 
-    const readyTestimonialQuery = completeTestimonialQuery.filter((q) =>
-      canApprove ? true : q.eq(q.field("approved"), true),
+    const readyTestimonialQuery = completeTestimonialQuery.filter(
+      (q) => canApprove || q.eq(q.field("approved"), true),
     );
 
     const filteredTestimonialQuery = readyTestimonialQuery
@@ -56,23 +56,19 @@ export const getTestimonials = query({
         );
       })
       .filter((q) => {
-        if (!filters.author?.trim()) {
+        const trimmedAuthor = filters.author?.trim() || "";
+        if (!trimmedAuthor) {
           return true;
         }
-        return q.eq(q.field("name"), filters.author);
+        return q.eq(q.field("name"), trimmedAuthor);
       })
-      .filter((q) => {
-        if (!filters.before) {
-          return true;
-        }
-        return q.lt(q.field("_creationTime"), filters.before);
-      })
-      .filter((q) => {
-        if (!filters.after) {
-          return true;
-        }
-        return q.gt(q.field("_creationTime"), filters.after);
-      });
+      .filter(
+        (q) =>
+          !filters.before || q.lte(q.field("_creationTime"), filters.before),
+      )
+      .filter(
+        (q) => !filters.after || q.gte(q.field("_creationTime"), filters.after),
+      );
 
     const { page, ...rest } =
       await filteredTestimonialQuery.paginate(paginationOpts);

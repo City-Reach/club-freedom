@@ -31,6 +31,6 @@ export default defineSchema({
     })
     .searchIndex("search_posts", {
       searchField: "searchText",
-      filterFields: ["media_type", "_creationTime", "name", "processingStatus"],
+      filterFields: ["processingStatus"],
     }),
 });
