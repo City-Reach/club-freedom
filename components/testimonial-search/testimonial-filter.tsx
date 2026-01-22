@@ -1,5 +1,6 @@
 import { Button } from "../ui/button";
 import { useTestimonialFilter } from "./schema";
+import TestimonialFilterAuthor from "./testimonial-filter-author";
 import TestimonialFilterFormat from "./testimonial-filter-format";
 import TestimonialFilterFromDate from "./testimonial-filter-from-date";
 import TestimonialFilterToDate from "./testimonial-filter-to-date";
@@ -37,15 +38,10 @@ export default function TestimonialFilterChips() {
       </div>
       {/* Filter buttons */}
       <div className="flex flex-nowrap gap-2 overflow-x-auto pb-2 -mb-2 w-full">
-        <div className="shrink-0">
-          <TestimonialFilterFormat />
-        </div>
-        <div className="shrink-0">
-          <TestimonialFilterFromDate />
-        </div>
-        <div className="shrink-0">
-          <TestimonialFilterToDate />
-        </div>
+        <TestimonialFilterAuthor />
+        <TestimonialFilterFormat />
+        <TestimonialFilterFromDate />
+        <TestimonialFilterToDate />
       </div>
     </div>
   );
