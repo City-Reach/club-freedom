@@ -1,4 +1,5 @@
 import { ChevronDown, PlusIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { ButtonGroup } from "../ui/button-group";
@@ -12,6 +13,7 @@ import TestimonialDateInput, { formatDate } from "./testimonial-date-input";
 
 export default function TestimonialFilterToDate() {
   const [filter, setFilter] = useTestimonialFilter();
+  const [open, setOpen] = useState(false);
 
   return (
     <ButtonGroup>
@@ -26,10 +28,10 @@ export default function TestimonialFilterToDate() {
             })
           }
         >
-          <XIcon /> From Date
+          <XIcon /> To Date
         </Button>
       ) : null}
-      <DropdownMenu>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
@@ -58,7 +60,10 @@ export default function TestimonialFilterToDate() {
               date.getTime() <= Date.now() &&
               date.getTime() >= Math.max(filter.from?.getTime() || 0)
             }
-            onDateChange={(date) => setFilter({ to: date })}
+            onDateChange={(date) => {
+              setFilter({ to: date });
+              setOpen(false);
+            }}
           />
         </DropdownMenuContent>
       </DropdownMenu>

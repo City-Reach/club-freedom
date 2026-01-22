@@ -9,9 +9,11 @@ import {
 } from "../ui/dropdown-menu";
 import { useTestimonialFilter } from "./schema";
 import TestimonialDateInput, { formatDate } from "./testimonial-date-input";
+import { useState } from "react";
 
 export default function TestimonialFilterFromDate() {
   const [filter, setFilter] = useTestimonialFilter();
+  const [open, setOpen] = useState(false);
 
   return (
     <ButtonGroup>
@@ -29,7 +31,7 @@ export default function TestimonialFilterFromDate() {
           <XIcon /> From Date
         </Button>
       ) : null}
-      <DropdownMenu>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
@@ -58,7 +60,10 @@ export default function TestimonialFilterFromDate() {
               date.getTime() <=
               Math.min(Date.now(), filter.to?.getTime() || Infinity)
             }
-            onDateChange={(date) => setFilter({ from: date })}
+            onDateChange={(date) => {
+              setFilter({ from: date });
+              setOpen(false);
+            }}
           />
         </DropdownMenuContent>
       </DropdownMenu>

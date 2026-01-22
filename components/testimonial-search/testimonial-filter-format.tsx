@@ -65,6 +65,7 @@ export default function TestimonialFormatFilter() {
               <DropdownMenuCheckboxItem
                 key={format}
                 checked={filter.testimonialTypes.includes(format)}
+                onSelect={(e) => e.preventDefault()}
                 onCheckedChange={(checked) =>
                   setFilter((filter) => ({
                     ...filter,
