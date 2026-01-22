@@ -1,4 +1,5 @@
 import { SlidersHorizontal } from "lucide-react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import {
   Collapsible,
@@ -12,24 +13,37 @@ import { getTestimonialFormatLabel, useTestimonialSearchQuery } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
+  const [open, setOpen] = useState(false);
   const { searchQuery, setSearchQuery, isActive, reset } =
     useTestimonialSearchQuery();
 
+  const shouldOpen = open || isActive;
+
   return (
-    <Collapsible className="min-w-0">
+    <Collapsible className="min-w-0" open={shouldOpen} onOpenChange={setOpen}>
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm">Filters</span>
         <span className="flex items-center ml-auto">
           {isActive && (
-            <Button variant="link" className="cursor-pointer" onClick={reset}>
+            <Button
+              variant="link"
+              size="sm"
+              className="cursor-pointer"
+              onClick={() => {
+                reset();
+                setOpen(true);
+              }}
+            >
               Clear Filter
             </Button>
           )}
           <CollapsibleTrigger>
-            <Button variant="ghost" size="icon">
-              <span className="relative">
-                <SlidersHorizontal />
-              </span>
+            <Button
+              variant={shouldOpen ? "secondary" : "ghost"}
+              size="icon-sm"
+              className="cursor-pointer"
+            >
+              <SlidersHorizontal />
             </Button>
           </CollapsibleTrigger>
         </span>
