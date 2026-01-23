@@ -22,6 +22,18 @@ export const getTestimonialFormatLabel = (
   }
 };
 
+export const sortOrders = ["newest", "oldest", "relevant"] as const;
+export const getSortOrderLabel = (order: (typeof sortOrders)[number]) => {
+  switch (order) {
+    case "newest":
+      return "Newest";
+    case "oldest":
+      return "Oldest";
+    case "relevant":
+      return "Relevant";
+  }
+};
+
 export const testimonialSearchQueryParams = {
   q: parseAsString.withDefault(""),
   author: parseAsString.withDefault(""),
@@ -30,6 +42,7 @@ export const testimonialSearchQueryParams = {
   ),
   from: parseAsIsoDate,
   to: parseAsIsoDate,
+  order: parseAsStringLiteral(sortOrders),
 };
 
 export const testimonialSearchQuerySchema = createStandardSchemaV1(
