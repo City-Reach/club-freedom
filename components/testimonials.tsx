@@ -1,10 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
-import { usePaginatedQuery } from "convex/react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { TestimonialContext } from "@/contexts/testimonial-context";
-import { api } from "@/convex/_generated/api";
-import { hasPermissionQuery } from "@/lib/query";
+import { hasPermissionQuery, useInfiniteTestimonialQuery } from "@/lib/query";
 import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
 import TestimonialCardMedia from "./testimonial-card/testimonial-card-media";
@@ -20,66 +19,61 @@ export function Testimonials() {
   const { searchQuery } = useTestimonialSearchQuery();
   const searchText = useDebounce(searchQuery.q, 500);
 
-  const { results, status, loadMore } = usePaginatedQuery(
-    api.testimonials.getTestimonials,
-    {
-      searchQuery: searchText,
-      filters: {
-        author: searchQuery.author,
-        types: searchQuery.formats,
-        before: searchQuery.to?.getTime() || undefined,
-        after: searchQuery.from?.getTime() || undefined,
-      },
-    },
-    { initialNumItems: 10 },
-  );
-
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteTestimonialQuery({
+      ...searchQuery,
+      q: searchText,
+    });
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
       testimonial: ["approve"],
     }),
   );
 
-  const { ref } = useInView({
+  const { ref, inView } = useInView({
     rootMargin: "400px",
-    onChange: (inView) => {
-      if (results.length && inView && status === "CanLoadMore") {
-        console.log("Loading more testimonials...", Date.now());
-        loadMore(5);
-      }
-    },
   });
+
+  // Fetch next page if element is in view and hasNextPage becomes true
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      console.log("Fetching next page...", Date.now());
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="grid gap-8">
-      {results.map((testimonial) => (
-        <TestimonialContext.Provider
-          key={testimonial._id}
-          value={{ testimonial }}
-        >
-          <TestimonialCardShell>
-            <CardHeader>
-              <div className="flex justify-between">
-                <TestimonialCardTitle />
-                {canApprove && <TestimonialCardApproval />}
-              </div>
-              <TestimonialCardInfo />
-            </CardHeader>
-            <CardContent>
-              {testimonial.mediaUrl ? (
-                <div className="space-y-2">
-                  <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
-                  <TestimonialCardSummary />
+      {data?.pages
+        .flatMap((page) => page.page)
+        .map((testimonial) => (
+          <TestimonialContext.Provider
+            key={testimonial._id}
+            value={{ testimonial }}
+          >
+            <TestimonialCardShell>
+              <CardHeader>
+                <div className="flex justify-between">
+                  <TestimonialCardTitle />
+                  {canApprove && <TestimonialCardApproval />}
                 </div>
-              ) : (
-                <TestimonialCardText />
-              )}
-            </CardContent>
-          </TestimonialCardShell>
-        </TestimonialContext.Provider>
-      ))}
+                <TestimonialCardInfo />
+              </CardHeader>
+              <CardContent>
+                {testimonial.mediaUrl ? (
+                  <div className="space-y-2">
+                    <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
+                    <TestimonialCardSummary />
+                  </div>
+                ) : (
+                  <TestimonialCardText />
+                )}
+              </CardContent>
+            </TestimonialCardShell>
+          </TestimonialContext.Provider>
+        ))}
       <div ref={ref}>
-        {status === "Exhausted" ? (
+        {!hasNextPage && !isLoading ? (
           <div className="text-center text-sm text-muted-foreground">
             No more testimonials to load.
           </div>
