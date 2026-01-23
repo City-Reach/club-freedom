@@ -40,7 +40,7 @@ export const testimonialSearchQuerySchema = createStandardSchemaV1(
   },
 );
 
-export type TestimonialFilter = inferParserType<
+export type TestimonialSearchQuery = inferParserType<
   typeof testimonialSearchQueryParams
 >;
 
