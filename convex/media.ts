@@ -54,10 +54,8 @@ export const generateMediaDownloadUrl = action({
 export const deleteMedia = action({
   args: { storageId: v.string() },
   handler: async (ctx, { storageId }) => {
-    await ctx.runMutation(
-      api.r2.deleteObject, {
-        key: storageId,
-      },
-    );
+    await ctx.runMutation(api.r2.deleteObject, {
+      key: storageId,
+    });
   },
 });

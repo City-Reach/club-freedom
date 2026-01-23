@@ -32,10 +32,10 @@ triggers.register("testimonials", async (ctx, change) => {
 
   if (
     (oldEmail === email &&
-    oldName === name &&
-    oldSummary === summary &&
-    oldText === text &&
-    oldTitle === title) ||
+      oldName === name &&
+      oldSummary === summary &&
+      oldText === text &&
+      oldTitle === title) ||
     change.operation === "delete"
   ) {
     return;
@@ -49,7 +49,11 @@ triggers.register("testimonials", async (ctx, change) => {
   const oldMediaId = change.oldDoc?.storageId;
   const mediaId = change.newDoc?.storageId;
 
-  if (oldMediaId === mediaId || !mediaId?.startsWith(TEMP_TESTIMONIAL_FOLDER) || change.operation === "delete") {
+  if (
+    oldMediaId === mediaId ||
+    !mediaId?.startsWith(TEMP_TESTIMONIAL_FOLDER) ||
+    change.operation === "delete"
+  ) {
     return;
   }
 
@@ -83,7 +87,7 @@ triggers.register("testimonials", async (ctx, change) => {
     return;
   }
   await ctx.scheduler.runAfter(0, api.media.deleteMedia, {
-    storageId: oldStorageId
+    storageId: oldStorageId,
   });
 });
 
