@@ -20,7 +20,7 @@ export default function TestimonialFilters() {
   const shouldOpen = open || isActive;
 
   return (
-    <Collapsible className="min-w-0" open={shouldOpen} onOpenChange={setOpen}>
+    <Collapsible open={shouldOpen} onOpenChange={setOpen}>
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm">Filters</span>
         <span className="flex items-center ml-auto">
@@ -37,7 +37,7 @@ export default function TestimonialFilters() {
               Clear Filter
             </Button>
           )}
-          <CollapsibleTrigger>
+          <CollapsibleTrigger asChild>
             <Button
               variant={shouldOpen ? "secondary" : "ghost"}
               size="icon-sm"
@@ -48,8 +48,8 @@ export default function TestimonialFilters() {
           </CollapsibleTrigger>
         </span>
       </div>
-      <CollapsibleContent className="overflow-hidden">
-        <div className="flex flex-nowrap gap-2 overflow-x-auto pb-2 scrollbar-thin">
+      <CollapsibleContent>
+        <div className="flex flex-wrap gap-2">
           <TestimonialSearchDropdown
             name="Author"
             displayValue={searchQuery.author}
