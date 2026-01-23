@@ -12,6 +12,7 @@ export default function DateInput({ date, onDateChange, enabledDate }: Props) {
 
   return (
     <Calendar
+      className="p-0"
       mode="single"
       timeZone="UTC"
       captionLayout="dropdown"

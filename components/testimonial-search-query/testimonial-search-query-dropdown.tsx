@@ -7,11 +7,7 @@ import {
 } from "react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type Props = {
   name: string;
@@ -40,8 +36,8 @@ export default function TestimonialSearchDropdown({
           <XIcon /> {name}
         </Button>
       ) : null}
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           {isEnabled ? (
             <Button
               size="sm"
@@ -56,11 +52,11 @@ export default function TestimonialSearchDropdown({
               <PlusIcon /> {name}
             </Button>
           )}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-fit">
           {children({ open, setOpen })}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </PopoverContent>
+      </Popover>
     </ButtonGroup>
   );
 }

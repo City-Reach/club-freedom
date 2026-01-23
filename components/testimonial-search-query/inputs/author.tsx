@@ -18,7 +18,7 @@ export default function AuthoutInput({ onSuccess }: Props) {
 
   return (
     <form
-      className="flex flex-col gap-2 p-1"
+      className="flex flex-col gap-2"
       onSubmit={form.handleSubmit((values) => {
         setSearchQuery({ author: values.author });
         onSuccess?.();
