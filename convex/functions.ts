@@ -31,11 +31,12 @@ triggers.register("testimonials", async (ctx, change) => {
   const title = change.newDoc?.title;
 
   if (
-    oldEmail === email &&
+    (oldEmail === email &&
     oldName === name &&
     oldSummary === summary &&
     oldText === text &&
-    oldTitle === title
+    oldTitle === title) ||
+    change.operation === "delete"
   ) {
     return;
   }
@@ -48,7 +49,7 @@ triggers.register("testimonials", async (ctx, change) => {
   const oldMediaId = change.oldDoc?.storageId;
   const mediaId = change.newDoc?.storageId;
 
-  if (oldMediaId === mediaId || !mediaId?.startsWith(TEMP_TESTIMONIAL_FOLDER)) {
+  if (oldMediaId === mediaId || !mediaId?.startsWith(TEMP_TESTIMONIAL_FOLDER) || change.operation === "delete") {
     return;
   }
 
@@ -76,15 +77,22 @@ triggers.register("testimonials", async (ctx, change) => {
   });
 });
 
+triggers.register("testimonials", async (ctx, change) => {
+  const oldStorageId = change.oldDoc?.storageId;
+  if (change.operation !== "delete" || !oldStorageId) {
+    return;
+  }
+  await ctx.scheduler.runAfter(0, api.media.deleteMedia, {
+    storageId: oldStorageId
+  });
+});
+
 // Trigger when the transcript changes
 triggers.register("testimonials", async (ctx, change) => {
   const oldText = change.oldDoc?.testimonialText;
   const newText = change.newDoc?.testimonialText;
 
-  if (oldText === newText) {
-    return;
-  }
-  if (!newText) {
+  if (oldText === newText || !newText || change.operation === "delete") {
     return;
   }
 

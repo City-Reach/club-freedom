@@ -112,10 +112,8 @@ export const deleteTestimonial = mutation({
     });
 
     if (!canDelete) {
-      throw new Error("Forbidden");
+      throw new Error("Testimonial Delete Forbidden");
     }
-    // const doc = await ctx.db.get("testimonials", id);
-    // console.log("Doc before delete:", doc);
     await ctx.db.delete("testimonials", id);
   },
 });
