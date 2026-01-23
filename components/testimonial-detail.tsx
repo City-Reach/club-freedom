@@ -1,6 +1,7 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
+import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -37,6 +38,12 @@ export default function TestimonialDetail({ id }: Props) {
     }),
   );
 
+  const { data: canDelete } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["delete"],
+    }),
+  );
+
   if (testimonial === null) {
     return (
       <main className="max-w-xl mx-auto py-12 px-8 space-y-4">
@@ -61,6 +68,7 @@ export default function TestimonialDetail({ id }: Props) {
             <TestimonialApproval />
           )}
           {canDownload && <TestimonialDownload />}
+          {canDelete && <TestimonialDelete />}
         </div>
         <TestimonialInfo />
         <TestimonialSummary />

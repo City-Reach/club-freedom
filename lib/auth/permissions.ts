@@ -6,7 +6,7 @@ import type {
 import { adminAc, defaultStatements } from "better-auth/plugins/admin/access";
 
 const statement = {
-  testimonial: ["approve", "download"],
+  testimonial: ["approve", "download", "delete"],
   ...defaultStatements,
 } as const;
 
@@ -17,7 +17,7 @@ export const user = ac.newRole({
 });
 
 export const admin = ac.newRole({
-  testimonial: ["approve", "download"],
+  testimonial: ["approve", "download", "delete"],
   ...adminAc.statements,
 });
 
