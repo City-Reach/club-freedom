@@ -47,20 +47,17 @@ export const getTestimonials = query({
     );
 
     const filteredTestimonialQuery = readyTestimonialQuery
-      .filter((q) => {
-        if (!filters.types || filters.types.length === 0) {
-          return true;
-        }
-        return q.or(
-          ...filters.types.map((type) => q.eq(q.field("media_type"), type)),
-        );
-      })
+      .filter(
+        (q) =>
+          !filters.types ||
+          filters.types.length === 0 ||
+          q.or(
+            ...filters.types.map((type) => q.eq(q.field("media_type"), type)),
+          ),
+      )
       .filter((q) => {
         const trimmedAuthor = filters.author?.trim() || "";
-        if (!trimmedAuthor) {
-          return true;
-        }
-        return q.eq(q.field("name"), trimmedAuthor);
+        return !trimmedAuthor || q.eq(q.field("name"), trimmedAuthor);
       })
       .filter(
         (q) =>

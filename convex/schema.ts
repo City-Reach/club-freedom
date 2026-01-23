@@ -23,12 +23,6 @@ export default defineSchema({
     .index("by_processingStatus", {
       fields: ["processingStatus"],
     })
-    .index("by_name", {
-      fields: ["name"],
-    })
-    .index("by_mediaType", {
-      fields: ["media_type"],
-    })
     .searchIndex("search_posts", {
       searchField: "searchText",
       filterFields: ["processingStatus"],
