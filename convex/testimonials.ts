@@ -1,5 +1,6 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { filter } from "convex-helpers/server/filter";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
@@ -55,10 +56,6 @@ export const getTestimonials = query({
             ...filters.types.map((type) => q.eq(q.field("media_type"), type)),
           ),
       )
-      .filter((q) => {
-        const trimmedAuthor = filters.author?.trim() || "";
-        return !trimmedAuthor || q.eq(q.field("name"), trimmedAuthor);
-      })
       .filter(
         (q) =>
           !filters.before || q.lte(q.field("_creationTime"), filters.before),
@@ -67,21 +64,25 @@ export const getTestimonials = query({
         (q) => !filters.after || q.gte(q.field("_creationTime"), filters.after),
       );
 
+    const trimmedAuthor = filters.author?.trim().toLowerCase() || "";
+    const withAuthorTestimonialQuery = trimmedAuthor
+      ? filter(filteredTestimonialQuery, (t) =>
+          t.name.toLowerCase().includes(trimmedAuthor),
+        )
+      : filteredTestimonialQuery;
+
     const { page, ...rest } =
-      await filteredTestimonialQuery.paginate(paginationOpts);
+      await withAuthorTestimonialQuery.paginate(paginationOpts);
 
-    const r2PublicUrl = process.env.R2_PUBLIC_URL;
-
-    const testimonialsWithMedia = await Promise.all(
-      page.map(async (t) => {
+    return {
+      ...rest,
+      page: page.map((t) => {
         const mediaUrl = t.storageId
-          ? `${r2PublicUrl}/${t.storageId}`
+          ? `${process.env.R2_PUBLIC_URL}/${t.storageId}`
           : undefined;
         return { ...t, mediaUrl };
       }),
-    );
-
-    return { ...rest, page: testimonialsWithMedia };
+    };
   },
 });
 
