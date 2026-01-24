@@ -68,7 +68,7 @@ export default function TestimonialDetail({ id }: Props) {
             <TestimonialApproval />
           )}
           {canDownload && <TestimonialDownload />}
-          {canDelete && <TestimonialDelete _id={testimonial._id} />}
+          {canDelete && <TestimonialDelete />}
         </div>
         <TestimonialInfo />
         <TestimonialSummary />

@@ -11,7 +11,6 @@ import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
 import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
-import TestimonialDelete from "./testimonial-detail/testimonial-delete";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
@@ -30,11 +29,6 @@ export function Testimonials({ search }: Props) {
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
       testimonial: ["approve"],
-    }),
-  );
-  const { data: canDelete } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["delete"],
     }),
   );
 
@@ -59,10 +53,7 @@ export function Testimonials({ search }: Props) {
             <CardHeader>
               <div className="flex justify-between items-center">
                 <TestimonialCardTitle />
-                <div className="flex items-center space-x-1">
-                  {canApprove && <TestimonialCardApproval />}
-                  {canDelete && <TestimonialDelete _id={testimonial._id} />}
-                </div>
+                {canApprove && <TestimonialCardApproval />}
               </div>
               <TestimonialCardInfo />
             </CardHeader>

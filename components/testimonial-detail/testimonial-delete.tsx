@@ -14,22 +14,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 
-type Props = {
-  _id: Id<"testimonials">;
-  className?: string;
-};
-export default function TestimonialDelete({
-  _id,
-  className = "text-red-500 h-9 flex items-center",
-}: Props) {
+export default function TestimonialDelete() {
+  const { testimonial } = useTestimonialContext();
   const navigate = useNavigate();
   const deleteTestimonial = useMutation(api.testimonials.deleteTestimonial);
   async function handleDelete() {
     try {
-      await deleteTestimonial({ id: _id });
+      await deleteTestimonial({ id: testimonial._id });
       toast.success("Testimonial deleted successfully");
       await navigate({ to: "/testimonials" });
     } catch (_err) {
@@ -43,11 +37,7 @@ export default function TestimonialDelete({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          className={className}
-          variant="outline"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <Button className="text-red-500" variant="outline">
           <Trash />
         </Button>
       </AlertDialogTrigger>
@@ -60,16 +50,8 @@ export default function TestimonialDelete({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            className="bg-red-500"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete();
-            }}
-          >
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction className="bg-red-500" onClick={handleDelete}>
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>
