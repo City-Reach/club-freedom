@@ -63,7 +63,7 @@ export default function TestimonialDetail({ id }: Props) {
         {testimonial.mediaUrl && (
           <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
         )}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {canApprove && testimonial.processingStatus === "completed" && (
             <TestimonialApproval />
           )}

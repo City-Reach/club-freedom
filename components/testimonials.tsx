@@ -51,7 +51,7 @@ export function Testimonials({ search }: Props) {
         >
           <TestimonialCardShell>
             <CardHeader>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between">
                 <TestimonialCardTitle />
                 {canApprove && <TestimonialCardApproval />}
               </div>
