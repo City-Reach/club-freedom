@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { usePaginatedQuery } from "convex/react";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { TestimonialContext } from "@/contexts/testimonial-context";
-import { api } from "@/convex/_generated/api";
-import { hasPermissionQuery } from "@/lib/query";
+import { hasPermissionQuery, useInfiniteTestimonialQuery } from "@/lib/query";
 import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
 import TestimonialCardMedia from "./testimonial-card/testimonial-card-media";
@@ -11,67 +11,69 @@ import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
 import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "./testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
+import { useTestimonialSearchQuery } from "./testimonial-search-query/schema";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
-type Props = {
-  search: string;
-};
+export function Testimonials() {
+  const { searchQuery } = useTestimonialSearchQuery();
+  const searchText = useDebounce(searchQuery.q, 500);
 
-export function Testimonials({ search }: Props) {
-  const searchQuery = search.trim();
-  const { results, status, loadMore } = usePaginatedQuery(
-    api.testimonials.getTestimonials,
-    { searchQuery: searchQuery ? searchQuery : undefined },
-    { initialNumItems: 10 },
-  );
-
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteTestimonialQuery({
+      ...searchQuery,
+      q: searchText,
+    });
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
       testimonial: ["approve"],
     }),
   );
 
-  const { ref } = useInView({
+  const { ref, inView } = useInView({
     rootMargin: "400px",
-    onChange: (inView) => {
-      if (results.length && inView && status === "CanLoadMore") {
-        console.log("Loading more testimonials...", Date.now());
-        loadMore(5);
-      }
-    },
   });
 
+  // Fetch next page if element is in view and hasNextPage becomes true
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      console.log("Fetching next page...", Date.now());
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   return (
-    <>
-      {results.map((testimonial) => (
-        <TestimonialContext.Provider
-          key={testimonial._id}
-          value={{ testimonial }}
-        >
-          <TestimonialCardShell>
-            <CardHeader>
-              <div className="flex justify-between">
-                <TestimonialCardTitle />
-                {canApprove && <TestimonialCardApproval />}
-              </div>
-              <TestimonialCardInfo />
-            </CardHeader>
-            <CardContent>
-              {testimonial.mediaUrl ? (
-                <div className="space-y-2">
-                  <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
-                  <TestimonialCardSummary />
+    <div className="grid gap-8">
+      {data?.pages
+        .flatMap((page) => page.page)
+        .map((testimonial) => (
+          <TestimonialContext.Provider
+            key={testimonial._id}
+            value={{ testimonial }}
+          >
+            <TestimonialCardShell>
+              <CardHeader>
+                <div className="flex justify-between">
+                  <TestimonialCardTitle />
+                  {canApprove && <TestimonialCardApproval />}
                 </div>
-              ) : (
-                <TestimonialCardText />
-              )}
-            </CardContent>
-          </TestimonialCardShell>
-        </TestimonialContext.Provider>
-      ))}
+                <TestimonialCardInfo />
+              </CardHeader>
+              <CardContent>
+                {testimonial.mediaUrl ? (
+                  <div className="space-y-2">
+                    <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
+                    <TestimonialCardSummary />
+                  </div>
+                ) : (
+                  <TestimonialCardText />
+                )}
+              </CardContent>
+            </TestimonialCardShell>
+          </TestimonialContext.Provider>
+        ))}
       <div ref={ref}>
-        {status === "Exhausted" ? (
+        {!hasNextPage && !isLoading ? (
           <div className="text-center text-sm text-muted-foreground">
             No more testimonials to load.
           </div>
@@ -79,6 +81,6 @@ export function Testimonials({ search }: Props) {
           <Spinner className="size-8 mx-auto" />
         )}
       </div>
-    </>
+    </div>
   );
 }

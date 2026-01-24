@@ -19,7 +19,12 @@ export default defineSchema({
     searchText: v.optional(v.string()),
     approved: v.optional(v.boolean()), // Whether the testimonial is approved for display
     processingStatus: v.optional(processingStatusSchema),
-  }).searchIndex("search_posts", {
-    searchField: "searchText",
-  }),
+  })
+    .index("by_processingStatus", {
+      fields: ["processingStatus"],
+    })
+    .searchIndex("search_posts", {
+      searchField: "searchText",
+      filterFields: ["processingStatus"],
+    }),
 });
