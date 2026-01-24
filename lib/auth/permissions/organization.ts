@@ -1,9 +1,11 @@
 import { createAccessControl, type Subset } from "better-auth/plugins/access";
-import type {
-  AdminOptions,
-  InferAdminRolesFromOption,
-} from "better-auth/plugins/admin";
-import { adminAc, defaultStatements } from "better-auth/plugins/admin/access";
+import type { InferAdminRolesFromOption } from "better-auth/plugins/admin";
+import {
+  adminAc,
+  defaultStatements,
+  memberAc,
+  type OrganizationOptions,
+} from "better-auth/plugins/organization";
 
 const statement = {
   testimonial: ["approve", "download"],
@@ -12,8 +14,9 @@ const statement = {
 
 export const ac = createAccessControl(statement);
 
-export const user = ac.newRole({
+export const member = ac.newRole({
   testimonial: [],
+  ...memberAc.statements,
 });
 
 export const admin = ac.newRole({
@@ -22,19 +25,19 @@ export const admin = ac.newRole({
 });
 
 export const roles = {
-  user,
+  member,
   admin,
 } as const;
 
 export const adminOptions = {
   ac,
   roles,
-} satisfies AdminOptions;
+} satisfies OrganizationOptions;
 
 export type Role = InferAdminRolesFromOption<typeof adminOptions>;
 
 export const ALL_ROLES = Object.keys(roles) as Array<Role>;
 
-export type PermissionCheck = Partial<
+export type OrganizationPermissionCheck = Partial<
   Subset<keyof typeof statement, typeof statement>
 >;

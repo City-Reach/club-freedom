@@ -7,7 +7,7 @@ import {
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import type { auth } from "@/convex/betterAuth/auth";
-import { adminOptions } from "./permissions";
+import { adminOptions } from "./permissions/admin";
 
 export const authClient = createAuthClient({
   plugins: [

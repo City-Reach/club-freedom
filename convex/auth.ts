@@ -6,9 +6,9 @@ import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
 import {
   adminOptions,
-  type PermissionCheck,
+  type AdminPermissionCheck,
   type Role,
-} from "@/lib/auth/permissions";
+} from "@/lib/auth/permissions/admin";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -110,7 +110,7 @@ export const checkUserPermissions = query({
     ctx,
     args: {
       role?: Role;
-      permissions?: PermissionCheck;
+      permissions?: AdminPermissionCheck;
     },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
