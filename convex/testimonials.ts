@@ -1,4 +1,4 @@
-import { type PaginationResult, paginationOptsValidator } from "convex/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
@@ -101,6 +101,20 @@ export const updateTestimonialApproval = mutation({
 
     await ctx.db.patch(id, { approved });
     return { id, approved };
+  },
+});
+
+export const deleteTestimonial = mutation({
+  args: { id: v.id("testimonials") },
+  handler: async (ctx, { id }) => {
+    const canDelete = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: { testimonial: ["delete"] },
+    });
+
+    if (!canDelete) {
+      throw new Error("Testimonial Delete Forbidden");
+    }
+    await ctx.db.delete("testimonials", id);
   },
 });
 
