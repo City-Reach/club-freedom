@@ -4,8 +4,11 @@ import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
-import { adminOptions } from "@/lib/auth/permissions/admin";
-import type { OrganizationPermissionCheck } from "@/lib/auth/permissions/organization";
+import { adminRBAC } from "@/lib/auth/permissions/admin";
+import {
+  type OrganizationPermissionCheck,
+  organizationRBAC,
+} from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -48,8 +51,9 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         authConfig,
         jwksRotateOnTokenGenerationError: true,
       }),
-      admin(adminOptions),
+      admin(adminRBAC),
       organization({
+        ...organizationRBAC,
         schema: {
           organization: {
             additionalFields: {
@@ -109,23 +113,12 @@ export const checkUserPermissions = query({
       permissions?: OrganizationPermissionCheck;
     },
   ) => {
-    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
-
-    try {
-      const { success } = await auth.api.userHasPermission({
-        headers,
-        body: {
-          role: "admin",
-          permissions: {},
-        },
-      });
-      if (success) {
-        return true;
-      }
-    } catch (err) {
-      console.error(err instanceof Error ? err.message : err);
+    const { role } = await authComponent.getAuthUser(ctx);
+    if (role === "admin") {
+      return true;
     }
 
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
     try {
       const { success } = await auth.api.hasPermission({
         headers,

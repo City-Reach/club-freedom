@@ -29,12 +29,12 @@ export const roles = {
   admin,
 } as const;
 
-export const adminOptions = {
+export const adminRBAC = {
   ac,
   roles,
 } satisfies AdminOptions;
 
-export type Role = InferAdminRolesFromOption<typeof adminOptions>;
+export type Role = InferAdminRolesFromOption<typeof adminRBAC>;
 
 export const ALL_ROLES = Object.keys(roles) as Array<Role>;
 
