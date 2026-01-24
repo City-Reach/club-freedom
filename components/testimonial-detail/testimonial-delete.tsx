@@ -37,9 +37,7 @@ export default function TestimonialDelete() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button 
-          variant="destructive" 
-        >
+        <Button variant="destructive">
           <span className="sm:inline hidden">Delete</span>
           <Trash />
         </Button>
