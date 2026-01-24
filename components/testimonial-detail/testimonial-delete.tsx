@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 
@@ -37,7 +37,7 @@ export default function TestimonialDelete() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="text-red-500" variant="outline">
+        <Button variant="destructive" size="icon">
           <Trash />
         </Button>
       </AlertDialogTrigger>
@@ -51,7 +51,7 @@ export default function TestimonialDelete() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className="bg-red-500" onClick={handleDelete}>
+          <AlertDialogAction className={buttonVariants({ variant: "destructive" })} onClick={handleDelete} >
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>
