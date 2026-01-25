@@ -1,9 +1,8 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
-import notFound from "@/components/not-found";
 import TestimonialDetail from "@/components/testimonial-detail";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
