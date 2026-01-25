@@ -17,9 +17,10 @@ import { TestimonialTitle } from "./testimonial-detail/testimonial-title";
 
 type Props = {
   id: Id<"testimonials">;
+  isTemp?: boolean;
 };
 
-export default function TestimonialDetail({ id }: Props) {
+export default function TestimonialDetail({ id, isTemp }: Props) {
   const { data: testimonial } = useSuspenseQuery(
     convexQuery(api.testimonials.getTestimonialById, {
       id: id as Id<"testimonials">,
@@ -64,11 +65,13 @@ export default function TestimonialDetail({ id }: Props) {
           <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
         )}
         <div className="flex flex-wrap gap-2">
-          {canApprove && testimonial.processingStatus === "completed" && (
-            <TestimonialApproval />
-          )}
-          {canDownload && <TestimonialDownload />}
-          {canDelete && <TestimonialDelete />}
+          {canApprove &&
+            !isTemp &&
+            testimonial.processingStatus === "completed" && (
+              <TestimonialApproval />
+            )}
+          {canDownload && !isTemp && <TestimonialDownload />}
+          {canDelete && !isTemp && <TestimonialDelete />}
         </div>
         <TestimonialInfo />
         <TestimonialSummary />
