@@ -34,8 +34,13 @@ function Component() {
       testimonial: ["view"],
     }),
   );
+  let testimonialDetailVew = (
+    <Suspense fallback={<PendingTestimonialDetail />}>
+      <TestimonialDetail id={id as Id<"testimonials">} />
+    </Suspense>
+  );
   if (!canView && !isApproved) {
-    return (
+    testimonialDetailVew = (
       <main className="max-w-xl mx-auto py-12 px-8 flex flex-col items-center">
         <span>You do not have permission to view this testimonial.</span>
       </main>
@@ -49,9 +54,7 @@ function Component() {
           Back
         </Link>
       </Button>
-      <Suspense fallback={<PendingTestimonialDetail />}>
-        <TestimonialDetail id={id as Id<"testimonials">} />
-      </Suspense>
+      {testimonialDetailVew}
     </div>
   );
 }
