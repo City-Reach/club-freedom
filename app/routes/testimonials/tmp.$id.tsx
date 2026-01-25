@@ -1,5 +1,6 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { format } from "date-fns";
 import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
 import TestimonialDetail from "@/components/testimonial-detail";
@@ -24,21 +25,17 @@ export const Route = createFileRoute("/testimonials/tmp/$id")({
     if (Date.now() >= expirationDate) {
       throw notFound();
     }
-    return { timeRemaining: Math.floor((expirationDate - Date.now()) / 60000) };
+    return { expirationDate };
   },
 });
 
 function Component() {
-  const { timeRemaining } = Route.useLoaderData();
-  let timeRemainingString = `${timeRemaining} minutes before this temporary view expires`;
-  if (timeRemaining <= 0) {
-    timeRemainingString =
-      "Less than a minute before this temporary view expires";
-  }
+  const { expirationDate } = Route.useLoaderData();
+  const expirationDateString = `This temporary view expires at ${format(expirationDate, "PPp")}`;
   const { id } = Route.useParams();
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
-      <p>{timeRemainingString}</p>
+      <p>{expirationDateString}</p>
       <Button variant="link" className="px-0!" asChild>
         <Link to="..">
           <ChevronLeft />
