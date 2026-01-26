@@ -2,49 +2,50 @@ import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
-import { Suspense } from "react";
-import TestimonialDetail from "@/components/testimonial-detail";
+import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
+import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
+import TestimonialDownload from "@/components/testimonial-detail/testimonial-download";
+import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
+import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
+import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
+import TestimonialSummary from "@/components/testimonial-detail/testimonial-summary";
+import TestimonialText from "@/components/testimonial-detail/testimonial-text";
+import { TestimonialTitle } from "@/components/testimonial-detail/testimonial-title";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { hasPermissionQuery } from "@/lib/query";
+
 export const Route = createFileRoute("/testimonials/$id")({
   ssr: false,
   component: Component,
-  loader: async (opts) => {
-    const testimonial = await opts.context.queryClient.ensureQueryData(
+  loader: async ({ context, params }) => {
+    const testimonial = await context.queryClient.ensureQueryData(
       convexQuery(api.testimonials.getTestimonialById, {
-        id: opts.params.id as Id<"testimonials">,
+        id: params.id as Id<"testimonials">,
       }),
     );
+
     if (!testimonial) {
       throw notFound();
     }
-    return { isApproved: testimonial.approved };
+
+    const canView = await context.queryClient.ensureQueryData(
+      hasPermissionQuery({
+        testimonial: ["view"],
+      }),
+    );
+
+    if (!canView && !testimonial.approved) {
+      throw notFound();
+    }
+
+    return { testimonial };
   },
 });
 
 function Component() {
-  const { isApproved } = Route.useLoaderData();
-  const { id } = Route.useParams();
-  const { data: canView } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["view"],
-    }),
-  );
-  let testimonialDetailVew = (
-    <Suspense fallback={<PendingTestimonialDetail />}>
-      <TestimonialDetail id={id as Id<"testimonials">} />
-    </Suspense>
-  );
-  if (!canView && !isApproved) {
-    testimonialDetailVew = (
-      <main className="max-w-xl mx-auto py-12 px-8 flex flex-col items-center">
-        <span>You do not have permission to view this testimonial.</span>
-      </main>
-    );
-  }
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
       <Button variant="link" className="px-0!" asChild>
@@ -53,16 +54,53 @@ function Component() {
           Back
         </Link>
       </Button>
-      {testimonialDetailVew}
+      <TestimonialDetail />
     </div>
   );
 }
 
-function PendingTestimonialDetail() {
+export default function TestimonialDetail() {
+  const { testimonial } = Route.useLoaderData();
+
+  const { data: canApprove } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["approve"],
+    }),
+  );
+
+  const { data: canDownload } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["download"],
+    }),
+  );
+
+  const { data: canDelete } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["delete"],
+    }),
+  );
+
   return (
-    <main className="max-w-xl mx-auto py-12 px-8 flex flex-col items-center">
-      <Spinner className="size-8" />
-      <span>Loading testimonial...</span>
-    </main>
+    <TestimonialContext.Provider value={{ testimonial }}>
+      <div className="flex flex-col gap-8">
+        {testimonial.processingStatus === "error" && (
+          <TestimonialProcessingError />
+        )}
+        <TestimonialTitle />
+        {testimonial.mediaUrl && (
+          <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
+        )}
+        <div className="flex flex-wrap gap-2">
+          {canApprove && testimonial.processingStatus === "completed" && (
+            <TestimonialApproval />
+          )}
+          {canDownload && <TestimonialDownload />}
+          {canDelete && <TestimonialDelete />}
+        </div>
+        <TestimonialInfo />
+        <TestimonialSummary />
+        <TestimonialText />
+      </div>
+    </TestimonialContext.Provider>
   );
 }
