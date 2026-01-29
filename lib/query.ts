@@ -24,6 +24,14 @@ export function useInfiniteTestimonialQuery(
   searchQuery: TestimonialSearchQuery,
 ) {
   const convex = useConvex();
+  const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+  const before = searchQuery.to
+    ? searchQuery.to.getTime() - timezoneOffset
+    : undefined;
+  const after = searchQuery.from
+    ? searchQuery.from.getTime() - timezoneOffset
+    : undefined;
+
   const query = useInfiniteQuery({
     queryKey: ["testimonials", searchQuery],
     initialPageParam: null as string | null,
@@ -34,8 +42,8 @@ export function useInfiniteTestimonialQuery(
         filters: {
           author: searchQuery.author,
           types: searchQuery.formats,
-          before: searchQuery.to?.getTime() || undefined,
-          after: searchQuery.from?.getTime() || undefined,
+          before,
+          after,
         },
         paginationOpts: {
           cursor: pageParam,
