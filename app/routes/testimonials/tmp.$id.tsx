@@ -33,7 +33,7 @@ export const Route = createFileRoute("/testimonials/tmp/$id")({
         }),
       );
     } catch (error) {
-      throw NotFound();
+      throw notFound();
     }
 
     if (!testimonial) {
