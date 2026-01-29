@@ -16,16 +16,25 @@ import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { hasPermissionQuery } from "@/lib/query";
+import NotFound from "@/components/not-found";
+import test from "node:test";
+import { ca } from "zod/v4/locales";
 
 export const Route = createFileRoute("/testimonials/$id")({
   ssr: false,
   component: Component,
+  notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
-    const testimonial = await context.queryClient.ensureQueryData(
-      convexQuery(api.testimonials.getTestimonialById, {
-        id: params.id as Id<"testimonials">,
-      }),
-    );
+    let testimonial = null;
+    try {
+      testimonial = await context.queryClient.ensureQueryData(
+        convexQuery(api.testimonials.getTestimonialById, {
+          id: params.id as Id<"testimonials">,
+        }),
+      );
+    } catch (error) {
+      throw notFound();
+    }
 
     if (!testimonial) {
       throw notFound();
