@@ -19,10 +19,10 @@ export const useTestimonialSearchQuery = () => {
   }, [searchQuery, isPending]);
 
   const isActive =
-    searchQuery.author !== "" ||
-    searchQuery.formats.length > 0 ||
-    searchQuery.from !== null ||
-    searchQuery.to !== null;
+    frozenSearchQueryRef.current.author !== "" ||
+    frozenSearchQueryRef.current.formats.length > 0 ||
+    frozenSearchQueryRef.current.from !== null ||
+    frozenSearchQueryRef.current.to !== null;
 
   const reset = () => {
     setSearchQuery({
