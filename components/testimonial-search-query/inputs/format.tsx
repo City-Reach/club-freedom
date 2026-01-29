@@ -1,11 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
-import {
-  getTestimonialFormatLabel,
-  testimonialFormats,
-  useTestimonialSearchQuery,
-} from "../schema";
+import { useTestimonialSearchQuery } from "../hook";
+import { getTestimonialFormatLabel, testimonialFormats } from "../schema";
 
 export default function FormatInput() {
   const { searchQuery, setSearchQuery } = useTestimonialSearchQuery();

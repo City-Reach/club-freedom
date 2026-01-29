@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 import { Input } from "../ui/input";
-import { useTestimonialSearchQuery } from "./schema";
+import { useTestimonialSearchQuery } from "./hook";
 
 export default function TestimonialSearchInput(
   props: ComponentProps<typeof Input>,

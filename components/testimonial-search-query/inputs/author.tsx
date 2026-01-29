@@ -2,7 +2,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useTestimonialSearchQuery } from "../schema";
+import { useTestimonialSearchQuery } from "../hook";
 
 type Props = {
   onSuccess?: () => void;

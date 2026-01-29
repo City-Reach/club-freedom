@@ -5,7 +5,6 @@ import {
   parseAsIsoDate,
   parseAsString,
   parseAsStringLiteral,
-  useQueryStates,
 } from "nuqs";
 
 export const testimonialFormats = ["video", "audio", "text"] as const;
@@ -43,32 +42,3 @@ export const testimonialSearchQuerySchema = createStandardSchemaV1(
 export type TestimonialSearchQuery = inferParserType<
   typeof testimonialSearchQueryParams
 >;
-
-export const useTestimonialSearchQuery = () => {
-  const [searchQuery, setSearchQuery] = useQueryStates(
-    testimonialSearchQueryParams,
-  );
-
-  const isActive =
-    searchQuery.author !== "" ||
-    searchQuery.formats.length > 0 ||
-    searchQuery.from !== null ||
-    searchQuery.to !== null;
-
-  const reset = () => {
-    setSearchQuery({
-      q: "",
-      author: "",
-      formats: [],
-      from: null,
-      to: null,
-    });
-  };
-
-  return {
-    searchQuery,
-    setSearchQuery,
-    isActive,
-    reset,
-  };
-};

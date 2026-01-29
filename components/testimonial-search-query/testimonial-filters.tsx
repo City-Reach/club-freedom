@@ -6,10 +6,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
+import { useTestimonialSearchQuery } from "./hook";
 import AuthoutInput from "./inputs/author";
 import DateInput from "./inputs/date";
 import FormatInput from "./inputs/format";
-import { getTestimonialFormatLabel, useTestimonialSearchQuery } from "./schema";
+import { getTestimonialFormatLabel } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
