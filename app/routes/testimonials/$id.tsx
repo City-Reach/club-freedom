@@ -1,4 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  rootRouteId,
+  useMatch,
+  useRouter,
+} from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
 import TestimonialDetail from "@/components/testimonial-detail";
@@ -12,13 +17,25 @@ export const Route = createFileRoute("/testimonials/$id")({
 
 function Component() {
   const { id } = Route.useParams();
+  const isRoot = useMatch({
+    strict: false,
+    select: (state) => state.id === rootRouteId,
+  });
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (isRoot) {
+      router.navigate({ to: "/" });
+    } else {
+      router.history.back();
+    }
+  };
+
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
-      <Button variant="link" className="px-0!" asChild>
-        <Link to="..">
-          <ChevronLeft />
-          Back
-        </Link>
+      <Button variant="link" className="px-0!" onClick={handleBack}>
+        <ChevronLeft />
+        Back
       </Button>
       <Suspense fallback={<PendingTestimonialDetail />}>
         <TestimonialDetail id={id as Id<"testimonials">} />
