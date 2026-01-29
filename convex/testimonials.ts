@@ -137,6 +137,20 @@ export const updateTestimonialApproval = mutation({
   },
 });
 
+export const deleteTestimonial = mutation({
+  args: { id: v.id("testimonials") },
+  handler: async (ctx, { id }) => {
+    const canDelete = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: { testimonial: ["delete"] },
+    });
+
+    if (!canDelete) {
+      throw new Error("Testimonial Delete Forbidden");
+    }
+    await ctx.db.delete("testimonials", id);
+  },
+});
+
 export const getTestimonialById = query({
   args: { id: v.id("testimonials") },
   handler: async (ctx, { id }) => {
