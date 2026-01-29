@@ -2,6 +2,7 @@ import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
+import NotFound from "@/components/not-found";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
 import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
 import TestimonialDownload from "@/components/testimonial-detail/testimonial-download";
@@ -20,6 +21,7 @@ import { hasPermissionQuery } from "@/lib/query";
 export const Route = createFileRoute("/testimonials/$id")({
   ssr: false,
   component: Component,
+  notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
     const testimonial = await context.queryClient.ensureQueryData(
       convexQuery(api.testimonials.getTestimonialById, {
