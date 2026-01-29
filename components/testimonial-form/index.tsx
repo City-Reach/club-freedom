@@ -9,6 +9,24 @@ import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
+import {
+  AudioRecorder,
+  VideoRecorder,
+} from "@/components/testimonial-form/recorder/index";
+import TestimonialFormBlocker from "@/components/testimonial-form/testimonial-form-blocker";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
 import { useUploadFile } from "@/hooks/use-upload-file";
@@ -17,21 +35,6 @@ import {
   VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldLabel,
-} from "../ui/field";
-import { Input } from "../ui/input";
-import { Spinner } from "../ui/spinner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Textarea } from "../ui/textarea";
-import { AudioRecorder, VideoRecorder } from "./recorder";
-import TestimonialFormBlocker from "./testimonial-form-blocker";
 
 export default function TestimonialForm() {
   const form = useForm<Testimonial>({
@@ -104,7 +107,7 @@ export default function TestimonialForm() {
         description: "Thank you for your submission.",
       });
 
-      await navigation({ to: "/testimonials/$id", params: { id } });
+      await navigation({ to: "/testimonials/tmp/$id", params: { id } });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       const message = error instanceof Error ? error.message : "Unknown error";
