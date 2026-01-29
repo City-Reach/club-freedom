@@ -19,16 +19,14 @@ import {
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import NotFound from "@/components/not-found";
 
 export const Route = createFileRoute("/testimonials/tmp/$id")({
   ssr: false,
   component: Component,
-  notFoundComponent: NotFound,
-  loader: async (opts) => {
-    const testimonial = await opts.context.queryClient.ensureQueryData(
+  loader: async ({ context, params }) => {
+    const testimonial = await context.queryClient.ensureQueryData(
       convexQuery(api.testimonials.getTestimonialById, {
-        id: opts.params.id as Id<"testimonials">,
+        id: params.id as Id<"testimonials">,
       }),
     );
     if (!testimonial) {
