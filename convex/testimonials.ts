@@ -128,7 +128,7 @@ export const getTestimonialById = query({
     const testimonial = await ctx.db.get(testimonialId);
     const r2PublicUrl = process.env.R2_PUBLIC_URL;
 
-    if (!testimonial || !r2PublicUrl || Object.keys(testimonial).length === 0) {
+    if (!testimonial || !r2PublicUrl) {
       return null;
     }
 
