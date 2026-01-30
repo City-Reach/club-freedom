@@ -20,7 +20,6 @@ export const useTestimonialSearchQuery = () => {
 
   const reset = () => {
     setSearchQuery({
-      q: "",
       author: "",
       formats: [],
       from: null,
