@@ -5,10 +5,10 @@ import { useTestimonialSearchQuery } from "./hook";
 export default function TestimonialSearchInput(
   props: ComponentProps<typeof Input>,
 ) {
-  const { searchQuery, setSearchQuery } = useTestimonialSearchQuery();
+  const { liveSearchQuery, setSearchQuery } = useTestimonialSearchQuery();
   return (
     <Input
-      value={searchQuery.q}
+      value={liveSearchQuery.q}
       placeholder="Search testimonials"
       onChange={(e) => {
         setSearchQuery({ q: e.target.value });

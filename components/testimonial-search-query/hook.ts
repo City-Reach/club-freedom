@@ -29,6 +29,7 @@ export const useTestimonialSearchQuery = () => {
 
   return {
     searchQuery: frozenSearchQueryRef.current,
+    liveSearchQuery: searchQuery,
     setSearchQuery,
     reset,
   };
