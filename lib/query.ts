@@ -26,10 +26,10 @@ export function useInfiniteTestimonialQuery(
   const convex = useConvex();
   const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
   const before = searchQuery.to
-    ? searchQuery.to.getTime() - timezoneOffset
+    ? searchQuery.to.getTime() + timezoneOffset + 24 * 60 * 60 * 1000 - 1
     : undefined;
   const after = searchQuery.from
-    ? searchQuery.from.getTime() - timezoneOffset
+    ? searchQuery.from.getTime() + timezoneOffset
     : undefined;
 
   const query = useInfiniteQuery({
