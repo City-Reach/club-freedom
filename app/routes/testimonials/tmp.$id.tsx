@@ -2,7 +2,6 @@ import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft, TimerIcon } from "lucide-react";
-import NotFound from "@/components/not-found";
 import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
@@ -25,16 +24,11 @@ export const Route = createFileRoute("/testimonials/tmp/$id")({
   ssr: false,
   component: Component,
   loader: async ({ context, params }) => {
-    let testimonial = null;
-    try {
-      testimonial = await context.queryClient.ensureQueryData(
-        convexQuery(api.testimonials.getTestimonialById, {
-          id: params.id as Id<"testimonials">,
-        }),
-      );
-    } catch (error) {
-      throw notFound();
-    }
+    const testimonial = await context.queryClient.ensureQueryData(
+      convexQuery(api.testimonials.getTestimonialById, {
+        id: params.id as Id<"testimonials">,
+      }),
+    );
 
     if (!testimonial) {
       throw notFound();

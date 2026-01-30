@@ -38,7 +38,11 @@ export default function ErrorBoundary({ error }: ErrorComponentProps) {
   });
   const [showDetails, setShowDetails] = useState(false);
 
-  const errorMessage = "An unexpected error occurred";
+  const isDev = import.meta.env.DEV;
+
+  const errorMessage =
+    (isDev && error?.message) || "An unexpected error occurred";
+
   const errorStack = error?.stack || "";
   const hasStack = errorStack.length > 0;
 
@@ -98,7 +102,7 @@ export default function ErrorBoundary({ error }: ErrorComponentProps) {
           </div>
 
           {/* Error Details (Collapsible) */}
-          {hasStack && (
+          {hasStack && isDev && (
             <Collapsible open={showDetails} onOpenChange={setShowDetails}>
               <CollapsibleTrigger asChild className="mb-1">
                 <Button

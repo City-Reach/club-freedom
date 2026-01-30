@@ -1,9 +1,7 @@
-import test from "node:test";
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
-import { ca } from "zod/v4/locales";
 import NotFound from "@/components/not-found";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
 import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
@@ -17,7 +15,6 @@ import { TestimonialTitle } from "@/components/testimonial-detail/testimonial-ti
 import { Button } from "@/components/ui/button";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { hasPermissionQuery } from "@/lib/query";
 
 export const Route = createFileRoute("/testimonials/$id")({
@@ -25,16 +22,11 @@ export const Route = createFileRoute("/testimonials/$id")({
   component: Component,
   notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
-    let testimonial = null;
-    try {
-      testimonial = await context.queryClient.ensureQueryData(
-        convexQuery(api.testimonials.getTestimonialById, {
-          id: params.id as Id<"testimonials">,
-        }),
-      );
-    } catch (error) {
-      throw notFound();
-    }
+    const testimonial = await context.queryClient.ensureQueryData(
+      convexQuery(api.testimonials.getTestimonialById, {
+        id: params.id,
+      }),
+    );
 
     if (!testimonial) {
       throw notFound();
