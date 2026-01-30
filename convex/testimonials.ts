@@ -1,4 +1,4 @@
-import { type PaginationResult, paginationOptsValidator } from "convex/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
@@ -104,19 +104,37 @@ export const updateTestimonialApproval = mutation({
   },
 });
 
-export const getTestimonialById = query({
+export const deleteTestimonial = mutation({
   args: { id: v.id("testimonials") },
   handler: async (ctx, { id }) => {
-    const testimonial = await ctx.db.get(id);
+    const canDelete = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: { testimonial: ["delete"] },
+    });
+
+    if (!canDelete) {
+      throw new Error("Testimonial Delete Forbidden");
+    }
+    await ctx.db.delete("testimonials", id);
+  },
+});
+
+export const getTestimonialById = query({
+  args: { id: v.string() },
+  handler: async (ctx, { id }) => {
+    const testimonialId = ctx.db.normalizeId("testimonials", id);
+
+    if (!testimonialId) return null;
+
+    const testimonial = await ctx.db.get(testimonialId);
     const r2PublicUrl = process.env.R2_PUBLIC_URL;
 
     if (!testimonial || !r2PublicUrl) {
-      return undefined;
+      return null;
     }
 
     const mediaUrl = testimonial.storageId
       ? `${r2PublicUrl}/${testimonial.storageId}`
-      : undefined;
+      : null;
     return {
       ...testimonial,
       mediaUrl,
