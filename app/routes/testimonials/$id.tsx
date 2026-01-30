@@ -1,12 +1,12 @@
+import { convexQuery } from "@convex-dev/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
+  notFound,
   rootRouteId,
   useMatch,
   useRouter,
-  notFound
 } from "@tanstack/react-router";
-import { convexQuery } from "@convex-dev/react-query";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import NotFound from "@/components/not-found";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
@@ -53,7 +53,6 @@ export const Route = createFileRoute("/testimonials/$id")({
 });
 
 function Component() {
-  const { id } = Route.useParams();
   const isRoot = useMatch({
     strict: false,
     select: (state) => state.id === rootRouteId,
@@ -62,7 +61,7 @@ function Component() {
 
   const handleBack = () => {
     if (isRoot) {
-      router.navigate({ to: "/" });
+      router.navigate({ to: "/testimonials" });
     } else {
       router.history.back();
     }
