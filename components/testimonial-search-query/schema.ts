@@ -8,10 +8,8 @@ import {
 } from "nuqs";
 
 export const testimonialFormats = ["video", "audio", "text"] as const;
-
-export const getTestimonialFormatLabel = (
-  type: (typeof testimonialFormats)[number],
-) => {
+export type TestimonialFormat = (typeof testimonialFormats)[number];
+export const getTestimonialFormatLabel = (type: TestimonialFormat) => {
   switch (type) {
     case "text":
       return "Text";
@@ -22,15 +20,14 @@ export const getTestimonialFormatLabel = (
   }
 };
 
-export const sortOrders = ["newest", "oldest", "relevant"] as const;
-export const getSortOrderLabel = (order: (typeof sortOrders)[number]) => {
+export const sortOrders = ["newest", "oldest"] as const;
+export type SortOrder = (typeof sortOrders)[number];
+export const getSortOrderLabel = (order: SortOrder) => {
   switch (order) {
     case "newest":
       return "Newest";
     case "oldest":
       return "Oldest";
-    case "relevant":
-      return "Relevant";
   }
 };
 
