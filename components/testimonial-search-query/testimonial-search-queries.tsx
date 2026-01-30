@@ -11,7 +11,12 @@ import { useTestimonialSearchQuery } from "./hook";
 import AuthoutInput from "./inputs/author";
 import DateInput from "./inputs/date";
 import FormatInput from "./inputs/format";
-import { countActiveQueries, getTestimonialFormatLabel } from "./schema";
+import SortOrderInput from "./inputs/sort-order";
+import {
+  countActiveQueries,
+  getSortOrderLabel,
+  getTestimonialFormatLabel,
+} from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
@@ -109,6 +114,18 @@ export default function TestimonialFilters() {
                 }}
               />
             )}
+          </TestimonialSearchDropdown>
+          <TestimonialSearchDropdown
+            name="Sort by"
+            displayValue={
+              searchQuery.order
+                ? getSortOrderLabel(searchQuery.order)
+                : undefined
+            }
+            isEnabled={searchQuery.order !== null}
+            clear={() => setSearchQuery({ order: null })}
+          >
+            {() => <SortOrderInput />}
           </TestimonialSearchDropdown>
         </div>
       </CollapsibleContent>
