@@ -24,6 +24,7 @@ export default function UserDropDown({ user }: Props) {
   const handleSignOut = async () => {
     await authClient.signOut();
     await queryClient.invalidateQueries();
+    queryClient.removeQueries();
     await navigate({ to: "/sign-in" });
   };
 
