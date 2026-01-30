@@ -1,5 +1,6 @@
 import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
   Collapsible,
@@ -10,37 +11,37 @@ import { useTestimonialSearchQuery } from "./hook";
 import AuthoutInput from "./inputs/author";
 import DateInput from "./inputs/date";
 import FormatInput from "./inputs/format";
-import { getTestimonialFormatLabel } from "./schema";
+import { countActiveQueries, getTestimonialFormatLabel } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
-  const { searchQuery, setSearchQuery, isActive, reset } =
-    useTestimonialSearchQuery();
+  const { searchQuery, setSearchQuery, reset } = useTestimonialSearchQuery();
 
-  const shouldOpen = open || isActive;
+  const queryCount = countActiveQueries(searchQuery);
+  const isActive = queryCount > 0;
 
   return (
-    <Collapsible open={shouldOpen} onOpenChange={setOpen}>
+    <Collapsible open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-4 py-2">
-        <span className="font-semibold text-sm">Filters</span>
+        <span className="font-semibold text-sm space-x-2">
+          <span>Filters</span>
+          {isActive && <Badge className="px-1.5 py-px">{queryCount}</Badge>}
+        </span>
         <span className="flex items-center ml-auto">
           {isActive && (
             <Button
               variant="link"
               size="sm"
               className="cursor-pointer"
-              onClick={() => {
-                reset();
-                setOpen(true);
-              }}
+              onClick={reset}
             >
               Clear Filter
             </Button>
           )}
           <CollapsibleTrigger asChild>
             <Button
-              variant={shouldOpen ? "secondary" : "ghost"}
+              variant={open ? "secondary" : "ghost"}
               size="icon-sm"
               className="cursor-pointer"
             >

@@ -18,12 +18,6 @@ export const useTestimonialSearchQuery = () => {
     }
   }, [searchQuery, isPending]);
 
-  const isActive =
-    frozenSearchQueryRef.current.author !== "" ||
-    frozenSearchQueryRef.current.formats.length > 0 ||
-    frozenSearchQueryRef.current.from !== null ||
-    frozenSearchQueryRef.current.to !== null;
-
   const reset = () => {
     setSearchQuery({
       q: "",
@@ -37,7 +31,6 @@ export const useTestimonialSearchQuery = () => {
   return {
     searchQuery: frozenSearchQueryRef.current,
     setSearchQuery,
-    isActive,
     reset,
   };
 };

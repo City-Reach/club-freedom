@@ -42,3 +42,15 @@ export const testimonialSearchQuerySchema = createStandardSchemaV1(
 export type TestimonialSearchQuery = inferParserType<
   typeof testimonialSearchQueryParams
 >;
+
+export const countActiveQueries = (query: TestimonialSearchQuery) => {
+  let count = 0;
+
+  if (query.q !== "") count++;
+  if (query.author !== "") count++;
+  if (query.formats.length > 0) count++;
+  if (query.from !== null) count++;
+  if (query.to !== null) count++;
+
+  return count;
+};
