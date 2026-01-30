@@ -14,8 +14,6 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import type { ConvexReactClient } from "convex/react";
 import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
-import ErrorBoundary from "@/components/error-boundary";
-import NotFound from "@/components/not-found";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/env/client";
 import { authClient } from "@/lib/auth/auth-client";
@@ -56,12 +54,6 @@ export const Route = createRootRouteWithContext<{
     return { isAuthenticated: !!token, token };
   },
   component: RootComponent,
-  notFoundComponent: NotFound,
-  errorComponent: (props) => (
-    <RootDocument>
-      <ErrorBoundary {...props} />
-    </RootDocument>
-  ),
 });
 
 const postHogOptions = {
