@@ -30,7 +30,7 @@ export default function TestimonialFilters() {
     <Collapsible open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm space-x-2">
-          <span>Filters</span>
+          <span>Sort and Filters</span>
           {isActive && <Badge className="px-1.5 py-px">{queryCount}</Badge>}
         </span>
         <span className="flex items-center ml-auto">

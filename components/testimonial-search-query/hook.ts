@@ -24,6 +24,7 @@ export const useTestimonialSearchQuery = () => {
       formats: [],
       from: null,
       to: null,
+      order: null,
     });
   };
 

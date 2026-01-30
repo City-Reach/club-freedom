@@ -25,9 +25,9 @@ export type SortOrder = (typeof sortOrders)[number];
 export const getSortOrderLabel = (order: SortOrder) => {
   switch (order) {
     case "newest":
-      return "Newest";
+      return "Newest to Oldest";
     case "oldest":
-      return "Oldest";
+      return "Oldest to Newest";
   }
 };
 
@@ -60,6 +60,7 @@ export const countActiveQueries = (query: TestimonialSearchQuery) => {
   if (query.formats.length > 0) count++;
   if (query.from !== null) count++;
   if (query.to !== null) count++;
+  if (query.order !== null) count++;
 
   return count;
 };
