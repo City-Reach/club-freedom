@@ -1,6 +1,6 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft, TimerIcon } from "lucide-react";
 import NotFound from "@/components/not-found";
@@ -20,25 +20,50 @@ import {
 } from "@/components/ui/item";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 
 export const Route = createFileRoute("/testimonials/tmp/$id")({
   ssr: false,
   component: Component,
+  notFoundComponent: NotFound,
+  loader: async ({ context, params }) => {
+    const testimonial = await context.queryClient.ensureQueryData(
+      convexQuery(api.testimonials.getTestimonialById, {
+        id: params.id,
+      }),
+    );
+
+    if (!testimonial) {
+      throw notFound();
+    }
+
+    // _creationTime is the milliseconds since unix epoch when the document was created
+    const expirationDate = testimonial._creationTime + 900_000;
+    if (Date.now() >= expirationDate) {
+      throw notFound();
+    }
+    return { testimonial, expirationDate };
+  },
 });
 
 function Component() {
   const { id } = Route.useParams();
-  const { data: testimonial } = useSuspenseQuery(
+  const {
+    testimonial: preloadTestimonial,
+    expirationDate: preloadExpirationDate,
+  } = Route.useLoaderData();
+  const { data: liveTestimonial } = useSuspenseQuery(
     convexQuery(api.testimonials.getTestimonialById, {
-      id: id as Id<"testimonials">,
+      id: id,
     }),
   );
+  const testimonial = liveTestimonial || preloadTestimonial;
   if (!testimonial) {
     return <NotFound />;
   }
 
-  const expirationDate = testimonial._creationTime + 900_000;
+  // _creationTime is the milliseconds since unix epoch when the document was created. 15 minutes = 900,000 milliseconds
+  const liveExpirationDate = testimonial._creationTime + 900_000;
+  const expirationDate = liveExpirationDate || preloadExpirationDate;
   if (Date.now() >= expirationDate) {
     return <NotFound />;
   }
