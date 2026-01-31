@@ -1,5 +1,6 @@
-import { type PaginationResult, paginationOptsValidator } from "convex/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { filter } from "convex-helpers/server/filter";
 import { api } from "./_generated/api";
 import { query } from "./_generated/server";
 import { mutation } from "./functions";
@@ -10,18 +11,35 @@ export const getTestimonials = query({
   args: {
     paginationOpts: paginationOptsValidator,
     searchQuery: v.optional(v.string()),
+    filters: v.optional(
+      v.object({
+        author: v.optional(v.string()),
+        types: v.optional(v.array(v.string())),
+        before: v.optional(v.float64()),
+        after: v.optional(v.float64()),
+      }),
+    ),
+    order: v.optional(v.union(v.literal("asc"), v.literal("desc"))),
   },
-  handler: async (ctx, { paginationOpts, searchQuery }) => {
-    const identity = await ctx.auth.getUserIdentity();
-
+  handler: async (
+    ctx,
+    { paginationOpts, searchQuery = "", filters = {}, order },
+  ) => {
+    const trimmedQuery = searchQuery.trim();
     const testimonialQuery = ctx.db.query("testimonials");
 
-    const testimonialQuerySearch =
-      searchQuery && searchQuery.trim() !== ""
+    const completeTestimonialQuery =
+      trimmedQuery !== "" && !order
         ? testimonialQuery.withSearchIndex("search_posts", (q) =>
-            q.search("searchText", searchQuery.trim()),
+            q
+              .search("searchText", trimmedQuery)
+              .eq("processingStatus", "completed"),
           )
-        : testimonialQuery.order("desc");
+        : testimonialQuery
+            .withIndex("by_processingStatus", (q) =>
+              q.eq("processingStatus", "completed"),
+            )
+            .order(order || "desc");
 
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: {
@@ -29,27 +47,58 @@ export const getTestimonials = query({
       },
     });
 
-    const filteredTestimonialQuery = testimonialQuerySearch
-      .filter((q) => q.neq(q.field("title"), undefined))
-      .filter((q) => q.neq(q.field("summary"), undefined))
-      .filter((q) => q.neq(q.field("testimonialText"), undefined))
-      .filter((q) => (canApprove ? true : q.eq(q.field("approved"), true)));
+    const readyTestimonialQuery = completeTestimonialQuery.filter(
+      (q) => canApprove || q.eq(q.field("approved"), true),
+    );
+
+    const filteredTestimonialQuery = readyTestimonialQuery
+      .filter(
+        (q) =>
+          !filters.types ||
+          filters.types.length === 0 ||
+          q.or(
+            ...filters.types.map((type) => q.eq(q.field("media_type"), type)),
+          ),
+      )
+      .filter(
+        (q) =>
+          !filters.before || q.lte(q.field("_creationTime"), filters.before),
+      )
+      .filter(
+        (q) => !filters.after || q.gte(q.field("_creationTime"), filters.after),
+      );
+
+    const trimmedAuthor = filters.author?.trim().toLowerCase() || "";
+
+    const withAuthorTestimonialQuery = trimmedAuthor
+      ? filter(filteredTestimonialQuery, (t) =>
+          t.name.toLowerCase().includes(trimmedAuthor),
+        )
+      : filteredTestimonialQuery;
+
+    const withNonIndexSearchTestimonialQuery =
+      trimmedQuery !== "" && order
+        ? filter(
+            withAuthorTestimonialQuery,
+            (t) =>
+              t.searchText
+                ?.toLocaleLowerCase()
+                .includes(trimmedQuery.toLowerCase()) || false,
+          )
+        : withAuthorTestimonialQuery;
 
     const { page, ...rest } =
-      await filteredTestimonialQuery.paginate(paginationOpts);
+      await withNonIndexSearchTestimonialQuery.paginate(paginationOpts);
 
-    const r2PublicUrl = process.env.R2_PUBLIC_URL;
-
-    const testimonialsWithMedia = await Promise.all(
-      page.map(async (t) => {
+    return {
+      ...rest,
+      page: page.map((t) => {
         const mediaUrl = t.storageId
-          ? `${r2PublicUrl}/${t.storageId}`
+          ? `${process.env.R2_PUBLIC_URL}/${t.storageId}`
           : undefined;
         return { ...t, mediaUrl };
       }),
-    );
-
-    return { ...rest, page: testimonialsWithMedia };
+    };
   },
 });
 
@@ -104,19 +153,37 @@ export const updateTestimonialApproval = mutation({
   },
 });
 
-export const getTestimonialById = query({
+export const deleteTestimonial = mutation({
   args: { id: v.id("testimonials") },
   handler: async (ctx, { id }) => {
-    const testimonial = await ctx.db.get(id);
+    const canDelete = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: { testimonial: ["delete"] },
+    });
+
+    if (!canDelete) {
+      throw new Error("Testimonial Delete Forbidden");
+    }
+    await ctx.db.delete("testimonials", id);
+  },
+});
+
+export const getTestimonialById = query({
+  args: { id: v.string() },
+  handler: async (ctx, { id }) => {
+    const testimonialId = ctx.db.normalizeId("testimonials", id);
+
+    if (!testimonialId) return null;
+
+    const testimonial = await ctx.db.get(testimonialId);
     const r2PublicUrl = process.env.R2_PUBLIC_URL;
 
     if (!testimonial || !r2PublicUrl) {
-      return undefined;
+      return null;
     }
 
     const mediaUrl = testimonial.storageId
       ? `${r2PublicUrl}/${testimonial.storageId}`
-      : undefined;
+      : null;
     return {
       ...testimonial,
       mediaUrl,
