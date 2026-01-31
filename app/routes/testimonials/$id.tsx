@@ -15,35 +15,12 @@ import { TestimonialTitle } from "@/components/testimonial-detail/testimonial-ti
 import { Button } from "@/components/ui/button";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { hasPermissionQuery } from "@/lib/query";
 
 export const Route = createFileRoute("/testimonials/$id")({
   ssr: false,
   component: Component,
-  notFoundComponent: NotFound,
-  loader: async ({ context, params }) => {
-    const testimonial = await context.queryClient.ensureQueryData(
-      convexQuery(api.testimonials.getTestimonialById, {
-        id: params.id,
-      }),
-    );
-
-    if (!testimonial) {
-      throw notFound();
-    }
-
-    const canView = await context.queryClient.ensureQueryData(
-      hasPermissionQuery({
-        testimonial: ["view"],
-      }),
-    );
-
-    if (!canView && !testimonial.approved) {
-      throw notFound();
-    }
-
-    return { testimonial };
-  },
 });
 
 function Component() {
@@ -61,7 +38,25 @@ function Component() {
 }
 
 export default function TestimonialDetail() {
-  const { testimonial } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { data: testimonial } = useSuspenseQuery(
+    convexQuery(api.testimonials.getTestimonialById, {
+      id: id as Id<"testimonials">,
+    }),
+  );
+  if (!testimonial) {
+    return <NotFound />;
+  }
+
+  const { data: canView } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["view"],
+    }),
+  );
+
+  if (!canView && !testimonial.approved) {
+    return <NotFound />;
+  }
 
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
