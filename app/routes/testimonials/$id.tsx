@@ -44,19 +44,12 @@ export default function TestimonialDetail() {
       id: id as Id<"testimonials">,
     }),
   );
-  if (!testimonial) {
-    return <NotFound />;
-  }
 
   const { data: canView } = useSuspenseQuery(
     hasPermissionQuery({
       testimonial: ["view"],
     }),
   );
-
-  if (!canView && !testimonial.approved) {
-    return <NotFound />;
-  }
 
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
@@ -75,6 +68,10 @@ export default function TestimonialDetail() {
       testimonial: ["delete"],
     }),
   );
+
+  if (!testimonial || (!canView && !testimonial.approved)) {
+    return <NotFound />;
+  }
 
   return (
     <TestimonialContext.Provider value={{ testimonial }}>
