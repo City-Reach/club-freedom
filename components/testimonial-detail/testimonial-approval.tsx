@@ -63,8 +63,8 @@ export default function TestimonialApproval() {
         <SelectGroup>
           <SelectLabel>Approval Status</SelectLabel>
           <SelectItem value="pending">Pending Approval</SelectItem>
-          <SelectItem value="approved">Approved</SelectItem>
-          <SelectItem value="disapproved">Disapproved</SelectItem>
+          <SelectItem value="approved">Published</SelectItem>
+          <SelectItem value="disapproved">Not Published</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
