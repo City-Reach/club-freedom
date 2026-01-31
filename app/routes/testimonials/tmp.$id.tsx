@@ -1,7 +1,9 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft, TimerIcon } from "lucide-react";
+import NotFound from "@/components/not-found";
 import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
@@ -23,29 +25,23 @@ import type { Id } from "@/convex/_generated/dataModel";
 export const Route = createFileRoute("/testimonials/tmp/$id")({
   ssr: false,
   component: Component,
-  loader: async ({ context, params }) => {
-    const testimonial = await context.queryClient.ensureQueryData(
-      convexQuery(api.testimonials.getTestimonialById, {
-        id: params.id as Id<"testimonials">,
-      }),
-    );
-
-    if (!testimonial) {
-      throw notFound();
-    }
-
-    // _creationTime is the milliseconds since unix epoch when the document was created
-    const expirationDate = testimonial._creationTime + 900_000;
-    if (Date.now() >= expirationDate) {
-      throw notFound();
-    }
-    return { testimonial, expirationDate };
-  },
 });
 
 function Component() {
-  const { testimonial, expirationDate } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { data: testimonial } = useSuspenseQuery(
+    convexQuery(api.testimonials.getTestimonialById, {
+      id: id as Id<"testimonials">,
+    }),
+  );
+  if (!testimonial) {
+    return <NotFound />;
+  }
 
+  const expirationDate = testimonial._creationTime + 900_000;
+  if (Date.now() >= expirationDate) {
+    return <NotFound />;
+  }
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
       <Button variant="link" className="px-0!" asChild>
