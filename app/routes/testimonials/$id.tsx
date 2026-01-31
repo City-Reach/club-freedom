@@ -79,7 +79,13 @@ function Component() {
 }
 
 export default function TestimonialDetail() {
-  const { testimonial } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { testimonial: preloadTestimonial } = Route.useLoaderData();
+  const { data: liveTestimonial } = useSuspenseQuery(
+    convexQuery(api.testimonials.getTestimonialById, {
+      id: id,
+    }),
+  );
 
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
@@ -98,6 +104,7 @@ export default function TestimonialDetail() {
       testimonial: ["delete"],
     }),
   );
+  const testimonial = liveTestimonial || preloadTestimonial;
 
   return (
     <TestimonialContext.Provider value={{ testimonial }}>

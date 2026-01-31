@@ -1,7 +1,7 @@
 import { convexQuery } from "@convex-dev/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
-  Link,
   notFound,
   rootRouteId,
   useMatch,
@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft, TimerIcon } from "lucide-react";
+import NotFound from "@/components/not-found";
 import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
@@ -29,6 +30,7 @@ import { api } from "@/convex/_generated/api";
 export const Route = createFileRoute("/testimonials/tmp/$id")({
   ssr: false,
   component: Component,
+  notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
     const testimonial = await context.queryClient.ensureQueryData(
       convexQuery(api.testimonials.getTestimonialById, {
@@ -50,7 +52,17 @@ export const Route = createFileRoute("/testimonials/tmp/$id")({
 });
 
 function Component() {
-  const { testimonial, expirationDate } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const {
+    testimonial: preloadTestimonial,
+    expirationDate: preloadExpirationDate,
+  } = Route.useLoaderData();
+  const { data: liveTestimonial } = useSuspenseQuery(
+    convexQuery(api.testimonials.getTestimonialById, {
+      id: id,
+    }),
+  );
+  const testimonial = liveTestimonial || preloadTestimonial;
 
   const isRoot = useMatch({
     strict: false,
@@ -66,6 +78,8 @@ function Component() {
     }
   };
 
+  const liveExpirationDate = testimonial._creationTime + 900_000;
+  const expirationDate = liveExpirationDate || preloadExpirationDate;
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
       <Button variant="link" className="px-0!" onClick={handleBack}>
