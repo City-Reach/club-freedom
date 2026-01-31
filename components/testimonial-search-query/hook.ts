@@ -18,7 +18,7 @@ export const useTestimonialSearchQuery = () => {
     }
   }, [searchQuery, isPending]);
 
-  const reset = () => {
+  const resetSortAndFilters = () => {
     setSearchQuery({
       author: "",
       formats: [],
@@ -32,6 +32,6 @@ export const useTestimonialSearchQuery = () => {
     searchQuery: frozenSearchQueryRef.current,
     liveSearchQuery: searchQuery,
     setSearchQuery,
-    reset,
+    resetSortAndFilters,
   };
 };

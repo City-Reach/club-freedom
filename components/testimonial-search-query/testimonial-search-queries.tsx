@@ -21,7 +21,8 @@ import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
-  const { searchQuery, setSearchQuery, reset } = useTestimonialSearchQuery();
+  const { searchQuery, setSearchQuery, resetSortAndFilters } =
+    useTestimonialSearchQuery();
 
   const queryCount = countActiveQueries(searchQuery);
   const isActive = queryCount > 0;
@@ -39,7 +40,7 @@ export default function TestimonialFilters() {
               variant="link"
               size="sm"
               className="cursor-pointer"
-              onClick={reset}
+              onClick={resetSortAndFilters}
             >
               Clear Filter
             </Button>
