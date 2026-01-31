@@ -1,9 +1,9 @@
 export const getApprovalStatusText = (approved: boolean | undefined) => {
   const approvalText =
     approved === true
-      ? "Approved"
+      ? "Published"
       : approved === false
-        ? "Disapproved"
+        ? "Not Published"
         : "Pending";
   return approvalText;
 };
