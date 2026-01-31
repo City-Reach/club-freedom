@@ -19,13 +19,17 @@ export const getTestimonials = query({
         after: v.optional(v.float64()),
       }),
     ),
+    order: v.optional(v.union(v.literal("asc"), v.literal("desc"))),
   },
-  handler: async (ctx, { paginationOpts, searchQuery = "", filters = {} }) => {
+  handler: async (
+    ctx,
+    { paginationOpts, searchQuery = "", filters = {}, order },
+  ) => {
     const trimmedQuery = searchQuery.trim();
     const testimonialQuery = ctx.db.query("testimonials");
 
     const completeTestimonialQuery =
-      trimmedQuery !== ""
+      trimmedQuery !== "" && !order
         ? testimonialQuery.withSearchIndex("search_posts", (q) =>
             q
               .search("searchText", trimmedQuery)
@@ -35,7 +39,7 @@ export const getTestimonials = query({
             .withIndex("by_processingStatus", (q) =>
               q.eq("processingStatus", "completed"),
             )
-            .order("desc");
+            .order(order || "desc");
 
     const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: {
@@ -65,14 +69,26 @@ export const getTestimonials = query({
       );
 
     const trimmedAuthor = filters.author?.trim().toLowerCase() || "";
+
     const withAuthorTestimonialQuery = trimmedAuthor
       ? filter(filteredTestimonialQuery, (t) =>
           t.name.toLowerCase().includes(trimmedAuthor),
         )
       : filteredTestimonialQuery;
 
+    const withNonIndexSearchTestimonialQuery =
+      trimmedQuery !== "" && order
+        ? filter(
+            withAuthorTestimonialQuery,
+            (t) =>
+              t.searchText
+                ?.toLocaleLowerCase()
+                .includes(trimmedQuery.toLowerCase()) || false,
+          )
+        : withAuthorTestimonialQuery;
+
     const { page, ...rest } =
-      await withAuthorTestimonialQuery.paginate(paginationOpts);
+      await withNonIndexSearchTestimonialQuery.paginate(paginationOpts);
 
     return {
       ...rest,

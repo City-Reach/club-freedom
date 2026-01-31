@@ -8,10 +8,8 @@ import {
 } from "nuqs";
 
 export const testimonialFormats = ["video", "audio", "text"] as const;
-
-export const getTestimonialFormatLabel = (
-  type: (typeof testimonialFormats)[number],
-) => {
+export type TestimonialFormat = (typeof testimonialFormats)[number];
+export const getTestimonialFormatLabel = (type: TestimonialFormat) => {
   switch (type) {
     case "text":
       return "Text";
@@ -19,6 +17,17 @@ export const getTestimonialFormatLabel = (
       return "Video";
     case "audio":
       return "Audio";
+  }
+};
+
+export const sortOrders = ["newest", "oldest"] as const;
+export type SortOrder = (typeof sortOrders)[number];
+export const getSortOrderLabel = (order: SortOrder) => {
+  switch (order) {
+    case "newest":
+      return "Newest to Oldest";
+    case "oldest":
+      return "Oldest to Newest";
   }
 };
 
@@ -30,6 +39,7 @@ export const testimonialSearchQueryParams = {
   ),
   from: parseAsIsoDate,
   to: parseAsIsoDate,
+  order: parseAsStringLiteral(sortOrders),
 };
 
 export const testimonialSearchQuerySchema = createStandardSchemaV1(
@@ -50,6 +60,7 @@ export const countActiveQueries = (query: TestimonialSearchQuery) => {
   if (query.formats.length > 0) count++;
   if (query.from !== null) count++;
   if (query.to !== null) count++;
+  if (query.order !== null) count++;
 
   return count;
 };

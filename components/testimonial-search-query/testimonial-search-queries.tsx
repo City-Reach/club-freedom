@@ -11,12 +11,18 @@ import { useTestimonialSearchQuery } from "./hook";
 import AuthoutInput from "./inputs/author";
 import DateInput from "./inputs/date";
 import FormatInput from "./inputs/format";
-import { countActiveQueries, getTestimonialFormatLabel } from "./schema";
+import SortOrderInput from "./inputs/sort-order";
+import {
+  countActiveQueries,
+  getSortOrderLabel,
+  getTestimonialFormatLabel,
+} from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
-  const { searchQuery, setSearchQuery, reset } = useTestimonialSearchQuery();
+  const { searchQuery, setSearchQuery, resetSortAndFilters } =
+    useTestimonialSearchQuery();
 
   const queryCount = countActiveQueries(searchQuery);
   const isActive = queryCount > 0;
@@ -25,7 +31,7 @@ export default function TestimonialFilters() {
     <Collapsible open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm space-x-2">
-          <span>Filters</span>
+          <span>Sort and Filters</span>
           {isActive && <Badge className="px-1.5 py-px">{queryCount}</Badge>}
         </span>
         <span className="flex items-center ml-auto">
@@ -34,7 +40,7 @@ export default function TestimonialFilters() {
               variant="link"
               size="sm"
               className="cursor-pointer"
-              onClick={reset}
+              onClick={resetSortAndFilters}
             >
               Clear Filter
             </Button>
@@ -109,6 +115,18 @@ export default function TestimonialFilters() {
                 }}
               />
             )}
+          </TestimonialSearchDropdown>
+          <TestimonialSearchDropdown
+            name="Sort by"
+            displayValue={
+              searchQuery.order
+                ? getSortOrderLabel(searchQuery.order)
+                : undefined
+            }
+            isEnabled={searchQuery.order !== null}
+            clear={() => setSearchQuery({ order: null })}
+          >
+            {() => <SortOrderInput />}
           </TestimonialSearchDropdown>
         </div>
       </CollapsibleContent>
