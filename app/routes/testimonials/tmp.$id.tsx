@@ -57,16 +57,10 @@ function Component() {
     }),
   );
   const testimonial = liveTestimonial || preloadTestimonial;
-  if (!testimonial) {
-    return <NotFound />;
-  }
 
   // _creationTime is the milliseconds since unix epoch when the document was created. 15 minutes = 900,000 milliseconds
   const liveExpirationDate = testimonial._creationTime + 900_000;
   const expirationDate = liveExpirationDate || preloadExpirationDate;
-  if (Date.now() >= expirationDate) {
-    return <NotFound />;
-  }
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
       <Button variant="link" className="px-0!" asChild>

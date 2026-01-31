@@ -68,11 +68,6 @@ export default function TestimonialDetail() {
       id: id,
     }),
   );
-  const { data: canView } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["view"],
-    }),
-  );
 
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
@@ -92,9 +87,6 @@ export default function TestimonialDetail() {
     }),
   );
   const testimonial = liveTestimonial || preloadTestimonial;
-  if (!testimonial || (!canView && !testimonial.approved)) {
-    return <NotFound />;
-  }
 
   return (
     <TestimonialContext.Provider value={{ testimonial }}>
