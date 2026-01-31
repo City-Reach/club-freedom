@@ -1,6 +1,12 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  rootRouteId,
+  useMatch,
+  useRouter,
+} from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft, TimerIcon } from "lucide-react";
 import NotFound from "@/components/not-found";
@@ -58,16 +64,27 @@ function Component() {
   );
   const testimonial = liveTestimonial || preloadTestimonial;
 
-  // _creationTime is the milliseconds since unix epoch when the document was created. 15 minutes = 900,000 milliseconds
+  const isRoot = useMatch({
+    strict: false,
+    select: (state) => state.id === rootRouteId,
+  });
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (isRoot) {
+      router.navigate({ to: "/" });
+    } else {
+      router.history.back();
+    }
+  };
+
   const liveExpirationDate = testimonial._creationTime + 900_000;
   const expirationDate = liveExpirationDate || preloadExpirationDate;
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
-      <Button variant="link" className="px-0!" asChild>
-        <Link to="/testimonials">
-          <ChevronLeft />
-          Back
-        </Link>
+      <Button variant="link" className="px-0!" onClick={handleBack}>
+        <ChevronLeft />
+        Back
       </Button>
 
       <TestimonialContext.Provider value={{ testimonial }}>

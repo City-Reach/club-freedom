@@ -1,6 +1,12 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  rootRouteId,
+  useMatch,
+  useRouter,
+} from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 import NotFound from "@/components/not-found";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
@@ -47,13 +53,25 @@ export const Route = createFileRoute("/testimonials/$id")({
 });
 
 function Component() {
+  const isRoot = useMatch({
+    strict: false,
+    select: (state) => state.id === rootRouteId,
+  });
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (isRoot) {
+      router.navigate({ to: "/testimonials" });
+    } else {
+      router.history.back();
+    }
+  };
+
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
-      <Button variant="link" className="px-0!" asChild>
-        <Link to="..">
-          <ChevronLeft />
-          Back
-        </Link>
+      <Button variant="link" className="px-0!" onClick={handleBack}>
+        <ChevronLeft />
+        Back
       </Button>
       <TestimonialDetail />
     </div>
