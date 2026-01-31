@@ -19,11 +19,10 @@ export function Testimonials() {
   const { searchQuery } = useTestimonialSearchQuery();
   const searchText = useDebounce(searchQuery.q, 500);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteTestimonialQuery({
-      ...searchQuery,
-      q: searchText,
-    });
+  const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery({
+    ...searchQuery,
+    q: searchText,
+  });
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
       testimonial: ["approve"],
@@ -34,46 +33,43 @@ export function Testimonials() {
     rootMargin: "400px",
   });
 
-  // Fetch next page if element is in view and hasNextPage becomes true
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (inView && status === "CanLoadMore" && !isLoading) {
       console.log("Fetching next page...", Date.now());
-      fetchNextPage();
+      loadMore(5);
     }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [inView, loadMore, status, isLoading]);
 
   return (
     <div className="grid gap-8">
-      {data?.pages
-        .flatMap((page) => page.page)
-        .map((testimonial) => (
-          <TestimonialContext.Provider
-            key={testimonial._id}
-            value={{ testimonial }}
-          >
-            <TestimonialCardShell>
-              <CardHeader>
-                <div className="flex justify-between">
-                  <TestimonialCardTitle />
-                  {canApprove && <TestimonialCardApproval />}
+      {results.map((testimonial) => (
+        <TestimonialContext.Provider
+          key={testimonial._id}
+          value={{ testimonial }}
+        >
+          <TestimonialCardShell>
+            <CardHeader>
+              <div className="flex justify-between">
+                <TestimonialCardTitle />
+                {canApprove && <TestimonialCardApproval />}
+              </div>
+              <TestimonialCardInfo />
+            </CardHeader>
+            <CardContent>
+              {testimonial.mediaUrl ? (
+                <div className="space-y-2">
+                  <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
+                  <TestimonialCardSummary />
                 </div>
-                <TestimonialCardInfo />
-              </CardHeader>
-              <CardContent>
-                {testimonial.mediaUrl ? (
-                  <div className="space-y-2">
-                    <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
-                    <TestimonialCardSummary />
-                  </div>
-                ) : (
-                  <TestimonialCardText />
-                )}
-              </CardContent>
-            </TestimonialCardShell>
-          </TestimonialContext.Provider>
-        ))}
+              ) : (
+                <TestimonialCardText />
+              )}
+            </CardContent>
+          </TestimonialCardShell>
+        </TestimonialContext.Provider>
+      ))}
       <div ref={ref}>
-        {!hasNextPage && !isLoading ? (
+        {status === "Exhausted" && !isLoading ? (
           <div className="text-center text-sm text-muted-foreground">
             No more testimonials to load.
           </div>
