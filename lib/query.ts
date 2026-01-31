@@ -41,6 +41,12 @@ export function useInfiniteTestimonialQuery(
         before,
         after,
       },
+      order:
+        searchQuery.order === "oldest"
+          ? "asc"
+          : searchQuery.order === "newest"
+            ? "desc"
+            : undefined,
     },
     {
       initialNumItems: TESTIMONIAL_PER_PAGE,
