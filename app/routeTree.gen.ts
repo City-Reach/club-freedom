@@ -21,9 +21,9 @@ import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizat
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
-import { Route as TestimonialsTmpIdRouteImport } from './routes/testimonials/tmp.$id'
 import { Route as OOrgSlugRouteRouteImport } from './routes/o.$orgSlug/route'
 import { Route as OOrgSlugIndexRouteImport } from './routes/o.$orgSlug/index'
+import { Route as TestimonialsTmpIdRouteImport } from './routes/testimonials/tmp.$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as OOrgSlugDashboardRouteRouteImport } from './routes/o.$orgSlug/_dashboard/route'
 import { Route as OOrgSlugDashboardTestimonialsRouteImport } from './routes/o.$orgSlug/_dashboard/testimonials'
@@ -90,11 +90,6 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const TestimonialsTmpIdRoute = TestimonialsTmpIdRouteImport.update({
-  id: '/tmp/$id',
-  path: '/tmp/$id',
-  getParentRoute: () => TestimonialsRouteRoute,
-} as any)
 const OOrgSlugRouteRoute = OOrgSlugRouteRouteImport.update({
   id: '/o/$orgSlug',
   path: '/o/$orgSlug',
@@ -104,6 +99,11 @@ const OOrgSlugIndexRoute = OOrgSlugIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => OOrgSlugRouteRoute,
+} as any)
+const TestimonialsTmpIdRoute = TestimonialsTmpIdRouteImport.update({
+  id: '/tmp/$id',
+  path: '/tmp/$id',
+  getParentRoute: () => TestimonialsRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -363,13 +363,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/testimonials/tmp/$id': {
-      id: '/testimonials/tmp/$id'
-      path: '/tmp/$id'
-      fullPath: '/testimonials/tmp/$id'
-      preLoaderRoute: typeof TestimonialsTmpIdRouteImport
-      parentRoute: typeof TestimonialsRouteRoute
-    }
     '/o/$orgSlug': {
       id: '/o/$orgSlug'
       path: '/o/$orgSlug'
@@ -383,6 +376,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/o/$orgSlug/'
       preLoaderRoute: typeof OOrgSlugIndexRouteImport
       parentRoute: typeof OOrgSlugRouteRoute
+    }
+    '/testimonials/tmp/$id': {
+      id: '/testimonials/tmp/$id'
+      path: '/tmp/$id'
+      fullPath: '/testimonials/tmp/$id'
+      preLoaderRoute: typeof TestimonialsTmpIdRouteImport
+      parentRoute: typeof TestimonialsRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
