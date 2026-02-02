@@ -16,8 +16,10 @@ import {
   countActiveQueries,
   getSortOrderLabel,
   getTestimonialFormatLabel,
+  getTestimonialStatusLabel,
 } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
+import StatusInput from "./inputs/status";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
@@ -75,6 +77,16 @@ export default function TestimonialFilters() {
             clear={() => setSearchQuery({ formats: [] })}
           >
             {() => <FormatInput />}
+          </TestimonialSearchDropdown>
+          <TestimonialSearchDropdown
+            name="Status"
+            displayValue={searchQuery.statuses
+              .map(getTestimonialStatusLabel)
+              .join(", ")}
+            isEnabled={searchQuery.statuses.length > 0}
+            clear={() => setSearchQuery({ statuses: [] })}
+          >
+            {() => <StatusInput />}
           </TestimonialSearchDropdown>
           <TestimonialSearchDropdown
             name="From Date"
