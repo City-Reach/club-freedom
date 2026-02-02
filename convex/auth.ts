@@ -113,11 +113,6 @@ export const checkUserPermissions = query({
       permissions?: OrganizationPermissionCheck;
     },
   ) => {
-    const { role } = await authComponent.getAuthUser(ctx);
-    if (role === "admin") {
-      return true;
-    }
-
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
     try {
       const { success } = await auth.api.hasPermission({
