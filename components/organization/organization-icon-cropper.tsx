@@ -1,6 +1,6 @@
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouteContext, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   ImageIcon,

@@ -35,21 +35,6 @@ import {
   VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldLabel,
-} from "../ui/field";
-import { Input } from "../ui/input";
-import { Spinner } from "../ui/spinner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Textarea } from "../ui/textarea";
-import { AudioRecorder, VideoRecorder } from "./recorder";
-import TestimonialFormBlocker from "./testimonial-form-blocker";
 
 type Props = {
   organizationId: string;
