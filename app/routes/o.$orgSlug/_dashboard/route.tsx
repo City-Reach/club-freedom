@@ -1,31 +1,30 @@
-import { convexQuery } from "@convex-dev/react-query";
-import {
-  createFileRoute,
-  notFound,
-  Outlet,
-  redirect,
-} from "@tanstack/react-router";
-import { setActiveOrganization } from "@/app/functions/organization";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import OrganizationLayout from "@/components/layouts/organization";
-import { api } from "@/convex/_generated/api";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
+  ssr: false,
   component: RouteComponent,
+  pendingComponent: PendingComponent,
   beforeLoad: async ({ context }) => {
-    const user = await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.getCurrentUser, {}),
-    );
+    const { data } = await authClient.getSession();
 
-    if (!user) {
+    if (!data) {
       throw redirect({ to: "/sign-in" });
     }
 
-    const inOrganization = await setActiveOrganization({
-      data: { organizationId: context.organization._id },
+    const user = data.user;
+
+    const { error } = await authClient.organization.setActive({
+      organizationId: context.organization._id,
     });
 
-    if (!inOrganization) {
-      throw notFound();
+    if (error) {
+      throw redirect({
+        to: "/o/$orgSlug",
+        params: { orgSlug: context.organization.slug },
+      });
     }
 
     return {
@@ -40,5 +39,24 @@ function RouteComponent() {
     <OrganizationLayout>
       <Outlet />
     </OrganizationLayout>
+  );
+}
+
+function PendingComponent() {
+  const { organization } = Route.useRouteContext();
+
+  return (
+    <div className="flex flex-col items-center justify-center w-screen h-screen gap-12 p-8">
+      {organization.logo ? (
+        <img
+          src={organization.logo}
+          alt={organization.name}
+          className="w-full max-w-100"
+        />
+      ) : (
+        `Accessing to ${organization.name}`
+      )}
+      <Spinner className="size-12" />
+    </div>
   );
 }
