@@ -25,44 +25,47 @@ function getApprovalValue(approve?: boolean) {
 
 export default function TestimonialApproval() {
   const { testimonial } = useTestimonialContext();
+  const [isPending, startTransition] = useTransition();
 
   const updateTestimonialApproval = useMutation(
     api.testimonials.updateTestimonialApproval,
   );
 
-  const handleUpdateApprovalStatus = async (approved?: boolean) => {
-    try {
-      await updateTestimonialApproval({ id: testimonial._id, approved });
-      if (approved === true) {
-        toast.success("This testimonial has been published!");
-      } else if (approved === false) {
-        toast.warning("This testimonial is no longer published!");
-      } else {
-        toast.info("This testimonial is now pending!");
+  const handleUpdateApprovalStatus = async (approved: boolean) => {
+    startTransition(async () => {
+      try {
+        await updateTestimonialApproval({
+          id: testimonial._id,
+          approved,
+        });
+        if (approved) {
+          toast.success("This testimonial has been published!");
+        } else {
+          toast.warning("This testimonial is no longer published!");
+        }
+      } catch (error) {
+        toast.error("Failed to update testimonial publish status.");
       }
-    } catch (_err) {
-      toast.error("Failed to update testimonial publishing status.");
-    }
+    });
   };
-
-  const [isPending, startTransition] = useTransition();
 
   return (
     <Select
       value={getApprovalValue(testimonial.approved)}
       disabled={isPending}
       onValueChange={(value) => {
-        const approved = value === "pending" ? undefined : value === "approved";
-        startTransition(() => handleUpdateApprovalStatus(approved));
+        handleUpdateApprovalStatus(value === "approved");
       }}
     >
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>
-      <SelectContent align="start">
+      <SelectContent align="start" position="popper">
         <SelectGroup>
           <SelectLabel>Publish Status</SelectLabel>
-          <SelectItem value="pending">Pending Approval</SelectItem>
+          <SelectItem value="pending" hidden>
+            Pending
+          </SelectItem>
           <SelectItem value="approved">Published</SelectItem>
           <SelectItem value="disapproved">Not Published</SelectItem>
         </SelectGroup>
