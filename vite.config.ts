@@ -41,7 +41,7 @@ export default defineConfig(({ mode, command }) => {
       viteReact(),
     ],
     build: {
-      sourcemap: true,
+      sourcemap: "hidden",
     },
     esbuild: {
       drop: mode === "production" ? ["console"] : [],
