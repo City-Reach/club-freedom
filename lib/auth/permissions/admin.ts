@@ -10,7 +10,7 @@ import {
 } from "better-auth/plugins/admin/access";
 
 const statement = {
-  testimonial: ["approve", "download"],
+  testimonial: ["view", "approve", "download", "delete"],
   ...defaultStatements,
 } as const;
 

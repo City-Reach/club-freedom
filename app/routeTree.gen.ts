@@ -23,6 +23,7 @@ import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-pass
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as OOrgSlugRouteRouteImport } from './routes/o.$orgSlug/route'
 import { Route as OOrgSlugIndexRouteImport } from './routes/o.$orgSlug/index'
+import { Route as TestimonialsTmpIdRouteImport } from './routes/testimonials/tmp.$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as OOrgSlugDashboardRouteRouteImport } from './routes/o.$orgSlug/_dashboard/route'
 import { Route as OOrgSlugDashboardTestimonialsRouteImport } from './routes/o.$orgSlug/_dashboard/testimonials'
@@ -99,6 +100,11 @@ const OOrgSlugIndexRoute = OOrgSlugIndexRouteImport.update({
   path: '/',
   getParentRoute: () => OOrgSlugRouteRoute,
 } as any)
+const TestimonialsTmpIdRoute = TestimonialsTmpIdRouteImport.update({
+  id: '/tmp/$id',
+  path: '/tmp/$id',
+  getParentRoute: () => TestimonialsRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/testimonials/': typeof TestimonialsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/testimonials/tmp/$id': typeof TestimonialsTmpIdRoute
   '/o/$orgSlug/': typeof OOrgSlugIndexRoute
   '/o/$orgSlug/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/moderator': typeof OOrgSlugDashboardModeratorRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/testimonials': typeof TestimonialsIndexRoute
   '/o/$orgSlug': typeof OOrgSlugIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/testimonials/tmp/$id': typeof TestimonialsTmpIdRoute
   '/o/$orgSlug/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/moderator': typeof OOrgSlugDashboardModeratorRoute
   '/o/$orgSlug/settings': typeof OOrgSlugDashboardSettingsRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/testimonials/': typeof TestimonialsIndexRoute
   '/o/$orgSlug/_dashboard': typeof OOrgSlugDashboardRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/testimonials/tmp/$id': typeof TestimonialsTmpIdRoute
   '/o/$orgSlug/': typeof OOrgSlugIndexRoute
   '/o/$orgSlug/_dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/_dashboard/moderator': typeof OOrgSlugDashboardModeratorRoute
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/testimonials/'
     | '/api/auth/$'
+    | '/testimonials/tmp/$id'
     | '/o/$orgSlug/'
     | '/o/$orgSlug/members'
     | '/o/$orgSlug/moderator'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/o/$orgSlug'
     | '/api/auth/$'
+    | '/testimonials/tmp/$id'
     | '/o/$orgSlug/members'
     | '/o/$orgSlug/moderator'
     | '/o/$orgSlug/settings'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/testimonials/'
     | '/o/$orgSlug/_dashboard'
     | '/api/auth/$'
+    | '/testimonials/tmp/$id'
     | '/o/$orgSlug/'
     | '/o/$orgSlug/_dashboard/members'
     | '/o/$orgSlug/_dashboard/moderator'
@@ -365,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OOrgSlugIndexRouteImport
       parentRoute: typeof OOrgSlugRouteRoute
     }
+    '/testimonials/tmp/$id': {
+      id: '/testimonials/tmp/$id'
+      path: '/tmp/$id'
+      fullPath: '/testimonials/tmp/$id'
+      preLoaderRoute: typeof TestimonialsTmpIdRouteImport
+      parentRoute: typeof TestimonialsRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -443,11 +462,13 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 interface TestimonialsRouteRouteChildren {
   TestimonialsIdRoute: typeof TestimonialsIdRoute
   TestimonialsIndexRoute: typeof TestimonialsIndexRoute
+  TestimonialsTmpIdRoute: typeof TestimonialsTmpIdRoute
 }
 
 const TestimonialsRouteRouteChildren: TestimonialsRouteRouteChildren = {
   TestimonialsIdRoute: TestimonialsIdRoute,
   TestimonialsIndexRoute: TestimonialsIndexRoute,
+  TestimonialsTmpIdRoute: TestimonialsTmpIdRoute,
 }
 
 const TestimonialsRouteRouteWithChildren =
