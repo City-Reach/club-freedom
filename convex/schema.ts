@@ -21,8 +21,13 @@ export default defineSchema({
     approved: v.optional(v.boolean()),
     processingStatus: v.optional(processingStatusSchema),
   })
+    .index("by_processingStatus", {
+      fields: ["processingStatus"],
+    })
+
     .index("organizationId", ["organizationId"])
     .searchIndex("search_posts", {
       searchField: "searchText",
+      filterFields: ["processingStatus"],
     }),
 });

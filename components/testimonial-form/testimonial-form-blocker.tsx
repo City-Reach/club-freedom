@@ -1,6 +1,5 @@
 import { useBlocker } from "@tanstack/react-router";
 import { useFormContext } from "react-hook-form";
-import type { Testimonial } from "@/lib/schema/testimonials";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,7 +9,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
+import type { Testimonial } from "@/lib/schema/testimonials";
 
 export default function TestimonialFormBlocker() {
   const form = useFormContext<Testimonial>();

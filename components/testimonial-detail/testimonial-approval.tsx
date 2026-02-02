@@ -34,14 +34,14 @@ export default function TestimonialApproval() {
     try {
       await updateTestimonialApproval({ id: testimonial._id, approved });
       if (approved === true) {
-        toast.success("This testimonial has been approved!");
+        toast.success("This testimonial has been published!");
       } else if (approved === false) {
-        toast.warning("This testimonial has been rejected!");
+        toast.warning("This testimonial is no longer published!");
       } else {
         toast.info("This testimonial is now pending!");
       }
     } catch (_err) {
-      toast.error("Failed to update testimonial approval");
+      toast.error("Failed to update testimonial publishing status.");
     }
   };
 
@@ -61,10 +61,10 @@ export default function TestimonialApproval() {
       </SelectTrigger>
       <SelectContent align="start">
         <SelectGroup>
-          <SelectLabel>Approval Status</SelectLabel>
+          <SelectLabel>Publish Status</SelectLabel>
           <SelectItem value="pending">Pending Approval</SelectItem>
-          <SelectItem value="approved">Approved</SelectItem>
-          <SelectItem value="disapproved">Disapproved</SelectItem>
+          <SelectItem value="approved">Published</SelectItem>
+          <SelectItem value="disapproved">Not Published</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
