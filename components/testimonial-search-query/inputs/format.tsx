@@ -18,9 +18,11 @@ export default function FormatInput() {
             onCheckedChange={(checked) =>
               setSearchQuery((filter) => ({
                 ...filter,
-                formats: checked
-                  ? [...filter.formats, format]
-                  : filter.formats.filter((t) => t !== format),
+                formats: !checked
+                  ? filter.formats.filter((t) => t !== format)
+                  : filter.formats.includes(format)
+                    ? filter.formats
+                    : [...filter.formats, format],
               }))
             }
           />
