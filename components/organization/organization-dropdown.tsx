@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { LogOut, Shield, UserCog, UserRoundIcon } from "lucide-react";
+import { LogOut, Settings, Shield, UserCog, UserRoundIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,7 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@/lib/auth/types";
-import { hasPermissionQuery } from "@/lib/query";
+import { getMemberRoleQuery, hasPermissionQuery } from "@/lib/query";
+import { Badge } from "../ui/badge";
 
 type Props = {
   user: User;
@@ -22,10 +23,21 @@ export default function OrganizationDropdown({ user }: Props) {
     from: "/o/$orgSlug",
   });
 
+  const { data: role } = useSuspenseQuery(getMemberRoleQuery(organization._id));
+
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery(
       {
         testimonial: ["approve"],
+      },
+      organization._id,
+    ),
+  );
+
+  const { data: canUpdateOrganization } = useSuspenseQuery(
+    hasPermissionQuery(
+      {
+        organization: ["update"],
       },
       organization._id,
     ),
@@ -41,7 +53,9 @@ export default function OrganizationDropdown({ user }: Props) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
-        <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+        <DropdownMenuLabel className="flex gap-2 items-center">
+          {user.name} {role && <Badge className="px-1.5 py-px">{role}</Badge>}
+        </DropdownMenuLabel>
         <DropdownMenuLabel>
           <span className="text-sm text-muted-foreground">{user.email}</span>
         </DropdownMenuLabel>
@@ -53,6 +67,17 @@ export default function OrganizationDropdown({ user }: Props) {
             >
               <Shield />
               Moderator
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {canUpdateOrganization && (
+          <DropdownMenuItem asChild>
+            <Link
+              to="/o/$orgSlug/settings"
+              params={{ orgSlug: organization.slug }}
+            >
+              <Settings />
+              Settings
             </Link>
           </DropdownMenuItem>
         )}

@@ -142,7 +142,7 @@ export const getMemeberRole = query({
       const { role } = await auth.api.getActiveMemberRole({
         headers,
         query: {
-          organizationSlug: organizationId,
+          organizationId,
         },
       });
       return role;

@@ -1,8 +1,8 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
-import UserDropDown from "../user-dropdown";
 import OrganizationLogo from "./organization-logo";
+import OrganizationDropdown from "./organization-dropdown";
 
 export default function OrganizationNavbar() {
   const { organization } = useRouteContext({
@@ -26,7 +26,7 @@ export default function OrganizationNavbar() {
         </div>
       </div>
       {data?.user ? (
-        <UserDropDown user={data.user} />
+        <OrganizationDropdown user={data.user} />
       ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>
