@@ -1,21 +1,11 @@
-import { queryOptions } from "@tanstack/react-query";
+import { convexQuery } from "@convex-dev/react-query";
 import { usePaginatedQuery } from "convex/react";
 import type { TestimonialSearchQuery } from "@/components/testimonial-search-query/schema";
 import { api } from "@/convex/_generated/api";
-import { authClient } from "@/lib/auth/auth-client";
-import type { PermissionCheck } from "@/lib/auth/permissions";
+import type { OrganizationPermissionCheck } from "./auth/permissions/organization";
 
-export function hasPermissionQuery(permissions: PermissionCheck) {
-  return queryOptions({
-    queryKey: ["hasPermission", permissions],
-    queryFn: async () => {
-      const { data } = await authClient.admin.hasPermission({
-        permissions,
-      });
-      return data?.success || false;
-    },
-    staleTime: Infinity,
-  });
+export function hasPermissionQuery(permissions: OrganizationPermissionCheck) {
+  return convexQuery(api.auth.checkUserPermissions, { permissions });
 }
 
 export const TESTIMONIAL_PER_PAGE = 10;
