@@ -111,6 +111,7 @@ export const checkUserPermissions = query({
     ctx,
     args: {
       permissions?: OrganizationPermissionCheck;
+      organizationId?: string;
     },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
@@ -119,6 +120,7 @@ export const checkUserPermissions = query({
         headers,
         body: {
           permissions: args.permissions || {},
+          organizationId: args.organizationId,
         },
       });
       return success;
@@ -127,5 +129,26 @@ export const checkUserPermissions = query({
     }
 
     return false;
+  },
+});
+
+export const getMemeberRole = query({
+  args: v.object({
+    organizationId: v.string(),
+  }),
+  handler: async (ctx, { organizationId }) => {
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+    try {
+      const { role } = await auth.api.getActiveMemberRole({
+        headers,
+        query: {
+          organizationSlug: organizationId,
+        },
+      });
+      return role;
+    } catch (err) {
+      console.error(err instanceof Error ? err.message : err);
+      return null;
+    }
   },
 });

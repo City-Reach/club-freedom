@@ -1,15 +1,13 @@
-import { Link } from "@tanstack/react-router";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
 import UserDropDown from "../user-dropdown";
 import OrganizationLogo from "./organization-logo";
 
-type Props = {
-  organization: Doc<"organization">;
-};
-
-export default function OrganiztionNavbar({ organization }: Props) {
+export default function OrganizationNavbar() {
+  const { organization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
   const { data } = authClient.useSession();
 
   return (

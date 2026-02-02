@@ -4,8 +4,20 @@ import type { TestimonialSearchQuery } from "@/components/testimonial-search-que
 import { api } from "@/convex/_generated/api";
 import type { OrganizationPermissionCheck } from "./auth/permissions/organization";
 
-export function hasPermissionQuery(permissions: OrganizationPermissionCheck) {
-  return convexQuery(api.auth.checkUserPermissions, { permissions });
+export function hasPermissionQuery(
+  permissions: OrganizationPermissionCheck,
+  organizationId?: string,
+) {
+  return convexQuery(api.auth.checkUserPermissions, {
+    permissions,
+    organizationId,
+  });
+}
+
+export function getMemberRoleQuery(organizationId: string) {
+  return convexQuery(api.auth.getMemeberRole, {
+    organizationId,
+  });
 }
 
 export const TESTIMONIAL_PER_PAGE = 10;
