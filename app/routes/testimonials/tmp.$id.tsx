@@ -1,7 +1,15 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  createFileRoute,
+  notFound,
+  rootRouteId,
+  useMatch,
+  useRouter,
+} from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft, TimerIcon } from "lucide-react";
+import NotFound from "@/components/not-found";
 import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
@@ -18,15 +26,15 @@ import {
 } from "@/components/ui/item";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 
 export const Route = createFileRoute("/testimonials/tmp/$id")({
   ssr: false,
   component: Component,
+  notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
     const testimonial = await context.queryClient.ensureQueryData(
       convexQuery(api.testimonials.getTestimonialById, {
-        id: params.id as Id<"testimonials">,
+        id: params.id,
       }),
     );
 
@@ -44,15 +52,39 @@ export const Route = createFileRoute("/testimonials/tmp/$id")({
 });
 
 function Component() {
-  const { testimonial, expirationDate } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const {
+    testimonial: preloadTestimonial,
+    expirationDate: preloadExpirationDate,
+  } = Route.useLoaderData();
+  const { data: liveTestimonial } = useSuspenseQuery(
+    convexQuery(api.testimonials.getTestimonialById, {
+      id: id,
+    }),
+  );
+  const testimonial = liveTestimonial || preloadTestimonial;
 
+  const isRoot = useMatch({
+    strict: false,
+    select: (state) => state.id === rootRouteId,
+  });
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (isRoot) {
+      router.navigate({ to: "/" });
+    } else {
+      router.history.back();
+    }
+  };
+
+  const liveExpirationDate = testimonial._creationTime + 900_000;
+  const expirationDate = liveExpirationDate || preloadExpirationDate;
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
-      <Button variant="link" className="px-0!" asChild>
-        <Link to="/testimonials">
-          <ChevronLeft />
-          Back
-        </Link>
+      <Button variant="link" className="px-0!" onClick={handleBack}>
+        <ChevronLeft />
+        Back
       </Button>
 
       <TestimonialContext.Provider value={{ testimonial }}>
