@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import type { User } from "better-auth";
 import { LogOut, Shield, UserRoundIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -10,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { User } from "@/lib/auth/types";
 
 type Props = {
   user: User;
