@@ -57,9 +57,9 @@ export const testimonialSearchQueryParams = {
   from: parseAsIsoDate,
   to: parseAsIsoDate,
   order: parseAsStringLiteral(sortOrders),
-  statuses: parseAsArrayOf(parseAsStringLiteral(testimonialStatuses)).withDefault(
-    [],
-  ),
+  statuses: parseAsArrayOf(
+    parseAsStringLiteral(testimonialStatuses),
+  ).withDefault([]),
 };
 
 export const testimonialSearchQuerySchema = createStandardSchemaV1(

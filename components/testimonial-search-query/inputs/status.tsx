@@ -20,7 +20,9 @@ export default function StatusInput() {
                 ...filter,
                 statuses: !checked
                   ? filter.statuses.filter((t) => t !== status)
-                  : filter.statuses.includes(status) ? filter.statuses : [...filter.statuses, status],
+                  : filter.statuses.includes(status)
+                    ? filter.statuses
+                    : [...filter.statuses, status],
               }))
             }
           />

@@ -12,6 +12,7 @@ import AuthoutInput from "./inputs/author";
 import DateInput from "./inputs/date";
 import FormatInput from "./inputs/format";
 import SortOrderInput from "./inputs/sort-order";
+import StatusInput from "./inputs/status";
 import {
   countActiveQueries,
   getSortOrderLabel,
@@ -19,7 +20,6 @@ import {
   getTestimonialStatusLabel,
 } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
-import StatusInput from "./inputs/status";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
