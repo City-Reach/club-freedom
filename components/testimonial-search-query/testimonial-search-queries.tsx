@@ -29,6 +29,8 @@ export default function TestimonialFilters() {
   const queryCount = countActiveQueries(searchQuery);
   const isActive = queryCount > 0;
 
+  console.log(searchQuery.statuses);
+
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-4 py-2">

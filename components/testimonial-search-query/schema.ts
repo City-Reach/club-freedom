@@ -81,6 +81,7 @@ export const countActiveQueries = (query: TestimonialSearchQuery) => {
   if (query.from !== null) count++;
   if (query.to !== null) count++;
   if (query.order !== null) count++;
+  if (query.statuses.length > 0) count++;
 
   return count;
 };

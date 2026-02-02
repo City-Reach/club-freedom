@@ -38,6 +38,7 @@ export function useInfiniteTestimonialQuery(
       filters: {
         author: searchQuery.author,
         types: searchQuery.formats,
+        statuses: searchQuery.statuses,
         before,
         after,
       },

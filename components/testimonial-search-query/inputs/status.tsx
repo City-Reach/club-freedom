@@ -18,9 +18,9 @@ export default function StatusInput() {
             onCheckedChange={(checked) =>
               setSearchQuery((filter) => ({
                 ...filter,
-                statuses: checked
-                  ? [...filter.statuses, status]
-                  : filter.statuses.filter((t) => t !== status),
+                statuses: !checked
+                  ? filter.statuses.filter((t) => t !== status)
+                  : filter.statuses.includes(status) ? filter.statuses : [...filter.statuses, status],
               }))
             }
           />

@@ -17,6 +17,15 @@ export const getTestimonials = query({
         types: v.optional(v.array(v.string())),
         before: v.optional(v.float64()),
         after: v.optional(v.float64()),
+        statuses: v.optional(
+          v.array(
+            v.union(
+              v.literal("pending"),
+              v.literal("published"),
+              v.literal("not-published"),
+            ),
+          ),
+        ),
       }),
     ),
     order: v.optional(v.union(v.literal("asc"), v.literal("desc"))),
@@ -41,14 +50,25 @@ export const getTestimonials = query({
             )
             .order(order || "desc");
 
-    const canApprove = await ctx.runQuery(api.auth.checkUserPermissions, {
+    const canView = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: {
-        testimonial: ["approve"],
+        testimonial: ["view"],
       },
     });
 
-    const readyTestimonialQuery = completeTestimonialQuery.filter(
-      (q) => canApprove || q.eq(q.field("approved"), true),
+    const readyTestimonialQuery = completeTestimonialQuery.filter((q) =>
+      !canView
+        ? q.eq(q.field("approved"), true)
+        : filters.statuses && filters.statuses.length > 0
+          ? q.or(
+              filters.statuses.includes("pending") &&
+                q.eq(q.field("approved"), undefined),
+              filters.statuses.includes("published") &&
+                q.eq(q.field("approved"), true),
+              filters.statuses.includes("not-published") &&
+                q.eq(q.field("approved"), false),
+            )
+          : true,
     );
 
     const filteredTestimonialQuery = readyTestimonialQuery
