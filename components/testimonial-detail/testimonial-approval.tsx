@@ -19,7 +19,7 @@ function getApprovalValue(approve?: boolean) {
   } else if (approve === false) {
     return "disapproved" as const;
   } else {
-    return undefined;
+    return "pending" as const;
   }
 }
 
@@ -58,11 +58,14 @@ export default function TestimonialApproval() {
       }}
     >
       <SelectTrigger>
-        <SelectValue placeholder="Pending" />
+        <SelectValue />
       </SelectTrigger>
-      <SelectContent align="start">
+      <SelectContent align="start" position="popper">
         <SelectGroup>
           <SelectLabel>Publish Status</SelectLabel>
+          <SelectItem value="pending" hidden>
+            Pending
+          </SelectItem>
           <SelectItem value="approved">Published</SelectItem>
           <SelectItem value="disapproved">Not Published</SelectItem>
         </SelectGroup>
