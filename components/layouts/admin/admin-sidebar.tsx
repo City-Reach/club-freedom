@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@tanstack/react-router";
+import { Link, useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { Shield } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
@@ -16,7 +16,7 @@ import AdminSidebarNav from "./admin-sidebar-nav";
 export default function AdminSidebar({
   ...props
 }: ComponentProps<typeof Sidebar>) {
-  const { user } = useLoaderData({
+  const { user } = useRouteContext({
     from: "/admin",
   });
 

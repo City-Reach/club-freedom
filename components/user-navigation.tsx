@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { EllipsisVertical, LogOut, UserIcon } from "lucide-react";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { User } from "@/lib/auth/types";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -18,7 +18,7 @@ import {
 } from "./ui/sidebar";
 
 type Props = {
-  user: Doc<"user">;
+  user: User;
 };
 
 export default function UserNavigation({ user }: Props) {
