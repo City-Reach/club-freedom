@@ -50,7 +50,7 @@ export default function OrganizationList() {
           <CardHeader>
             <CardTitle>
               <Link
-                to="/o/$orgSlug/testimonials"
+                to="/o/$orgSlug"
                 params={{ orgSlug: organization.slug }}
                 className="hover:underline hover:underline-offset-2"
               >
