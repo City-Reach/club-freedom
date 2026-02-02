@@ -1,8 +1,8 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
-import OrganizationLogo from "./organization-logo";
 import OrganizationDropdown from "./organization-dropdown";
+import OrganizationLogo from "./organization-logo";
 
 export default function OrganizationNavbar() {
   const { organization } = useRouteContext({
