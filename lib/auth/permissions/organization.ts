@@ -9,30 +9,37 @@ import {
 } from "better-auth/plugins/organization/access";
 
 const statement = {
-  testimonial: ["approve", "download"],
+  testimonial: ["view", "approve", "download", "delete"],
   ...defaultStatements,
 } as const;
 
 export const ac = createAccessControl(statement);
 
-export const member = ac.newRole({
-  testimonial: [],
+export const viewer = ac.newRole({
+  testimonial: ["view"],
+  ...memberAc.statements,
+});
+
+export const editor = ac.newRole({
+  testimonial: ["view", "approve", "download", "delete"],
   ...memberAc.statements,
 });
 
 export const admin = ac.newRole({
-  testimonial: ["approve", "download"],
+  testimonial: ["view", "approve", "download", "delete"],
   ...adminAc.statements,
 });
 
 export const owner = ac.newRole({
-  testimonial: ["approve", "download"],
+  testimonial: ["view", "approve", "download", "delete"],
   ...ownerAc.statements,
 });
 
 export const roles = {
-  member,
+  viewer,
+  editor,
   admin,
+  owner,
 } as const;
 
 export const organizationRBAC = {
