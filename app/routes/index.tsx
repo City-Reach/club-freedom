@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import Footnote from "@/components/footnote";
 import Navbar from "@/components/navbar";
 import TestimonialForm from "@/components/testimonial-form";
 import { getCurrentUser } from "../functions/auth";
@@ -29,6 +30,7 @@ function Home() {
         </div>
         <TestimonialForm />
       </main>
+      <Footnote />
     </>
   );
 }
