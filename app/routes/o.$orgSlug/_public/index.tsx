@@ -19,7 +19,7 @@ function TestimonialSubmissionPage() {
           "Let your light shine before others" – Matthew 5:16
         </p>
       </div>
-      <TestimonialForm organizationId={organization._id} />
+      <TestimonialForm />
     </main>
   );
 }

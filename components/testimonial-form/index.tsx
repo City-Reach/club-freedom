@@ -1,7 +1,11 @@
 import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { ClientOnly, useNavigate } from "@tanstack/react-router";
+import {
+  ClientOnly,
+  useNavigate,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
@@ -36,11 +40,11 @@ import {
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 
-type Props = {
-  organizationId: string;
-};
+export default function TestimonialForm() {
+  const { organization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
 
-export default function TestimonialForm({ organizationId }: Props) {
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
@@ -104,7 +108,7 @@ export default function TestimonialForm({ organizationId }: Props) {
         storageId: storageId,
         media_type: media_type,
         text: values.writtenText,
-        organizationId,
+        organizationId: organization._id as string,
       });
 
       form.reset();
