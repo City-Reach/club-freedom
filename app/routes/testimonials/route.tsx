@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { getCurrentUser } from "@/app/functions/auth";
 import Navbar from "@/components/navbar";
+import Footnote from "@/components/footnote";
 
 export const Route = createFileRoute("/testimonials")({
   component: RouteComponent,
@@ -18,6 +19,7 @@ function RouteComponent() {
     <>
       <Navbar user={user} />
       <Outlet />
+      <Footnote />
     </>
   );
 }
