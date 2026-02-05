@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import { hasPermissionQuery } from "@/lib/query";
+import Footnote from "@/components/footnote";
 
 export const Route = createFileRoute("/testimonials/$id")({
   ssr: false,
@@ -107,26 +108,28 @@ export default function TestimonialDetail() {
   const testimonial = liveTestimonial || preloadTestimonial;
 
   return (
-    <TestimonialContext.Provider value={{ testimonial }}>
-      <div className="flex flex-col gap-8">
-        {testimonial.processingStatus === "error" && (
-          <TestimonialProcessingError />
-        )}
-        <TestimonialTitle />
-        {testimonial.mediaUrl && (
-          <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
-        )}
-        <div className="flex flex-wrap gap-2">
-          {canApprove && testimonial.processingStatus === "completed" && (
-            <TestimonialApproval />
+    <>
+      <TestimonialContext.Provider value={{ testimonial }}>
+        <div className="flex flex-col gap-8">
+          {testimonial.processingStatus === "error" && (
+            <TestimonialProcessingError />
           )}
-          {canDownload && <TestimonialDownload />}
-          {canDelete && <TestimonialDelete />}
+          <TestimonialTitle />
+          {testimonial.mediaUrl && (
+            <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
+          )}
+          <div className="flex flex-wrap gap-2">
+            {canApprove && testimonial.processingStatus === "completed" && (
+              <TestimonialApproval />
+            )}
+            {canDownload && <TestimonialDownload />}
+            {canDelete && <TestimonialDelete />}
+          </div>
+          <TestimonialInfo />
+          <TestimonialSummary />
+          <TestimonialText />
         </div>
-        <TestimonialInfo />
-        <TestimonialSummary />
-        <TestimonialText />
-      </div>
-    </TestimonialContext.Provider>
+      </TestimonialContext.Provider>
+    </>
   );
 }

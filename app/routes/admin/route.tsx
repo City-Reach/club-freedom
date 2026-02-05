@@ -23,7 +23,10 @@ function RouteComponent() {
   return (
     <>
       <Navbar user={user} />
-      <Outlet />
+      <main className="adjust-main-height">
+        <Outlet />
+      </main>
+      <Footnote />
     </>
   );
 }
