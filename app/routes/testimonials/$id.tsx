@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import { hasPermissionQuery } from "@/lib/query";
-import Footnote from "@/components/footnote";
 
 export const Route = createFileRoute("/testimonials/$id")({
   ssr: false,
