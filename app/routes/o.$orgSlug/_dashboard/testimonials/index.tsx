@@ -1,28 +1,27 @@
-import { convexQuery } from "@convex-dev/react-query";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import TestimonialSearchInput from "@/components/testimonial-search-query/testimonial-search-input";
 import TestimonialFilters from "@/components/testimonial-search-query/testimonial-search-queries";
 import { Testimonials } from "@/components/testimonials";
 import { api } from "@/convex/_generated/api";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { convexQuery } from "@convex-dev/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
-export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials")({
+export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials/")({
   ssr: false,
   component: TestimonialsPage,
 });
 
 function TestimonialsPage() {
   const { orgSlug } = Route.useParams();
-  const { organization: preloadOrganization } = Route.useRouteContext();
-  const { data: liveOrganization } = useSuspenseQuery(
-    convexQuery(api.organization.getOrganizationBySlug, {
-      slug: orgSlug,
-    }),
-  );
-  const { _id } = (liveOrganization ||
-    preloadOrganization) as Doc<"organization">;
-
+    const { organization: preloadOrganization } = Route.useRouteContext();
+    const { data: liveOrganization } = useSuspenseQuery(
+      convexQuery(api.organization.getOrganizationBySlug, {
+        slug: orgSlug,
+      }),
+    );
+    const { _id } = (liveOrganization ||
+      preloadOrganization) as Doc<"organization">;
   return (
     <main className="container mx-auto px-4">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
