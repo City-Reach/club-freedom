@@ -1,30 +1,18 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  createStandardSchemaV1,
-  debounce,
-  parseAsString,
-  useQueryStates,
-} from "nuqs";
 import { Testimonials } from "@/components/testimonials";
-import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import TestimonialFilters from "@/components/testimonial-search-query/testimonial-search-queries";
+import TestimonialSearchInput from "@/components/testimonial-search-query/testimonial-search-input";
 
-export const testimonialSearchParams = {
-  q: parseAsString.withDefault(""),
-};
 export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials")({
   ssr: false,
   component: TestimonialsPage,
-  validateSearch: createStandardSchemaV1(testimonialSearchParams, {
-    partialOutput: true,
-  }),
 });
 
 function TestimonialsPage() {
-  const search = Route.useSearch();
   const { orgSlug } = Route.useParams();
   const { organization: preloadOrganization } = Route.useRouteContext();
   const { data: liveOrganization } = useSuspenseQuery(
@@ -48,28 +36,13 @@ function TestimonialsPage() {
           </p>
         </div>
       </div>
-      <div className="w-full space-y-8 max-w-lg mx-auto mb-24">
-        <TestimonialSearchInput />
+      <div className="w-full grid gap-8 max-w-lg mx-auto mb-24 min-w-0">
+        <div className="grid min-w-0">
+          <TestimonialSearchInput />
+          <TestimonialFilters />
+        </div>
         <Testimonials orgId={_id} />
       </div>
     </main>
-  );
-}
-
-function TestimonialSearchInput() {
-  const [search, setSearch] = useQueryStates(testimonialSearchParams);
-  return (
-    <Input
-      value={search.q}
-      placeholder="Search testimonials"
-      onChange={(e) => {
-        setSearch(
-          { q: e.target.value },
-          {
-            limitUrlUpdates: debounce(500),
-          },
-        );
-      }}
-    />
   );
 }
