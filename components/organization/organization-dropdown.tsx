@@ -10,12 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { User } from "@/lib/auth/types";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 import { getMemberRoleQuery, hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 
 type Props = {
-  user: User;
+  user: Doc<"user">;
 };
 
 export default function OrganizationDropdown({ user }: Props) {

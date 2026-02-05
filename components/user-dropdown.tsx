@@ -9,10 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { User } from "@/lib/auth/types";
+import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
 type Props = {
-  user: User;
+  user: Doc<"user">;
 };
 
 export default function UserDropDown({ user }: Props) {

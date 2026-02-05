@@ -8,42 +8,40 @@ export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
   component: RouteComponent,
   pendingComponent: PendingComponent,
   beforeLoad: async ({ context }) => {
-    const { data: sessionData } = await authClient.getSession();
+    const { organization, user } = context;
 
-    if (!sessionData) {
+    if (!user) {
       throw redirect({ to: "/sign-in" });
     }
 
-    const user = sessionData.user;
-
     const { error } = await authClient.organization.setActive({
-      organizationId: context.organization._id,
+      organizationId: organization._id,
     });
 
     if (error) {
       throw redirect({
         to: "/o/$orgSlug",
-        params: { orgSlug: context.organization.slug },
+        params: { orgSlug: organization.slug },
       });
     }
 
     const { data: roleData } =
       await authClient.organization.getActiveMemberRole({
         query: {
-          organizationId: context.organization._id,
+          organizationId: organization._id,
         },
       });
 
     if (!roleData || roleData.role === "viewer") {
       throw redirect({
         to: "/o/$orgSlug",
-        params: { orgSlug: context.organization.slug },
+        params: { orgSlug: organization.slug },
       });
     }
 
     return {
       user,
-      organization: context.organization,
+      organization,
     };
   },
 });

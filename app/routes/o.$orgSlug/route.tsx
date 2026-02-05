@@ -13,7 +13,12 @@ export const Route = createFileRoute("/o/$orgSlug")({
     if (!organization) {
       throw notFound();
     }
-    return { organization };
+
+    const user = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.getCurrentUser),
+    );
+
+    return { organization, user };
   },
 });
 
