@@ -2,14 +2,13 @@ import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
-import { admin as adminPlugin, organization } from "better-auth/plugins";
+import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
-import { ac, admin, member, owner } from "@/lib/auth/orgPermissions";
+import { adminRBAC } from "@/lib/auth/permissions/admin";
 import {
-  adminOptions,
-  type PermissionCheck,
-  type Role,
-} from "@/lib/auth/permissions";
+  type OrganizationPermissionCheck,
+  organizationRBAC,
+} from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -52,14 +51,9 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         authConfig,
         jwksRotateOnTokenGenerationError: true,
       }),
-      adminPlugin(adminOptions),
+      admin(adminRBAC),
       organization({
-        ac,
-        roles: {
-          member,
-          admin,
-          owner,
-        },
+        ...organizationRBAC,
         schema: {
           organization: {
             additionalFields: {
@@ -116,29 +110,22 @@ export const checkUserPermissions = query({
   handler: async (
     ctx,
     args: {
-      role?: Role;
-      permissions?: PermissionCheck;
+      permissions?: OrganizationPermissionCheck;
     },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
     try {
-      const { success } = await auth.api.userHasPermission({
-        headers,
-        body: {
-          role: args.role,
-          permissions: args.permissions || {},
-        },
-      });
-      const orgPerms = await auth.api.hasPermission({
+      const { success } = await auth.api.hasPermission({
         headers,
         body: {
           permissions: args.permissions || {},
         },
       });
-      return success || orgPerms.success;
+      return success;
     } catch (err) {
-      console.error(err);
-      return false;
+      console.error(err instanceof Error ? err.message : err);
     }
+
+    return false;
   },
 });

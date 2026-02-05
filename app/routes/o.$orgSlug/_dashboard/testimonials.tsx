@@ -50,7 +50,7 @@ function TestimonialsPage() {
       </div>
       <div className="w-full space-y-8 max-w-lg mx-auto mb-24">
         <TestimonialSearchInput />
-        <Testimonials search={search.q ?? ""} orgId={_id} />
+        <Testimonials orgId={_id} />
       </div>
     </main>
   );

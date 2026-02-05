@@ -3,21 +3,23 @@ import type {
   AdminOptions,
   InferAdminRolesFromOption,
 } from "better-auth/plugins/admin";
-import { adminAc, defaultStatements } from "better-auth/plugins/admin/access";
+import {
+  adminAc,
+  defaultStatements,
+  userAc,
+} from "better-auth/plugins/admin/access";
 
 const statement = {
-  testimonial: ["approve", "download"],
   ...defaultStatements,
 } as const;
 
 export const ac = createAccessControl(statement);
 
 export const user = ac.newRole({
-  testimonial: [],
+  ...userAc.statements,
 });
 
 export const admin = ac.newRole({
-  testimonial: ["approve", "download"],
   ...adminAc.statements,
 });
 
@@ -26,15 +28,15 @@ export const roles = {
   admin,
 } as const;
 
-export const adminOptions = {
+export const adminRBAC = {
   ac,
   roles,
 } satisfies AdminOptions;
 
-export type Role = InferAdminRolesFromOption<typeof adminOptions>;
+export type Role = InferAdminRolesFromOption<typeof adminRBAC>;
 
 export const ALL_ROLES = Object.keys(roles) as Array<Role>;
 
-export type PermissionCheck = Partial<
+export type AdminPermissionCheck = Partial<
   Subset<keyof typeof statement, typeof statement>
 >;

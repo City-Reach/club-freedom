@@ -1,7 +1,6 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { EllipsisVertical, LogOut, UserIcon } from "lucide-react";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
-import { authClient } from "@/lib/auth/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -24,14 +23,6 @@ type Props = {
 
 export default function UserNavigation({ user }: Props) {
   const { isMobile } = useSidebar();
-  const navigate = useNavigate();
-
-  const signOut = async () => {
-    await authClient.signOut();
-    await navigate({
-      to: "/sign-in",
-    });
-  };
 
   return (
     <SidebarMenu>

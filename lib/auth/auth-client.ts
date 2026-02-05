@@ -7,21 +7,16 @@ import {
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import type { auth } from "@/convex/betterAuth/auth";
-import { ac, admin, member, owner } from "@/lib/auth/orgPermissions";
-import { adminOptions } from "@/lib/auth/permissions";
+import { adminRBAC } from "./permissions/admin";
+import { organizationRBAC } from "./permissions/organization";
 
 export const authClient = createAuthClient({
   plugins: [
     inferAdditionalFields<typeof auth>(),
-    adminClient(adminOptions),
+    adminClient(adminRBAC),
     convexClient(),
     organizationClient({
-      ac,
-      roles: {
-        owner,
-        admin,
-        member,
-      },
+      ...organizationRBAC,
       schema: inferOrgAdditionalFields<typeof auth>(),
     }),
   ],
