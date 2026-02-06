@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import TestimonialSearchInput from "@/components/testimonial-search-query/testimonial-search-input";
 import TestimonialFilters from "@/components/testimonial-search-query/testimonial-search-queries";
-import { Testimonials } from "@/components/testimonials";
+// import { Testimonials } from "@/components/testimonials";
 
 export const Route = createFileRoute("/testimonials/")({
   ssr: false,
@@ -27,7 +27,7 @@ function TestimonialsPage() {
           <TestimonialSearchInput />
           <TestimonialFilters />
         </div>
-        <Testimonials />
+        {/* <Testimonials /> */}
       </div>
     </main>
   );

@@ -3,6 +3,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { TestimonialContext } from "@/contexts/testimonial-context";
+import type { Id } from "@/convex/betterAuth/_generated/dataModel";
 import { hasPermissionQuery, useInfiniteTestimonialQuery } from "@/lib/query";
 import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
@@ -15,14 +16,20 @@ import { useTestimonialSearchQuery } from "./testimonial-search-query/hook";
 import { CardContent, CardHeader } from "./ui/card";
 import { Spinner } from "./ui/spinner";
 
-export function Testimonials() {
+type Props = {
+  orgId: Id<"organization">;
+};
+export function Testimonials({ orgId }: Props) {
   const { searchQuery } = useTestimonialSearchQuery();
   const searchText = useDebounce(searchQuery.q, 500);
 
-  const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery({
-    ...searchQuery,
-    q: searchText,
-  });
+  const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery(
+    orgId,
+    {
+      ...searchQuery,
+      q: searchText,
+    },
+  );
   const { data: canApprove } = useSuspenseQuery(
     hasPermissionQuery({
       testimonial: ["approve"],

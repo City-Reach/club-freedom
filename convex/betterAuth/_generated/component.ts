@@ -117,6 +117,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
               }
             | {
                 data: {
+                  createdAt: number;
                   email: string;
                   expiresAt: number;
                   inviterId: string;
@@ -387,6 +388,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "role"
                     | "status"
                     | "expiresAt"
+                    | "createdAt"
                     | "inviterId"
                     | "_id";
                   operator?:
@@ -678,6 +680,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "role"
                     | "status"
                     | "expiresAt"
+                    | "createdAt"
                     | "inviterId"
                     | "_id";
                   operator?:
@@ -1113,6 +1116,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             | {
                 model: "invitation";
                 update: {
+                  createdAt?: number;
                   email?: string;
                   expiresAt?: number;
                   inviterId?: string;
@@ -1128,6 +1132,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "role"
                     | "status"
                     | "expiresAt"
+                    | "createdAt"
                     | "inviterId"
                     | "_id";
                   operator?:
@@ -1477,6 +1482,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             | {
                 model: "invitation";
                 update: {
+                  createdAt?: number;
                   email?: string;
                   expiresAt?: number;
                   inviterId?: string;
@@ -1492,6 +1498,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "role"
                     | "status"
                     | "expiresAt"
+                    | "createdAt"
                     | "inviterId"
                     | "_id";
                   operator?:

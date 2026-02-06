@@ -2,6 +2,7 @@ import { convexQuery } from "@convex-dev/react-query";
 import { usePaginatedQuery } from "convex/react";
 import type { TestimonialSearchQuery } from "@/components/testimonial-search-query/schema";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/betterAuth/_generated/dataModel";
 import type { OrganizationPermissionCheck } from "./auth/permissions/organization";
 
 export function hasPermissionQuery(permissions: OrganizationPermissionCheck) {
@@ -11,6 +12,7 @@ export function hasPermissionQuery(permissions: OrganizationPermissionCheck) {
 export const TESTIMONIAL_PER_PAGE = 10;
 
 export function useInfiniteTestimonialQuery(
+  orgId: Id<"organization">,
   searchQuery: TestimonialSearchQuery,
 ) {
   const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
@@ -25,6 +27,7 @@ export function useInfiniteTestimonialQuery(
     api.testimonials.getTestimonials,
     {
       searchQuery: searchQuery.q,
+      orgId: orgId,
       filters: {
         author: searchQuery.author,
         types: searchQuery.formats,
