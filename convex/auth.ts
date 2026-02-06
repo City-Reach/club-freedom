@@ -4,11 +4,11 @@ import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
-import { adminRBAC } from "./../lib/auth/permissions/admin";
+import { adminRBAC } from "@/lib/auth/permissions/admin";
 import {
   type OrganizationPermissionCheck,
   organizationRBAC,
-} from "./../lib/auth/permissions/organization";
+} from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
