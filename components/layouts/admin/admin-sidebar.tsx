@@ -1,4 +1,4 @@
-import { Link, useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import { Shield } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
