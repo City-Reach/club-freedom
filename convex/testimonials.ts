@@ -11,6 +11,7 @@ export const getTestimonials = query({
   args: {
     paginationOpts: paginationOptsValidator,
     searchQuery: v.optional(v.string()),
+    orgId: v.string(),
     filters: v.optional(
       v.object({
         author: v.optional(v.string()),
@@ -23,7 +24,7 @@ export const getTestimonials = query({
   },
   handler: async (
     ctx,
-    { paginationOpts, searchQuery = "", filters = {}, order },
+    { paginationOpts, searchQuery = "", filters = {}, order, orgId },
   ) => {
     const trimmedQuery = searchQuery.trim();
     const testimonialQuery = ctx.db.query("testimonials");
@@ -32,12 +33,14 @@ export const getTestimonials = query({
       trimmedQuery !== "" && !order
         ? testimonialQuery.withSearchIndex("search_posts", (q) =>
             q
+
               .search("searchText", trimmedQuery)
-              .eq("processingStatus", "completed"),
+              .eq("processingStatus", "completed")
+              .eq("organizationId", orgId),
           )
         : testimonialQuery
-            .withIndex("by_processingStatus", (q) =>
-              q.eq("processingStatus", "completed"),
+            .withIndex("by_processingStatus_and_organizationId", (q) =>
+              q.eq("processingStatus", "completed").eq("organizationId", orgId),
             )
             .order(order || "desc");
 
