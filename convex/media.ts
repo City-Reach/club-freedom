@@ -15,7 +15,7 @@ export const generateMediaDownloadUrl = action({
   handler: async (ctx, { id }) => {
     try {
       const testimonial = await ctx.runQuery(
-        api.testimonials.getTestimonialById,
+        api.testimonials.getTestimonialByIdAndOrgId,
         { id },
       );
 

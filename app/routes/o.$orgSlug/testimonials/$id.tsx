@@ -28,9 +28,11 @@ export const Route = createFileRoute("/o/$orgSlug/testimonials/$id")({
   component: Component,
   notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
+    const { _id } = context.organization;
     const testimonial = await context.queryClient.ensureQueryData(
-      convexQuery(api.testimonials.getTestimonialById, {
+      convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
         id: params.id,
+        orgId: _id,
       }),
     );
 
@@ -86,10 +88,12 @@ function Component() {
 
 export default function TestimonialDetail() {
   const { id } = Route.useParams();
+  const { organization } = Route.useRouteContext();
   const { testimonial: preloadTestimonial } = Route.useLoaderData();
   const { data: liveTestimonial } = useSuspenseQuery(
-    convexQuery(api.testimonials.getTestimonialById, {
+    convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
       id: id,
+      orgId: organization._id,
     }),
   );
 

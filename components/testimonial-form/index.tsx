@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
+import { Route } from "@/app/routes/o.$orgSlug/index";
 import {
   AudioRecorder,
   VideoRecorder,
@@ -41,6 +42,7 @@ type Props = {
 };
 
 export default function TestimonialForm({ organizationId }: Props) {
+  const { orgSlug } = Route.useParams();
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
@@ -112,7 +114,10 @@ export default function TestimonialForm({ organizationId }: Props) {
         description: "Thank you for your submission.",
       });
 
-      await navigation({ to: "/testimonials/tmp/$id", params: { id } });
+      await navigation({
+        to: "/o/$orgSlug/testimonials/tmp/$id",
+        params: { orgSlug, id },
+      });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       const message = error instanceof Error ? error.message : "Unknown error";

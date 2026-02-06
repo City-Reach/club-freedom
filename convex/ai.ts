@@ -15,7 +15,7 @@ export const summarizeText = action({
   handler: async (ctx, { testimonialId, text }) => {
     try {
       const testimonial = await ctx.runQuery(
-        api.testimonials.getTestimonialById,
+        api.testimonials.getTestimonialByIdAndOrgId,
         { id: testimonialId },
       );
       if (testimonial) {
