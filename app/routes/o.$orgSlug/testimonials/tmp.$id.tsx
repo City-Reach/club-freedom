@@ -52,7 +52,7 @@ export const Route = createFileRoute("/o/$orgSlug/testimonials/tmp/$id")({
 });
 
 function Component() {
-  const { id } = Route.useParams();
+  const { id, orgSlug } = Route.useParams();
   const {
     testimonial: preloadTestimonial,
     expirationDate: preloadExpirationDate,
@@ -72,7 +72,12 @@ function Component() {
 
   const handleBack = () => {
     if (isRoot) {
-      router.navigate({ to: "/" });
+      router.navigate({
+        to: "/o/$orgSlug/testimonials",
+        params: {
+          orgSlug: orgSlug,
+        },
+      });
     } else {
       router.history.back();
     }

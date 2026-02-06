@@ -6,7 +6,7 @@ type Props = {
 };
 export default function Logo({ organization }: Props) {
   let link = `/`;
-  if (organization && organization.slug) {
+  if (organization?.slug) {
     link = `/o/${organization.slug}`;
   }
   return (
