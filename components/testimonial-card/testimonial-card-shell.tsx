@@ -1,9 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
 import type { ComponentProps, KeyboardEvent } from "react";
+import { Route } from "@/app/routes/o.$orgSlug/testimonials/index";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { cn } from "@/lib/utils";
 import { Card } from "../ui/card";
-import { Route } from "@/app/routes/o.$orgSlug/_dashboard/testimonials/index";
 
 export default function TestimonialCardShell({
   className,

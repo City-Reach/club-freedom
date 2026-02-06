@@ -23,7 +23,7 @@ import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import { hasPermissionQuery } from "@/lib/query";
 
-export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials/$id")({
+export const Route = createFileRoute("/o/$orgSlug/testimonials/$id")({
   ssr: false,
   component: Component,
   notFoundComponent: NotFound,
@@ -62,9 +62,12 @@ function Component() {
 
   const handleBack = () => {
     if (isRoot) {
-      router.navigate({ to: "/o/$orgSlug/testimonials", params: {
-        orgSlug: orgSlug,
-      }, });
+      router.navigate({
+        to: "/o/$orgSlug/testimonials",
+        params: {
+          orgSlug: orgSlug,
+        },
+      });
     } else {
       router.history.back();
     }

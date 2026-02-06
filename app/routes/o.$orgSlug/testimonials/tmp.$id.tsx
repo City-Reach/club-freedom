@@ -27,7 +27,7 @@ import {
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 
-export const Route = createFileRoute("/o/$orgSlug/_dashboard/testimonials/tmp/$id")({
+export const Route = createFileRoute("/o/$orgSlug/testimonials/tmp/$id")({
   ssr: false,
   component: Component,
   notFoundComponent: NotFound,
