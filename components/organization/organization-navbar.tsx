@@ -9,7 +9,7 @@ type Props = {
   organization: Doc<"organization">;
 };
 
-export default function OrganiztionNavbar({ user, organization }: Props) {
+export default function OrganizationNavbar({ user, organization }: Props) {
   return (
     <header className="border-b py-2 px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
       <div className="flex items-center gap-4">
