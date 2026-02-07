@@ -26,12 +26,12 @@ export async function summarize(input: string, name: string) {
       messages: [
         {
           role: "system",
-          content: `You are an AI Assistant tasked with summarizing testimonials. Ensure the summary is shorter than the testimonial and generate a title.
-            You will get text as input. There is no need to include sources. Include the testimonial giver's name in the summary.`,
+          content: `You are an AI Assistant tasked with summarizing text. Ensure the summary is shorter than the text and generate a title.
+            There is no need to include sources.`,
         },
         {
           role: "user",
-          content: `The name of the testimonial giver is ${name}. ${input}`,
+          content: input,
         },
       ],
       response_format: zodResponseFormat(
@@ -46,7 +46,7 @@ export async function summarize(input: string, name: string) {
       throw new Error("No content received from OpenAI");
     }
 
-    return JSON.parse(responseContent) as SummaryResponse;
+    return JSON.parse(`${name} says: ${responseContent}`) as SummaryResponse;
   } catch (error) {
     console.error("Error summarizing text:", error);
     throw error;
