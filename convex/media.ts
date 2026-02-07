@@ -11,12 +11,12 @@ import { action } from "./_generated/server";
 import { r2 } from "./r2";
 
 export const generateMediaDownloadUrl = action({
-  args: { id: v.id("testimonials") },
-  handler: async (ctx, { id }) => {
+  args: { id: v.id("testimonials"), orgId: v.string() },
+  handler: async (ctx, { id, orgId }) => {
     try {
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialByIdAndOrgId,
-        { id },
+        { id, orgId },
       );
 
       if (!testimonial || !testimonial.storageId) {

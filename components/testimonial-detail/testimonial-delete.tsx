@@ -25,7 +25,7 @@ export default function TestimonialDelete() {
     try {
       await deleteTestimonial({ id: testimonial._id });
       toast.success("Testimonial deleted successfully");
-      await navigate({ to: "/testimonials" });
+      await navigate({ to: "/" });
     } catch (_err) {
       if (_err instanceof Error) {
         toast.error(`Failed to delete testimonial: ${_err.message}`);

@@ -175,6 +175,30 @@ export const deleteTestimonial = mutation({
   },
 });
 
+export const getTestimonialById = query({
+  args: { id: v.string() },
+  handler: async (ctx, { id }) => {
+    const testimonialId = ctx.db.normalizeId("testimonials", id);
+
+    if (!testimonialId) return null;
+
+    const testimonial = await ctx.db.get(testimonialId);
+    const r2PublicUrl = process.env.R2_PUBLIC_URL;
+
+    if (!testimonial || !r2PublicUrl) {
+      return null;
+    }
+
+    const mediaUrl = testimonial.storageId
+      ? `${r2PublicUrl}/${testimonial.storageId}`
+      : null;
+    return {
+      ...testimonial,
+      mediaUrl,
+    };
+  },
+});
+
 export const getTestimonialByIdAndOrgId = query({
   args: { id: v.string(), orgId: v.string() },
   handler: async (ctx, { id, orgId }) => {

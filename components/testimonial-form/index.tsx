@@ -86,7 +86,7 @@ export default function TestimonialForm({ organizationId }: Props) {
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        const { url, key } = await generateUploadUrl();
+        const { url, key } = await generateUploadUrl({ organizationId });
         if (!key) {
           throw new Error("Failed to generate media key");
         }
