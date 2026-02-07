@@ -11,12 +11,18 @@ import { action } from "./_generated/server";
 import { r2 } from "./r2";
 
 export const generateMediaDownloadUrl = action({
-  args: { id: v.id("testimonials"), orgId: v.string() },
-  handler: async (ctx, { id, orgId }) => {
+  args: { id: v.id("testimonials") },
+  handler: async (ctx, { id }) => {
     try {
+      const canDownload = await ctx.runQuery(api.auth.checkUserPermissions, {
+        permissions: { testimonial: ["download"] },
+      });
+      if (!canDownload) {
+        throw new Error("Testimonial Download Forbidden");
+      }
       const testimonial = await ctx.runQuery(
-        api.testimonials.getTestimonialByIdAndOrgId,
-        { id, orgId },
+        api.testimonials.getTestimonialById,
+        { id },
       );
 
       if (!testimonial || !testimonial.storageId) {

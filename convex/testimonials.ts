@@ -167,7 +167,6 @@ export const deleteTestimonial = mutation({
     const canDelete = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: { testimonial: ["delete"] },
     });
-
     if (!canDelete) {
       throw new Error("Testimonial Delete Forbidden");
     }
