@@ -5,6 +5,7 @@ import {
   notFound,
   rootRouteId,
   useMatch,
+  useRouteContext,
   useRouter,
 } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
@@ -55,7 +56,7 @@ export const Route = createFileRoute("/o/$orgSlug/testimonials/$id")({
 });
 
 function Component() {
-  const { orgSlug } = Route.useParams();
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const isRoot = useMatch({
     strict: false,
     select: (state) => state.id === rootRouteId,
@@ -67,7 +68,7 @@ function Component() {
       router.navigate({
         to: "/o/$orgSlug/testimonials",
         params: {
-          orgSlug: orgSlug,
+          orgSlug: organization.slug,
         },
       });
     } else {

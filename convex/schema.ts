@@ -24,9 +24,6 @@ export default defineSchema({
     .index("by_processingStatus_and_organizationId", {
       fields: ["processingStatus", "organizationId"],
     })
-    .index("by_organizationId", {
-      fields: ["organizationId"],
-    })
     .searchIndex("search_posts", {
       searchField: "searchText",
       filterFields: ["processingStatus", "organizationId"],

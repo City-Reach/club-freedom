@@ -1,7 +1,11 @@
 import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { ClientOnly, useNavigate } from "@tanstack/react-router";
+import {
+  ClientOnly,
+  useNavigate,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
@@ -9,7 +13,6 @@ import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
-import { Route } from "@/app/routes/o.$orgSlug/index";
 import {
   AudioRecorder,
   VideoRecorder,
@@ -42,7 +45,7 @@ type Props = {
 };
 
 export default function TestimonialForm({ organizationId }: Props) {
-  const { orgSlug } = Route.useParams();
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
@@ -116,7 +119,7 @@ export default function TestimonialForm({ organizationId }: Props) {
 
       await navigation({
         to: "/o/$orgSlug/testimonials/tmp/$id",
-        params: { orgSlug, id },
+        params: { orgSlug: organization.slug, id },
       });
     } catch (error) {
       console.error("Error submitting testimonial:", error);

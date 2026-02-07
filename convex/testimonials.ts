@@ -204,15 +204,10 @@ export const getTestimonialByIdAndOrgId = query({
     const testimonialId = ctx.db.normalizeId("testimonials", id);
 
     if (!testimonialId) return null;
-
-    const testimonial = await ctx.db
-      .query("testimonials")
-      .withIndex("by_organizationId", (q) => q.eq("organizationId", orgId))
-      .filter((q) => q.eq(q.field("_id"), testimonialId))
-      .first();
+    const testimonial = await ctx.db.get(testimonialId);
     const r2PublicUrl = process.env.R2_PUBLIC_URL;
 
-    if (!testimonial || !r2PublicUrl) {
+    if (!testimonial || !r2PublicUrl || testimonial.organizationId !== orgId) {
       return null;
     }
 
