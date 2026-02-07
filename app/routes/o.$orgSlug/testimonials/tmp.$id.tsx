@@ -5,10 +5,12 @@ import {
   notFound,
   rootRouteId,
   useMatch,
+  useRouteContext,
   useRouter,
 } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ChevronLeft, TimerIcon } from "lucide-react";
+import { Suspense } from "react";
 import NotFound from "@/components/not-found";
 import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
@@ -24,6 +26,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
+import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 
@@ -54,8 +57,39 @@ export const Route = createFileRoute("/o/$orgSlug/testimonials/tmp/$id")({
 });
 
 function Component() {
-  const { id, orgSlug } = Route.useParams();
-  const { organization } = Route.useRouteContext();
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
+  const isRoot = useMatch({
+    strict: false,
+    select: (state) => state.id === rootRouteId,
+  });
+  const router = useRouter();
+  const handleBack = () => {
+    if (isRoot) {
+      router.navigate({
+        to: "/o/$orgSlug/testimonials",
+        params: {
+          orgSlug: organization.slug,
+        },
+      });
+    } else {
+      router.history.back();
+    }
+  };
+  return (
+    <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
+      <Button variant="link" className="px-0!" onClick={handleBack}>
+        <ChevronLeft />
+        Back
+      </Button>
+      <Suspense fallback={<Spinner className="mx-auto block" />}>
+        <TempTestimonialDetail />
+      </Suspense>
+    </div>
+  );
+}
+function TempTestimonialDetail() {
+  const { id } = Route.useParams();
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const {
     testimonial: preloadTestimonial,
     expirationDate: preloadExpirationDate,
@@ -67,61 +101,34 @@ function Component() {
     }),
   );
   const testimonial = liveTestimonial || preloadTestimonial;
-
-  const isRoot = useMatch({
-    strict: false,
-    select: (state) => state.id === rootRouteId,
-  });
-  const router = useRouter();
-
-  const handleBack = () => {
-    if (isRoot) {
-      router.navigate({
-        to: "/o/$orgSlug/testimonials",
-        params: {
-          orgSlug: orgSlug,
-        },
-      });
-    } else {
-      router.history.back();
-    }
-  };
-
   const liveExpirationDate = testimonial._creationTime + 900_000;
   const expirationDate = liveExpirationDate || preloadExpirationDate;
   return (
-    <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
-      <Button variant="link" className="px-0!" onClick={handleBack}>
-        <ChevronLeft />
-        Back
-      </Button>
-
-      <TestimonialContext.Provider value={{ testimonial }}>
-        <div className="flex flex-col gap-8">
-          <Item variant="muted">
-            <ItemMedia variant="icon">
-              <TimerIcon />
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle>Recently Submitted Testimonial</ItemTitle>
-              <ItemDescription>
-                You can view this testimonial until{" "}
-                {format(expirationDate, "PPp")}
-              </ItemDescription>
-            </ItemContent>
-          </Item>
-          {testimonial.processingStatus === "error" && (
-            <TestimonialProcessingError />
-          )}
-          <TestimonialTitle />
-          {testimonial.mediaUrl && (
-            <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
-          )}
-          <TestimonialInfo />
-          <TestimonialSummary />
-          <TestimonialText />
-        </div>
-      </TestimonialContext.Provider>
-    </div>
+    <TestimonialContext.Provider value={{ testimonial }}>
+      <div className="flex flex-col gap-8">
+        <Item variant="muted">
+          <ItemMedia variant="icon">
+            <TimerIcon />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>Recently Submitted Testimonial</ItemTitle>
+            <ItemDescription>
+              You can view this testimonial until{" "}
+              {format(expirationDate, "PPp")}
+            </ItemDescription>
+          </ItemContent>
+        </Item>
+        {testimonial.processingStatus === "error" && (
+          <TestimonialProcessingError />
+        )}
+        <TestimonialTitle />
+        {testimonial.mediaUrl && (
+          <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
+        )}
+        <TestimonialInfo />
+        <TestimonialSummary />
+        <TestimonialText />
+      </div>
+    </TestimonialContext.Provider>
   );
 }

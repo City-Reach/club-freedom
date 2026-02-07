@@ -9,6 +9,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
+import { Suspense } from "react";
 import NotFound from "@/components/not-found";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
 import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
@@ -20,6 +21,7 @@ import TestimonialSummary from "@/components/testimonial-detail/testimonial-summ
 import TestimonialText from "@/components/testimonial-detail/testimonial-text";
 import { TestimonialTitle } from "@/components/testimonial-detail/testimonial-title";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import { hasPermissionQuery } from "@/lib/query";
@@ -82,14 +84,16 @@ function Component() {
         <ChevronLeft />
         Back
       </Button>
-      <TestimonialDetail />
+      <Suspense fallback={<Spinner className="mx-auto block" />}>
+        <TestimonialDetail />
+      </Suspense>
     </div>
   );
 }
 
 export default function TestimonialDetail() {
   const { id } = Route.useParams();
-  const { organization } = Route.useRouteContext();
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const { testimonial: preloadTestimonial } = Route.useLoaderData();
   const { data: liveTestimonial } = useSuspenseQuery(
     convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
