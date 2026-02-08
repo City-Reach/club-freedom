@@ -1,4 +1,4 @@
-import { ClientOnly, Link, useRouteContext } from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import { Button } from "../ui/button";
 import OrganizationDropdown from "./organization-dropdown";
 import OrganizationLogo from "./organization-logo";
@@ -23,15 +23,13 @@ export default function OrganizationNavbar() {
           </Button>
         </div>
       </div>
-      <ClientOnly>
-        {isAuthenticated ? (
-          <OrganizationDropdown />
-        ) : (
-          <Button asChild>
-            <Link to="/sign-in">Sign in</Link>
-          </Button>
-        )}
-      </ClientOnly>
+      {isAuthenticated ? (
+        <OrganizationDropdown />
+      ) : (
+        <Button asChild>
+          <Link to="/sign-in">Sign in</Link>
+        </Button>
+      )}
     </header>
   );
 }
