@@ -10,23 +10,21 @@ export const Route = createFileRoute("/o/$orgSlug")({
         slug: params.orgSlug,
       }),
     );
+
     if (!organization) {
       throw notFound();
     }
 
     return { organization };
   },
-  loader: async ({ context }) => {
-    return { organization: context.organization };
-  },
-  head: ({ loaderData }) => {
-    if (!loaderData) {
+  head: ({ matches }) => {
+    const routeMatch = matches.find((match) => match.routeId === "/o/$orgSlug");
+    if (!routeMatch?.context?.organization) {
       return {};
     }
-    const { organization } = loaderData;
+    const { organization } = routeMatch.context;
     return {
-      title: `${organization.name}`,
-      meta: [{ name: "description", content: organization.name }],
+      meta: [{ title: organization.name }],
     };
   },
 });
