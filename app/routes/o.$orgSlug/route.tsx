@@ -14,33 +14,33 @@ export const Route = createFileRoute("/o/$orgSlug")({
       throw notFound();
     }
 
-    const user = await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.getCurrentUser),
-    );
-
-    const member_role = await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.getMemeberRole, {
-        organizationId: organization._id,
-      }),
-    );
-
-    const canApprove = await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.checkUserPermissions, {
-        permissions: {
-          testimonial: ["approve"],
-        },
-        organizationId: organization._id,
-      }),
-    );
-
-    const canUpdateOrganization = await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.checkUserPermissions, {
-        permissions: {
-          organization: ["update"],
-        },
-        organizationId: organization._id,
-      }),
-    );
+    const [user, member_role, canApprove, canUpdateOrganization] =
+      await Promise.all([
+        context.queryClient.ensureQueryData(
+          convexQuery(api.auth.getCurrentUser),
+        ),
+        context.queryClient.ensureQueryData(
+          convexQuery(api.auth.getMemeberRole, {
+            organizationId: organization._id,
+          }),
+        ),
+        context.queryClient.ensureQueryData(
+          convexQuery(api.auth.checkUserPermissions, {
+            permissions: {
+              testimonial: ["approve"],
+            },
+            organizationId: organization._id,
+          }),
+        ),
+        context.queryClient.ensureQueryData(
+          convexQuery(api.auth.checkUserPermissions, {
+            permissions: {
+              organization: ["update"],
+            },
+            organizationId: organization._id,
+          }),
+        ),
+      ]);
 
     return {
       organization,
