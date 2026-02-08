@@ -1,17 +1,19 @@
+import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import OrganizationLayout from "@/components/layouts/organization";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth/auth-client";
-import { convexQuery } from "@convex-dev/react-query";
 import { api } from "@/convex/_generated/api";
+import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
   ssr: false,
   component: RouteComponent,
   pendingComponent: PendingComponent,
   beforeLoad: async ({ context }) => {
-    const user = await context.queryClient.ensureQueryData(convexQuery(api.auth.getCurrentUser))
-    
+    const user = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.getCurrentUser),
+    );
+
     if (!user) {
       throw redirect({ to: "/sign-in" });
     }
