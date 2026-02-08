@@ -3,7 +3,7 @@ import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
 import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$orgSlug")({
-  component: Component,
+  component: Outlet,
   beforeLoad: async ({ context, params }) => {
     const organization = await context.queryClient.ensureQueryData(
       convexQuery(api.organization.getOrganizationBySlug, {
@@ -16,16 +16,17 @@ export const Route = createFileRoute("/o/$orgSlug")({
 
     return { organization };
   },
+  loader: async ({ context }) => {
+    return { organization: context.organization };
+  },
+  head: ({ loaderData }) => {
+    if (!loaderData) {
+      return {};
+    }
+    const { organization } = loaderData;
+    return {
+      title: `${organization.name}`,
+      meta: [{ name: "description", content: organization.name }],
+    };
+  },
 });
-
-function Component() {
-  const { organization } = Route.useRouteContext();
-  return (
-    <>
-      <head>
-        <title>{organization.name}</title>
-      </head>
-      <Outlet />
-    </>
-  );
-}
