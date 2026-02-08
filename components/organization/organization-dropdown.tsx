@@ -1,7 +1,7 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import { LogOut, Settings, Shield, UserCog, UserRoundIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,38 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
-import { getMemberRoleQuery, hasPermissionQuery } from "@/lib/query";
-import { Badge } from "../ui/badge";
 
 type Props = {
   user: Doc<"user">;
 };
 
 export default function OrganizationDropdown({ user }: Props) {
-  const { organization } = useRouteContext({
-    from: "/o/$orgSlug",
-  });
-
-  const { data: role } = useSuspenseQuery(getMemberRoleQuery(organization._id));
-
-  const { data: canApprove } = useSuspenseQuery(
-    hasPermissionQuery(
-      {
-        testimonial: ["approve"],
-      },
-      organization._id,
-    ),
-  );
-
-  const { data: canUpdateOrganization } = useSuspenseQuery(
-    hasPermissionQuery(
-      {
-        organization: ["update"],
-      },
-      organization._id,
-    ),
-  );
-
+  const { member_role, organization, canApprove, canUpdateOrganization } =
+    useRouteContext({
+      from: "/o/$orgSlug",
+    });
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -54,7 +32,8 @@ export default function OrganizationDropdown({ user }: Props) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="flex gap-2 items-center">
-          {user.name} {role && <Badge className="px-1.5 py-px">{role}</Badge>}
+          {user.name}{" "}
+          {member_role && <Badge className="px-1.5 py-px">{member_role}</Badge>}
         </DropdownMenuLabel>
         <DropdownMenuLabel>
           <span className="text-sm text-muted-foreground">{user.email}</span>

@@ -18,7 +18,37 @@ export const Route = createFileRoute("/o/$orgSlug")({
       convexQuery(api.auth.getCurrentUser),
     );
 
-    return { organization, user };
+    const member_role = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.getMemeberRole, {
+        organizationId: organization._id,
+      }),
+    );
+
+    const canApprove = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.checkUserPermissions, {
+        permissions: {
+          testimonial: ["approve"],
+        },
+        organizationId: organization._id,
+      }),
+    );
+
+    const canUpdateOrganization = await context.queryClient.ensureQueryData(
+      convexQuery(api.auth.checkUserPermissions, {
+        permissions: {
+          organization: ["update"],
+        },
+        organizationId: organization._id,
+      }),
+    );
+
+    return {
+      organization,
+      user,
+      member_role,
+      canApprove,
+      canUpdateOrganization,
+    };
   },
 });
 
@@ -26,9 +56,7 @@ function Component() {
   const { organization } = Route.useRouteContext();
   return (
     <>
-      <head>
-        <title>{organization.name}</title>
-      </head>
+      <title>{organization.name}</title>
       <Outlet />
     </>
   );

@@ -1,5 +1,5 @@
 import { Link, useParams } from "@tanstack/react-router";
-import { MessageSquare, Shield, Users2 } from "lucide-react";
+import { Shield, Users2 } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
   SidebarGroup,
