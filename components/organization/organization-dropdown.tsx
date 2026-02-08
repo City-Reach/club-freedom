@@ -1,3 +1,4 @@
+import { convexQuery } from "@convex-dev/react-query";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import { LogOut, Settings, Shield, UserCog, UserRoundIcon } from "lucide-react";
@@ -10,18 +11,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { api } from "@/convex/_generated/api";
 import { getMemberRoleQuery, hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 
-type Props = {
-  user: Doc<"user">;
-};
-
-export default function OrganizationDropdown({ user }: Props) {
+export default function OrganizationDropdown() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
+
+  const { data: user } = useSuspenseQuery(convexQuery(api.auth.getCurrentUser));
 
   const { data: role } = useSuspenseQuery(getMemberRoleQuery(organization._id));
 
@@ -54,10 +53,10 @@ export default function OrganizationDropdown({ user }: Props) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="flex gap-2 items-center">
-          {user.name} {role && <Badge className="px-1.5 py-px">{role}</Badge>}
+          {user?.name} {role && <Badge className="px-1.5 py-px">{role}</Badge>}
         </DropdownMenuLabel>
         <DropdownMenuLabel>
-          <span className="text-sm text-muted-foreground">{user.email}</span>
+          <span className="text-sm text-muted-foreground">{user?.email}</span>
         </DropdownMenuLabel>
         {canApprove && (
           <DropdownMenuItem asChild>
@@ -81,7 +80,7 @@ export default function OrganizationDropdown({ user }: Props) {
             </Link>
           </DropdownMenuItem>
         )}
-        {user.role === "admin" && (
+        {user?.role === "admin" && (
           <DropdownMenuItem asChild>
             <Link to="/admin">
               <UserCog />
