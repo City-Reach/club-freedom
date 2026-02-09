@@ -20,13 +20,5 @@ export const Route = createFileRoute("/o/$orgSlug")({
 });
 
 function Component() {
-  const { organization } = Route.useRouteContext();
-  return (
-    <>
-      <head>
-        <title>{organization.name}</title>
-      </head>
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 }
