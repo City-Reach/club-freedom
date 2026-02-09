@@ -51,7 +51,7 @@ triggers.register("testimonials", async (ctx, change) => {
 
   if (
     oldMediaId === mediaId ||
-    !mediaId?.startsWith(TEMP_TESTIMONIAL_FOLDER) ||
+    !mediaId?.includes(TEMP_TESTIMONIAL_FOLDER) ||
     change.operation === "delete"
   ) {
     return;

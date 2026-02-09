@@ -5,9 +5,11 @@ import {
   notFound,
   rootRouteId,
   useMatch,
+  useRouteContext,
   useRouter,
 } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
+import { Suspense } from "react";
 import NotFound from "@/components/not-found";
 import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
 import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
@@ -19,18 +21,21 @@ import TestimonialSummary from "@/components/testimonial-detail/testimonial-summ
 import TestimonialText from "@/components/testimonial-detail/testimonial-text";
 import { TestimonialTitle } from "@/components/testimonial-detail/testimonial-title";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import { hasPermissionQuery } from "@/lib/query";
 
-export const Route = createFileRoute("/testimonials/$id")({
+export const Route = createFileRoute("/o/$orgSlug/_public/testimonials/$id")({
   ssr: false,
   component: Component,
   notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
+    const { _id } = context.organization;
     const testimonial = await context.queryClient.ensureQueryData(
-      convexQuery(api.testimonials.getTestimonialById, {
+      convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
         id: params.id,
+        orgId: _id,
       }),
     );
 
@@ -53,6 +58,7 @@ export const Route = createFileRoute("/testimonials/$id")({
 });
 
 function Component() {
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const isRoot = useMatch({
     strict: false,
     select: (state) => state.id === rootRouteId,
@@ -61,7 +67,12 @@ function Component() {
 
   const handleBack = () => {
     if (isRoot) {
-      router.navigate({ to: "/testimonials" });
+      router.navigate({
+        to: "/o/$orgSlug/testimonials",
+        params: {
+          orgSlug: organization.slug,
+        },
+      });
     } else {
       router.history.back();
     }
@@ -73,17 +84,21 @@ function Component() {
         <ChevronLeft />
         Back
       </Button>
-      <TestimonialDetail />
+      <Suspense fallback={<Spinner className="mx-auto block" />}>
+        <TestimonialDetail />
+      </Suspense>
     </div>
   );
 }
 
 export default function TestimonialDetail() {
   const { id } = Route.useParams();
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const { testimonial: preloadTestimonial } = Route.useLoaderData();
   const { data: liveTestimonial } = useSuspenseQuery(
-    convexQuery(api.testimonials.getTestimonialById, {
+    convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
       id: id,
+      orgId: organization._id,
     }),
   );
 

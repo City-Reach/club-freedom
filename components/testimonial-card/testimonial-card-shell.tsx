@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import type { ComponentProps, KeyboardEvent } from "react";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { cn } from "@/lib/utils";
@@ -10,7 +10,7 @@ export default function TestimonialCardShell({
 }: ComponentProps<typeof Card>) {
   const navigate = useNavigate({});
   const { testimonial } = useTestimonialContext();
-
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const handleNavigation = async () => {
     const selection = window.getSelection();
     if (selection && selection.toString().length > 0) {
@@ -18,8 +18,9 @@ export default function TestimonialCardShell({
     }
 
     await navigate({
-      to: "/testimonials/$id",
+      to: "/o/$orgSlug/testimonials/$id",
       params: {
+        orgSlug: organization.slug,
         id: testimonial._id,
       },
     });

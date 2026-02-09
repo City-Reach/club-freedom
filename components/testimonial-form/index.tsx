@@ -88,7 +88,9 @@ export default function TestimonialForm() {
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        const { url, key } = await generateUploadUrl();
+        const { url, key } = await generateUploadUrl({
+          organizationId: organization._id,
+        });
         if (!key) {
           throw new Error("Failed to generate media key");
         }
@@ -116,7 +118,10 @@ export default function TestimonialForm() {
         description: "Thank you for your submission.",
       });
 
-      await navigation({ to: "/testimonials/tmp/$id", params: { id } });
+      await navigation({
+        to: "/o/$orgSlug/testimonials/tmp/$id",
+        params: { orgSlug: organization.slug, id },
+      });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       const message = error instanceof Error ? error.message : "Unknown error";
