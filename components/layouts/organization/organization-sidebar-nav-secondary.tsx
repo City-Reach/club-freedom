@@ -15,7 +15,7 @@ export default function OrganizationSidebarNavSecondary(
     from: "/o/$orgSlug",
   });
   const { user } = useRouteContext({
-    from: "/o/$orgSlug/_dashboard",
+    from: "/o/$orgSlug/dashboard",
   });
 
   return (
@@ -24,7 +24,7 @@ export default function OrganizationSidebarNavSecondary(
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Settings" asChild>
             <Link
-              to="/o/$orgSlug/settings"
+              to="/o/$orgSlug/dashboard/settings"
               params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >

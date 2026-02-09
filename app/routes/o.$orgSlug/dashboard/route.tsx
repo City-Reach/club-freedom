@@ -5,7 +5,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth/auth-client";
 
-export const Route = createFileRoute("/o/$orgSlug/_dashboard")({
+export const Route = createFileRoute("/o/$orgSlug/dashboard")({
   ssr: false,
   component: RouteComponent,
   pendingComponent: PendingComponent,

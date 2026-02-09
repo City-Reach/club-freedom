@@ -20,19 +20,19 @@ export default function OrganizationSidebarNav(
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Moderator" asChild>
             <Link
-              to="/o/$orgSlug/moderator"
+              to="/o/$orgSlug/dashboard/testimonials"
               params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
               <Shield />
-              <span>Moderator</span>
+              <span>Moderation</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="Members" asChild>
             <Link
-              to="/o/$orgSlug/members"
+              to="/o/$orgSlug/dashboard/members"
               params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >

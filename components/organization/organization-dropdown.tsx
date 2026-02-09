@@ -61,18 +61,18 @@ export default function OrganizationDropdown() {
         {canApprove && (
           <DropdownMenuItem asChild>
             <Link
-              to="/o/$orgSlug/moderator"
+              to="/o/$orgSlug/dashboard/testimonials"
               params={{ orgSlug: organization.slug }}
             >
               <Shield />
-              Moderator
+              Moderation
             </Link>
           </DropdownMenuItem>
         )}
         {canUpdateOrganization && (
           <DropdownMenuItem asChild>
             <Link
-              to="/o/$orgSlug/settings"
+              to="/o/$orgSlug/dashboard/settings"
               params={{ orgSlug: organization.slug }}
             >
               <Settings />

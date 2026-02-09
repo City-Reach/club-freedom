@@ -15,7 +15,7 @@ export default function OrganizationSidebar({
   ...props
 }: ComponentProps<typeof Sidebar>) {
   const { user } = useRouteContext({
-    from: "/o/$orgSlug/_dashboard",
+    from: "/o/$orgSlug/dashboard",
   });
   return (
     <Sidebar {...props}>

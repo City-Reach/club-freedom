@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
 
-export const Route = createFileRoute("/o/$orgSlug/_dashboard/settings")({
+export const Route = createFileRoute("/o/$orgSlug/dashboard/settings")({
   component: RouteComponent,
 });
 
