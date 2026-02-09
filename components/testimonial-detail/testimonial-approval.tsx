@@ -43,7 +43,7 @@ export default function TestimonialApproval() {
         } else {
           toast.warning("This testimonial is no longer published!");
         }
-      } catch (error) {
+      } catch (_error) {
         toast.error("Failed to update testimonial publish status.");
       }
     });
