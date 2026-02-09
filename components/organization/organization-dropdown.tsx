@@ -1,5 +1,5 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import { LogOut, Settings, Shield, UserCog, UserRoundIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -20,11 +20,11 @@ export default function OrganizationDropdown() {
     from: "/o/$orgSlug",
   });
 
-  const { data: user } = useSuspenseQuery(convexQuery(api.auth.getCurrentUser));
+  const { data: user } = useQuery(convexQuery(api.auth.getCurrentUser));
 
-  const { data: role } = useSuspenseQuery(getMemberRoleQuery(organization._id));
+  const { data: role } = useQuery(getMemberRoleQuery(organization._id));
 
-  const { data: canApprove } = useSuspenseQuery(
+  const { data: canApprove } = useQuery(
     hasPermissionQuery(
       {
         testimonial: ["approve"],
@@ -33,7 +33,7 @@ export default function OrganizationDropdown() {
     ),
   );
 
-  const { data: canUpdateOrganization } = useSuspenseQuery(
+  const { data: canUpdateOrganization } = useQuery(
     hasPermissionQuery(
       {
         organization: ["update"],
