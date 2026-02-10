@@ -17,3 +17,52 @@ export const getUser = query({
     return ctx.db.get(args.userId);
   },
 });
+
+export const checkEmailExists = query({
+  args: { email: v.string() },
+  returns: v.boolean(),
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("user")
+      .withIndex("email_name", (q) => q.eq("email", args.email))
+      .first();
+    return !!user;
+  },
+});
+
+export const findInvitationById = query({
+  args: { invitationId: v.string() },
+  returns: v.union(
+    v.null(),
+    doc(schema, "invitation").extend({
+      organization: doc(schema, "organization"),
+    }),
+  ),
+  handler: async (ctx, args) => {
+    const invitationId = ctx.db.normalizeId("invitation", args.invitationId);
+    if (!invitationId) {
+      return null;
+    }
+    const invitation = await ctx.db.get("invitation", invitationId);
+    if (!invitation) {
+      return null;
+    }
+
+    const organizationId = ctx.db.normalizeId(
+      "organization",
+      invitation.organizationId,
+    );
+    if (!organizationId) {
+      return null;
+    }
+
+    const organization = await ctx.db.get("organization", organizationId);
+    if (!organization) {
+      return null;
+    }
+    return {
+      ...invitation,
+      organization,
+    };
+  },
+});
