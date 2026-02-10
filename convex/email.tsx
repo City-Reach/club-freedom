@@ -1,9 +1,9 @@
 import { Resend } from "@convex-dev/resend";
 import { render } from "@react-email/components";
+import InviteEmail from "@/emails/invite";
 import ResetPasswordEmail from "@/emails/reset-password";
 import { components } from "./_generated/api";
 import type { ActionCtx } from "./_generated/server";
-import InviteEmail from "@/emails/invite";
 
 export const resend = new Resend(components.resend, {
   testMode: false,
