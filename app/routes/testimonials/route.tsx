@@ -18,7 +18,7 @@ function RouteComponent() {
   return (
     <>
       <Navbar user={user} />
-      <main className="adjust-main-height">
+      <main className="min-h-[calc(100vh-115px)]">
         <Outlet />
       </main>
       <Footnote />

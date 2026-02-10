@@ -90,7 +90,3 @@
         @apply bg-background text-foreground;
     }
 }
-
-.adjust-main-height {
-    min-height: calc(100vh - 115px);
-}
