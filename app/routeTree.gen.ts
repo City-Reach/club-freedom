@@ -15,11 +15,12 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizations'
-import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
-import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
-import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as OOrgSlugRouteRouteImport } from './routes/o.$orgSlug/route'
+import { Route as AuthPublicRouteRouteImport } from './routes/_auth/_public/route'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
+import { Route as AuthPublicSignInRouteImport } from './routes/_auth/_public/sign-in'
+import { Route as AuthPublicResetPasswordRouteImport } from './routes/_auth/_public/reset-password'
+import { Route as AuthPublicForgotPasswordRouteImport } from './routes/_auth/_public/forgot-password'
 import { Route as OOrgSlugDashboardRouteRouteImport } from './routes/o.$orgSlug/dashboard/route'
 import { Route as OOrgSlugPublicRouteRouteImport } from './routes/o.$orgSlug/_public/route'
 import { Route as OOrgSlugDashboardIndexRouteImport } from './routes/o.$orgSlug/dashboard/index'
@@ -60,31 +61,36 @@ const AdminOrganizationsRoute = AdminOrganizationsRouteImport.update({
   path: '/organizations',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const OOrgSlugRouteRoute = OOrgSlugRouteRouteImport.update({
   id: '/o/$orgSlug',
   path: '/o/$orgSlug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthPublicRouteRoute = AuthPublicRouteRouteImport.update({
+  id: '/_public',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthPublicSignInRoute = AuthPublicSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthPublicRouteRoute,
+} as any)
+const AuthPublicResetPasswordRoute = AuthPublicResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthPublicRouteRoute,
+} as any)
+const AuthPublicForgotPasswordRoute =
+  AuthPublicForgotPasswordRouteImport.update({
+    id: '/forgot-password',
+    path: '/forgot-password',
+    getParentRoute: () => AuthPublicRouteRoute,
+  } as any)
 const OOrgSlugDashboardRouteRoute = OOrgSlugDashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -146,12 +152,12 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
   '/sign-out': typeof SignOutRoute
   '/o/$orgSlug': typeof OOrgSlugPublicRouteRouteWithChildren
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/sign-in': typeof AuthSignInRoute
   '/admin/organizations': typeof AdminOrganizationsRoute
   '/admin/': typeof AdminIndexRoute
   '/o/$orgSlug/dashboard': typeof OOrgSlugDashboardRouteRouteWithChildren
+  '/forgot-password': typeof AuthPublicForgotPasswordRoute
+  '/reset-password': typeof AuthPublicResetPasswordRoute
+  '/sign-in': typeof AuthPublicSignInRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
@@ -166,11 +172,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sign-out': typeof SignOutRoute
   '/o/$orgSlug': typeof OOrgSlugPublicIndexRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/sign-in': typeof AuthSignInRoute
   '/admin/organizations': typeof AdminOrganizationsRoute
   '/admin': typeof AdminIndexRoute
+  '/forgot-password': typeof AuthPublicForgotPasswordRoute
+  '/reset-password': typeof AuthPublicResetPasswordRoute
+  '/sign-in': typeof AuthPublicSignInRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
@@ -186,14 +192,15 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/sign-out': typeof SignOutRoute
+  '/_auth/_public': typeof AuthPublicRouteRouteWithChildren
   '/o/$orgSlug': typeof OOrgSlugRouteRouteWithChildren
-  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/_auth/reset-password': typeof AuthResetPasswordRoute
-  '/_auth/sign-in': typeof AuthSignInRoute
   '/admin/organizations': typeof AdminOrganizationsRoute
   '/admin/': typeof AdminIndexRoute
   '/o/$orgSlug/_public': typeof OOrgSlugPublicRouteRouteWithChildren
   '/o/$orgSlug/dashboard': typeof OOrgSlugDashboardRouteRouteWithChildren
+  '/_auth/_public/forgot-password': typeof AuthPublicForgotPasswordRoute
+  '/_auth/_public/reset-password': typeof AuthPublicResetPasswordRoute
+  '/_auth/_public/sign-in': typeof AuthPublicSignInRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
@@ -211,12 +218,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/sign-out'
     | '/o/$orgSlug'
-    | '/forgot-password'
-    | '/reset-password'
-    | '/sign-in'
     | '/admin/organizations'
     | '/admin/'
     | '/o/$orgSlug/dashboard'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/sign-in'
     | '/api/auth/$'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
@@ -231,11 +238,11 @@ export interface FileRouteTypes {
     | '/'
     | '/sign-out'
     | '/o/$orgSlug'
+    | '/admin/organizations'
+    | '/admin'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/admin/organizations'
-    | '/admin'
     | '/api/auth/$'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
@@ -250,14 +257,15 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/admin'
     | '/sign-out'
+    | '/_auth/_public'
     | '/o/$orgSlug'
-    | '/_auth/forgot-password'
-    | '/_auth/reset-password'
-    | '/_auth/sign-in'
     | '/admin/organizations'
     | '/admin/'
     | '/o/$orgSlug/_public'
     | '/o/$orgSlug/dashboard'
+    | '/_auth/_public/forgot-password'
+    | '/_auth/_public/reset-password'
+    | '/_auth/_public/sign-in'
     | '/api/auth/$'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
@@ -322,27 +330,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrganizationsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/_auth/sign-in': {
-      id: '/_auth/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/reset-password': {
-      id: '/_auth/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/forgot-password': {
-      id: '/_auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     '/o/$orgSlug': {
       id: '/o/$orgSlug'
       path: '/o/$orgSlug'
@@ -350,12 +337,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OOrgSlugRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/_public': {
+      id: '/_auth/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthPublicRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/_public/sign-in': {
+      id: '/_auth/_public/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof AuthPublicSignInRouteImport
+      parentRoute: typeof AuthPublicRouteRoute
+    }
+    '/_auth/_public/reset-password': {
+      id: '/_auth/_public/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthPublicResetPasswordRouteImport
+      parentRoute: typeof AuthPublicRouteRoute
+    }
+    '/_auth/_public/forgot-password': {
+      id: '/_auth/_public/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthPublicForgotPasswordRouteImport
+      parentRoute: typeof AuthPublicRouteRoute
     }
     '/o/$orgSlug/dashboard': {
       id: '/o/$orgSlug/dashboard'
@@ -430,16 +445,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthPublicRouteRouteChildren {
+  AuthPublicForgotPasswordRoute: typeof AuthPublicForgotPasswordRoute
+  AuthPublicResetPasswordRoute: typeof AuthPublicResetPasswordRoute
+  AuthPublicSignInRoute: typeof AuthPublicSignInRoute
+}
+
+const AuthPublicRouteRouteChildren: AuthPublicRouteRouteChildren = {
+  AuthPublicForgotPasswordRoute: AuthPublicForgotPasswordRoute,
+  AuthPublicResetPasswordRoute: AuthPublicResetPasswordRoute,
+  AuthPublicSignInRoute: AuthPublicSignInRoute,
+}
+
+const AuthPublicRouteRouteWithChildren = AuthPublicRouteRoute._addFileChildren(
+  AuthPublicRouteRouteChildren,
+)
+
 interface AuthRouteRouteChildren {
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  AuthSignInRoute: typeof AuthSignInRoute
+  AuthPublicRouteRoute: typeof AuthPublicRouteRouteWithChildren
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
-  AuthResetPasswordRoute: AuthResetPasswordRoute,
-  AuthSignInRoute: AuthSignInRoute,
+  AuthPublicRouteRoute: AuthPublicRouteRouteWithChildren,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const Route = createFileRoute("/_auth/reset-password")({
+export const Route = createFileRoute("/_auth/_public/reset-password")({
   component: RouteComponent,
   validateSearch: (search) => {
     return {
