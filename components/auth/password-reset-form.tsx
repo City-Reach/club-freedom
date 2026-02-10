@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 
-const passwordResetSchema = z
+export const passwordResetSchema = z
   .object({
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),

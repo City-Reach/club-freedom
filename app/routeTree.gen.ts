@@ -18,6 +18,7 @@ import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizat
 import { Route as OOrgSlugRouteRouteImport } from './routes/o.$orgSlug/route'
 import { Route as AuthPublicRouteRouteImport } from './routes/_auth/_public/route'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
+import { Route as AuthAcceptInviteInviteIdRouteImport } from './routes/_auth/accept-invite.$inviteId'
 import { Route as AuthPublicSignInRouteImport } from './routes/_auth/_public/sign-in'
 import { Route as AuthPublicResetPasswordRouteImport } from './routes/_auth/_public/reset-password'
 import { Route as AuthPublicForgotPasswordRouteImport } from './routes/_auth/_public/forgot-password'
@@ -75,6 +76,12 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthAcceptInviteInviteIdRoute =
+  AuthAcceptInviteInviteIdRouteImport.update({
+    id: '/accept-invite/$inviteId',
+    path: '/accept-invite/$inviteId',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
 const AuthPublicSignInRoute = AuthPublicSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof AuthPublicForgotPasswordRoute
   '/reset-password': typeof AuthPublicResetPasswordRoute
   '/sign-in': typeof AuthPublicSignInRoute
+  '/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
@@ -177,6 +185,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof AuthPublicForgotPasswordRoute
   '/reset-password': typeof AuthPublicResetPasswordRoute
   '/sign-in': typeof AuthPublicSignInRoute
+  '/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
@@ -201,6 +210,7 @@ export interface FileRoutesById {
   '/_auth/_public/forgot-password': typeof AuthPublicForgotPasswordRoute
   '/_auth/_public/reset-password': typeof AuthPublicResetPasswordRoute
   '/_auth/_public/sign-in': typeof AuthPublicSignInRoute
+  '/_auth/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
+    | '/accept-invite/$inviteId'
     | '/api/auth/$'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
@@ -243,6 +254,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
+    | '/accept-invite/$inviteId'
     | '/api/auth/$'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
@@ -266,6 +278,7 @@ export interface FileRouteTypes {
     | '/_auth/_public/forgot-password'
     | '/_auth/_public/reset-password'
     | '/_auth/_public/sign-in'
+    | '/_auth/accept-invite/$inviteId'
     | '/api/auth/$'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
@@ -350,6 +363,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/accept-invite/$inviteId': {
+      id: '/_auth/accept-invite/$inviteId'
+      path: '/accept-invite/$inviteId'
+      fullPath: '/accept-invite/$inviteId'
+      preLoaderRoute: typeof AuthAcceptInviteInviteIdRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_auth/_public/sign-in': {
       id: '/_auth/_public/sign-in'
@@ -463,10 +483,12 @@ const AuthPublicRouteRouteWithChildren = AuthPublicRouteRoute._addFileChildren(
 
 interface AuthRouteRouteChildren {
   AuthPublicRouteRoute: typeof AuthPublicRouteRouteWithChildren
+  AuthAcceptInviteInviteIdRoute: typeof AuthAcceptInviteInviteIdRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthPublicRouteRoute: AuthPublicRouteRouteWithChildren,
+  AuthAcceptInviteInviteIdRoute: AuthAcceptInviteInviteIdRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
