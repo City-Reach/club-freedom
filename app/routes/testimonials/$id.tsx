@@ -107,28 +107,26 @@ export default function TestimonialDetail() {
   const testimonial = liveTestimonial || preloadTestimonial;
 
   return (
-    <>
-      <TestimonialContext.Provider value={{ testimonial }}>
-        <div className="flex flex-col gap-8">
-          {testimonial.processingStatus === "error" && (
-            <TestimonialProcessingError />
+    <TestimonialContext.Provider value={{ testimonial }}>
+      <div className="flex flex-col gap-8">
+        {testimonial.processingStatus === "error" && (
+          <TestimonialProcessingError />
+        )}
+        <TestimonialTitle />
+        {testimonial.mediaUrl && (
+          <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
+        )}
+        <div className="flex flex-wrap gap-2">
+          {canApprove && testimonial.processingStatus === "completed" && (
+            <TestimonialApproval />
           )}
-          <TestimonialTitle />
-          {testimonial.mediaUrl && (
-            <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
-          )}
-          <div className="flex flex-wrap gap-2">
-            {canApprove && testimonial.processingStatus === "completed" && (
-              <TestimonialApproval />
-            )}
-            {canDownload && <TestimonialDownload />}
-            {canDelete && <TestimonialDelete />}
-          </div>
-          <TestimonialInfo />
-          <TestimonialSummary />
-          <TestimonialText />
+          {canDownload && <TestimonialDownload />}
+          {canDelete && <TestimonialDelete />}
         </div>
-      </TestimonialContext.Provider>
-    </>
+        <TestimonialInfo />
+        <TestimonialSummary />
+        <TestimonialText />
+      </div>
+    </TestimonialContext.Provider>
   );
 }

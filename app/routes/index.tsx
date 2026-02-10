@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { user } = Route.useLoaderData();
   return (
-    <>
+    <div>
       <Navbar user={user} />
       <main className="flex flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto min-h-[calc(100vh-115px)]">
         <div className="flex flex-col items-center justify-center text-center">
@@ -31,6 +31,6 @@ function Home() {
         <TestimonialForm />
       </main>
       <Footnote />
-    </>
+    </div>
   );
 }

@@ -16,12 +16,12 @@ export const Route = createFileRoute("/testimonials")({
 function RouteComponent() {
   const { user } = Route.useLoaderData();
   return (
-    <>
+    <div>
       <Navbar user={user} />
       <main className="min-h-[calc(100vh-115px)]">
         <Outlet />
       </main>
       <Footnote />
-    </>
+    </div>
   );
 }
