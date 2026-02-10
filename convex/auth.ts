@@ -160,3 +160,12 @@ export const getMemeberRole = query({
     }
   },
 });
+
+export const checkEmailExists = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return ctx.runQuery(components.betterAuth.auth.checkEmailExists, {
+      email: args.email,
+    });
+  },
+});
