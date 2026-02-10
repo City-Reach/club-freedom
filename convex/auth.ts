@@ -14,7 +14,7 @@ import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authConfig from "./auth.config";
 import authSchema from "./betterAuth/schema";
-import { sendResetPassword } from "./email";
+import { sendInvite, sendResetPassword } from "./email";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -63,6 +63,14 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
               },
             },
           },
+        },
+        sendInvitationEmail: async ({ id, organization, email }) => {
+          await sendInvite(requireActionCtx(ctx), {
+            to: email,
+            subject: `You're invited to ${organization.name}`,
+            url: `${siteUrl}/accept-invite/${id}`,
+            organization: organization.name,
+          });
         },
       }),
     ],
