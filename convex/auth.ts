@@ -29,10 +29,16 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
 );
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
-  const siteUrl = process.env.SITE_URL!;
+  // For static schema generation (when ctx is empty {}), use placeholder values
+  // For runtime execution, use actual environment variables
+  const siteUrl = process.env.SITE_URL || "http://localhost:3000";
+  const secret =
+    process.env.BETTER_AUTH_SECRET ||
+    "placeholder-secret-for-schema-generation";
 
   return {
     baseURL: siteUrl,
+    secret: secret,
     database: authComponent.adapter(ctx),
     // Configure simple, non-verified email/password to get started
     emailAndPassword: {
