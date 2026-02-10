@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import OrganizationMemberInviteForm from "@/components/organization/organization-member-invite-form";
+import OrganizationMemberList from "@/components/organization/organization-member-list";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { hasPermissionQuery } from "@/lib/query";
 
@@ -38,7 +39,9 @@ function RouteComponent() {
         <CardHeader>
           <CardTitle>Members</CardTitle>
         </CardHeader>
-        <CardContent></CardContent>
+        <CardContent>
+          <OrganizationMemberList />
+        </CardContent>
       </Card>
 
       <Card>
