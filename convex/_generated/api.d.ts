@@ -1790,6 +1790,12 @@ export declare const components: {
         { email: string },
         boolean
       >;
+      deleteInvitation: FunctionReference<
+        "mutation",
+        "internal",
+        { invitationId: string },
+        null
+      >;
       findInvitationById: FunctionReference<
         "query",
         "internal",

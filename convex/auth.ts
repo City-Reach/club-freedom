@@ -78,6 +78,22 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
             organization: organization.name,
           });
         },
+        organizationHooks: {
+          afterAcceptInvitation: async (data) => {
+            // Delete the invitation after it's been accepted
+            try {
+              const actionCtx = requireActionCtx(ctx);
+              await actionCtx.runMutation(
+                components.betterAuth.auth.deleteInvitation,
+                {
+                  invitationId: data.invitation.id,
+                },
+              );
+            } catch (error) {
+              console.error("Failed to delete invitation after accept", error);
+            }
+          },
+        },
       }),
     ],
     trustedOrigins: [siteUrl],

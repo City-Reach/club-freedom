@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { doc } from "convex-helpers/validators";
 import { createAuth } from "../auth";
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import schema from "./schema";
 
 // Export a static instance for Better Auth schema generation
@@ -64,5 +64,18 @@ export const findInvitationById = query({
       ...invitation,
       organization,
     };
+  },
+});
+
+export const deleteInvitation = mutation({
+  args: { invitationId: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const invitationId = ctx.db.normalizeId("invitation", args.invitationId);
+    if (!invitationId) {
+      return null;
+    }
+    await ctx.db.delete(invitationId);
+    return null;
   },
 });

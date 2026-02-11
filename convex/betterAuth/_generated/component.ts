@@ -1536,6 +1536,13 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         boolean,
         Name
       >;
+      deleteInvitation: FunctionReference<
+        "mutation",
+        "internal",
+        { invitationId: string },
+        null,
+        Name
+      >;
       findInvitationById: FunctionReference<
         "query",
         "internal",
