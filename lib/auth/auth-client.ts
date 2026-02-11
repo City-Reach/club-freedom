@@ -1,5 +1,5 @@
 import { convexClient } from "@convex-dev/better-auth/client/plugins";
-import type { BetterAuthClientOptions } from "better-auth";
+import type { BetterAuthClientOptions, InferUserFromClient } from "better-auth";
 import {
   adminClient,
   inferAdditionalFields,
@@ -24,3 +24,5 @@ export const authClientOption = {
 } satisfies BetterAuthClientOptions;
 
 export const authClient = createAuthClient(authClientOption);
+
+export type User = InferUserFromClient<typeof authClientOption>;

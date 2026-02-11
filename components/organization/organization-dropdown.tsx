@@ -1,5 +1,4 @@
-import { convexQuery } from "@convex-dev/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import { LogOut, Settings, Shield, UserCog, UserRoundIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -11,36 +10,41 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { api } from "@/convex/_generated/api";
+import type { User } from "@/lib/auth/auth-client";
 import { getMemberRoleQuery, hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 
-export default function OrganizationDropdown() {
+type Props = {
+  user: User;
+};
+
+export default function OrganizationDropdown({ user }: Props) {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
 
-  const { data: user } = useQuery(convexQuery(api.auth.getCurrentUser));
-
-  const { data: role } = useQuery(getMemberRoleQuery(organization._id));
-
-  const { data: canApprove } = useQuery(
-    hasPermissionQuery(
-      {
-        testimonial: ["approve"],
-      },
-      organization._id,
-    ),
-  );
-
-  const { data: canUpdateOrganization } = useQuery(
-    hasPermissionQuery(
-      {
-        organization: ["update"],
-      },
-      organization._id,
-    ),
-  );
+  const { role, canApprove, canUpdateOrganization } = useQueries({
+    queries: [
+      getMemberRoleQuery(organization._id),
+      hasPermissionQuery(
+        {
+          testimonial: ["approve"],
+        },
+        organization._id,
+      ),
+      hasPermissionQuery(
+        {
+          organization: ["update"],
+        },
+        organization._id,
+      ),
+    ],
+    combine: (results) => ({
+      role: results[0].data,
+      canApprove: results[1].data,
+      canUpdateOrganization: results[2].data,
+    }),
+  });
 
   return (
     <DropdownMenu>
@@ -53,10 +57,11 @@ export default function OrganizationDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="flex gap-2 items-center">
-          {user?.name} {role && <Badge className="px-1.5 py-px">{role}</Badge>}
+          {user.name}
+          {role && <Badge className="px-1.5 py-px">{role}</Badge>}
         </DropdownMenuLabel>
-        <DropdownMenuLabel>
-          <span className="text-sm text-muted-foreground">{user?.email}</span>
+        <DropdownMenuLabel className="text-sm text-muted-foreground">
+          {user.email}
         </DropdownMenuLabel>
         {canApprove && (
           <DropdownMenuItem asChild>
@@ -80,7 +85,7 @@ export default function OrganizationDropdown() {
             </Link>
           </DropdownMenuItem>
         )}
-        {user?.role === "admin" && (
+        {user.role === "admin" && (
           <DropdownMenuItem asChild>
             <Link to="/admin">
               <UserCog />
