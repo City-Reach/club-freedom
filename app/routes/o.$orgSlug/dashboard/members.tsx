@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import OrganizationMemberInviteForm from "@/components/organization/organization-member-invite-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { hasPermissionQuery } from "@/lib/query";
 
 export const Route = createFileRoute("/o/$orgSlug/dashboard/members")({
@@ -21,5 +23,30 @@ export const Route = createFileRoute("/o/$orgSlug/dashboard/members")({
 });
 
 function RouteComponent() {
-  return <div></div>;
+  return (
+    <div className="grid max-w-3xl w-full gap-8 mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle>Invite member</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <OrganizationMemberInviteForm />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Members</CardTitle>
+        </CardHeader>
+        <CardContent></CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Pending Invites</CardTitle>
+        </CardHeader>
+        <CardContent></CardContent>
+      </Card>
+    </div>
+  );
 }
