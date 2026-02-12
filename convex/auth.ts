@@ -80,7 +80,19 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         },
         organizationHooks: {
           afterAcceptInvitation: async (data) => {
-            // Delete the invitation after it's been accepted
+            try {
+              const actionCtx = requireActionCtx(ctx);
+              await actionCtx.runMutation(
+                components.betterAuth.auth.deleteInvitation,
+                {
+                  invitationId: data.invitation.id,
+                },
+              );
+            } catch (error) {
+              console.error("Failed to delete invitation after accept", error);
+            }
+          },
+          afterCancelInvitation: async (data) => {
             try {
               const actionCtx = requireActionCtx(ctx);
               await actionCtx.runMutation(
