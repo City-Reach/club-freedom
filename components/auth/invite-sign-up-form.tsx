@@ -36,18 +36,11 @@ export function InviteSignUpForm() {
   });
 
   const onSubmit = async (data: InviteSignUp) => {
-    const newUser = await authClient.signUp.email(
-      {
-        name: data.name,
-        password: data.password,
-        email: invitation.email,
-      },
-      {
-        headers: {
-          "x-invitation-id": invitation._id,
-        },
-      },
-    );
+    const newUser = await authClient.signUp.email({
+      name: data.name,
+      password: data.password,
+      email: invitation.email,
+    });
 
     if (newUser.error) {
       toast.error("Cannot create new user", {
