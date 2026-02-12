@@ -1,4 +1,5 @@
-import { Link, useParams, useRouteContext } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import { ExternalLink, Settings, UserRoundCog } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
@@ -7,32 +8,41 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { hasPermissionQuery } from "@/lib/query";
 
 export default function OrganizationSidebarNavSecondary(
   props: ComponentProps<typeof SidebarGroup>,
 ) {
-  const { orgSlug } = useParams({
-    from: "/o/$orgSlug",
-  });
-  const { user } = useRouteContext({
+  const { organization, user } = useRouteContext({
     from: "/o/$orgSlug/dashboard",
   });
+
+  const { data: canUpdateOrganization } = useQuery(
+    hasPermissionQuery(
+      {
+        organization: ["update"],
+      },
+      organization._id,
+    ),
+  );
 
   return (
     <SidebarGroup {...props}>
       <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Settings" asChild>
-            <Link
-              to="/o/$orgSlug/dashboard/settings"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <Settings />
-              <span>Settings</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        {canUpdateOrganization && (
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Settings" asChild>
+              <Link
+                to="/o/$orgSlug/dashboard/settings"
+                params={{ orgSlug: organization.slug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <Settings />
+                <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
         {user?.role === "admin" && (
           <SidebarMenuItem>
             <SidebarMenuButton
