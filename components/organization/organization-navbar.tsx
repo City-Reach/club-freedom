@@ -1,34 +1,34 @@
-import { Link } from "@tanstack/react-router";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
-import UserDropDown from "../user-dropdown";
+import OrganizationDropdown from "./organization-dropdown";
 import OrganizationLogo from "./organization-logo";
 
-type Props = {
-  user: Doc<"user"> | null;
-  organization: Doc<"organization">;
-};
+export default function OrganizationNavbar() {
+  const { organization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
 
-export default function OrganizationNavbar({ user, organization }: Props) {
+  const { data: session } = authClient.useSession();
+
   return (
     <header className="border-b py-2 px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
       <div className="flex items-center gap-4">
-        <OrganizationLogo organization={organization} />
-        {user && (
-          <div className="flex items-center">
-            <Button variant="ghost" size="sm" asChild>
-              <Link
-                to="/o/$orgSlug/testimonials"
-                params={{ orgSlug: organization.slug }}
-              >
-                Testimonials
-              </Link>
-            </Button>
-          </div>
-        )}
+        <OrganizationLogo />
+        <div className="flex items-center">
+          <Button variant="ghost" size="sm" asChild>
+            <Link
+              to="/o/$orgSlug/testimonials"
+              params={{ orgSlug: organization.slug }}
+            >
+              Testimonials
+            </Link>
+          </Button>
+        </div>
       </div>
-      {user && <UserDropDown user={user} />}
-      {user === null && (
+      {session?.user ? (
+        <OrganizationDropdown user={session.user} />
+      ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>
         </Button>

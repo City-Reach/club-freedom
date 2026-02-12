@@ -40,12 +40,11 @@ import {
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 
-type Props = {
-  organizationId: string;
-};
+export default function TestimonialForm() {
+  const { organization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
 
-export default function TestimonialForm({ organizationId }: Props) {
-  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
@@ -89,7 +88,9 @@ export default function TestimonialForm({ organizationId }: Props) {
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        const { url, key } = await generateUploadUrl({ organizationId });
+        const { url, key } = await generateUploadUrl({
+          organizationId: organization._id,
+        });
         if (!key) {
           throw new Error("Failed to generate media key");
         }
@@ -109,7 +110,7 @@ export default function TestimonialForm({ organizationId }: Props) {
         storageId: storageId,
         media_type: media_type,
         text: values.writtenText,
-        organizationId,
+        organizationId: organization._id as string,
       });
 
       form.reset();

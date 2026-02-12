@@ -8,10 +8,12 @@ import {
   useRouteContext,
   useRouter,
 } from "@tanstack/react-router";
-import { format } from "date-fns";
-import { ChevronLeft, TimerIcon } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
 import NotFound from "@/components/not-found";
+import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
+import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
+import TestimonialDownload from "@/components/testimonial-detail/testimonial-download";
 import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
@@ -19,27 +21,20 @@ import TestimonialSummary from "@/components/testimonial-detail/testimonial-summ
 import TestimonialText from "@/components/testimonial-detail/testimonial-text";
 import { TestimonialTitle } from "@/components/testimonial-detail/testimonial-title";
 import { Button } from "@/components/ui/button";
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item";
 import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
+import { hasPermissionQuery } from "@/lib/query";
 
-export const Route = createFileRoute("/o/$orgSlug/testimonials/tmp/$id")({
+export const Route = createFileRoute("/o/$orgSlug/_public/testimonials/$id")({
   ssr: false,
   component: Component,
   notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
-    const { _id } = context.organization;
     const testimonial = await context.queryClient.ensureQueryData(
       convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
         id: params.id,
-        orgId: _id,
+        orgId: context.organization._id,
       }),
     );
 
@@ -47,12 +42,20 @@ export const Route = createFileRoute("/o/$orgSlug/testimonials/tmp/$id")({
       throw notFound();
     }
 
-    // _creationTime is the milliseconds since unix epoch when the document was created
-    const expirationDate = testimonial._creationTime + 900_000;
-    if (Date.now() >= expirationDate) {
+    const canView = await context.queryClient.ensureQueryData(
+      hasPermissionQuery(
+        {
+          testimonial: ["view"],
+        },
+        context.organization._id,
+      ),
+    );
+
+    if (!canView && !testimonial.approved) {
       throw notFound();
     }
-    return { testimonial, expirationDate };
+
+    return { testimonial };
   },
 });
 
@@ -63,6 +66,7 @@ function Component() {
     select: (state) => state.id === rootRouteId,
   });
   const router = useRouter();
+
   const handleBack = () => {
     if (isRoot) {
       router.navigate({
@@ -75,6 +79,7 @@ function Component() {
       router.history.back();
     }
   };
+
   return (
     <div className="max-w-xl mx-auto py-12 px-8 space-y-4">
       <Button variant="link" className="px-0!" onClick={handleBack}>
@@ -82,42 +87,54 @@ function Component() {
         Back
       </Button>
       <Suspense fallback={<Spinner className="mx-auto block" />}>
-        <TempTestimonialDetail />
+        <TestimonialDetail />
       </Suspense>
     </div>
   );
 }
-function TempTestimonialDetail() {
+
+export default function TestimonialDetail() {
   const { id } = Route.useParams();
   const { organization } = useRouteContext({ from: "/o/$orgSlug" });
-  const {
-    testimonial: preloadTestimonial,
-    expirationDate: preloadExpirationDate,
-  } = Route.useLoaderData();
+  const { testimonial: preloadTestimonial } = Route.useLoaderData();
   const { data: liveTestimonial } = useSuspenseQuery(
     convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
       id: id,
       orgId: organization._id,
     }),
   );
+
+  const { data: canApprove } = useSuspenseQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["approve"],
+      },
+      organization._id,
+    ),
+  );
+
+  const { data: canDownload } = useSuspenseQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["download"],
+      },
+      organization._id,
+    ),
+  );
+
+  const { data: canDelete } = useSuspenseQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["delete"],
+      },
+      organization._id,
+    ),
+  );
   const testimonial = liveTestimonial || preloadTestimonial;
-  const liveExpirationDate = testimonial._creationTime + 900_000;
-  const expirationDate = liveExpirationDate || preloadExpirationDate;
+
   return (
     <TestimonialContext.Provider value={{ testimonial }}>
       <div className="flex flex-col gap-8">
-        <Item variant="muted">
-          <ItemMedia variant="icon">
-            <TimerIcon />
-          </ItemMedia>
-          <ItemContent>
-            <ItemTitle>Recently Submitted Testimonial</ItemTitle>
-            <ItemDescription>
-              You can view this testimonial until{" "}
-              {format(expirationDate, "PPp")}
-            </ItemDescription>
-          </ItemContent>
-        </Item>
         {testimonial.processingStatus === "error" && (
           <TestimonialProcessingError />
         )}
@@ -125,6 +142,13 @@ function TempTestimonialDetail() {
         {testimonial.mediaUrl && (
           <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
         )}
+        <div className="flex flex-wrap gap-2">
+          {canApprove && testimonial.processingStatus === "completed" && (
+            <TestimonialApproval />
+          )}
+          {canDownload && <TestimonialDownload />}
+          {canDelete && <TestimonialDelete />}
+        </div>
         <TestimonialInfo />
         <TestimonialSummary />
         <TestimonialText />

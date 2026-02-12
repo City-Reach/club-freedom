@@ -1,5 +1,6 @@
-import { Link, useParams } from "@tanstack/react-router";
-import { MessageSquare, Shield, Users2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { MessageSquare, Users2 } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
   SidebarGroup,
@@ -7,51 +8,63 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { hasPermissionQuery } from "@/lib/query";
 
 export default function OrganizationSidebarNav(
   props: ComponentProps<typeof SidebarGroup>,
 ) {
-  const { orgSlug } = useParams({
+  const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
+
+  const { data: canApprove } = useQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["approve"],
+      },
+      organization._id,
+    ),
+  );
+
+  const { data: canManageMembers } = useQuery(
+    hasPermissionQuery(
+      {
+        member: ["create", "update", "delete"],
+      },
+      organization._id,
+    ),
+  );
+
   return (
     <SidebarGroup {...props}>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Testimonials" asChild>
-            <Link
-              to="/o/$orgSlug/testimonials"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <MessageSquare />
-              <span>Testimonials</span>
-            </Link>
-          </SidebarMenuButton>
+          {canApprove && (
+            <SidebarMenuButton tooltip="Testimonials" asChild>
+              <Link
+                to="/o/$orgSlug/dashboard/testimonials"
+                params={{ orgSlug: organization.slug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <MessageSquare />
+                <span>Testimonials</span>
+              </Link>
+            </SidebarMenuButton>
+          )}
         </SidebarMenuItem>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Moderator" asChild>
-            <Link
-              to="/o/$orgSlug/moderator"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <Shield />
-              <span>Moderator</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Members" asChild>
-            <Link
-              to="/o/$orgSlug/members"
-              params={{ orgSlug }}
-              className="[&.active]:not-hover:bg-muted"
-            >
-              <Users2 />
-              <span>Members</span>
-            </Link>
-          </SidebarMenuButton>
+          {canManageMembers && (
+            <SidebarMenuButton tooltip="Members" asChild>
+              <Link
+                to="/o/$orgSlug/dashboard/members"
+                params={{ orgSlug: organization.slug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <Users2 />
+                <span>Members</span>
+              </Link>
+            </SidebarMenuButton>
+          )}
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
