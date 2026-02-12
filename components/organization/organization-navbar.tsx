@@ -1,8 +1,5 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { UserRoundIcon } from "lucide-react";
-import { Suspense } from "react";
 import { authClient } from "@/lib/auth/auth-client";
-import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import OrganizationDropdown from "./organization-dropdown";
 import OrganizationLogo from "./organization-logo";

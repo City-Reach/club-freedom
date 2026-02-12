@@ -1,5 +1,5 @@
 import { Link, useParams } from "@tanstack/react-router";
-import { MessageSquare, Shield, Users2 } from "lucide-react";
+import { MessageSquare, Users2 } from "lucide-react";
 import type { ComponentProps } from "react";
 import {
   SidebarGroup,
@@ -24,8 +24,8 @@ export default function OrganizationSidebarNav(
               params={{ orgSlug }}
               className="[&.active]:not-hover:bg-muted"
             >
-              <Shield />
-              <span>Moderation</span>
+              <MessageSquare />
+              <span>Testimonials</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>

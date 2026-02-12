@@ -1,6 +1,12 @@
 import { useQueries } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { LogOut, Settings, Shield, UserCog, UserRoundIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  UserCog,
+  UserRoundIcon,
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -66,11 +72,11 @@ export default function OrganizationDropdown({ user }: Props) {
         {canApprove && (
           <DropdownMenuItem asChild>
             <Link
-              to="/o/$orgSlug/dashboard/testimonials"
+              to="/o/$orgSlug/dashboard"
               params={{ orgSlug: organization.slug }}
             >
-              <Shield />
-              Moderation
+              <LayoutDashboard />
+              Dashboard
             </Link>
           </DropdownMenuItem>
         )}
