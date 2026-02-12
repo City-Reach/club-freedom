@@ -7,7 +7,7 @@ import type { OrganizationPermissionCheck } from "./auth/permissions/organizatio
 
 export function hasPermissionQuery(
   permissions: OrganizationPermissionCheck,
-  organizationId?: string,
+  organizationId: string,
 ) {
   return convexQuery(api.auth.checkUserPermissions, {
     permissions,

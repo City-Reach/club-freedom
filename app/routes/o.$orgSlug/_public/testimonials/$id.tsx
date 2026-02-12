@@ -31,11 +31,10 @@ export const Route = createFileRoute("/o/$orgSlug/_public/testimonials/$id")({
   component: Component,
   notFoundComponent: NotFound,
   loader: async ({ context, params }) => {
-    const { _id } = context.organization;
     const testimonial = await context.queryClient.ensureQueryData(
       convexQuery(api.testimonials.getTestimonialByIdAndOrgId, {
         id: params.id,
-        orgId: _id,
+        orgId: context.organization._id,
       }),
     );
 
@@ -44,9 +43,12 @@ export const Route = createFileRoute("/o/$orgSlug/_public/testimonials/$id")({
     }
 
     const canView = await context.queryClient.ensureQueryData(
-      hasPermissionQuery({
-        testimonial: ["view"],
-      }),
+      hasPermissionQuery(
+        {
+          testimonial: ["view"],
+        },
+        context.organization._id,
+      ),
     );
 
     if (!canView && !testimonial.approved) {
@@ -103,21 +105,30 @@ export default function TestimonialDetail() {
   );
 
   const { data: canApprove } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["approve"],
-    }),
+    hasPermissionQuery(
+      {
+        testimonial: ["approve"],
+      },
+      organization._id,
+    ),
   );
 
   const { data: canDownload } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["download"],
-    }),
+    hasPermissionQuery(
+      {
+        testimonial: ["download"],
+      },
+      organization._id,
+    ),
   );
 
   const { data: canDelete } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["delete"],
-    }),
+    hasPermissionQuery(
+      {
+        testimonial: ["delete"],
+      },
+      organization._id,
+    ),
   );
   const testimonial = liveTestimonial || preloadTestimonial;
 

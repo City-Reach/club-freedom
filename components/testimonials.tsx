@@ -19,6 +19,7 @@ import { Spinner } from "./ui/spinner";
 type Props = {
   orgId: Id<"organization">;
 };
+
 export function Testimonials({ orgId }: Props) {
   const { searchQuery } = useTestimonialSearchQuery();
   const searchText = useDebounce(searchQuery.q, 500);
@@ -31,9 +32,12 @@ export function Testimonials({ orgId }: Props) {
     },
   );
   const { data: canApprove } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["approve"],
-    }),
+    hasPermissionQuery(
+      {
+        testimonial: ["approve"],
+      },
+      orgId,
+    ),
   );
 
   const { ref, inView } = useInView({
