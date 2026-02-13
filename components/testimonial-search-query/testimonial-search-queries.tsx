@@ -20,23 +20,36 @@ import {
   getTestimonialStatusLabel,
 } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { hasPermissionQuery } from "@/lib/query";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
-  const { searchQuery, setSearchQuery, resetSortAndFilters } =
-    useTestimonialSearchQuery();
+  const {
+    searchQuery,
+    setSearchQuery,
+    resetSortAndFilters,
+    activeQueriesCount,
+  } = useTestimonialSearchQuery();
 
-  const queryCount = countActiveQueries(searchQuery);
-  const isActive = queryCount > 0;
+  const isActive = activeQueriesCount > 0;
 
   console.log(searchQuery.statuses);
+
+  const { data: canView } = useSuspenseQuery(
+    hasPermissionQuery({
+      testimonial: ["view"],
+    }),
+  );
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm space-x-2">
           <span>Sort and Filters</span>
-          {isActive && <Badge className="px-1.5 py-px">{queryCount}</Badge>}
+          {isActive && (
+            <Badge className="px-1.5 py-px">{activeQueriesCount}</Badge>
+          )}
         </span>
         <span className="flex items-center ml-auto">
           {isActive && (
@@ -80,16 +93,18 @@ export default function TestimonialFilters() {
           >
             {() => <FormatInput />}
           </TestimonialSearchDropdown>
-          <TestimonialSearchDropdown
-            name="Status"
-            displayValue={searchQuery.statuses
-              .map(getTestimonialStatusLabel)
-              .join(", ")}
-            isEnabled={searchQuery.statuses.length > 0}
-            clear={() => setSearchQuery({ statuses: [] })}
-          >
-            {() => <StatusInput />}
-          </TestimonialSearchDropdown>
+          {canView && (
+            <TestimonialSearchDropdown
+              name="Status"
+              displayValue={searchQuery.statuses
+                .map(getTestimonialStatusLabel)
+                .join(", ")}
+              isEnabled={searchQuery.statuses.length > 0}
+              clear={() => setSearchQuery({ statuses: [] })}
+            >
+              {() => <StatusInput />}
+            </TestimonialSearchDropdown>
+          )}
           <TestimonialSearchDropdown
             name="From Date"
             displayValue={formatDate(searchQuery.from)}
