@@ -48,7 +48,7 @@ Install [mkcert](https://github.com/FiloSottile/mkcert) and generate local certi
 
 ```bash
 mkdir -p ./certificates
-mkcert -install
+mkcert -cert-file ./certificates/dev.pem -key-file ./certificates/dev-key.pem localhost 127.0.0.1
 ```
 
 ## [Set up Cloudflare R2](#cloudflare-r2)
