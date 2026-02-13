@@ -15,9 +15,9 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { user } = Route.useLoaderData();
   return (
-    <div>
+    <div className="flex flex-col min-h-dvh">
       <Navbar user={user} />
-      <main className="flex flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto min-h-[calc(100vh-115px)]">
+      <main className="flex flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto flex-1">
         <div className="flex flex-col items-center justify-center text-center">
           <h1 className="text-4xl font-bold">
             Welcome to <span className="text-secondary">Club Freedom</span>{" "}

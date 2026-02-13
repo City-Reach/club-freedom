@@ -16,9 +16,9 @@ export const Route = createFileRoute("/testimonials")({
 function RouteComponent() {
   const { user } = Route.useLoaderData();
   return (
-    <div>
+    <div className="flex flex-col min-h-dvh">
       <Navbar user={user} />
-      <main className="min-h-[calc(100vh-115px)]">
+      <main className="flex-1">
         <Outlet />
       </main>
       <Footnote />
