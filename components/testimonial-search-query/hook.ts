@@ -29,19 +29,6 @@ export const useTestimonialSearchQuery = () => {
     return count;
   }, [searchQuery, canView]);
 
-  const useCountActiveQuieries = () => {
-    let count = 0;
-
-    if (q.author !== "") count++;
-    if (q.formats.length > 0) count++;
-    if (q.from !== null) count++;
-    if (q.to !== null) count++;
-    if (q.order !== null) count++;
-    if (q.statuses.length > 0) count++;
-
-    return count;
-  };
-
   const router = useRouter();
   const frozenSearchQueryRef = useRef(searchQuery);
   const isPending = router.state.status === "pending";

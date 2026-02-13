@@ -16,7 +16,6 @@ import FormatInput from "./inputs/format";
 import SortOrderInput from "./inputs/sort-order";
 import StatusInput from "./inputs/status";
 import {
-  countActiveQueries,
   getSortOrderLabel,
   getTestimonialFormatLabel,
   getTestimonialStatusLabel,
