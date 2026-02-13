@@ -1,9 +1,9 @@
+import { QueryState, useQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useQueryStates } from "nuqs";
 import { useEffect, useMemo, useRef } from "react";
-import { testimonialSearchQueryParams } from "./schema";
-import { QueryState, useQuery } from "@tanstack/react-query";
 import { hasPermissionQuery } from "@/lib/query";
+import { testimonialSearchQueryParams } from "./schema";
 
 export const useTestimonialSearchQuery = () => {
   const [searchQuery, setSearchQuery] = useQueryStates(

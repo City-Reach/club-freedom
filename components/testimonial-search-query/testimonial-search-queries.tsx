@@ -1,5 +1,7 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
+import { hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
@@ -20,8 +22,6 @@ import {
   getTestimonialStatusLabel,
 } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { hasPermissionQuery } from "@/lib/query";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
