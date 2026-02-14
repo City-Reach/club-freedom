@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { getCurrentUser } from "@/app/functions/auth";
+import Footnote from "@/components/footnote";
 import Navbar from "@/components/navbar";
 
 export const Route = createFileRoute("/testimonials")({
@@ -15,9 +16,12 @@ export const Route = createFileRoute("/testimonials")({
 function RouteComponent() {
   const { user } = Route.useLoaderData();
   return (
-    <>
+    <div className="flex flex-col min-h-dvh">
       <Navbar user={user} />
-      <Outlet />
-    </>
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footnote />
+    </div>
   );
 }

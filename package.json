@@ -75,6 +75,7 @@
     "@fontsource-variable/roboto-mono": "^5.2.8",
     "@fontsource/open-sans": "^5.2.7",
     "@posthog/cli": "^0.5.22",
+    "@tailwindcss/cli": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/router-cli": "^1.146.2",
     "@trigger.dev/build": "4.3.3",

@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import Footnote from "@/components/footnote";
 import AuthLayout from "@/components/layouts/auth-layout";
 
 export const Route = createFileRoute("/_auth")({

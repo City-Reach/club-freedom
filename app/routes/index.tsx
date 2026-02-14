@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import Footnote from "@/components/footnote";
 import Navbar from "@/components/navbar";
 import TestimonialForm from "@/components/testimonial-form";
 import { getCurrentUser } from "../functions/auth";
@@ -14,9 +15,9 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { user } = Route.useLoaderData();
   return (
-    <>
+    <div className="flex flex-col min-h-dvh">
       <Navbar user={user} />
-      <main className="flex min-h-screen flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto">
+      <main className="flex flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto flex-1">
         <div className="flex flex-col items-center justify-center text-center">
           <h1 className="text-4xl font-bold">
             Welcome to <span className="text-secondary">Club Freedom</span>{" "}
@@ -29,6 +30,7 @@ function Home() {
         </div>
         <TestimonialForm />
       </main>
-    </>
+      <Footnote />
+    </div>
   );
 }

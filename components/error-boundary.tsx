@@ -11,7 +11,6 @@ import {
   Bug,
   ChevronDown,
   Home,
-  Mail,
   RefreshCw,
 } from "lucide-react";
 import { useState } from "react";
