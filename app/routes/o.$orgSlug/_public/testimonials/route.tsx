@@ -5,10 +5,12 @@ export const Route = createFileRoute("/o/$orgSlug/_public/testimonials")({
   ssr: false,
   component: RouteComponent,
   beforeLoad: async ({ context }) => {
-    const { organization } = context;
-    await authClient.organization.setActive({
-      organizationId: organization._id,
-    });
+    const { organization, isAuthenticated } = context;
+    if (isAuthenticated) {
+      await authClient.organization.setActive({
+        organizationId: organization._id,
+      });
+    }
   },
 });
 
