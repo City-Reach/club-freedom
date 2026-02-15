@@ -19,6 +19,7 @@ import {
   getSortOrderLabel,
   getTestimonialFormatLabel,
   getTestimonialStatusLabel,
+  countActiveQueries,
 } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 import { useRouteContext } from "@tanstack/react-router";
@@ -29,10 +30,10 @@ export default function TestimonialFilters() {
     searchQuery,
     setSearchQuery,
     resetSortAndFilters,
-    activeQueriesCount,
   } = useTestimonialSearchQuery();
   const { organization } = useRouteContext({ from: "/o/$orgSlug" });
-  const isActive = activeQueriesCount > 0;
+  const queryCount = countActiveQueries(searchQuery);
+  const isActive = queryCount > 0;
 
   const { data: canView } = useSuspenseQuery(
     hasPermissionQuery(
@@ -49,7 +50,7 @@ export default function TestimonialFilters() {
         <span className="font-semibold text-sm space-x-2">
           <span>Sort and Filters</span>
           {isActive && (
-            <Badge className="px-1.5 py-px">{activeQueriesCount}</Badge>
+            <Badge className="px-1.5 py-px">{queryCount}</Badge>
           )}
         </span>
         <span className="flex items-center ml-auto">
