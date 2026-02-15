@@ -8,14 +8,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth/auth-client";
 import { hasPermissionQuery } from "@/lib/query";
 
 export default function OrganizationSidebarNavSecondary(
   props: ComponentProps<typeof SidebarGroup>,
 ) {
-  const { organization, user } = useRouteContext({
+  const { organization } = useRouteContext({
     from: "/o/$orgSlug/dashboard",
   });
+  const { data } = authClient.useSession();
+  const user = data?.user;
 
   const { data: canUpdateOrganization } = useQuery(
     hasPermissionQuery(

@@ -3,11 +3,11 @@ import { hasPermissionQuery } from "@/lib/query";
 
 export const Route = createFileRoute("/o/$orgSlug/dashboard/testimonials")({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
+  loader: async ({ context }) => {
     const canManageTestimonials = await context.queryClient.ensureQueryData(
       hasPermissionQuery(
         {
-          testimonial: ["view", "approve"],
+          testimonial: ["view"],
         },
         context.organization._id,
       ),
@@ -20,5 +20,5 @@ export const Route = createFileRoute("/o/$orgSlug/dashboard/testimonials")({
 });
 
 function RouteComponent() {
-  return <div></div>;
+  return <div>Testimonials</div>;
 }

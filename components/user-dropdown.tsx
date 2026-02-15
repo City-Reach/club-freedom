@@ -9,13 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { User } from "@/lib/auth/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 
-type Props = {
-  user: User;
-};
+export default function UserDropDown() {
+  const { data } = authClient.useSession();
 
-export default function UserDropDown({ user }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,11 +24,13 @@ export default function UserDropDown({ user }: Props) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
-        <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+        <DropdownMenuLabel>{data?.user?.name}</DropdownMenuLabel>
         <DropdownMenuLabel>
-          <span className="text-sm text-muted-foreground">{user.email}</span>
+          <span className="text-sm text-muted-foreground">
+            {data?.user?.email}
+          </span>
         </DropdownMenuLabel>
-        {user.role === "admin" && (
+        {data?.user.role === "admin" && (
           <DropdownMenuItem asChild>
             <Link to="/admin">
               <Shield />

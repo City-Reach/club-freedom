@@ -16,18 +16,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { User } from "@/lib/auth/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { getMemberRoleQuery, hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 
-type Props = {
-  user: User;
-};
-
-export default function OrganizationDropdown({ user }: Props) {
+export default function OrganizationDropdown() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
+
+  const { data } = authClient.useSession();
 
   const { role, canApprove, canUpdateOrganization } = useQueries({
     queries: [
@@ -63,11 +61,11 @@ export default function OrganizationDropdown({ user }: Props) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="flex gap-2 items-center">
-          {user.name}
+          {data?.user?.name}
           {role && <Badge className="px-1.5 py-px">{role}</Badge>}
         </DropdownMenuLabel>
         <DropdownMenuLabel className="text-sm text-muted-foreground">
-          {user.email}
+          {data?.user?.email}
         </DropdownMenuLabel>
         {canApprove && (
           <DropdownMenuItem asChild>
@@ -91,7 +89,7 @@ export default function OrganizationDropdown({ user }: Props) {
             </Link>
           </DropdownMenuItem>
         )}
-        {user.role === "admin" && (
+        {data?.user?.role === "admin" && (
           <DropdownMenuItem asChild>
             <Link to="/admin">
               <UserCog />

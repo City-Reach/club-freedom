@@ -18,7 +18,7 @@ import { hasPermissionQuery } from "@/lib/query";
 
 export const Route = createFileRoute("/o/$orgSlug/dashboard/members")({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
+  loader: async ({ context }) => {
     const canManageMembers = await context.queryClient.ensureQueryData(
       hasPermissionQuery(
         {
