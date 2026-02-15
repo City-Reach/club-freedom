@@ -1,3 +1,4 @@
+import { debounce } from "nuqs";
 import type { ComponentProps } from "react";
 import { Input } from "../ui/input";
 import { useTestimonialSearchQuery } from "./hook";
@@ -5,13 +6,18 @@ import { useTestimonialSearchQuery } from "./hook";
 export default function TestimonialSearchInput(
   props: ComponentProps<typeof Input>,
 ) {
-  const { liveSearchQuery, setSearchQuery } = useTestimonialSearchQuery();
+  const { searchQuery, setSearchQuery } = useTestimonialSearchQuery();
   return (
     <Input
-      value={liveSearchQuery.q}
+      value={searchQuery.q}
       placeholder="Search testimonials"
       onChange={(e) => {
-        setSearchQuery({ q: e.target.value });
+        setSearchQuery(
+          { q: e.target.value },
+          {
+            limitUrlUpdates: e.target.value === "" ? undefined : debounce(500),
+          },
+        );
       }}
       {...props}
     />

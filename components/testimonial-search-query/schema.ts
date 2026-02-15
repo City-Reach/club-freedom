@@ -1,8 +1,8 @@
 import {
   createStandardSchemaV1,
   type inferParserType,
-  parseAsArrayOf,
   parseAsIsoDate,
+  parseAsNativeArrayOf,
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs";
@@ -51,13 +51,13 @@ export const getSortOrderLabel = (order: SortOrder) => {
 export const testimonialSearchQueryParams = {
   q: parseAsString.withDefault(""),
   author: parseAsString.withDefault(""),
-  formats: parseAsArrayOf(parseAsStringLiteral(testimonialFormats)).withDefault(
-    [],
-  ),
+  formats: parseAsNativeArrayOf(
+    parseAsStringLiteral(testimonialFormats),
+  ).withDefault([]),
   from: parseAsIsoDate,
   to: parseAsIsoDate,
   order: parseAsStringLiteral(sortOrders),
-  statuses: parseAsArrayOf(
+  statuses: parseAsNativeArrayOf(
     parseAsStringLiteral(testimonialStatuses),
   ).withDefault([]),
 };
