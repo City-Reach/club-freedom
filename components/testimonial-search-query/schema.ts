@@ -1,11 +1,10 @@
 import {
-  createStandardSchemaV1,
-  type inferParserType,
   parseAsIsoDate,
   parseAsNativeArrayOf,
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs";
+import { z } from "zod";
 
 export const testimonialFormats = ["video", "audio", "text"] as const;
 export type TestimonialFormat = (typeof testimonialFormats)[number];
@@ -62,13 +61,27 @@ export const testimonialSearchQueryParams = {
   ).withDefault([]),
 };
 
-export const testimonialSearchQuerySchema = createStandardSchemaV1(
-  testimonialSearchQueryParams,
-  {
-    partialOutput: true,
-  },
-);
+// Zod schema for TanStack Router validation
+export const testimonialSearchQuerySchema = z.object({
+  q: z.string().optional().default(""),
+  author: z.string().optional().default(""),
+  formats: z.array(z.enum(testimonialFormats)).optional().default([]),
+  from: z
+    .string()
+    .optional()
+    .transform((val) => (val ? new Date(val) : null))
+    .nullable()
+    .catch(null),
+  to: z
+    .string()
+    .optional()
+    .transform((val) => (val ? new Date(val) : null))
+    .nullable()
+    .catch(null),
+  order: z.enum(sortOrders).optional().nullable().catch(null),
+  statuses: z.array(z.enum(testimonialStatuses)).optional().default([]),
+});
 
-export type TestimonialSearchQuery = inferParserType<
-  typeof testimonialSearchQueryParams
+export type TestimonialSearchQuery = z.infer<
+  typeof testimonialSearchQuerySchema
 >;

@@ -49,25 +49,9 @@ function TestimonialsPage() {
 }
 
 function Testimonials() {
-  const {
-    q = "",
-    author = "",
-    from = null,
-    to = null,
-    order = null,
-    formats = [],
-    statuses = [],
-  } = Route.useSearch();
-
-  const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery({
-    q,
-    author,
-    formats,
-    from,
-    to,
-    order,
-    statuses,
-  });
+  const query = Route.useSearch();
+  const { results, loadMore, status, isLoading } =
+    useInfiniteTestimonialQuery(query);
 
   const { data: canApprove } = useQuery(
     hasPermissionQuery({
