@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const Route = createFileRoute("/_auth/forgot-password")({
+export const Route = createFileRoute("/_auth/_public/forgot-password")({
   component: RouteComponent,
 });
 

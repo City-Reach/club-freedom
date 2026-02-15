@@ -1,6 +1,7 @@
 import { Resend } from "@convex-dev/resend";
 import { render } from "@react-email/components";
-import ResetPasswordEmail from "../components/emails/reset-password";
+import InviteEmail from "@/emails/invite";
+import ResetPasswordEmail from "@/emails/reset-password";
 import { components } from "./_generated/api";
 import type { ActionCtx } from "./_generated/server";
 
@@ -23,5 +24,27 @@ export const sendResetPassword = async (
     to,
     subject: "Reset your password",
     html: await render(<ResetPasswordEmail url={url} />),
+  });
+};
+
+export const sendInvite = async (
+  ctx: ActionCtx,
+  {
+    to,
+    url,
+    subject,
+    organization,
+  }: {
+    to: string;
+    url: string;
+    subject: string;
+    organization: string;
+  },
+) => {
+  await resend.sendEmail(ctx, {
+    from: `Club Freedom <${process.env.AUTH_EMAIL}>`,
+    to,
+    subject,
+    html: await render(<InviteEmail brandName={organization} url={url} />),
   });
 };

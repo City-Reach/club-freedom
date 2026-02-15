@@ -91,3 +91,18 @@ export const generateIconUploadUrl = mutation({
     };
   },
 });
+
+export const findInvitationById = query({
+  args: {
+    id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const invitation = await ctx.runQuery(
+      components.betterAuth.auth.findInvitationById,
+      {
+        invitationId: args.id,
+      },
+    );
+    return invitation;
+  },
+});
