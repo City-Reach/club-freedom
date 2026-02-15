@@ -5,7 +5,7 @@ import { authClient } from "@/lib/auth/auth-client";
 export const Route = createFileRoute("/admin")({
   ssr: false,
   component: RouteComponent,
-  beforeLoad: async () => {
+  loader: async () => {
     const { data } = await authClient.getSession();
     const user = data?.user;
 
@@ -16,10 +16,6 @@ export const Route = createFileRoute("/admin")({
     if (user.role !== "admin") {
       throw redirect({ to: "/" });
     }
-
-    return {
-      user,
-    };
   },
 });
 

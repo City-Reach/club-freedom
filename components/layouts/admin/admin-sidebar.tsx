@@ -16,10 +16,6 @@ import AdminSidebarNav from "./admin-sidebar-nav";
 export default function AdminSidebar({
   ...props
 }: ComponentProps<typeof Sidebar>) {
-  const { user } = useRouteContext({
-    from: "/admin",
-  });
-
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -42,7 +38,7 @@ export default function AdminSidebar({
         <AdminSidebarNav />
       </SidebarContent>
       <SidebarFooter>
-        <UserNavigation user={user} />
+        <UserNavigation />
       </SidebarFooter>
     </Sidebar>
   );
