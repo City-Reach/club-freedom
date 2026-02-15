@@ -63,31 +63,25 @@ export const testimonialSearchQueryParams = {
 
 // Zod schema for TanStack Router validation
 export const testimonialSearchQuerySchema = z.object({
-  q: z.string().optional().default(""),
-  author: z.string().optional().default(""),
+  q: z.string().optional(),
+  author: z.string().optional(),
   formats: z
     .union([z.enum(testimonialFormats), z.array(z.enum(testimonialFormats))])
     .optional()
-    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : []))
-    .default([]),
+    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : undefined)),
   from: z
     .string()
     .optional()
-    .transform((val) => (val ? new Date(val) : null))
-    .nullable()
-    .catch(null),
+    .transform((val) => (val ? new Date(val) : undefined)),
   to: z
     .string()
     .optional()
-    .transform((val) => (val ? new Date(val) : null))
-    .nullable()
-    .catch(null),
-  order: z.enum(sortOrders).optional().nullable().catch(null),
+    .transform((val) => (val ? new Date(val) : undefined)),
+  order: z.enum(sortOrders).optional(),
   statuses: z
     .union([z.enum(testimonialStatuses), z.array(z.enum(testimonialStatuses))])
     .optional()
-    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : []))
-    .default([]),
+    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : undefined)),
 });
 
 export type TestimonialSearchQuery = z.infer<
