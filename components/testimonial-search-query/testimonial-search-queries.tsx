@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { hasPermissionQuery } from "@/lib/query";
@@ -16,21 +17,17 @@ import FormatInput from "./inputs/format";
 import SortOrderInput from "./inputs/sort-order";
 import StatusInput from "./inputs/status";
 import {
+  countActiveQueries,
   getSortOrderLabel,
   getTestimonialFormatLabel,
   getTestimonialStatusLabel,
-  countActiveQueries,
 } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
-import { useRouteContext } from "@tanstack/react-router";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
-  const {
-    searchQuery,
-    setSearchQuery,
-    resetSortAndFilters,
-  } = useTestimonialSearchQuery();
+  const { searchQuery, setSearchQuery, resetSortAndFilters } =
+    useTestimonialSearchQuery();
   const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const queryCount = countActiveQueries(searchQuery);
   const isActive = queryCount > 0;
@@ -49,9 +46,7 @@ export default function TestimonialFilters() {
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm space-x-2">
           <span>Sort and Filters</span>
-          {isActive && (
-            <Badge className="px-1.5 py-px">{queryCount}</Badge>
-          )}
+          {isActive && <Badge className="px-1.5 py-px">{queryCount}</Badge>}
         </span>
         <span className="flex items-center ml-auto">
           {isActive && (
