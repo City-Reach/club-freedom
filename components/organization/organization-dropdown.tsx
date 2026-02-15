@@ -1,4 +1,5 @@
-import { useQueries } from "@tanstack/react-query";
+import { convexQuery } from "@convex-dev/react-query";
+import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -7,6 +8,7 @@ import {
   UserCog,
   UserRoundIcon,
 } from "lucide-react";
+import { Suspense } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -16,16 +18,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth/auth-client";
+import { api } from "@/convex/_generated/api";
 import { getMemberRoleQuery, hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 
 export default function OrganizationDropdown() {
+  return (
+    <Suspense
+      fallback={
+        <Avatar aria-disabled>
+          <AvatarFallback>
+            <UserRoundIcon size={16} className="text-muted-foreground" />
+          </AvatarFallback>
+        </Avatar>
+      }
+    >
+      <SuspensedOrganizationDropdown />
+    </Suspense>
+  );
+}
+
+function SuspensedOrganizationDropdown() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
 
-  const { data } = authClient.useSession();
+  const { data: user } = useSuspenseQuery(convexQuery(api.auth.getCurrentUser));
 
   const { role, canApprove, canUpdateOrganization } = useQueries({
     queries: [
@@ -61,11 +79,11 @@ export default function OrganizationDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="flex gap-2 items-center">
-          {data?.user?.name}
+          {user?.name}
           {role && <Badge className="px-1.5 py-px">{role}</Badge>}
         </DropdownMenuLabel>
         <DropdownMenuLabel className="text-sm text-muted-foreground">
-          {data?.user?.email}
+          {user?.email}
         </DropdownMenuLabel>
         {canApprove && (
           <DropdownMenuItem asChild>
@@ -89,7 +107,7 @@ export default function OrganizationDropdown() {
             </Link>
           </DropdownMenuItem>
         )}
-        {data?.user?.role === "admin" && (
+        {user?.role === "admin" && (
           <DropdownMenuItem asChild>
             <Link to="/admin">
               <UserCog />
