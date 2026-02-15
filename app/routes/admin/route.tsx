@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import Footnote from "@/components/footnote";
 import AdminLayout from "@/components/layouts/admin";
 import { authClient } from "@/lib/auth/auth-client";
 
@@ -30,7 +29,6 @@ function RouteComponent() {
       <AdminLayout>
         <Outlet />
       </AdminLayout>
-      <Footnote />
     </div>
   );
 }
