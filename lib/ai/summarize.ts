@@ -46,7 +46,9 @@ export async function summarize(input: string, name: string) {
       throw new Error("No content received from OpenAI");
     }
 
-    return JSON.parse(`${name} says: ${responseContent}`) as SummaryResponse;
+    const jsonResponse = JSON.parse(responseContent) as SummaryResponse;
+    jsonResponse.summary = `${name} says: ${jsonResponse.summary}`;
+    return jsonResponse;
   } catch (error) {
     console.error("Error summarizing text:", error);
     throw error;
