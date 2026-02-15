@@ -65,7 +65,11 @@ export const testimonialSearchQueryParams = {
 export const testimonialSearchQuerySchema = z.object({
   q: z.string().optional().default(""),
   author: z.string().optional().default(""),
-  formats: z.array(z.enum(testimonialFormats)).optional().default([]),
+  formats: z
+    .union([z.enum(testimonialFormats), z.array(z.enum(testimonialFormats))])
+    .optional()
+    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : []))
+    .default([]),
   from: z
     .string()
     .optional()
@@ -79,7 +83,11 @@ export const testimonialSearchQuerySchema = z.object({
     .nullable()
     .catch(null),
   order: z.enum(sortOrders).optional().nullable().catch(null),
-  statuses: z.array(z.enum(testimonialStatuses)).optional().default([]),
+  statuses: z
+    .union([z.enum(testimonialStatuses), z.array(z.enum(testimonialStatuses))])
+    .optional()
+    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : []))
+    .default([]),
 });
 
 export type TestimonialSearchQuery = z.infer<
