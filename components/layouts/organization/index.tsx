@@ -15,7 +15,7 @@ export default function OrganizationLayout({
   children: ReactNode;
 }) {
   const { user } = useRouteContext({
-    from: "/o/$orgSlug/_dashboard",
+    from: "/o/$orgSlug/dashboard",
   });
   return (
     <SidebarProvider>

@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { LogOut, Shield, UserRoundIcon } from "lucide-react";
-
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -10,10 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { User } from "@/lib/auth/auth-client";
 
 type Props = {
-  user: Doc<"user">;
+  user: User;
 };
 
 export default function UserDropDown({ user }: Props) {

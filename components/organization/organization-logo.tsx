@@ -1,11 +1,10 @@
-import { Link } from "@tanstack/react-router";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import { Link, useRouteContext } from "@tanstack/react-router";
 
-type Props = {
-  organization: Doc<"organization">;
-};
+export default function OrganizationLogo() {
+  const { organization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
 
-export default function OrganizationLogo({ organization }: Props) {
   return (
     <Link to="/o/$orgSlug" params={{ orgSlug: organization.slug }}>
       {organization.logo ? (

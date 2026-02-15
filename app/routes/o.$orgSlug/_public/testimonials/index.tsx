@@ -3,7 +3,7 @@ import TestimonialSearchInput from "@/components/testimonial-search-query/testim
 import TestimonialFilters from "@/components/testimonial-search-query/testimonial-search-queries";
 import { Testimonials } from "@/components/testimonials";
 
-export const Route = createFileRoute("/o/$orgSlug/testimonials/")({
+export const Route = createFileRoute("/o/$orgSlug/_public/testimonials/")({
   ssr: false,
   component: TestimonialsPage,
 });
