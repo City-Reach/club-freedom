@@ -7,21 +7,19 @@ import OrganizationLogoForm from "@/components/organization/organization-logo-fo
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
-import { hasPermissionQuery } from "@/lib/query";
+import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/dashboard/settings")({
   component: RouteComponent,
   loader: async ({ context }) => {
-    const canManageOrganization = await context.queryClient.ensureQueryData(
-      hasPermissionQuery(
-        {
-          organization: ["update"],
-        },
-        context.organization._id,
-      ),
-    );
+    const { data } = await authClient.organization.hasPermission({
+      permissions: {
+        organization: ["update"],
+      },
+      organizationId: context.organization._id,
+    });
 
-    if (!canManageOrganization) {
+    if (!data?.success) {
       throw new Error("User does not have permission to manage organization");
     }
   },
