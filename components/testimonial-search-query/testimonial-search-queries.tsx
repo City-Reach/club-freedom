@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
@@ -32,7 +32,7 @@ export default function TestimonialFilters() {
   const queryCount = countActiveQueries(searchQuery);
   const isActive = queryCount > 0;
 
-  const { data: canView } = useSuspenseQuery(
+  const { data: canView } = useQuery(
     hasPermissionQuery(
       {
         testimonial: ["view"],
