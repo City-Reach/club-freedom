@@ -20,6 +20,23 @@ export const getTestimonialFormatLabel = (type: TestimonialFormat) => {
   }
 };
 
+export const testimonialStatuses = [
+  "pending",
+  "published",
+  "not-published",
+] as const;
+export type TestimonialStatus = (typeof testimonialStatuses)[number];
+export const getTestimonialStatusLabel = (type: TestimonialStatus) => {
+  switch (type) {
+    case "pending":
+      return "Pending";
+    case "published":
+      return "Published";
+    case "not-published":
+      return "Not Published";
+  }
+};
+
 export const sortOrders = ["newest", "oldest"] as const;
 export type SortOrder = (typeof sortOrders)[number];
 export const getSortOrderLabel = (order: SortOrder) => {
@@ -40,6 +57,9 @@ export const testimonialSearchQueryParams = {
   from: parseAsIsoDate,
   to: parseAsIsoDate,
   order: parseAsStringLiteral(sortOrders),
+  statuses: parseAsArrayOf(
+    parseAsStringLiteral(testimonialStatuses),
+  ).withDefault([]),
 };
 
 export const testimonialSearchQuerySchema = createStandardSchemaV1(

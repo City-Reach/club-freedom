@@ -1,5 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
+import { hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
@@ -12,10 +15,12 @@ import AuthoutInput from "./inputs/author";
 import DateInput from "./inputs/date";
 import FormatInput from "./inputs/format";
 import SortOrderInput from "./inputs/sort-order";
+import StatusInput from "./inputs/status";
 import {
   countActiveQueries,
   getSortOrderLabel,
   getTestimonialFormatLabel,
+  getTestimonialStatusLabel,
 } from "./schema";
 import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
@@ -23,9 +28,18 @@ export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
   const { searchQuery, setSearchQuery, resetSortAndFilters } =
     useTestimonialSearchQuery();
-
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const queryCount = countActiveQueries(searchQuery);
   const isActive = queryCount > 0;
+
+  const { data: canView } = useQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["view"],
+      },
+      organization._id,
+    ),
+  );
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
@@ -76,6 +90,18 @@ export default function TestimonialFilters() {
           >
             {() => <FormatInput />}
           </TestimonialSearchDropdown>
+          {canView && (
+            <TestimonialSearchDropdown
+              name="Status"
+              displayValue={searchQuery.statuses
+                .map(getTestimonialStatusLabel)
+                .join(", ")}
+              isEnabled={searchQuery.statuses.length > 0}
+              clear={() => setSearchQuery({ statuses: [] })}
+            >
+              {() => <StatusInput />}
+            </TestimonialSearchDropdown>
+          )}
           <TestimonialSearchDropdown
             name="From Date"
             displayValue={formatDate(searchQuery.from)}
