@@ -1,7 +1,6 @@
-import { QueryState, useQuery } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { hasPermissionQuery } from "@/lib/query";
 import { testimonialSearchQueryParams } from "./schema";
 
@@ -29,16 +28,6 @@ export const useTestimonialSearchQuery = () => {
     return count;
   }, [searchQuery, canView]);
 
-  const router = useRouter();
-  const frozenSearchQueryRef = useRef(searchQuery);
-  const isPending = router.state.status === "pending";
-
-  useEffect(() => {
-    if (!isPending) {
-      frozenSearchQueryRef.current = searchQuery;
-    }
-  }, [searchQuery, isPending]);
-
   const resetSortAndFilters = () => {
     setSearchQuery({
       author: "",
@@ -51,8 +40,7 @@ export const useTestimonialSearchQuery = () => {
   };
 
   return {
-    searchQuery: frozenSearchQueryRef.current,
-    liveSearchQuery: searchQuery,
+    searchQuery,
     setSearchQuery,
     resetSortAndFilters,
     activeQueriesCount,

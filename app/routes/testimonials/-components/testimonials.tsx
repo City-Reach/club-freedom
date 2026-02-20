@@ -1,29 +1,28 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useDebounce } from "@uidotdev/usehooks";
+import { useQuery } from "@tanstack/react-query";
+import { useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import TestimonialCardApproval from "@/components/testimonial-card/testimonial-card-approval";
+import TestimonialCardInfo from "@/components/testimonial-card/testimonial-card-info";
+import TestimonialCardMedia from "@/components/testimonial-card/testimonial-card-media";
+import TestimonialCardShell from "@/components/testimonial-card/testimonial-card-shell";
+import TestimonialCardSummary from "@/components/testimonial-card/testimonial-card-summary";
+import TestimonialCardText from "@/components/testimonial-card/testimonial-card-text";
+import TestimonialCardTitle from "@/components/testimonial-card/testimonial-card-title";
+import { CardContent, CardHeader } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { hasPermissionQuery, useInfiniteTestimonialQuery } from "@/lib/query";
-import TestimonialCardApproval from "./testimonial-card/testimonial-card-approval";
-import TestimonialCardInfo from "./testimonial-card/testimonial-card-info";
-import TestimonialCardMedia from "./testimonial-card/testimonial-card-media";
-import TestimonialCardShell from "./testimonial-card/testimonial-card-shell";
-import TestimonialCardSummary from "./testimonial-card/testimonial-card-summary";
-import TestimonialCardText from "./testimonial-card/testimonial-card-text";
-import TestimonialCardTitle from "./testimonial-card/testimonial-card-title";
-import { useTestimonialSearchQuery } from "./testimonial-search-query/hook";
-import { CardContent, CardHeader } from "./ui/card";
-import { Spinner } from "./ui/spinner";
 
-export function Testimonials() {
-  const { searchQuery } = useTestimonialSearchQuery();
-  const searchText = useDebounce(searchQuery.q, 500);
-
-  const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery({
-    ...searchQuery,
-    q: searchText,
+export default function Testimonials() {
+  const query = useSearch({
+    from: "/testimonials/",
   });
-  const { data: canApprove } = useSuspenseQuery(
+
+  const { results, loadMore, status, isLoading } =
+    useInfiniteTestimonialQuery(query);
+
+  const { data: canApprove } = useQuery(
     hasPermissionQuery({
       testimonial: ["approve"],
     }),

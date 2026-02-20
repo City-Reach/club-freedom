@@ -1,11 +1,10 @@
 import {
-  createStandardSchemaV1,
-  type inferParserType,
-  parseAsArrayOf,
   parseAsIsoDate,
+  parseAsNativeArrayOf,
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs";
+import { z } from "zod";
 
 export const testimonialFormats = ["video", "audio", "text"] as const;
 export type TestimonialFormat = (typeof testimonialFormats)[number];
@@ -51,24 +50,40 @@ export const getSortOrderLabel = (order: SortOrder) => {
 export const testimonialSearchQueryParams = {
   q: parseAsString.withDefault(""),
   author: parseAsString.withDefault(""),
-  formats: parseAsArrayOf(parseAsStringLiteral(testimonialFormats)).withDefault(
-    [],
-  ),
+  formats: parseAsNativeArrayOf(
+    parseAsStringLiteral(testimonialFormats),
+  ).withDefault([]),
   from: parseAsIsoDate,
   to: parseAsIsoDate,
   order: parseAsStringLiteral(sortOrders),
-  statuses: parseAsArrayOf(
+  statuses: parseAsNativeArrayOf(
     parseAsStringLiteral(testimonialStatuses),
   ).withDefault([]),
 };
 
-export const testimonialSearchQuerySchema = createStandardSchemaV1(
-  testimonialSearchQueryParams,
-  {
-    partialOutput: true,
-  },
-);
+// Zod schema for TanStack Router validation
+export const testimonialSearchQuerySchema = z.object({
+  q: z.string().optional(),
+  author: z.string().optional(),
+  formats: z
+    .union([z.enum(testimonialFormats), z.array(z.enum(testimonialFormats))])
+    .optional()
+    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : undefined)),
+  from: z
+    .string()
+    .optional()
+    .transform((val) => (val ? new Date(val) : undefined)),
+  to: z
+    .string()
+    .optional()
+    .transform((val) => (val ? new Date(val) : undefined)),
+  order: z.enum(sortOrders).optional(),
+  statuses: z
+    .union([z.enum(testimonialStatuses), z.array(z.enum(testimonialStatuses))])
+    .optional()
+    .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : undefined)),
+});
 
-export type TestimonialSearchQuery = inferParserType<
-  typeof testimonialSearchQueryParams
+export type TestimonialSearchQuery = z.infer<
+  typeof testimonialSearchQuerySchema
 >;

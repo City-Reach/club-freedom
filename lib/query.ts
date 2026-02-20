@@ -34,11 +34,11 @@ export function useInfiniteTestimonialQuery(
   return usePaginatedQuery(
     api.testimonials.getTestimonials,
     {
-      searchQuery: searchQuery.q,
+      searchQuery: searchQuery.q || "",
       filters: {
-        author: searchQuery.author,
-        types: searchQuery.formats,
-        statuses: searchQuery.statuses,
+        author: searchQuery.author || "",
+        types: searchQuery.formats || [],
+        statuses: searchQuery.statuses || [],
         before,
         after,
       },
