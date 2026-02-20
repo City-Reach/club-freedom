@@ -22,6 +22,7 @@ export const useTestimonialSearchQuery = () => {
     setSearchQuery({
       author: "",
       formats: [],
+      statuses: [],
       from: null,
       to: null,
       order: null,

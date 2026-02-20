@@ -21,8 +21,10 @@ export const Route = createFileRoute("/admin")({
 
 function RouteComponent() {
   return (
-    <AdminLayout>
-      <Outlet />
-    </AdminLayout>
+    <div>
+      <AdminLayout>
+        <Outlet />
+      </AdminLayout>
+    </div>
   );
 }
