@@ -4,6 +4,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
+import { getAllOrganizations } from "@/app/functions/organization";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
@@ -34,7 +35,13 @@ export function SignInForm() {
       {
         async onSuccess() {
           await queryClient.invalidateQueries();
-          navigate({ to: "/" });
+          const allOrganizations = await getAllOrganizations();
+          const firstOrganization = allOrganizations[0] || null;
+          navigate({
+            to: firstOrganization
+              ? `/o/${firstOrganization.slug}/dashboard`
+              : "/",
+          });
         },
         onError(ctx) {
           toast.error("Failed to sign in", {
