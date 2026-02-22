@@ -1,6 +1,8 @@
 name: New Feature
 description: Suggest a new feature for this project
 labels: ["enhancement"]
+type: Feature
+projects: ["City-Reach/2"]
 
 body:
   - type: textarea
@@ -16,6 +18,8 @@ body:
     attributes:
       label: Requirements
       description: What are the requirements for this feature?
-      placeholder: "List the requirements or acceptance criteria..."
+      placeholder: |
+        - [ ] Requirement 1
+        - [ ] Requirement 2
     validations:
       required: true

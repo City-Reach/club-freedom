@@ -1,7 +1,8 @@
 name: Bug Report
 description: Report a bug in the project
 labels: ["bug"]
-assignees: []
+type: Bug
+projects: ["City-Reach/2"]
 
 body:
   - type: textarea
