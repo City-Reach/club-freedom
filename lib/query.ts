@@ -41,9 +41,9 @@ export function useInfiniteTestimonialQuery(
       searchQuery: searchQuery.q,
       orgId: orgId,
       filters: {
-        author: searchQuery.author,
-        types: searchQuery.formats,
-        statuses: searchQuery.statuses,
+        author: searchQuery.author || "",
+        types: searchQuery.formats || [],
+        statuses: searchQuery.statuses || [],
         before,
         after,
       },

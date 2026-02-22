@@ -1,22 +1,39 @@
-import { useRouter } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
 import { useQueryStates } from "nuqs";
-import { useEffect, useRef } from "react";
+import { useMemo } from "react";
+import { hasPermissionQuery } from "@/lib/query";
 import { testimonialSearchQueryParams } from "./schema";
 
 export const useTestimonialSearchQuery = () => {
+  const { organization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
   const [searchQuery, setSearchQuery] = useQueryStates(
     testimonialSearchQueryParams,
   );
 
-  const router = useRouter();
-  const frozenSearchQueryRef = useRef(searchQuery);
-  const isPending = router.state.status === "pending";
+  const { data: canView } = useQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["view"],
+      },
+      organization._id,
+    ),
+  );
 
-  useEffect(() => {
-    if (!isPending) {
-      frozenSearchQueryRef.current = searchQuery;
-    }
-  }, [searchQuery, isPending]);
+  const activeQueriesCount = useMemo(() => {
+    let count = 0;
+
+    if (searchQuery.author !== "") count++;
+    if (searchQuery.formats.length > 0) count++;
+    if (searchQuery.from !== null) count++;
+    if (searchQuery.to !== null) count++;
+    if (searchQuery.order !== null) count++;
+    if (searchQuery.statuses.length > 0 && canView) count++;
+
+    return count;
+  }, [searchQuery, canView]);
 
   const resetSortAndFilters = () => {
     setSearchQuery({
@@ -30,9 +47,9 @@ export const useTestimonialSearchQuery = () => {
   };
 
   return {
-    searchQuery: frozenSearchQueryRef.current,
-    liveSearchQuery: searchQuery,
+    searchQuery,
     setSearchQuery,
     resetSortAndFilters,
+    activeQueriesCount,
   };
 };
