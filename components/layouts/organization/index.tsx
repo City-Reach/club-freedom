@@ -26,7 +26,7 @@ export default function OrganizationLayout({
             <UserDropDown />
           </div>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
+        <main className="@container/dashboard flex-1">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

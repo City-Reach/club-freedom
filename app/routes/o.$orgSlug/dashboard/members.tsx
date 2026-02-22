@@ -35,7 +35,7 @@ export const Route = createFileRoute("/o/$orgSlug/dashboard/members")({
 
 function RouteComponent() {
   return (
-    <div className="grid max-w-3xl w-full gap-8 mx-auto">
+    <div className="grid max-w-3xl w-full gap-8 mx-auto p-4">
       <Card>
         <CardHeader className="flex items-center">
           <CardTitle>Invites</CardTitle>

@@ -38,7 +38,7 @@ function RouteComponent() {
     preloadOrganization) as Doc<"organization">;
 
   return (
-    <div className="grid max-w-3xl w-full gap-4 mx-auto">
+    <div className="grid max-w-3xl w-full gap-4 mx-auto p-4">
       <h2 className="pb-2 text-3xl font-semibold tracking-tight">Settings</h2>
       <Card>
         <CardHeader>
