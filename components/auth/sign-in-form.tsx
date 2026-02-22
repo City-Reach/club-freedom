@@ -34,8 +34,12 @@ export function SignInForm() {
       {
         async onSuccess() {
           await queryClient.invalidateQueries();
-          const {data: allOrganizations} = await authClient.organization.list();
-          const firstOrganization = allOrganizations && allOrganizations.length > 0 ? allOrganizations[0] : null;
+          const { data: allOrganizations } =
+            await authClient.organization.list();
+          const firstOrganization =
+            allOrganizations && allOrganizations.length > 0
+              ? allOrganizations[0]
+              : null;
           navigate({
             to: firstOrganization
               ? `/o/${firstOrganization.slug}/dashboard`
