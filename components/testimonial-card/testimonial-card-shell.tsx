@@ -4,10 +4,15 @@ import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { cn } from "@/lib/utils";
 import { Card } from "../ui/card";
 
+type TestimonialCardShellProps = ComponentProps<typeof Card> & {
+  isPublic?: boolean;
+};
+
 export default function TestimonialCardShell({
   className,
+  isPublic = false,
   ...props
-}: ComponentProps<typeof Card>) {
+}: TestimonialCardShellProps) {
   const navigate = useNavigate({});
   const { testimonial } = useTestimonialContext();
   const { organization } = useRouteContext({ from: "/o/$orgSlug" });
@@ -16,9 +21,11 @@ export default function TestimonialCardShell({
     if (selection && selection.toString().length > 0) {
       return;
     }
-
+    const link = isPublic
+      ? "/o/$orgSlug/testimonials/$id"
+      : "/o/$orgSlug/dashboard/testimonials/$id";
     await navigate({
-      to: "/o/$orgSlug/testimonials/$id",
+      to: link,
       params: {
         orgSlug: organization.slug,
         id: testimonial._id,

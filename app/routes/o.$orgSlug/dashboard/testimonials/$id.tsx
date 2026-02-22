@@ -11,6 +11,9 @@ import {
 import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
 import NotFound from "@/components/not-found";
+import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
+import TestimonialDelete from "@/components/testimonial-detail/testimonial-delete";
+import TestimonialDownload from "@/components/testimonial-detail/testimonial-download";
 import TestimonialInfo from "@/components/testimonial-detail/testimonial-info";
 import TestimonialMedia from "@/components/testimonial-detail/testimonial-media";
 import TestimonialProcessingError from "@/components/testimonial-detail/testimonial-processing-error";
@@ -23,7 +26,7 @@ import { TestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 import { hasPermissionQuery } from "@/lib/query";
 
-export const Route = createFileRoute("/o/$orgSlug/_public/testimonials/$id")({
+export const Route = createFileRoute("/o/$orgSlug/dashboard/testimonials/$id")({
   ssr: false,
   component: Component,
   notFoundComponent: NotFound,
@@ -67,7 +70,7 @@ function Component() {
   const handleBack = () => {
     if (isRoot) {
       router.navigate({
-        to: "/o/$orgSlug/testimonials",
+        to: "/o/$orgSlug/dashboard/testimonials",
         params: {
           orgSlug: organization.slug,
         },
@@ -101,6 +104,32 @@ export default function TestimonialDetail() {
     }),
   );
 
+  const { data: canApprove } = useSuspenseQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["approve"],
+      },
+      organization._id,
+    ),
+  );
+
+  const { data: canDownload } = useSuspenseQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["download"],
+      },
+      organization._id,
+    ),
+  );
+
+  const { data: canDelete } = useSuspenseQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["delete"],
+      },
+      organization._id,
+    ),
+  );
   const testimonial = liveTestimonial || preloadTestimonial;
 
   return (
@@ -113,6 +142,13 @@ export default function TestimonialDetail() {
         {testimonial.mediaUrl && (
           <TestimonialMedia mediaUrl={testimonial.mediaUrl} />
         )}
+        <div className="flex flex-wrap gap-2">
+          {canApprove && testimonial.processingStatus === "completed" && (
+            <TestimonialApproval />
+          )}
+          {canDownload && <TestimonialDownload />}
+          {canDelete && <TestimonialDelete />}
+        </div>
         <TestimonialInfo />
         <TestimonialSummary />
         <TestimonialText />
