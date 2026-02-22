@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { useRouteContext, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -10,7 +9,7 @@ import TestimonialCardTitle from "@/components/testimonial-card/testimonial-card
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
-import { hasPermissionQuery, useInfiniteTestimonialQuery } from "@/lib/query";
+import { useInfiniteTestimonialQuery } from "@/lib/query";
 import TestimonialCardShell from "./testimonial-card-shell";
 
 export default function Testimonials() {
@@ -22,20 +21,11 @@ export default function Testimonials() {
     from: "/o/$orgSlug/_public/testimonials/",
   });
 
-  const { data: canView } = useQuery(
-    hasPermissionQuery(
-      {
-        testimonial: ["view"],
-      },
-      organization._id,
-    ),
-  );
-
   const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery(
     organization._id,
     {
       ...query,
-      statuses: canView ? query.statuses : ["published"],
+      statuses: ["published"],
     },
   );
 
