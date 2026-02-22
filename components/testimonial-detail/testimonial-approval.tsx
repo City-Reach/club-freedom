@@ -3,6 +3,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import {
   Select,
   SelectContent,
@@ -23,30 +24,36 @@ function getApprovalValue(approve?: boolean) {
   }
 }
 
-export default function TestimonialApproval() {
-  const { testimonial } = useTestimonialContext();
-  const [isPending, startTransition] = useTransition();
-
+export function useTestimonialApproval(testimonialId: Id<"testimonials">) {
   const updateTestimonialApproval = useMutation(
     api.testimonials.updateTestimonialApproval,
   );
 
-  const handleUpdateApprovalStatus = async (approved: boolean) => {
-    startTransition(async () => {
-      try {
-        await updateTestimonialApproval({
-          id: testimonial._id,
-          approved,
-        });
-        if (approved) {
-          toast.success("This testimonial has been published!");
-        } else {
-          toast.warning("This testimonial is no longer published!");
-        }
-      } catch (_error) {
-        toast.error("Failed to update testimonial publish status.");
+  return async (approved: boolean) => {
+    try {
+      await updateTestimonialApproval({
+        id: testimonialId,
+        approved,
+      });
+      if (approved) {
+        toast.success("This testimonial has been published!");
+      } else {
+        toast.warning("This testimonial is no longer published!");
       }
-    });
+    } catch (_error) {
+      toast.error("Failed to update testimonial publish status.");
+    }
+  };
+}
+
+export default function TestimonialApproval() {
+  const { testimonial } = useTestimonialContext();
+  const [isPending, startTransition] = useTransition();
+
+  const updateTestimonialApproval = useTestimonialApproval(testimonial._id);
+
+  const handleUpdateApprovalStatus = async (approved: boolean) => {
+    startTransition(async () => await updateTestimonialApproval(approved));
   };
 
   return (

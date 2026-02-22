@@ -1,8 +1,8 @@
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import type { ComponentProps, KeyboardEvent } from "react";
+import { Card } from "@/components/ui/card";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { cn } from "@/lib/utils";
-import { Card } from "../ui/card";
 
 export default function TestimonialCardShell({
   className,
@@ -16,7 +16,6 @@ export default function TestimonialCardShell({
     if (selection && selection.toString().length > 0) {
       return;
     }
-
     await navigate({
       to: "/o/$orgSlug/testimonials/$id",
       params: {
