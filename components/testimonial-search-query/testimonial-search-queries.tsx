@@ -17,7 +17,6 @@ import FormatInput from "./inputs/format";
 import SortOrderInput from "./inputs/sort-order";
 import StatusInput from "./inputs/status";
 import {
-  countActiveQueries,
   getSortOrderLabel,
   getTestimonialFormatLabel,
   getTestimonialStatusLabel,
@@ -26,11 +25,14 @@ import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
-  const { searchQuery, setSearchQuery, resetSortAndFilters } =
-    useTestimonialSearchQuery();
+  const {
+    searchQuery,
+    setSearchQuery,
+    resetSortAndFilters,
+    activeQueriesCount,
+  } = useTestimonialSearchQuery();
   const { organization } = useRouteContext({ from: "/o/$orgSlug" });
-  const queryCount = countActiveQueries(searchQuery);
-  const isActive = queryCount > 0;
+  const isActive = activeQueriesCount > 0;
 
   const { data: canView } = useQuery(
     hasPermissionQuery(
@@ -46,7 +48,9 @@ export default function TestimonialFilters() {
       <div className="flex items-center gap-4 py-2">
         <span className="font-semibold text-sm space-x-2">
           <span>Sort and Filters</span>
-          {isActive && <Badge className="px-1.5 py-px">{queryCount}</Badge>}
+          {isActive && (
+            <Badge className="px-1.5 py-px">{activeQueriesCount}</Badge>
+          )}
         </span>
         <span className="flex items-center ml-auto">
           {isActive && (

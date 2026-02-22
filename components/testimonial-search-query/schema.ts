@@ -87,15 +87,3 @@ export const testimonialSearchQuerySchema = z.object({
 export type TestimonialSearchQuery = z.infer<
   typeof testimonialSearchQuerySchema
 >;
-
-export const countActiveQueries = (query: TestimonialSearchQuery) => {
-  let count = 0;
-
-  if (query.author !== "") count++;
-  if (query.formats.length > 0) count++;
-  if (query.from !== null) count++;
-  if (query.to !== null) count++;
-  if (query.order !== null) count++;
-
-  return count;
-};
