@@ -23,18 +23,21 @@ export default function Testimonials() {
     from: "/o/$orgSlug/_public/testimonials/",
   });
 
-  const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery(
-    organization._id,
-    query,
-  );
-
-  const { data: canApprove } = useQuery(
+  const { data: canView } = useQuery(
     hasPermissionQuery(
       {
-        testimonial: ["approve"],
+        testimonial: ["view"],
       },
       organization._id,
     ),
+  );
+
+  const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery(
+    organization._id,
+    {
+      ...query,
+      statuses: canView ? query.statuses : ["published"],
+    },
   );
 
   const { ref, inView } = useInView({
@@ -59,7 +62,7 @@ export default function Testimonials() {
             <CardHeader>
               <div className="flex justify-between">
                 <TestimonialCardTitle />
-                {canApprove && <TestimonialCardApproval />}
+                {canView && <TestimonialCardApproval />}
               </div>
               <TestimonialCardInfo />
             </CardHeader>
