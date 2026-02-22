@@ -4,14 +4,10 @@ import { Card } from "@/components/ui/card";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { cn } from "@/lib/utils";
 
-type TestimonialCardShellProps = ComponentProps<typeof Card> & {
-  isPublic?: boolean;
-};
-
 export default function TestimonialCardShell({
   className,
   ...props
-}: TestimonialCardShellProps) {
+}: ComponentProps<typeof Card>) {
   const navigate = useNavigate({});
   const { testimonial } = useTestimonialContext();
   const { organization } = useRouteContext({ from: "/o/$orgSlug" });
