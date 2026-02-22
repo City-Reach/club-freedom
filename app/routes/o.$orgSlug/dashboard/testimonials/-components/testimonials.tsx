@@ -1,16 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { useRouteContext, useSearch } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import TestimonialCardInfo from "@/components/testimonial-card/testimonial-card-info";
-import TestimonialCardMedia from "@/components/testimonial-card/testimonial-card-media";
-import TestimonialCardSummary from "@/components/testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "@/components/testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "@/components/testimonial-card/testimonial-card-title";
-import { CardContent, CardHeader } from "@/components/ui/card";
+import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
+import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
-import { hasPermissionQuery, useInfiniteTestimonialQuery } from "@/lib/query";
+import { useInfiniteTestimonialQuery } from "@/lib/query";
+import { Route as TestimonialsRoute } from "../index";
+import TestimonialCardFormat from "./testimonial-card-format";
 import TestimonialCardShell from "./testimonial-card-shell";
 
 export default function Testimonials() {
@@ -18,25 +18,11 @@ export default function Testimonials() {
     from: "/o/$orgSlug",
   });
 
-  const query = useSearch({
-    from: "/o/$orgSlug/_public/testimonials/",
-  });
-
-  const { data: canView } = useQuery(
-    hasPermissionQuery(
-      {
-        testimonial: ["view"],
-      },
-      organization._id,
-    ),
-  );
+  const query = TestimonialsRoute.useSearch();
 
   const { results, loadMore, status, isLoading } = useInfiniteTestimonialQuery(
     organization._id,
-    {
-      ...query,
-      statuses: canView ? query.statuses : ["published"],
-    },
+    query,
   );
 
   const { ref, inView } = useInView({
@@ -51,7 +37,7 @@ export default function Testimonials() {
   }, [inView, loadMore, status, isLoading]);
 
   return (
-    <div className="grid gap-8">
+    <div className="grid gap-4">
       {results.map((testimonial) => (
         <TestimonialContext.Provider
           key={testimonial._id}
@@ -59,18 +45,14 @@ export default function Testimonials() {
         >
           <TestimonialCardShell>
             <CardHeader>
-              <TestimonialCardTitle />
+              <div className="flex justify-between">
+                <TestimonialCardTitle />
+                <TestimonialCardFormat />
+              </div>
               <TestimonialCardInfo />
             </CardHeader>
             <CardContent>
-              {testimonial.mediaUrl ? (
-                <div className="space-y-2">
-                  <TestimonialCardMedia mediaUrl={testimonial.mediaUrl} />
-                  <TestimonialCardSummary />
-                </div>
-              ) : (
-                <TestimonialCardText />
-              )}
+              <TestimonialCardText />
             </CardContent>
           </TestimonialCardShell>
         </TestimonialContext.Provider>

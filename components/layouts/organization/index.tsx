@@ -16,7 +16,7 @@ export default function OrganizationLayout({
   return (
     <SidebarProvider>
       <OrganizationSidebar collapsible="icon" />
-      <SidebarInset>
+      <SidebarInset className="flex flex-col h-screen relative">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3 sticky top-0 bg-background">
           <div className="flex items-center gap-2">
             <SidebarTrigger />
@@ -26,7 +26,7 @@ export default function OrganizationLayout({
             <UserDropDown />
           </div>
         </header>
-        <main className="@container/dashboard flex-1">{children}</main>
+        <main className="@container/dashboard flex-1 min-h-0">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
