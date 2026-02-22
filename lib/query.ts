@@ -26,7 +26,6 @@ export const TESTIMONIAL_PER_PAGE = 10;
 export function useInfiniteTestimonialQuery(
   orgId: Id<"organization">,
   searchQuery: TestimonialSearchQuery,
-  isPublic: boolean = false,
 ) {
   const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
   const before = searchQuery.to
@@ -54,7 +53,6 @@ export function useInfiniteTestimonialQuery(
           : searchQuery.order === "newest"
             ? "desc"
             : undefined,
-      isPublic: isPublic,
     },
     {
       initialNumItems: TESTIMONIAL_PER_PAGE,

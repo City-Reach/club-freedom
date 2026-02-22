@@ -27,8 +27,8 @@ export function TestimonialsPublic({ orgId }: Props) {
     {
       ...searchQuery,
       q: searchText,
+      statuses: ["published"],
     },
-    true,
   );
 
   const { ref, inView } = useInView({

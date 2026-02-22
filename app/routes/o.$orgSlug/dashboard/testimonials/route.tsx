@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/dashboard/testimonials")({
-  ssr: false,
   component: RouteComponent,
   loader: async ({ context }) => {
     const { data } = await authClient.organization.hasPermission({

@@ -30,11 +30,10 @@ export const getTestimonials = query({
       }),
     ),
     order: v.optional(v.union(v.literal("asc"), v.literal("desc"))),
-    isPublic: v.boolean(),
   },
   handler: async (
     ctx,
-    { paginationOpts, searchQuery = "", filters = {}, order, orgId, isPublic },
+    { paginationOpts, searchQuery = "", filters = {}, order, orgId },
   ) => {
     const trimmedQuery = searchQuery.trim();
     const testimonialQuery = ctx.db.query("testimonials");
