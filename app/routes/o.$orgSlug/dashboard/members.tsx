@@ -14,22 +14,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { hasPermissionQuery } from "@/lib/query";
+import { authClient } from "@/lib/auth/auth-client";
 
 export const Route = createFileRoute("/o/$orgSlug/dashboard/members")({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
-    const canManageMembers = await context.queryClient.ensureQueryData(
-      hasPermissionQuery(
-        {
-          member: ["update", "delete"],
-          invitation: ["create", "cancel"],
-        },
-        context.organization._id,
-      ),
-    );
+  loader: async ({ context }) => {
+    const { data } = await authClient.organization.hasPermission({
+      permissions: {
+        member: ["update", "delete"],
+        invitation: ["create", "cancel"],
+      },
+      organizationId: context.organization._id,
+    });
 
-    if (!canManageMembers) {
+    if (!data?.success) {
       throw new Error("User does not have permission to manage members");
     }
   },

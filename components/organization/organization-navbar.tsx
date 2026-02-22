@@ -1,15 +1,12 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "../ui/button";
 import OrganizationDropdown from "./organization-dropdown";
 import OrganizationLogo from "./organization-logo";
 
 export default function OrganizationNavbar() {
-  const { organization } = useRouteContext({
+  const { organization, isAuthenticated } = useRouteContext({
     from: "/o/$orgSlug",
   });
-
-  const { data: session } = authClient.useSession();
 
   return (
     <header className="border-b py-2 px-4 md:px-6 flex justify-between items-center sticky top-0 bg-background z-10">
@@ -26,8 +23,8 @@ export default function OrganizationNavbar() {
           </Button>
         </div>
       </div>
-      {session?.user ? (
-        <OrganizationDropdown user={session.user} />
+      {isAuthenticated ? (
+        <OrganizationDropdown />
       ) : (
         <Button asChild>
           <Link to="/sign-in">Sign in</Link>

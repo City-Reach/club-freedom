@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { EllipsisVertical, LogOut, UserIcon } from "lucide-react";
-import type { User } from "@/lib/auth/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -17,12 +17,10 @@ import {
   useSidebar,
 } from "./ui/sidebar";
 
-type Props = {
-  user: User;
-};
-
-export default function UserNavigation({ user }: Props) {
+export default function UserNavigation() {
   const { isMobile } = useSidebar();
+  const { data } = authClient.useSession();
+  const user = data?.user;
 
   return (
     <SidebarMenu>
