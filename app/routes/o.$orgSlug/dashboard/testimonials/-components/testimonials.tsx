@@ -1,11 +1,11 @@
 import { useRouteContext } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import TestimonialCardApproval from "@/components/testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "@/components/testimonial-card/testimonial-card-info";
 import TestimonialCardText from "@/components/testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "@/components/testimonial-card/testimonial-card-title";
-import TestimonialApproval from "@/components/testimonial-detail/testimonial-approval";
-import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { CardContent, CardHeader } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { useInfiniteTestimonialQuery } from "@/lib/query";
@@ -45,13 +45,14 @@ export default function Testimonials() {
         >
           <TestimonialCardShell>
             <CardHeader>
-              <div className="flex justify-between">
-                <TestimonialCardTitle />
+              <TestimonialCardTitle />
+              <TestimonialCardInfo />
+              <div className="flex gap-2 pt-1">
+                <TestimonialCardApproval />
                 <TestimonialCardFormat />
               </div>
-              <TestimonialCardInfo />
             </CardHeader>
-            <CardContent>
+            <CardContent className="gap-4">
               <TestimonialCardText />
             </CardContent>
           </TestimonialCardShell>

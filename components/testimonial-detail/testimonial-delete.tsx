@@ -42,8 +42,8 @@ export default function TestimonialDelete() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive">
-          <span className="sm:inline hidden">Delete</span>
           <Trash />
+          <span className="sr-only sm:not-sr-only">Delete</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

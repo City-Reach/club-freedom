@@ -27,7 +27,7 @@ export default function TestimonialCardText() {
       >
         {testimonial.testimonialText}
       </p>
-      {isOverflowing && !expanded && (
+      {isOverflowing && (
         <Button
           size="sm"
           className="px-0 cursor-pointer"
@@ -35,10 +35,20 @@ export default function TestimonialCardText() {
           role="button"
           onClick={(e) => {
             e.stopPropagation();
-            setExpanded(true);
+            if (expanded) {
+              setExpanded(false);
+              setTimeout(() => {
+                textRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                });
+              }, 0);
+            } else {
+              setExpanded(true);
+            }
           }}
         >
-          View more
+          {expanded ? "View less" : "View more"}
         </Button>
       )}
     </div>

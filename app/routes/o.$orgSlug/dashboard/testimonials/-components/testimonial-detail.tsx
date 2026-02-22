@@ -71,7 +71,7 @@ export default function TestimonialDetail({ testimonialId }: Props) {
 
   return (
     <TestimonialContext.Provider value={{ testimonial }}>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 pb-16">
         {testimonial.processingStatus === "error" && (
           <TestimonialProcessingError />
         )}
