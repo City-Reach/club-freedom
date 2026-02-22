@@ -2,10 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouteContext, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import TestimonialCardApproval from "@/components/testimonial-card/testimonial-card-approval";
 import TestimonialCardInfo from "@/components/testimonial-card/testimonial-card-info";
 import TestimonialCardMedia from "@/components/testimonial-card/testimonial-card-media";
-import TestimonialCardShell from "@/components/testimonial-card/testimonial-card-shell";
 import TestimonialCardSummary from "@/components/testimonial-card/testimonial-card-summary";
 import TestimonialCardText from "@/components/testimonial-card/testimonial-card-text";
 import TestimonialCardTitle from "@/components/testimonial-card/testimonial-card-title";
@@ -13,6 +11,7 @@ import { CardContent, CardHeader } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { TestimonialContext } from "@/contexts/testimonial-context";
 import { hasPermissionQuery, useInfiniteTestimonialQuery } from "@/lib/query";
+import TestimonialCardShell from "./testimonial-card-shell";
 
 export default function Testimonials() {
   const { organization } = useRouteContext({
@@ -62,7 +61,6 @@ export default function Testimonials() {
             <CardHeader>
               <div className="flex justify-between">
                 <TestimonialCardTitle />
-                {canView && <TestimonialCardApproval />}
               </div>
               <TestimonialCardInfo />
             </CardHeader>
