@@ -1,6 +1,7 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { hasPermissionQuery } from "@/lib/query";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -24,22 +25,33 @@ import TestimonialSearchDropdown from "./testimonial-search-query-dropdown";
 
 export default function TestimonialFilters() {
   const [open, setOpen] = useState(false);
-  const {
-    searchQuery,
-    setSearchQuery,
-    resetSortAndFilters,
-    activeQueriesCount,
-  } = useTestimonialSearchQuery();
+  const { searchQuery, setSearchQuery, resetSortAndFilters } =
+    useTestimonialSearchQuery();
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
+
+  const { data: canView } = useQuery(
+    hasPermissionQuery(
+      {
+        testimonial: ["view"],
+      },
+      organization._id,
+    ),
+  );
+
+  const activeQueriesCount = useMemo(() => {
+    let count = 0;
+
+    if (searchQuery.author !== "") count++;
+    if (searchQuery.formats.length > 0) count++;
+    if (searchQuery.from !== null) count++;
+    if (searchQuery.to !== null) count++;
+    if (searchQuery.order !== null) count++;
+    if (searchQuery.statuses.length > 0 && canView) count++;
+
+    return count;
+  }, [searchQuery, canView]);
 
   const isActive = activeQueriesCount > 0;
-
-  console.log(searchQuery.statuses);
-
-  const { data: canView } = useSuspenseQuery(
-    hasPermissionQuery({
-      testimonial: ["view"],
-    }),
-  );
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>

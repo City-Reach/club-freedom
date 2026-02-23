@@ -7,7 +7,7 @@ import type z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth-client";
-import { signInSchema } from "@/lib/schema";
+import { signInSchema } from "@/lib/schema/testimonials";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 
@@ -34,7 +34,17 @@ export function SignInForm() {
       {
         async onSuccess() {
           await queryClient.invalidateQueries();
-          navigate({ to: "/testimonials", search: {} });
+          const { data: allOrganizations } =
+            await authClient.organization.list();
+          const firstOrganization =
+            allOrganizations && allOrganizations.length > 0
+              ? allOrganizations[0]
+              : null;
+          navigate({
+            to: firstOrganization
+              ? `/o/${firstOrganization.slug}/dashboard`
+              : "/",
+          });
         },
         onError(ctx) {
           toast.error("Failed to sign in", {

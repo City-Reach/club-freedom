@@ -117,10 +117,15 @@ export const ffmpegProcessMedia = task({
 
     // Generate file names
     const tempDirectory = os.tmpdir();
-    const isMediaTemp = mediaKey.startsWith(TEMP_TESTIMONIAL_FOLDER);
-    const edittedMediaKey = isMediaTemp
-      ? mediaKey.slice(TEMP_TESTIMONIAL_FOLDER.length)
+    const isMediaTemp = mediaKey.includes(TEMP_TESTIMONIAL_FOLDER);
+    const substringToRemove = /temp\//g;
+    const slashRegex = /\//g;
+    const compressionOutputPathWithSlash = isMediaTemp
+      ? mediaKey.replace(substringToRemove, "")
       : mediaKey;
+    const edittedMediaKey = isMediaTemp
+      ? mediaKey.replace(substringToRemove, "").replace(slashRegex, "_")
+      : mediaKey.replace(slashRegex, "_");
     const inputPath = path.join(tempDirectory, `input_${edittedMediaKey}`);
     const compressionOutputPath = path.join(
       tempDirectory,
@@ -174,17 +179,18 @@ export const ffmpegProcessMedia = task({
           compressionOutputPath,
         );
 
-        const r2Key = path.basename(compressionOutputPath);
         const uploadParams = {
           Bucket: process.env.R2_BUCKET,
-          Key: r2Key,
+          Key: compressionOutputPathWithSlash,
           Body: compressedMedia,
           ContentType: isVideo ? "video/webm" : "audio/webm",
         };
         await s3Client.send(new PutObjectCommand(uploadParams));
-        await convexHttpClient.mutation(api.r2.syncMetadata, { key: r2Key });
-        convexMutationArgs.storageId = r2Key;
-        logger.info(`File uploaded to R2: ${r2Key}`);
+        await convexHttpClient.mutation(api.r2.syncMetadata, {
+          key: compressionOutputPathWithSlash,
+        });
+        convexMutationArgs.storageId = compressionOutputPathWithSlash;
+        logger.info(`File uploaded to R2: ${compressionOutputPathWithSlash}`);
       }
 
       let transcribePath = isMediaTemp ? compressionOutputPath : inputPath;

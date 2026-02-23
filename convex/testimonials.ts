@@ -11,6 +11,7 @@ export const getTestimonials = query({
   args: {
     paginationOpts: paginationOptsValidator,
     searchQuery: v.optional(v.string()),
+    orgId: v.string(),
     filters: v.optional(
       v.object({
         author: v.optional(v.string()),
@@ -32,7 +33,7 @@ export const getTestimonials = query({
   },
   handler: async (
     ctx,
-    { paginationOpts, searchQuery = "", filters = {}, order },
+    { paginationOpts, searchQuery = "", filters = {}, order, orgId },
   ) => {
     const trimmedQuery = searchQuery.trim();
     const testimonialQuery = ctx.db.query("testimonials");
@@ -41,12 +42,14 @@ export const getTestimonials = query({
       trimmedQuery !== "" && !order
         ? testimonialQuery.withSearchIndex("search_posts", (q) =>
             q
+
               .search("searchText", trimmedQuery)
-              .eq("processingStatus", "completed"),
+              .eq("processingStatus", "completed")
+              .eq("organizationId", orgId),
           )
         : testimonialQuery
-            .withIndex("by_processingStatus", (q) =>
-              q.eq("processingStatus", "completed"),
+            .withIndex("by_processingStatus_and_organizationId", (q) =>
+              q.eq("processingStatus", "completed").eq("organizationId", orgId),
             )
             .order(order || "desc");
 
@@ -129,14 +132,19 @@ export const postTestimonial = mutation({
     storageId: v.optional(v.string()),
     media_type: v.string(),
     text: v.string(),
+    organizationId: v.string(),
   },
-  handler: async (ctx, { name, email, storageId, media_type, text }) => {
+  handler: async (
+    ctx,
+    { name, email, storageId, media_type, text, organizationId },
+  ) => {
     const id = await ctx.db.insert("testimonials", {
       name,
       email,
       storageId,
       media_type,
       testimonialText: text,
+      organizationId,
       processingStatus: "ongoing",
     });
     return id;
@@ -179,7 +187,6 @@ export const deleteTestimonial = mutation({
     const canDelete = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: { testimonial: ["delete"] },
     });
-
     if (!canDelete) {
       throw new Error("Testimonial Delete Forbidden");
     }
@@ -198,6 +205,29 @@ export const getTestimonialById = query({
     const r2PublicUrl = process.env.R2_PUBLIC_URL;
 
     if (!testimonial || !r2PublicUrl) {
+      return null;
+    }
+
+    const mediaUrl = testimonial.storageId
+      ? `${r2PublicUrl}/${testimonial.storageId}`
+      : null;
+    return {
+      ...testimonial,
+      mediaUrl,
+    };
+  },
+});
+
+export const getTestimonialByIdAndOrgId = query({
+  args: { id: v.string(), orgId: v.string() },
+  handler: async (ctx, { id, orgId }) => {
+    const testimonialId = ctx.db.normalizeId("testimonials", id);
+
+    if (!testimonialId) return null;
+    const testimonial = await ctx.db.get(testimonialId);
+    const r2PublicUrl = process.env.R2_PUBLIC_URL;
+
+    if (!testimonial || !r2PublicUrl || testimonial.organizationId !== orgId) {
       return null;
     }
 

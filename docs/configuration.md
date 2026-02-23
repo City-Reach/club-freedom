@@ -55,19 +55,19 @@ mkcert -cert-file ./certificates/dev.pem -key-file ./certificates/dev-key.pem lo
 
 1. Follow the instructions in the **Cloudflare Account** section in the Convex R2 documentation. You need to create your own R2 bucket and set up the API key. Record these environment variables below and put them in your development Convex deployment
 
-  ```
-  R2_ACCESS_KEY_ID=
-  R2_BUCKET=
-  R2_ENDPOINT=
-  R2_SECRET_ACCESS_KEY=
-  R2_TOKEN=
-  ```
+```
+R2_ACCESS_KEY_ID=
+R2_BUCKET=
+R2_ENDPOINT=
+R2_SECRET_ACCESS_KEY=
+R2_TOKEN=
+```
 
 2. Locate your newly created R2 bucket in the Cloudflare dashboard, enable [Public Development URL](https://developers.cloudflare.com/r2/buckets/public-buckets/#public-development-url). Record this environment variable below and put it in your development Convex deployment
 
-  ```
-  R2_PUBLIC_URL=
-  ```
+```
+R2_PUBLIC_URL=
+```
 
 ## [Setting up Better Auth with Convex in your environment](#better-auth)
 
@@ -85,7 +85,7 @@ Whenever you want to make changes to the betterAuth schemas and components, run 
 
 ```
 cd convex/betterAuth
-npx @better-auth/cli generate -y --output generatedSchema.ts
+pnpx @better-auth/cli generate -y --output generatedSchema.ts
 ```
 
 Note: the betterAuth tables can be accessed under the betterAuth component in the convex dash board.

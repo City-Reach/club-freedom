@@ -7,6 +7,9 @@ main = "@tanstack/react-start/server-entry"
 [env.staging]
 name = "club-freedom-staging"
 
+[env.organizations]
+name = "club-freedom-organizations"
+
 [observability]
 enabled = false
 head_sampling_rate = 1

@@ -10,6 +10,10 @@ import { tables } from "./generatedSchema";
 // https://convex-better-auth.netlify.app/triggers
 const schema = defineSchema({
   ...tables,
+  member: tables.member.index("organizationId_userId_index", [
+    "organizationId",
+    "userId",
+  ]),
 });
 
 export default schema;

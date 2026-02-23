@@ -9,21 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestimonialsRouteRouteImport } from './routes/testimonials/route'
+import { Route as SignOutRouteImport } from './routes/sign-out'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TestimonialsIndexRouteImport } from './routes/testimonials/index'
-import { Route as TestimonialsIdRouteImport } from './routes/testimonials/$id'
-import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
-import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
-import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
-import { Route as TestimonialsTmpIdRouteImport } from './routes/testimonials/tmp.$id'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminOrganizationsRouteImport } from './routes/admin/organizations'
+import { Route as OOrgSlugRouteRouteImport } from './routes/o.$orgSlug/route'
+import { Route as AuthPublicRouteRouteImport } from './routes/_auth/_public/route'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
+import { Route as AuthAcceptInviteInviteIdRouteImport } from './routes/_auth/accept-invite.$inviteId'
+import { Route as AuthPublicSignInRouteImport } from './routes/_auth/_public/sign-in'
+import { Route as AuthPublicResetPasswordRouteImport } from './routes/_auth/_public/reset-password'
+import { Route as AuthPublicForgotPasswordRouteImport } from './routes/_auth/_public/forgot-password'
+import { Route as OOrgSlugDashboardRouteRouteImport } from './routes/o.$orgSlug/dashboard/route'
+import { Route as OOrgSlugPublicRouteRouteImport } from './routes/o.$orgSlug/_public/route'
+import { Route as OOrgSlugDashboardIndexRouteImport } from './routes/o.$orgSlug/dashboard/index'
+import { Route as OOrgSlugPublicIndexRouteImport } from './routes/o.$orgSlug/_public/index'
+import { Route as OOrgSlugDashboardSettingsRouteImport } from './routes/o.$orgSlug/dashboard/settings'
+import { Route as OOrgSlugDashboardMembersRouteImport } from './routes/o.$orgSlug/dashboard/members'
+import { Route as OOrgSlugDashboardTestimonialsRouteRouteImport } from './routes/o.$orgSlug/dashboard/testimonials/route'
+import { Route as OOrgSlugPublicTestimonialsRouteRouteImport } from './routes/o.$orgSlug/_public/testimonials/route'
+import { Route as OOrgSlugDashboardTestimonialsIndexRouteImport } from './routes/o.$orgSlug/dashboard/testimonials/index'
+import { Route as OOrgSlugPublicTestimonialsIndexRouteImport } from './routes/o.$orgSlug/_public/testimonials/index'
+import { Route as OOrgSlugDashboardTestimonialsIdRouteImport } from './routes/o.$orgSlug/dashboard/testimonials/$id'
+import { Route as OOrgSlugPublicTestimonialsIdRouteImport } from './routes/o.$orgSlug/_public/testimonials/$id'
+import { Route as OOrgSlugPublicTestimonialsTmpIdRouteImport } from './routes/o.$orgSlug/_public/testimonials/tmp.$id'
 
-const TestimonialsRouteRoute = TestimonialsRouteRouteImport.update({
-  id: '/testimonials',
-  path: '/testimonials',
+const SignOutRoute = SignOutRouteImport.update({
+  id: '/sign-out',
+  path: '/sign-out',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -40,133 +55,292 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TestimonialsIndexRoute = TestimonialsIndexRouteImport.update({
+const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => TestimonialsRouteRoute,
+  getParentRoute: () => AdminRouteRoute,
 } as any)
-const TestimonialsIdRoute = TestimonialsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => TestimonialsRouteRoute,
+const AdminOrganizationsRoute = AdminOrganizationsRouteImport.update({
+  id: '/organizations',
+  path: '/organizations',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
+const OOrgSlugRouteRoute = OOrgSlugRouteRouteImport.update({
+  id: '/o/$orgSlug',
+  path: '/o/$orgSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthPublicRouteRoute = AuthPublicRouteRouteImport.update({
+  id: '/_public',
   getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const TestimonialsTmpIdRoute = TestimonialsTmpIdRouteImport.update({
-  id: '/tmp/$id',
-  path: '/tmp/$id',
-  getParentRoute: () => TestimonialsRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthAcceptInviteInviteIdRoute =
+  AuthAcceptInviteInviteIdRouteImport.update({
+    id: '/accept-invite/$inviteId',
+    path: '/accept-invite/$inviteId',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
+const AuthPublicSignInRoute = AuthPublicSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthPublicRouteRoute,
+} as any)
+const AuthPublicResetPasswordRoute = AuthPublicResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthPublicRouteRoute,
+} as any)
+const AuthPublicForgotPasswordRoute =
+  AuthPublicForgotPasswordRouteImport.update({
+    id: '/forgot-password',
+    path: '/forgot-password',
+    getParentRoute: () => AuthPublicRouteRoute,
+  } as any)
+const OOrgSlugDashboardRouteRoute = OOrgSlugDashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => OOrgSlugRouteRoute,
+} as any)
+const OOrgSlugPublicRouteRoute = OOrgSlugPublicRouteRouteImport.update({
+  id: '/_public',
+  getParentRoute: () => OOrgSlugRouteRoute,
+} as any)
+const OOrgSlugDashboardIndexRoute = OOrgSlugDashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OOrgSlugDashboardRouteRoute,
+} as any)
+const OOrgSlugPublicIndexRoute = OOrgSlugPublicIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OOrgSlugPublicRouteRoute,
+} as any)
+const OOrgSlugDashboardSettingsRoute =
+  OOrgSlugDashboardSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => OOrgSlugDashboardRouteRoute,
+  } as any)
+const OOrgSlugDashboardMembersRoute =
+  OOrgSlugDashboardMembersRouteImport.update({
+    id: '/members',
+    path: '/members',
+    getParentRoute: () => OOrgSlugDashboardRouteRoute,
+  } as any)
+const OOrgSlugDashboardTestimonialsRouteRoute =
+  OOrgSlugDashboardTestimonialsRouteRouteImport.update({
+    id: '/testimonials',
+    path: '/testimonials',
+    getParentRoute: () => OOrgSlugDashboardRouteRoute,
+  } as any)
+const OOrgSlugPublicTestimonialsRouteRoute =
+  OOrgSlugPublicTestimonialsRouteRouteImport.update({
+    id: '/testimonials',
+    path: '/testimonials',
+    getParentRoute: () => OOrgSlugPublicRouteRoute,
+  } as any)
+const OOrgSlugDashboardTestimonialsIndexRoute =
+  OOrgSlugDashboardTestimonialsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => OOrgSlugDashboardTestimonialsRouteRoute,
+  } as any)
+const OOrgSlugPublicTestimonialsIndexRoute =
+  OOrgSlugPublicTestimonialsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => OOrgSlugPublicTestimonialsRouteRoute,
+  } as any)
+const OOrgSlugDashboardTestimonialsIdRoute =
+  OOrgSlugDashboardTestimonialsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => OOrgSlugDashboardTestimonialsRouteRoute,
+  } as any)
+const OOrgSlugPublicTestimonialsIdRoute =
+  OOrgSlugPublicTestimonialsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => OOrgSlugPublicTestimonialsRouteRoute,
+  } as any)
+const OOrgSlugPublicTestimonialsTmpIdRoute =
+  OOrgSlugPublicTestimonialsTmpIdRouteImport.update({
+    id: '/tmp/$id',
+    path: '/tmp/$id',
+    getParentRoute: () => OOrgSlugPublicTestimonialsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
-  '/testimonials': typeof TestimonialsRouteRouteWithChildren
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/sign-in': typeof AuthSignInRoute
-  '/testimonials/$id': typeof TestimonialsIdRoute
-  '/testimonials/': typeof TestimonialsIndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
+  '/o/$orgSlug': typeof OOrgSlugPublicRouteRouteWithChildren
+  '/admin/organizations': typeof AdminOrganizationsRoute
+  '/admin/': typeof AdminIndexRoute
+  '/o/$orgSlug/dashboard': typeof OOrgSlugDashboardRouteRouteWithChildren
+  '/forgot-password': typeof AuthPublicForgotPasswordRoute
+  '/reset-password': typeof AuthPublicResetPasswordRoute
+  '/sign-in': typeof AuthPublicSignInRoute
+  '/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/testimonials/tmp/$id': typeof TestimonialsTmpIdRoute
+  '/o/$orgSlug/testimonials': typeof OOrgSlugPublicTestimonialsRouteRouteWithChildren
+  '/o/$orgSlug/dashboard/testimonials': typeof OOrgSlugDashboardTestimonialsRouteRouteWithChildren
+  '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
+  '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
+  '/o/$orgSlug/': typeof OOrgSlugPublicIndexRoute
+  '/o/$orgSlug/dashboard/': typeof OOrgSlugDashboardIndexRoute
+  '/o/$orgSlug/testimonials/$id': typeof OOrgSlugPublicTestimonialsIdRoute
+  '/o/$orgSlug/dashboard/testimonials/$id': typeof OOrgSlugDashboardTestimonialsIdRoute
+  '/o/$orgSlug/testimonials/': typeof OOrgSlugPublicTestimonialsIndexRoute
+  '/o/$orgSlug/dashboard/testimonials/': typeof OOrgSlugDashboardTestimonialsIndexRoute
+  '/o/$orgSlug/testimonials/tmp/$id': typeof OOrgSlugPublicTestimonialsTmpIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/sign-in': typeof AuthSignInRoute
-  '/testimonials/$id': typeof TestimonialsIdRoute
-  '/testimonials': typeof TestimonialsIndexRoute
+  '/sign-out': typeof SignOutRoute
+  '/o/$orgSlug': typeof OOrgSlugPublicIndexRoute
+  '/admin/organizations': typeof AdminOrganizationsRoute
+  '/admin': typeof AdminIndexRoute
+  '/forgot-password': typeof AuthPublicForgotPasswordRoute
+  '/reset-password': typeof AuthPublicResetPasswordRoute
+  '/sign-in': typeof AuthPublicSignInRoute
+  '/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/testimonials/tmp/$id': typeof TestimonialsTmpIdRoute
+  '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
+  '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
+  '/o/$orgSlug/dashboard': typeof OOrgSlugDashboardIndexRoute
+  '/o/$orgSlug/testimonials/$id': typeof OOrgSlugPublicTestimonialsIdRoute
+  '/o/$orgSlug/dashboard/testimonials/$id': typeof OOrgSlugDashboardTestimonialsIdRoute
+  '/o/$orgSlug/testimonials': typeof OOrgSlugPublicTestimonialsIndexRoute
+  '/o/$orgSlug/dashboard/testimonials': typeof OOrgSlugDashboardTestimonialsIndexRoute
+  '/o/$orgSlug/testimonials/tmp/$id': typeof OOrgSlugPublicTestimonialsTmpIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
-  '/admin': typeof AdminRouteRoute
-  '/testimonials': typeof TestimonialsRouteRouteWithChildren
-  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/_auth/reset-password': typeof AuthResetPasswordRoute
-  '/_auth/sign-in': typeof AuthSignInRoute
-  '/testimonials/$id': typeof TestimonialsIdRoute
-  '/testimonials/': typeof TestimonialsIndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/sign-out': typeof SignOutRoute
+  '/_auth/_public': typeof AuthPublicRouteRouteWithChildren
+  '/o/$orgSlug': typeof OOrgSlugRouteRouteWithChildren
+  '/admin/organizations': typeof AdminOrganizationsRoute
+  '/admin/': typeof AdminIndexRoute
+  '/o/$orgSlug/_public': typeof OOrgSlugPublicRouteRouteWithChildren
+  '/o/$orgSlug/dashboard': typeof OOrgSlugDashboardRouteRouteWithChildren
+  '/_auth/_public/forgot-password': typeof AuthPublicForgotPasswordRoute
+  '/_auth/_public/reset-password': typeof AuthPublicResetPasswordRoute
+  '/_auth/_public/sign-in': typeof AuthPublicSignInRoute
+  '/_auth/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/testimonials/tmp/$id': typeof TestimonialsTmpIdRoute
+  '/o/$orgSlug/_public/testimonials': typeof OOrgSlugPublicTestimonialsRouteRouteWithChildren
+  '/o/$orgSlug/dashboard/testimonials': typeof OOrgSlugDashboardTestimonialsRouteRouteWithChildren
+  '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
+  '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
+  '/o/$orgSlug/_public/': typeof OOrgSlugPublicIndexRoute
+  '/o/$orgSlug/dashboard/': typeof OOrgSlugDashboardIndexRoute
+  '/o/$orgSlug/_public/testimonials/$id': typeof OOrgSlugPublicTestimonialsIdRoute
+  '/o/$orgSlug/dashboard/testimonials/$id': typeof OOrgSlugDashboardTestimonialsIdRoute
+  '/o/$orgSlug/_public/testimonials/': typeof OOrgSlugPublicTestimonialsIndexRoute
+  '/o/$orgSlug/dashboard/testimonials/': typeof OOrgSlugDashboardTestimonialsIndexRoute
+  '/o/$orgSlug/_public/testimonials/tmp/$id': typeof OOrgSlugPublicTestimonialsTmpIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
-    | '/testimonials'
+    | '/sign-out'
+    | '/o/$orgSlug'
+    | '/admin/organizations'
+    | '/admin/'
+    | '/o/$orgSlug/dashboard'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/testimonials/$id'
-    | '/testimonials/'
+    | '/accept-invite/$inviteId'
     | '/api/auth/$'
-    | '/testimonials/tmp/$id'
+    | '/o/$orgSlug/testimonials'
+    | '/o/$orgSlug/dashboard/testimonials'
+    | '/o/$orgSlug/dashboard/members'
+    | '/o/$orgSlug/dashboard/settings'
+    | '/o/$orgSlug/'
+    | '/o/$orgSlug/dashboard/'
+    | '/o/$orgSlug/testimonials/$id'
+    | '/o/$orgSlug/dashboard/testimonials/$id'
+    | '/o/$orgSlug/testimonials/'
+    | '/o/$orgSlug/dashboard/testimonials/'
+    | '/o/$orgSlug/testimonials/tmp/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/sign-out'
+    | '/o/$orgSlug'
+    | '/admin/organizations'
     | '/admin'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/testimonials/$id'
-    | '/testimonials'
+    | '/accept-invite/$inviteId'
     | '/api/auth/$'
-    | '/testimonials/tmp/$id'
+    | '/o/$orgSlug/dashboard/members'
+    | '/o/$orgSlug/dashboard/settings'
+    | '/o/$orgSlug/dashboard'
+    | '/o/$orgSlug/testimonials/$id'
+    | '/o/$orgSlug/dashboard/testimonials/$id'
+    | '/o/$orgSlug/testimonials'
+    | '/o/$orgSlug/dashboard/testimonials'
+    | '/o/$orgSlug/testimonials/tmp/$id'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/admin'
-    | '/testimonials'
-    | '/_auth/forgot-password'
-    | '/_auth/reset-password'
-    | '/_auth/sign-in'
-    | '/testimonials/$id'
-    | '/testimonials/'
+    | '/sign-out'
+    | '/_auth/_public'
+    | '/o/$orgSlug'
+    | '/admin/organizations'
+    | '/admin/'
+    | '/o/$orgSlug/_public'
+    | '/o/$orgSlug/dashboard'
+    | '/_auth/_public/forgot-password'
+    | '/_auth/_public/reset-password'
+    | '/_auth/_public/sign-in'
+    | '/_auth/accept-invite/$inviteId'
     | '/api/auth/$'
-    | '/testimonials/tmp/$id'
+    | '/o/$orgSlug/_public/testimonials'
+    | '/o/$orgSlug/dashboard/testimonials'
+    | '/o/$orgSlug/dashboard/members'
+    | '/o/$orgSlug/dashboard/settings'
+    | '/o/$orgSlug/_public/'
+    | '/o/$orgSlug/dashboard/'
+    | '/o/$orgSlug/_public/testimonials/$id'
+    | '/o/$orgSlug/dashboard/testimonials/$id'
+    | '/o/$orgSlug/_public/testimonials/'
+    | '/o/$orgSlug/dashboard/testimonials/'
+    | '/o/$orgSlug/_public/testimonials/tmp/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  AdminRouteRoute: typeof AdminRouteRoute
-  TestimonialsRouteRoute: typeof TestimonialsRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  SignOutRoute: typeof SignOutRoute
+  OOrgSlugRouteRoute: typeof OOrgSlugRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/testimonials': {
-      id: '/testimonials'
-      path: '/testimonials'
-      fullPath: '/testimonials'
-      preLoaderRoute: typeof TestimonialsRouteRouteImport
+    '/sign-out': {
+      id: '/sign-out'
+      path: '/sign-out'
+      fullPath: '/sign-out'
+      preLoaderRoute: typeof SignOutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -190,47 +364,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/testimonials/': {
-      id: '/testimonials/'
+    '/admin/': {
+      id: '/admin/'
       path: '/'
-      fullPath: '/testimonials/'
-      preLoaderRoute: typeof TestimonialsIndexRouteImport
-      parentRoute: typeof TestimonialsRouteRoute
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
-    '/testimonials/$id': {
-      id: '/testimonials/$id'
-      path: '/$id'
-      fullPath: '/testimonials/$id'
-      preLoaderRoute: typeof TestimonialsIdRouteImport
-      parentRoute: typeof TestimonialsRouteRoute
+    '/admin/organizations': {
+      id: '/admin/organizations'
+      path: '/organizations'
+      fullPath: '/admin/organizations'
+      preLoaderRoute: typeof AdminOrganizationsRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
-    '/_auth/sign-in': {
-      id: '/_auth/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
+    '/o/$orgSlug': {
+      id: '/o/$orgSlug'
+      path: '/o/$orgSlug'
+      fullPath: '/o/$orgSlug'
+      preLoaderRoute: typeof OOrgSlugRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/_public': {
+      id: '/_auth/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthPublicRouteRouteImport
       parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/reset-password': {
-      id: '/_auth/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/forgot-password': {
-      id: '/_auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/testimonials/tmp/$id': {
-      id: '/testimonials/tmp/$id'
-      path: '/tmp/$id'
-      fullPath: '/testimonials/tmp/$id'
-      preLoaderRoute: typeof TestimonialsTmpIdRouteImport
-      parentRoute: typeof TestimonialsRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -239,45 +399,262 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/accept-invite/$inviteId': {
+      id: '/_auth/accept-invite/$inviteId'
+      path: '/accept-invite/$inviteId'
+      fullPath: '/accept-invite/$inviteId'
+      preLoaderRoute: typeof AuthAcceptInviteInviteIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/_public/sign-in': {
+      id: '/_auth/_public/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof AuthPublicSignInRouteImport
+      parentRoute: typeof AuthPublicRouteRoute
+    }
+    '/_auth/_public/reset-password': {
+      id: '/_auth/_public/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthPublicResetPasswordRouteImport
+      parentRoute: typeof AuthPublicRouteRoute
+    }
+    '/_auth/_public/forgot-password': {
+      id: '/_auth/_public/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthPublicForgotPasswordRouteImport
+      parentRoute: typeof AuthPublicRouteRoute
+    }
+    '/o/$orgSlug/dashboard': {
+      id: '/o/$orgSlug/dashboard'
+      path: '/dashboard'
+      fullPath: '/o/$orgSlug/dashboard'
+      preLoaderRoute: typeof OOrgSlugDashboardRouteRouteImport
+      parentRoute: typeof OOrgSlugRouteRoute
+    }
+    '/o/$orgSlug/_public': {
+      id: '/o/$orgSlug/_public'
+      path: ''
+      fullPath: '/o/$orgSlug'
+      preLoaderRoute: typeof OOrgSlugPublicRouteRouteImport
+      parentRoute: typeof OOrgSlugRouteRoute
+    }
+    '/o/$orgSlug/dashboard/': {
+      id: '/o/$orgSlug/dashboard/'
+      path: '/'
+      fullPath: '/o/$orgSlug/dashboard/'
+      preLoaderRoute: typeof OOrgSlugDashboardIndexRouteImport
+      parentRoute: typeof OOrgSlugDashboardRouteRoute
+    }
+    '/o/$orgSlug/_public/': {
+      id: '/o/$orgSlug/_public/'
+      path: '/'
+      fullPath: '/o/$orgSlug/'
+      preLoaderRoute: typeof OOrgSlugPublicIndexRouteImport
+      parentRoute: typeof OOrgSlugPublicRouteRoute
+    }
+    '/o/$orgSlug/dashboard/settings': {
+      id: '/o/$orgSlug/dashboard/settings'
+      path: '/settings'
+      fullPath: '/o/$orgSlug/dashboard/settings'
+      preLoaderRoute: typeof OOrgSlugDashboardSettingsRouteImport
+      parentRoute: typeof OOrgSlugDashboardRouteRoute
+    }
+    '/o/$orgSlug/dashboard/members': {
+      id: '/o/$orgSlug/dashboard/members'
+      path: '/members'
+      fullPath: '/o/$orgSlug/dashboard/members'
+      preLoaderRoute: typeof OOrgSlugDashboardMembersRouteImport
+      parentRoute: typeof OOrgSlugDashboardRouteRoute
+    }
+    '/o/$orgSlug/dashboard/testimonials': {
+      id: '/o/$orgSlug/dashboard/testimonials'
+      path: '/testimonials'
+      fullPath: '/o/$orgSlug/dashboard/testimonials'
+      preLoaderRoute: typeof OOrgSlugDashboardTestimonialsRouteRouteImport
+      parentRoute: typeof OOrgSlugDashboardRouteRoute
+    }
+    '/o/$orgSlug/_public/testimonials': {
+      id: '/o/$orgSlug/_public/testimonials'
+      path: '/testimonials'
+      fullPath: '/o/$orgSlug/testimonials'
+      preLoaderRoute: typeof OOrgSlugPublicTestimonialsRouteRouteImport
+      parentRoute: typeof OOrgSlugPublicRouteRoute
+    }
+    '/o/$orgSlug/dashboard/testimonials/': {
+      id: '/o/$orgSlug/dashboard/testimonials/'
+      path: '/'
+      fullPath: '/o/$orgSlug/dashboard/testimonials/'
+      preLoaderRoute: typeof OOrgSlugDashboardTestimonialsIndexRouteImport
+      parentRoute: typeof OOrgSlugDashboardTestimonialsRouteRoute
+    }
+    '/o/$orgSlug/_public/testimonials/': {
+      id: '/o/$orgSlug/_public/testimonials/'
+      path: '/'
+      fullPath: '/o/$orgSlug/testimonials/'
+      preLoaderRoute: typeof OOrgSlugPublicTestimonialsIndexRouteImport
+      parentRoute: typeof OOrgSlugPublicTestimonialsRouteRoute
+    }
+    '/o/$orgSlug/dashboard/testimonials/$id': {
+      id: '/o/$orgSlug/dashboard/testimonials/$id'
+      path: '/$id'
+      fullPath: '/o/$orgSlug/dashboard/testimonials/$id'
+      preLoaderRoute: typeof OOrgSlugDashboardTestimonialsIdRouteImport
+      parentRoute: typeof OOrgSlugDashboardTestimonialsRouteRoute
+    }
+    '/o/$orgSlug/_public/testimonials/$id': {
+      id: '/o/$orgSlug/_public/testimonials/$id'
+      path: '/$id'
+      fullPath: '/o/$orgSlug/testimonials/$id'
+      preLoaderRoute: typeof OOrgSlugPublicTestimonialsIdRouteImport
+      parentRoute: typeof OOrgSlugPublicTestimonialsRouteRoute
+    }
+    '/o/$orgSlug/_public/testimonials/tmp/$id': {
+      id: '/o/$orgSlug/_public/testimonials/tmp/$id'
+      path: '/tmp/$id'
+      fullPath: '/o/$orgSlug/testimonials/tmp/$id'
+      preLoaderRoute: typeof OOrgSlugPublicTestimonialsTmpIdRouteImport
+      parentRoute: typeof OOrgSlugPublicTestimonialsRouteRoute
+    }
   }
 }
 
+interface AuthPublicRouteRouteChildren {
+  AuthPublicForgotPasswordRoute: typeof AuthPublicForgotPasswordRoute
+  AuthPublicResetPasswordRoute: typeof AuthPublicResetPasswordRoute
+  AuthPublicSignInRoute: typeof AuthPublicSignInRoute
+}
+
+const AuthPublicRouteRouteChildren: AuthPublicRouteRouteChildren = {
+  AuthPublicForgotPasswordRoute: AuthPublicForgotPasswordRoute,
+  AuthPublicResetPasswordRoute: AuthPublicResetPasswordRoute,
+  AuthPublicSignInRoute: AuthPublicSignInRoute,
+}
+
+const AuthPublicRouteRouteWithChildren = AuthPublicRouteRoute._addFileChildren(
+  AuthPublicRouteRouteChildren,
+)
+
 interface AuthRouteRouteChildren {
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  AuthSignInRoute: typeof AuthSignInRoute
+  AuthPublicRouteRoute: typeof AuthPublicRouteRouteWithChildren
+  AuthAcceptInviteInviteIdRoute: typeof AuthAcceptInviteInviteIdRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
-  AuthResetPasswordRoute: AuthResetPasswordRoute,
-  AuthSignInRoute: AuthSignInRoute,
+  AuthPublicRouteRoute: AuthPublicRouteRouteWithChildren,
+  AuthAcceptInviteInviteIdRoute: AuthAcceptInviteInviteIdRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface TestimonialsRouteRouteChildren {
-  TestimonialsIdRoute: typeof TestimonialsIdRoute
-  TestimonialsIndexRoute: typeof TestimonialsIndexRoute
-  TestimonialsTmpIdRoute: typeof TestimonialsTmpIdRoute
+interface AdminRouteRouteChildren {
+  AdminOrganizationsRoute: typeof AdminOrganizationsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
-const TestimonialsRouteRouteChildren: TestimonialsRouteRouteChildren = {
-  TestimonialsIdRoute: TestimonialsIdRoute,
-  TestimonialsIndexRoute: TestimonialsIndexRoute,
-  TestimonialsTmpIdRoute: TestimonialsTmpIdRoute,
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminOrganizationsRoute: AdminOrganizationsRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
-const TestimonialsRouteRouteWithChildren =
-  TestimonialsRouteRoute._addFileChildren(TestimonialsRouteRouteChildren)
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
+interface OOrgSlugPublicTestimonialsRouteRouteChildren {
+  OOrgSlugPublicTestimonialsIdRoute: typeof OOrgSlugPublicTestimonialsIdRoute
+  OOrgSlugPublicTestimonialsIndexRoute: typeof OOrgSlugPublicTestimonialsIndexRoute
+  OOrgSlugPublicTestimonialsTmpIdRoute: typeof OOrgSlugPublicTestimonialsTmpIdRoute
+}
+
+const OOrgSlugPublicTestimonialsRouteRouteChildren: OOrgSlugPublicTestimonialsRouteRouteChildren =
+  {
+    OOrgSlugPublicTestimonialsIdRoute: OOrgSlugPublicTestimonialsIdRoute,
+    OOrgSlugPublicTestimonialsIndexRoute: OOrgSlugPublicTestimonialsIndexRoute,
+    OOrgSlugPublicTestimonialsTmpIdRoute: OOrgSlugPublicTestimonialsTmpIdRoute,
+  }
+
+const OOrgSlugPublicTestimonialsRouteRouteWithChildren =
+  OOrgSlugPublicTestimonialsRouteRoute._addFileChildren(
+    OOrgSlugPublicTestimonialsRouteRouteChildren,
+  )
+
+interface OOrgSlugPublicRouteRouteChildren {
+  OOrgSlugPublicTestimonialsRouteRoute: typeof OOrgSlugPublicTestimonialsRouteRouteWithChildren
+  OOrgSlugPublicIndexRoute: typeof OOrgSlugPublicIndexRoute
+}
+
+const OOrgSlugPublicRouteRouteChildren: OOrgSlugPublicRouteRouteChildren = {
+  OOrgSlugPublicTestimonialsRouteRoute:
+    OOrgSlugPublicTestimonialsRouteRouteWithChildren,
+  OOrgSlugPublicIndexRoute: OOrgSlugPublicIndexRoute,
+}
+
+const OOrgSlugPublicRouteRouteWithChildren =
+  OOrgSlugPublicRouteRoute._addFileChildren(OOrgSlugPublicRouteRouteChildren)
+
+interface OOrgSlugDashboardTestimonialsRouteRouteChildren {
+  OOrgSlugDashboardTestimonialsIdRoute: typeof OOrgSlugDashboardTestimonialsIdRoute
+  OOrgSlugDashboardTestimonialsIndexRoute: typeof OOrgSlugDashboardTestimonialsIndexRoute
+}
+
+const OOrgSlugDashboardTestimonialsRouteRouteChildren: OOrgSlugDashboardTestimonialsRouteRouteChildren =
+  {
+    OOrgSlugDashboardTestimonialsIdRoute: OOrgSlugDashboardTestimonialsIdRoute,
+    OOrgSlugDashboardTestimonialsIndexRoute:
+      OOrgSlugDashboardTestimonialsIndexRoute,
+  }
+
+const OOrgSlugDashboardTestimonialsRouteRouteWithChildren =
+  OOrgSlugDashboardTestimonialsRouteRoute._addFileChildren(
+    OOrgSlugDashboardTestimonialsRouteRouteChildren,
+  )
+
+interface OOrgSlugDashboardRouteRouteChildren {
+  OOrgSlugDashboardTestimonialsRouteRoute: typeof OOrgSlugDashboardTestimonialsRouteRouteWithChildren
+  OOrgSlugDashboardMembersRoute: typeof OOrgSlugDashboardMembersRoute
+  OOrgSlugDashboardSettingsRoute: typeof OOrgSlugDashboardSettingsRoute
+  OOrgSlugDashboardIndexRoute: typeof OOrgSlugDashboardIndexRoute
+}
+
+const OOrgSlugDashboardRouteRouteChildren: OOrgSlugDashboardRouteRouteChildren =
+  {
+    OOrgSlugDashboardTestimonialsRouteRoute:
+      OOrgSlugDashboardTestimonialsRouteRouteWithChildren,
+    OOrgSlugDashboardMembersRoute: OOrgSlugDashboardMembersRoute,
+    OOrgSlugDashboardSettingsRoute: OOrgSlugDashboardSettingsRoute,
+    OOrgSlugDashboardIndexRoute: OOrgSlugDashboardIndexRoute,
+  }
+
+const OOrgSlugDashboardRouteRouteWithChildren =
+  OOrgSlugDashboardRouteRoute._addFileChildren(
+    OOrgSlugDashboardRouteRouteChildren,
+  )
+
+interface OOrgSlugRouteRouteChildren {
+  OOrgSlugPublicRouteRoute: typeof OOrgSlugPublicRouteRouteWithChildren
+  OOrgSlugDashboardRouteRoute: typeof OOrgSlugDashboardRouteRouteWithChildren
+}
+
+const OOrgSlugRouteRouteChildren: OOrgSlugRouteRouteChildren = {
+  OOrgSlugPublicRouteRoute: OOrgSlugPublicRouteRouteWithChildren,
+  OOrgSlugDashboardRouteRoute: OOrgSlugDashboardRouteRouteWithChildren,
+}
+
+const OOrgSlugRouteRouteWithChildren = OOrgSlugRouteRoute._addFileChildren(
+  OOrgSlugRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  AdminRouteRoute: AdminRouteRoute,
-  TestimonialsRouteRoute: TestimonialsRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  SignOutRoute: SignOutRoute,
+  OOrgSlugRouteRoute: OOrgSlugRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

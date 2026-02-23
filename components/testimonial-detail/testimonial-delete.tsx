@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
 import { Trash } from "lucide-react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
 
 export default function TestimonialDelete() {
+  const { organization } = useRouteContext({ from: "/o/$orgSlug" });
   const { testimonial } = useTestimonialContext();
   const navigate = useNavigate();
   const deleteTestimonial = useMutation(api.testimonials.deleteTestimonial);
@@ -25,7 +26,10 @@ export default function TestimonialDelete() {
     try {
       await deleteTestimonial({ id: testimonial._id });
       toast.success("Testimonial deleted successfully");
-      await navigate({ to: "/testimonials" });
+      await navigate({
+        to: "/o/$orgSlug/testimonials",
+        params: { orgSlug: organization.slug },
+      });
     } catch (_err) {
       if (_err instanceof Error) {
         toast.error(`Failed to delete testimonial: ${_err.message}`);
@@ -38,8 +42,8 @@ export default function TestimonialDelete() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive">
-          <span className="sm:inline hidden">Delete</span>
           <Trash />
+          <span className="sr-only sm:not-sr-only">Delete</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

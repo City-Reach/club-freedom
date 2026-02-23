@@ -1,6 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { UserRoundIcon } from "lucide-react";
+import { convexQuery } from "@convex-dev/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { LogOut, Shield, UserRoundIcon } from "lucide-react";
+import { Suspense } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -10,23 +12,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
-import { authClient } from "@/lib/auth/auth-client";
+import { api } from "@/convex/_generated/api";
 
-type Props = {
-  user: Doc<"user">;
-};
+export default function UserDropdown() {
+  return (
+    <Suspense
+      fallback={
+        <Avatar aria-disabled>
+          <AvatarFallback>
+            <UserRoundIcon size={16} className="text-muted-foreground" />
+          </AvatarFallback>
+        </Avatar>
+      }
+    >
+      <SuspensedUserDropDown />
+    </Suspense>
+  );
+}
 
-export default function UserDropDown({ user }: Props) {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const handleSignOut = async () => {
-    await authClient.signOut();
-    await navigate({ to: "/sign-in" });
-    await queryClient.invalidateQueries();
-    queryClient.removeQueries();
-  };
+function SuspensedUserDropDown() {
+  const { data: user } = useSuspenseQuery(convexQuery(api.auth.getCurrentUser));
 
   return (
     <DropdownMenu>
@@ -38,14 +43,25 @@ export default function UserDropDown({ user }: Props) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
+        <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuLabel>
-          {user.name} ({user.role})
+          <span className="text-sm text-muted-foreground">{user?.email}</span>
         </DropdownMenuLabel>
-        <DropdownMenuLabel>
-          <span className="text-sm text-muted-foreground">{user.email}</span>
-        </DropdownMenuLabel>
+        {user?.role === "admin" && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin">
+              <Shield />
+              Admin
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/sign-out">
+            <LogOut />
+            Sign out
+          </Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

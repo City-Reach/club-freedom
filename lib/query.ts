@@ -1,26 +1,30 @@
-import { queryOptions } from "@tanstack/react-query";
+import { convexQuery } from "@convex-dev/react-query";
 import { usePaginatedQuery } from "convex/react";
 import type { TestimonialSearchQuery } from "@/components/testimonial-search-query/schema";
 import { api } from "@/convex/_generated/api";
-import { authClient } from "@/lib/auth/auth-client";
-import type { PermissionCheck } from "@/lib/auth/permissions";
+import type { Id } from "@/convex/betterAuth/_generated/dataModel";
+import type { OrganizationPermissionCheck } from "./auth/permissions/organization";
 
-export function hasPermissionQuery(permissions: PermissionCheck) {
-  return queryOptions({
-    queryKey: ["hasPermission", permissions],
-    queryFn: async () => {
-      const { data } = await authClient.admin.hasPermission({
-        permissions,
-      });
-      return data?.success || false;
-    },
-    staleTime: Infinity,
+export function hasPermissionQuery(
+  permissions: OrganizationPermissionCheck,
+  organizationId: string,
+) {
+  return convexQuery(api.auth.checkUserPermissions, {
+    permissions,
+    organizationId,
+  });
+}
+
+export function getMemberRoleQuery(organizationId: string) {
+  return convexQuery(api.auth.getMemeberRole, {
+    organizationId,
   });
 }
 
 export const TESTIMONIAL_PER_PAGE = 10;
 
 export function useInfiniteTestimonialQuery(
+  orgId: Id<"organization">,
   searchQuery: TestimonialSearchQuery,
 ) {
   const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
@@ -34,7 +38,8 @@ export function useInfiniteTestimonialQuery(
   return usePaginatedQuery(
     api.testimonials.getTestimonials,
     {
-      searchQuery: searchQuery.q || "",
+      searchQuery: searchQuery.q,
+      orgId: orgId,
       filters: {
         author: searchQuery.author || "",
         types: searchQuery.formats || [],

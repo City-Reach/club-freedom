@@ -1,36 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Footnote from "@/components/footnote";
 import Navbar from "@/components/navbar";
-import TestimonialForm from "@/components/testimonial-form";
-import { getCurrentUser } from "../functions/auth";
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: async () => {
-    const user = await getCurrentUser();
-    return { user };
-  },
 });
 
 function Home() {
-  const { user } = Route.useLoaderData();
   return (
-    <div className="flex flex-col min-h-dvh">
-      <Navbar user={user} />
-      <main className="flex flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto flex-1">
+    <>
+      <Navbar />
+      <main className="flex min-h-screen flex-col items-center py-24 px-8 gap-y-12 max-w-3xl mx-auto">
         <div className="flex flex-col items-center justify-center text-center">
           <h1 className="text-4xl font-bold">
-            Welcome to <span className="text-secondary">Club Freedom</span>{" "}
-            Testimonial
+            Welcome to Testimonials Submission Product!
           </h1>
-          <p className="mt-4 text-lg">Please share your testimonial with us!</p>
-          <p className="mt-4 italic text-lg text-gray-600">
-            "Let your light shine before others" – Matthew 5:16
-          </p>
         </div>
-        <TestimonialForm />
       </main>
       <Footnote />
-    </div>
+    </>
   );
 }
