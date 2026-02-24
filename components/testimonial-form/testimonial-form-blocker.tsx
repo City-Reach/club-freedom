@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Testimonial } from "@/lib/schema";
+import type { Testimonial } from "@/lib/schema/testimonials";
 
 export default function TestimonialFormBlocker() {
   const form = useFormContext<Testimonial>();

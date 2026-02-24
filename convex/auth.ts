@@ -2,19 +2,19 @@ import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
-import { admin } from "better-auth/plugins";
+import { admin, organization } from "better-auth/plugins";
 import { v } from "convex/values";
+import { adminRBAC } from "@/lib/auth/permissions/admin";
 import {
-  adminOptions,
-  type PermissionCheck,
-  type Role,
-} from "@/lib/auth/permissions";
+  type OrganizationPermissionCheck,
+  organizationRBAC,
+} from "@/lib/auth/permissions/organization";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authConfig from "./auth.config";
 import authSchema from "./betterAuth/schema";
-import { sendResetPassword } from "./email";
+import { sendInvite, sendResetPassword } from "./email";
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -29,10 +29,16 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
 );
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
-  const siteUrl = process.env.SITE_URL!;
+  // For static schema generation (when ctx is empty {}), use placeholder values
+  // For runtime execution, use actual environment variables
+  const siteUrl = process.env.SITE_URL || "http://localhost:3000";
+  const secret =
+    process.env.BETTER_AUTH_SECRET ||
+    "placeholder-secret-for-schema-generation";
 
   return {
     baseURL: siteUrl,
+    secret: secret,
     database: authComponent.adapter(ctx),
     // Configure simple, non-verified email/password to get started
     emailAndPassword: {
@@ -51,7 +57,56 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         authConfig,
         jwksRotateOnTokenGenerationError: true,
       }),
-      admin(adminOptions),
+      admin(adminRBAC),
+      organization({
+        ...organizationRBAC,
+        schema: {
+          organization: {
+            additionalFields: {
+              icon: {
+                type: "string",
+                required: false,
+              },
+            },
+          },
+        },
+        sendInvitationEmail: async ({ id, organization, email }) => {
+          await sendInvite(requireActionCtx(ctx), {
+            to: email,
+            subject: `You're invited to ${organization.name}`,
+            url: `${siteUrl}/accept-invite/${id}`,
+            organization: organization.name,
+          });
+        },
+        organizationHooks: {
+          afterAcceptInvitation: async (data) => {
+            try {
+              const actionCtx = requireActionCtx(ctx);
+              await actionCtx.runMutation(
+                components.betterAuth.auth.deleteInvitation,
+                {
+                  invitationId: data.invitation.id,
+                },
+              );
+            } catch (error) {
+              console.error("Failed to delete invitation after accept", error);
+            }
+          },
+          afterCancelInvitation: async (data) => {
+            try {
+              const actionCtx = requireActionCtx(ctx);
+              await actionCtx.runMutation(
+                components.betterAuth.auth.deleteInvitation,
+                {
+                  invitationId: data.invitation.id,
+                },
+              );
+            } catch (error) {
+              console.error("Failed to delete invitation after accept", error);
+            }
+          },
+        },
+      }),
     ],
     trustedOrigins: [siteUrl],
   } satisfies BetterAuthOptions;
@@ -97,23 +152,54 @@ export const checkUserPermissions = query({
   handler: async (
     ctx,
     args: {
-      role?: Role;
-      permissions?: PermissionCheck;
+      permissions?: OrganizationPermissionCheck;
+      organizationId?: string;
     },
   ) => {
     const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
     try {
-      const { success } = await auth.api.userHasPermission({
+      const { success } = await auth.api.hasPermission({
         headers,
         body: {
-          role: args.role,
           permissions: args.permissions || {},
+          organizationId: args.organizationId,
         },
       });
       return success;
     } catch (err) {
-      console.error(err);
-      return false;
+      console.error(err instanceof Error ? err.message : err);
     }
+
+    return false;
+  },
+});
+
+export const getMemeberRole = query({
+  args: v.object({
+    organizationId: v.string(),
+  }),
+  handler: async (ctx, { organizationId }) => {
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
+    try {
+      const { role } = await auth.api.getActiveMemberRole({
+        headers,
+        query: {
+          organizationId,
+        },
+      });
+      return role;
+    } catch (err) {
+      console.error(err instanceof Error ? err.message : err);
+      return null;
+    }
+  },
+});
+
+export const checkEmailExists = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return ctx.runQuery(components.betterAuth.auth.checkEmailExists, {
+      email: args.email,
+    });
   },
 });

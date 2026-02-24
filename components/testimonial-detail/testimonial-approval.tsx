@@ -3,6 +3,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { useTestimonialContext } from "@/contexts/testimonial-context";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import {
   Select,
   SelectContent,
@@ -23,46 +24,55 @@ function getApprovalValue(approve?: boolean) {
   }
 }
 
-export default function TestimonialApproval() {
-  const { testimonial } = useTestimonialContext();
-
+export function useTestimonialApproval(testimonialId: Id<"testimonials">) {
   const updateTestimonialApproval = useMutation(
     api.testimonials.updateTestimonialApproval,
   );
 
-  const handleUpdateApprovalStatus = async (approved?: boolean) => {
+  return async (approved: boolean) => {
     try {
-      await updateTestimonialApproval({ id: testimonial._id, approved });
-      if (approved === true) {
+      await updateTestimonialApproval({
+        id: testimonialId,
+        approved,
+      });
+      if (approved) {
         toast.success("This testimonial has been published!");
-      } else if (approved === false) {
-        toast.warning("This testimonial is no longer published!");
       } else {
-        toast.info("This testimonial is now pending!");
+        toast.warning("This testimonial is no longer published!");
       }
-    } catch (_err) {
-      toast.error("Failed to update testimonial publishing status.");
+    } catch (_error) {
+      toast.error("Failed to update testimonial publish status.");
     }
   };
+}
 
+export default function TestimonialApproval() {
+  const { testimonial } = useTestimonialContext();
   const [isPending, startTransition] = useTransition();
+
+  const updateTestimonialApproval = useTestimonialApproval(testimonial._id);
+
+  const handleUpdateApprovalStatus = async (approved: boolean) => {
+    startTransition(async () => await updateTestimonialApproval(approved));
+  };
 
   return (
     <Select
       value={getApprovalValue(testimonial.approved)}
       disabled={isPending}
       onValueChange={(value) => {
-        const approved = value === "pending" ? undefined : value === "approved";
-        startTransition(() => handleUpdateApprovalStatus(approved));
+        handleUpdateApprovalStatus(value === "approved");
       }}
     >
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>
-      <SelectContent align="start">
+      <SelectContent align="start" position="popper">
         <SelectGroup>
           <SelectLabel>Publish Status</SelectLabel>
-          <SelectItem value="pending">Pending Approval</SelectItem>
+          <SelectItem value="pending" hidden>
+            Pending
+          </SelectItem>
           <SelectItem value="approved">Published</SelectItem>
           <SelectItem value="disapproved">Not Published</SelectItem>
         </SelectGroup>

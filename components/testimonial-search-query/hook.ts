@@ -1,6 +1,4 @@
-import { useRouter } from "@tanstack/react-router";
 import { useQueryStates } from "nuqs";
-import { useEffect, useRef } from "react";
 import { testimonialSearchQueryParams } from "./schema";
 
 export const useTestimonialSearchQuery = () => {
@@ -8,20 +6,11 @@ export const useTestimonialSearchQuery = () => {
     testimonialSearchQueryParams,
   );
 
-  const router = useRouter();
-  const frozenSearchQueryRef = useRef(searchQuery);
-  const isPending = router.state.status === "pending";
-
-  useEffect(() => {
-    if (!isPending) {
-      frozenSearchQueryRef.current = searchQuery;
-    }
-  }, [searchQuery, isPending]);
-
   const resetSortAndFilters = () => {
     setSearchQuery({
       author: "",
       formats: [],
+      statuses: [],
       from: null,
       to: null,
       order: null,
@@ -29,8 +18,7 @@ export const useTestimonialSearchQuery = () => {
   };
 
   return {
-    searchQuery: frozenSearchQueryRef.current,
-    liveSearchQuery: searchQuery,
+    searchQuery,
     setSearchQuery,
     resetSortAndFilters,
   };

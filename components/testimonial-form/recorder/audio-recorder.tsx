@@ -3,7 +3,7 @@ import { useController } from "react-hook-form";
 import { ReactMediaRecorder } from "react-media-recorder";
 import { Button } from "@/components/ui/button";
 import { AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS } from "@/lib/media";
-import type { Testimonial } from "@/lib/schema";
+import type { Testimonial } from "@/lib/schema/testimonials";
 import RecorderTimer from "./recorder-timer";
 
 export default function AudioRecorder() {

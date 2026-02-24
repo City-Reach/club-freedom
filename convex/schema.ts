@@ -17,14 +17,15 @@ export default defineSchema({
     testimonialText: v.optional(v.string()),
     summary: v.optional(v.string()),
     searchText: v.optional(v.string()),
-    approved: v.optional(v.boolean()), // Whether the testimonial is approved for display
+    organizationId: v.optional(v.string()),
+    approved: v.optional(v.boolean()),
     processingStatus: v.optional(processingStatusSchema),
   })
-    .index("by_processingStatus", {
-      fields: ["processingStatus"],
+    .index("by_processingStatus_and_organizationId", {
+      fields: ["processingStatus", "organizationId"],
     })
     .searchIndex("search_posts", {
       searchField: "searchText",
-      filterFields: ["processingStatus"],
+      filterFields: ["processingStatus", "organizationId"],
     }),
 });

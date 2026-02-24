@@ -36,7 +36,9 @@ const useTestimonialDownload = () => {
   };
 
   const downloadMedia = async () => {
-    const downloadURL = await generateDownloadMedia({ id: testimonial._id });
+    const downloadURL = await generateDownloadMedia({
+      id: testimonial._id,
+    });
     if (!downloadURL) {
       toast.error("Media download failed");
       return;

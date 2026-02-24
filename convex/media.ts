@@ -14,6 +14,12 @@ export const generateMediaDownloadUrl = action({
   args: { id: v.id("testimonials") },
   handler: async (ctx, { id }) => {
     try {
+      const canDownload = await ctx.runQuery(api.auth.checkUserPermissions, {
+        permissions: { testimonial: ["download"] },
+      });
+      if (!canDownload) {
+        throw new Error("Testimonial Download Forbidden");
+      }
       const testimonial = await ctx.runQuery(
         api.testimonials.getTestimonialById,
         { id },

@@ -1,7 +1,11 @@
 import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { ClientOnly, useNavigate } from "@tanstack/react-router";
+import {
+  ClientOnly,
+  useNavigate,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
@@ -34,9 +38,13 @@ import {
   AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS,
   VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
 } from "@/lib/media";
-import { type Testimonial, testimonialSchema } from "@/lib/schema";
+import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 
 export default function TestimonialForm() {
+  const { organization } = useRouteContext({
+    from: "/o/$orgSlug",
+  });
+
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
@@ -80,7 +88,9 @@ export default function TestimonialForm() {
       let storageId: string | undefined;
       let media_type = "text";
       if (values.mediaFile) {
-        const { url, key } = await generateUploadUrl();
+        const { url, key } = await generateUploadUrl({
+          organizationId: organization._id,
+        });
         if (!key) {
           throw new Error("Failed to generate media key");
         }
@@ -100,6 +110,7 @@ export default function TestimonialForm() {
         storageId: storageId,
         media_type: media_type,
         text: values.writtenText,
+        organizationId: organization._id as string,
       });
 
       form.reset();
@@ -107,7 +118,10 @@ export default function TestimonialForm() {
         description: "Thank you for your submission.",
       });
 
-      await navigation({ to: "/testimonials/tmp/$id", params: { id } });
+      await navigation({
+        to: "/o/$orgSlug/testimonials/tmp/$id",
+        params: { orgSlug: organization.slug, id },
+      });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
       const message = error instanceof Error ? error.message : "Unknown error";
