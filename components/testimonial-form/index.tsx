@@ -1,4 +1,3 @@
-import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
 import {
@@ -33,7 +32,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
 import { env } from "@/env/client";
-import { useUploadFile } from "@/hooks/use-upload-file";
+import { useBackgroundMediaUpload } from "@/hooks/use-background-media-upload";
 import {
   AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS,
   VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
@@ -56,26 +55,23 @@ export default function TestimonialForm() {
     },
   });
   const navigation = useNavigate();
-  const uploadFile = useUploadFile();
-  const generateUploadUrl = useConvexMutation(
-    api.uploadTempFile.generateTempUploadUrl,
-  );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
+  const { uploadMedia } = useBackgroundMediaUpload();
   const [tabValue, setTabValue] = useState("video");
 
   const handleTabChange = (value: string) => {
     setTabValue(value);
-    form.resetField("mediaFile");
+    form.resetField("media");
     form.resetField("writtenText");
   };
 
   const canSwitchTab =
-    form.watch("mediaFile") == null && form.watch("writtenText") === "";
+    form.watch("media") == null && form.watch("writtenText") === "";
 
   async function onSubmit(values: Testimonial) {
     try {
-      // Step 1: Validate Turnstile token
+      // Step 1: Human verification
       const turnstileToken = values.turnstileToken;
       const isHuman = await validateTurnstileToken({
         data: { turnstileToken },
@@ -84,34 +80,29 @@ export default function TestimonialForm() {
         throw new Error("Human verification failed");
       }
 
-      // Step 2:
-      let storageId: string | undefined;
-      let media_type = "text";
-      if (values.mediaFile) {
-        const { url, key } = await generateUploadUrl({
-          organizationId: organization._id,
-        });
-        if (!key) {
-          throw new Error("Failed to generate media key");
-        }
-        await uploadFile({ file: values.mediaFile, url, key });
-        storageId = key;
-        if (values.mediaFile.type.startsWith("audio")) {
-          media_type = "audio";
-        } else if (values.mediaFile.type.startsWith("video")) {
-          media_type = "video";
-        }
-      }
+      // Step 2: Save testimonial data
+      const media_type = values.media?.type?.startsWith("audio")
+        ? "audio"
+        : values.media?.type?.startsWith("video")
+          ? "video"
+          : "text";
 
-      // Step 3: Save testimonial data with storage ID
-      const id = await postTestimonial({
+      const testimonialId = await postTestimonial({
         name: values.name,
         email: values.email ? values.email : undefined,
-        storageId: storageId,
-        media_type: media_type,
+        media_type,
         text: values.writtenText,
         organizationId: organization._id as string,
       });
+
+      // Step 3: Upload to offline database
+      if (values.media) {
+        uploadMedia(testimonialId, {
+          blob: values.media,
+          organizationId: organization._id as string,
+          status: "pending",
+        });
+      }
 
       form.reset();
       toast.success("Testimonial submitted successfully!", {
@@ -120,7 +111,7 @@ export default function TestimonialForm() {
 
       await navigation({
         to: "/o/$orgSlug/testimonials/tmp/$id",
-        params: { orgSlug: organization.slug, id },
+        params: { orgSlug: organization.slug, id: testimonialId },
       });
     } catch (error) {
       console.error("Error submitting testimonial:", error);
@@ -221,7 +212,7 @@ export default function TestimonialForm() {
             <TabsContent value="audio">
               <Controller
                 control={form.control}
-                name="mediaFile"
+                name="media"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>
@@ -253,7 +244,7 @@ export default function TestimonialForm() {
             <TabsContent value="video">
               <Controller
                 control={form.control}
-                name="mediaFile"
+                name="media"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>
