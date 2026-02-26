@@ -35,6 +35,9 @@ export default function OrganizationSidebarNav(
     ),
   );
 
+  const { data: canUpdateOrganization } = useQuery(
+    hasPermissionQuery({ organization: ["update"] }, organization._id),
+  );
   return (
     <SidebarGroup {...props}>
       <SidebarMenu>
@@ -62,6 +65,20 @@ export default function OrganizationSidebarNav(
               >
                 <Users2 />
                 <span>Members</span>
+              </Link>
+            </SidebarMenuButton>
+          )}
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          {canUpdateOrganization && (
+            <SidebarMenuButton tooltip="Form Preferences" asChild>
+              <Link
+                to="/o/$orgSlug/dashboard/form-preferences"
+                params={{ orgSlug: organization.slug }}
+                className="[&.active]:not-hover:bg-muted"
+              >
+                <Users2 />
+                <span>Form Preferences</span>
               </Link>
             </SidebarMenuButton>
           )}

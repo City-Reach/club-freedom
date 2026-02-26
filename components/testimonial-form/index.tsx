@@ -297,7 +297,7 @@ export default function TestimonialForm() {
                 <FieldContent>
                   <FieldLabel htmlFor={field.name}>
                     I agree that my personal information and testimonial may be
-                    processsed and published on the Club Freedom service.
+                    processsed and published on this service.
                   </FieldLabel>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />

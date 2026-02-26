@@ -28,4 +28,18 @@ export default defineSchema({
       searchField: "searchText",
       filterFields: ["processingStatus", "organizationId"],
     }),
+  formPreferences: defineTable({
+    organizationId: v.string(),
+    name: v.string(),
+    branding: v.optional(v.string()),
+    textInstructions: v.optional(v.string()),
+    textEnabled: v.boolean(),
+    audioInstructions: v.optional(v.string()),
+    audioEnabled: v.boolean(),
+    videoInstructions: v.optional(v.string()),
+    videoEnabled: v.boolean(),
+    agreements: v.optional(v.array(v.string())),
+  }).index("byOrganizationId", {
+    fields: ["organizationId"],
+  }),
 });
