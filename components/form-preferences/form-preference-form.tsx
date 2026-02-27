@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouteContext } from "@tanstack/react-router";
+import { useMutation } from "convex/react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -14,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/convex/_generated/api";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -36,6 +38,9 @@ export default function FormPreferenceForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
+  const postFormPreference = useMutation(
+    api.formPreferences.postFormPreference,
+  );
   const defaultAgreement =
     "I agree that my personal information and testimonial may be processsed and published on this service.";
   const form = useForm<FormSchema>({
@@ -44,7 +49,7 @@ export default function FormPreferenceForm() {
       textEnabled: true,
       audioEnabled: true,
       videoEnabled: true,
-      agreements: [{ value: defaultAgreement }], // ✅ always start with one
+      agreements: [{ value: defaultAgreement }],
     },
     resolver: zodResolver(formSchema),
   });
@@ -57,20 +62,25 @@ export default function FormPreferenceForm() {
   });
 
   const handleCreateForm = async (data: FormSchema) => {
-    // const { error } = await authClient.organization.inviteMember({
-    //   email: data.email,
-    //   role: data.role,
-    //   organizationId: organization._id,
-    // });
-    console.log("Form data:");
-    console.log(data);
-
-    // if (!error) {
-    //   toast.success("Form created successfully");
-    //   form.reset();
-    // } else {
-    //   toast.error("Failed to create form");
-    // }
+    try {
+      const formPreferenceId = await postFormPreference({
+        organizationId: organization._id,
+        name: data.name,
+        textEnabled: data.textEnabled,
+        audioEnabled: data.audioEnabled,
+        videoEnabled: data.videoEnabled,
+        agreements: data.agreements.map((a) => a.value),
+      });
+      form.reset();
+      toast.success("Form preference created successfully!", {
+        description: "Thank you for creating a form preference.",
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      toast.error("Failed to submit form preference", {
+        description: message,
+      });
+    }
   };
 
   return (
@@ -194,7 +204,7 @@ export default function FormPreferenceForm() {
               render={({ field, fieldState }) => (
                 <div className="flex gap-2 items-start">
                   <Textarea
-                    {...field} // ✅ correct
+                    {...field}
                     placeholder={defaultAgreement}
                     aria-invalid={fieldState.invalid}
                   />
