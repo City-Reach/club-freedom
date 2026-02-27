@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import FormPreferenceList from "@/components/form-preferences/form-preference-list";
 export const Route = createFileRoute("/o/$orgSlug/dashboard/form-preferences/")(
   {
     component: RouteComponent,
@@ -48,6 +49,7 @@ function RouteComponent() {
             </DialogContent>
           </Dialog>
         </CardHeader>
+        <FormPreferenceList />
       </Card>
     </div>
   );
