@@ -1,3 +1,4 @@
+import { convexQuery } from "@convex-dev/react-query";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { Fragment } from "react";
@@ -12,7 +13,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
-import { convexQuery } from "@convex-dev/react-query";
 
 export default function FormPreferenceList() {
   const { organization } = useRouteContext({

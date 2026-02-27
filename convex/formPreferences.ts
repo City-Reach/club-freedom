@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { api } from "./_generated/api";
-import { query, type QueryCtx } from "./_generated/server";
+import { type QueryCtx, query } from "./_generated/server";
 import { mutation } from "./functions";
 
 export async function getFormPreferenceByOrgIdAndName(
@@ -20,12 +20,7 @@ export const getFormPreferenceByOrgId = query({
   args: {
     organizationId: v.string(),
   },
-  handler: async (
-    ctx,
-    {
-      organizationId,
-    },
-  ) => {
+  handler: async (ctx, { organizationId }) => {
     const canUpdateOrg = await ctx.runQuery(api.auth.checkUserPermissions, {
       permissions: {
         organization: ["update"],
@@ -36,7 +31,9 @@ export const getFormPreferenceByOrgId = query({
     }
     const formPreference = await ctx.db
       .query("formPreferences")
-      .withIndex("byOrganizationId", (q) => q.eq("organizationId", organizationId))
+      .withIndex("byOrganizationId", (q) =>
+        q.eq("organizationId", organizationId),
+      )
       .order("desc")
       .collect();
     return formPreference;

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import FormPreferenceForm from "@/components/form-preferences/form-preference-form";
+import FormPreferenceList from "@/components/form-preferences/form-preference-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -12,7 +13,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import FormPreferenceList from "@/components/form-preferences/form-preference-list";
 export const Route = createFileRoute("/o/$orgSlug/dashboard/form-preferences/")(
   {
     component: RouteComponent,
