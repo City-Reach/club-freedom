@@ -11,8 +11,8 @@ export async function getFormPreferenceByOrgIdAndName(
   const formPreference = await ctx.db
     .query("formPreferences")
     .withIndex("byOrganizationId", (q) => q.eq("organizationId", orgId))
-    .filter((q) => q.eq("name", name))
-    .unique();
+    .filter((q) => q.eq(q.field("name"), name))
+    .first();
   return formPreference;
 }
 
