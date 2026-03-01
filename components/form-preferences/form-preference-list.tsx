@@ -1,5 +1,5 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
+import FormPreferenceListItem from "./form-preference-list-item";
 
 export default function FormPreferenceList() {
   const { organization } = useRouteContext({
@@ -54,17 +55,16 @@ export default function FormPreferenceList() {
         </EmptyContent>
       </Empty>
     );
-  console.log("Form preferences:", data);
   return (
     <ul className="grid gap-2">
-      {/* {data.members.map((member, index) => (
-        <Fragment key={member.id}>
-          <OrganizationMemberListItem member={member} />
-          {index < data.members.length - 1 && (
+      {data.map((formPreference, index) => (
+        <Fragment key={formPreference._id}>
+          <FormPreferenceListItem formPreference={formPreference} />
+          {index < data.length - 1 && (
             <Separator orientation="horizontal" />
           )}
         </Fragment>
-      ))} */}
+      ))}
     </ul>
   );
 }

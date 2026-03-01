@@ -6,7 +6,7 @@ export const Route = createFileRoute("/o/$orgSlug/dashboard/form-preferences")({
   loader: async ({ context }) => {
     const { data } = await authClient.organization.hasPermission({
       permissions: {
-        organization: ["update"],
+        organization: ["update", "delete"],
       },
       organizationId: context.organization._id,
     });

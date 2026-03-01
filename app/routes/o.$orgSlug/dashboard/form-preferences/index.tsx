@@ -3,7 +3,7 @@ import { PlusIcon } from "lucide-react";
 import FormPreferenceForm from "@/components/form-preferences/form-preference-form";
 import FormPreferenceList from "@/components/form-preferences/form-preference-list";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogClose,
@@ -49,7 +49,9 @@ function RouteComponent() {
             </DialogContent>
           </Dialog>
         </CardHeader>
-        <FormPreferenceList />
+        <CardContent>
+          <FormPreferenceList />
+        </CardContent>
       </Card>
     </div>
   );

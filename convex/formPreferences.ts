@@ -1,7 +1,8 @@
 import { v } from "convex/values";
 import { api } from "./_generated/api";
-import { type QueryCtx, query } from "./_generated/server";
+import { MutationCtx, type QueryCtx, query } from "./_generated/server";
 import { mutation } from "./functions";
+import { Id } from "./_generated/dataModel";
 
 export async function getFormPreferenceByOrgIdAndName(
   ctx: QueryCtx,
@@ -10,10 +11,21 @@ export async function getFormPreferenceByOrgIdAndName(
 ) {
   const formPreference = await ctx.db
     .query("formPreferences")
-    .withIndex("byOrganizationId", (q) => q.eq("organizationId", orgId))
+    .withIndex("byOrganizationIdAndActivated", (q) => q.eq("organizationId", orgId))
     .filter((q) => q.eq(q.field("name"), name))
     .first();
   return formPreference;
+}
+
+export async function getActivatedFormPreferencesByOrgId(
+  ctx: QueryCtx,
+  orgId: string,
+) {
+  const formPreferences = await ctx.db
+    .query("formPreferences")
+    .withIndex("byOrganizationIdAndActivated", (q) => q.eq("organizationId", orgId).eq("activated", true))
+    .collect();
+  return formPreferences;
 }
 
 export const getFormPreferenceByOrgId = query({
@@ -31,7 +43,7 @@ export const getFormPreferenceByOrgId = query({
     }
     const formPreference = await ctx.db
       .query("formPreferences")
-      .withIndex("byOrganizationId", (q) =>
+      .withIndex("byOrganizationIdAndActivated", (q) =>
         q.eq("organizationId", organizationId),
       )
       .order("desc")
@@ -97,8 +109,46 @@ export const postFormPreference = mutation({
       videoInstructions,
       videoEnabled,
       agreements,
-      activated: true,
+      activated: false,
     });
     return id;
+  },
+});
+
+export const deleteFormPreference = mutation({
+  args: { id: v.id("formPreferences") },
+  handler: async (ctx, { id }) => {
+    const canDelete = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: { organization: ["delete"] },
+    });
+    if (!canDelete) {
+      throw new Error("Form Preference Delete Forbidden");
+    }
+    await ctx.db.delete("formPreferences", id);
+  },
+});
+
+export async function deactivateFormPreferences(
+  ctx: MutationCtx,
+  orgIds: Id<"formPreferences">[],
+) {
+  for (const orgId of orgIds) {
+    await ctx.db.patch("formPreferences", orgId, { activated: false });
+  }
+  
+}
+
+export const activateFormPreference = mutation({
+  args: { id: v.id("formPreferences"), organizationId: v.string() },
+  handler: async (ctx, { id, organizationId }) => {
+    const canUpdate = await ctx.runQuery(api.auth.checkUserPermissions, {
+      permissions: { organization: ["update"] },
+    });
+    if (!canUpdate) {
+      throw new Error("Form Preference Update Forbidden");
+    }
+    const activeFormPreferences = await getActivatedFormPreferencesByOrgId(ctx, organizationId)
+    await deactivateFormPreferences(ctx, activeFormPreferences.map((fp) => fp._id));
+    await ctx.db.patch(id, { activated: true });
   },
 });

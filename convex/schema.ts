@@ -40,7 +40,7 @@ export default defineSchema({
     videoEnabled: v.boolean(),
     agreements: v.optional(v.array(v.string())),
     activated: v.boolean(),
-  }).index("byOrganizationId", {
-    fields: ["organizationId"],
+  }).index("byOrganizationIdAndActivated", {
+    fields: ["organizationId", "activated"],
   }),
 });
