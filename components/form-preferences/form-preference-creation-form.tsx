@@ -3,7 +3,6 @@ import { useRouteContext } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,23 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
-
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  textEnabled: z.boolean(),
-  audioEnabled: z.boolean(),
-  videoEnabled: z.boolean(),
-  agreements: z
-    .array(
-      z.object({
-        value: z.string(),
-      }),
-    )
-    .min(1)
-    .max(3),
-});
-
-type FormSchema = z.infer<typeof formSchema>;
+import { defaultAgreement, formSchema, FormSchema } from "./formSchema";
 
 export default function FormPreferenceCreationForm() {
   const { organization } = useRouteContext({
@@ -41,8 +24,6 @@ export default function FormPreferenceCreationForm() {
   const postFormPreference = useMutation(
     api.formPreferences.postFormPreference,
   );
-  const defaultAgreement =
-    "I agree that my personal information and testimonial may be processsed and published on this service.";
   const form = useForm<FormSchema>({
     defaultValues: {
       name: "default",

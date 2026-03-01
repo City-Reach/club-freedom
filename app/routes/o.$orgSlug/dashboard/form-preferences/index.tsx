@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { Suspense } from "react";
-import FormPreferenceCreationForm from "@/components/form-preferences/form-preference-form";
+import FormPreferenceCreationForm from "@/components/form-preferences/form-preference-creation-form";
 import FormPreferenceList from "@/components/form-preferences/form-preference-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

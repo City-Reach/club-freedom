@@ -29,21 +29,13 @@ export default function FormPreferenceListItem() {
     setFormPreferenceId(formPreference._id as string);
   };
 
-  // const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-  //   if (e.key === "Enter" || e.key === " ") {
-  //     e.preventDefault();
-  //     handleNavigation();
-  //   }
-  // };
-
   return (
     <li className="flex justify-between">
       <div>
         <button
           type={"button"}
           onClick={handleNavigation}
-          // onKeyDown={handleKeyDown}
-          className="font-semibold"
+          className="font-semibold cursor-pointer underline text-blue-600"
         >
           {formPreference.name}
         </button>

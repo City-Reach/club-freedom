@@ -3,6 +3,7 @@ import { api } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { type MutationCtx, type QueryCtx, query } from "./_generated/server";
 import { mutation } from "./functions";
+import removeUndefinedFromRecord from "./utils";
 
 export async function getFormPreferenceByOrgIdAndName(
   ctx: QueryCtx,
@@ -175,5 +176,24 @@ export const activateFormPreference = mutation({
       activeFormPreferences.map((fp) => fp._id),
     );
     await ctx.db.patch(id, { activated: true });
+  },
+});
+
+export const updateFormPreference = mutation({
+  args: {
+    _id: v.id("formPreferences"),
+    name: v.optional(v.string()),
+    branding: v.optional(v.string()),
+    textInstructions: v.optional(v.string()),
+    textEnabled: v.optional(v.boolean()),
+    audioInstructions: v.optional(v.string()),
+    audioEnabled: v.optional(v.boolean()),
+    videoInstructions: v.optional(v.string()),
+    videoEnabled: v.optional(v.boolean()),
+    agreements: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, args) => {
+    const cleaned = removeUndefinedFromRecord(args);
+    await ctx.db.patch(args._id, cleaned);
   },
 });
