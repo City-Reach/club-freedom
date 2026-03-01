@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
-import { defaultAgreement, formSchema, FormSchema } from "./formSchema";
+import { defaultAgreement, type FormSchema, formSchema } from "./formSchema";
 
 export default function FormPreferenceCreationForm() {
   const { organization } = useRouteContext({

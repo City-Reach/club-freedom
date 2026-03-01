@@ -16,4 +16,4 @@ export const formSchema = z.object({
 export type FormSchema = z.infer<typeof formSchema>;
 
 export const defaultAgreement =
-      "I agree that my personal information and testimonial may be processsed and published on this service.";
+  "I agree that my personal information and testimonial may be processsed and published on this service.";

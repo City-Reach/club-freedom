@@ -1,12 +1,15 @@
 import { convexQuery } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { useMutation } from "convex/react";
+import { useEffect } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-
+import {
+  type FormSchema,
+  formSchema,
+} from "@/components/form-preferences/formSchema";
 import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -19,22 +22,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
 import { FormPreferenceContext } from "@/contexts/form-preference-context";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import {
-  formSchema,
-  FormSchema,
-} from "@/components/form-preferences/formSchema";
+import type { Id } from "@/convex/_generated/dataModel";
 
 type Props = {
   formPreferenceId: string;
 };
 
-export default function FormPreferenceDetail({
-  formPreferenceId,
-}: Props) {
+export default function FormPreferenceDetail({ formPreferenceId }: Props) {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
@@ -43,11 +39,11 @@ export default function FormPreferenceDetail({
     convexQuery(api.formPreferences.getFormPreferenceByIdAndOrgId, {
       id: formPreferenceId,
       orgId: organization._id,
-    })
+    }),
   );
 
   const updateFormPreference = useMutation(
-    api.formPreferences.updateFormPreference
+    api.formPreferences.updateFormPreference,
   );
 
   const form = useForm<FormSchema>({
@@ -77,8 +73,7 @@ export default function FormPreferenceDetail({
       textEnabled: formPreference.textEnabled,
       audioEnabled: formPreference.audioEnabled,
       videoEnabled: formPreference.videoEnabled,
-      agreements:
-        formPreference.agreements?.map((a) => ({ value: a })) ?? [],
+      agreements: formPreference.agreements?.map((a) => ({ value: a })) ?? [],
     });
   }, [formPreference, form]);
 
@@ -106,8 +101,7 @@ export default function FormPreferenceDetail({
         description: "Your changes have been saved.",
       });
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unknown error";
+      const message = error instanceof Error ? error.message : "Unknown error";
 
       toast.error("Failed to update form preference", {
         description: message,
@@ -139,18 +133,14 @@ export default function FormPreferenceDetail({
           name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Form Name
-              </FieldLabel>
+              <FieldLabel htmlFor={field.name}>Form Name</FieldLabel>
               <Input
                 {...field}
                 placeholder="Form name"
                 id={field.name}
                 aria-invalid={fieldState.invalid}
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -164,9 +154,7 @@ export default function FormPreferenceDetail({
               <FieldLabel>Enable Text Input</FieldLabel>
               <Select
                 value={field.value?.toString() ?? "false"}
-                onValueChange={(val) =>
-                  field.onChange(val === "true")
-                }
+                onValueChange={(val) => field.onChange(val === "true")}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -174,10 +162,7 @@ export default function FormPreferenceDetail({
                 <SelectContent>
                   <SelectGroup>
                     {[true, false].map((val) => (
-                      <SelectItem
-                        key={val.toString()}
-                        value={val.toString()}
-                      >
+                      <SelectItem key={val.toString()} value={val.toString()}>
                         {val ? "Enabled" : "Disabled"}
                       </SelectItem>
                     ))}
@@ -197,9 +182,7 @@ export default function FormPreferenceDetail({
               <FieldLabel>Enable Audio Input</FieldLabel>
               <Select
                 value={field.value?.toString() ?? "false"}
-                onValueChange={(val) =>
-                  field.onChange(val === "true")
-                }
+                onValueChange={(val) => field.onChange(val === "true")}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -207,10 +190,7 @@ export default function FormPreferenceDetail({
                 <SelectContent>
                   <SelectGroup>
                     {[true, false].map((val) => (
-                      <SelectItem
-                        key={val.toString()}
-                        value={val.toString()}
-                      >
+                      <SelectItem key={val.toString()} value={val.toString()}>
                         {val ? "Enabled" : "Disabled"}
                       </SelectItem>
                     ))}
@@ -230,9 +210,7 @@ export default function FormPreferenceDetail({
               <FieldLabel>Enable Video Input</FieldLabel>
               <Select
                 value={field.value?.toString() ?? "false"}
-                onValueChange={(val) =>
-                  field.onChange(val === "true")
-                }
+                onValueChange={(val) => field.onChange(val === "true")}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -240,10 +218,7 @@ export default function FormPreferenceDetail({
                 <SelectContent>
                   <SelectGroup>
                     {[true, false].map((val) => (
-                      <SelectItem
-                        key={val.toString()}
-                        value={val.toString()}
-                      >
+                      <SelectItem key={val.toString()} value={val.toString()}>
                         {val ? "Enabled" : "Disabled"}
                       </SelectItem>
                     ))}
@@ -289,9 +264,7 @@ export default function FormPreferenceDetail({
           {fields.length < 3 && (
             <button
               type="button"
-              onClick={() =>
-                append({ value: "" })
-              }
+              onClick={() => append({ value: "" })}
               className="text-sm text-blue-500 mt-2"
             >
               + Add agreement
