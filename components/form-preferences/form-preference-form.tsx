@@ -34,7 +34,7 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-export default function FormPreferenceForm() {
+export default function FormPreferenceCreationForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
@@ -63,7 +63,7 @@ export default function FormPreferenceForm() {
 
   const handleCreateForm = async (data: FormSchema) => {
     try {
-      const formPreferenceId = await postFormPreference({
+      await postFormPreference({
         organizationId: organization._id,
         name: data.name,
         textEnabled: data.textEnabled,

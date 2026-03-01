@@ -1,6 +1,9 @@
-import { useMutation } from "convex/react";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
+import { useMutation } from "convex/react";
 import { toast } from "sonner";
+import { useFormPreferenceIdParam } from "@/app/routes/o.$orgSlug/dashboard/form-preferences/-components/hook";
+import { useFormPreferenceContext } from "@/contexts/form-preference-context";
+import { api } from "@/convex/_generated/api";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,35 +16,60 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button, buttonVariants } from "../ui/button";
-import { Doc } from "@/convex/_generated/dataModel";
-import { api } from "@/convex/_generated/api";
 
-type Props = {
-  formPreference: Doc<"formPreferences">;
-};
+export default function FormPreferenceListItem() {
+  const { formPreference } = useFormPreferenceContext();
+  const { setFormPreferenceId } = useFormPreferenceIdParam();
 
-export default function FormPreferenceListItem({ formPreference }: Props) {
+  const handleNavigation = async () => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      return;
+    }
+    setFormPreferenceId(formPreference._id as string);
+  };
+
+  // const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  //   if (e.key === "Enter" || e.key === " ") {
+  //     e.preventDefault();
+  //     handleNavigation();
+  //   }
+  // };
+
   return (
     <li className="flex justify-between">
       <div>
-        <div className="font-semibold">{formPreference.name}</div>
+        <button
+          type={"button"}
+          onClick={handleNavigation}
+          // onKeyDown={handleKeyDown}
+          className="font-semibold"
+        >
+          {formPreference.name}
+        </button>
       </div>
       <div className="flex gap-2">
-        <ActivateFormPreference formPreference={formPreference} />
-        <RemoveFormPreference formPreference={formPreference} />
+        <ActivateFormPreference />
+        <RemoveFormPreference />
       </div>
     </li>
   );
 }
 
-function ActivateFormPreference({ formPreference }: Props) {
-  const activateFormPreference = useMutation(api.formPreferences.activateFormPreference);
+function ActivateFormPreference() {
+  const { formPreference } = useFormPreferenceContext();
+  const activateFormPreference = useMutation(
+    api.formPreferences.activateFormPreference,
+  );
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
   async function handleActivate() {
     try {
-      await activateFormPreference({ id: formPreference._id, organizationId: organization._id });
+      await activateFormPreference({
+        id: formPreference._id,
+        organizationId: organization._id,
+      });
       toast.success("Form Preference activated successfully");
     } catch (_err) {
       if (_err instanceof Error) {
@@ -53,14 +81,22 @@ function ActivateFormPreference({ formPreference }: Props) {
   }
 
   return (
-    <Button disabled={formPreference.activated} variant="outline" size="sm" onClick={() => handleActivate()}>
+    <Button
+      disabled={formPreference.activated}
+      variant="outline"
+      size="sm"
+      onClick={() => handleActivate()}
+    >
       Activate
     </Button>
   );
 }
 
-function RemoveFormPreference({ formPreference }: Props) {
-  const deleteFormPreference = useMutation(api.formPreferences.deleteFormPreference);
+function RemoveFormPreference() {
+  const { formPreference } = useFormPreferenceContext();
+  const deleteFormPreference = useMutation(
+    api.formPreferences.deleteFormPreference,
+  );
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
@@ -95,8 +131,8 @@ function RemoveFormPreference({ formPreference }: Props) {
             Are you sure you want to remove this formPreference?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            <strong>{formPreference.name}</strong> will be
-            no longer a form preference of <strong>{organization.name}</strong>.
+            <strong>{formPreference.name}</strong> will be no longer a form
+            preference of <strong>{organization.name}</strong>.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

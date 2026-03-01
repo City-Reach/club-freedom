@@ -1,8 +1,8 @@
 import { v } from "convex/values";
 import { api } from "./_generated/api";
-import { MutationCtx, type QueryCtx, query } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
+import { type MutationCtx, type QueryCtx, query } from "./_generated/server";
 import { mutation } from "./functions";
-import { Id } from "./_generated/dataModel";
 
 export async function getFormPreferenceByOrgIdAndName(
   ctx: QueryCtx,
@@ -11,7 +11,9 @@ export async function getFormPreferenceByOrgIdAndName(
 ) {
   const formPreference = await ctx.db
     .query("formPreferences")
-    .withIndex("byOrganizationIdAndActivated", (q) => q.eq("organizationId", orgId))
+    .withIndex("byOrganizationIdAndActivated", (q) =>
+      q.eq("organizationId", orgId),
+    )
     .filter((q) => q.eq(q.field("name"), name))
     .first();
   return formPreference;
@@ -23,7 +25,9 @@ export async function getActivatedFormPreferencesByOrgId(
 ) {
   const formPreferences = await ctx.db
     .query("formPreferences")
-    .withIndex("byOrganizationIdAndActivated", (q) => q.eq("organizationId", orgId).eq("activated", true))
+    .withIndex("byOrganizationIdAndActivated", (q) =>
+      q.eq("organizationId", orgId).eq("activated", true),
+    )
     .collect();
   return formPreferences;
 }
@@ -48,6 +52,22 @@ export const getFormPreferenceByOrgId = query({
       )
       .order("desc")
       .collect();
+    return formPreference;
+  },
+});
+
+export const getFormPreferenceByIdAndOrgId = query({
+  args: { id: v.string(), orgId: v.string() },
+  handler: async (ctx, { id, orgId }) => {
+    const formPreferenceId = ctx.db.normalizeId("formPreferences", id);
+
+    if (!formPreferenceId) return null;
+    const formPreference = await ctx.db.get(formPreferenceId);
+
+    if (!formPreference || formPreference.organizationId !== orgId) {
+      return null;
+    }
+
     return formPreference;
   },
 });
@@ -135,7 +155,6 @@ export async function deactivateFormPreferences(
   for (const orgId of orgIds) {
     await ctx.db.patch("formPreferences", orgId, { activated: false });
   }
-  
 }
 
 export const activateFormPreference = mutation({
@@ -147,8 +166,14 @@ export const activateFormPreference = mutation({
     if (!canUpdate) {
       throw new Error("Form Preference Update Forbidden");
     }
-    const activeFormPreferences = await getActivatedFormPreferencesByOrgId(ctx, organizationId)
-    await deactivateFormPreferences(ctx, activeFormPreferences.map((fp) => fp._id));
+    const activeFormPreferences = await getActivatedFormPreferencesByOrgId(
+      ctx,
+      organizationId,
+    );
+    await deactivateFormPreferences(
+      ctx,
+      activeFormPreferences.map((fp) => fp._id),
+    );
     await ctx.db.patch(id, { activated: true });
   },
 });

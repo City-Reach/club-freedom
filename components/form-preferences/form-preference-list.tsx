@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { FormPreferenceContext } from "@/contexts/form-preference-context";
 import { api } from "@/convex/_generated/api";
 import FormPreferenceListItem from "./form-preference-list-item";
 
@@ -58,12 +59,15 @@ export default function FormPreferenceList() {
   return (
     <ul className="grid gap-2">
       {data.map((formPreference, index) => (
-        <Fragment key={formPreference._id}>
-          <FormPreferenceListItem formPreference={formPreference} />
-          {index < data.length - 1 && (
-            <Separator orientation="horizontal" />
-          )}
-        </Fragment>
+        <FormPreferenceContext.Provider
+          key={formPreference._id}
+          value={{ formPreference }}
+        >
+          <Fragment key={formPreference._id}>
+            <FormPreferenceListItem />
+            {index < data.length - 1 && <Separator orientation="horizontal" />}
+          </Fragment>
+        </FormPreferenceContext.Provider>
       ))}
     </ul>
   );
