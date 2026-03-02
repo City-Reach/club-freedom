@@ -62,6 +62,10 @@ export default function TestimonialForm() {
       ? formPreference.agreements
       : [defaultAgreement];
 
+  const textEnabled = !formPreference || formPreference.textEnabled;
+  const audioEnabled = !formPreference || formPreference.audioEnabled;
+  const videoEnabled = !formPreference || formPreference.videoEnabled;
+
   const form = useForm<Testimonial & { agreementsAccepted: string[] }>({
     defaultValues: {
       name: "",
@@ -210,38 +214,47 @@ export default function TestimonialForm() {
           />
           <Tabs value={tabValue} onValueChange={handleTabChange}>
             <TabsList>
-              <TabsTrigger value="video" disabled={!canSwitchTab}>
-                Video
-              </TabsTrigger>
-              <TabsTrigger value="audio" disabled={!canSwitchTab}>
-                Audio
-              </TabsTrigger>
-              <TabsTrigger value="text" disabled={!canSwitchTab}>
-                Text
-              </TabsTrigger>
+              {videoEnabled && (
+                <TabsTrigger value="video" disabled={!canSwitchTab}>
+                  Video
+                </TabsTrigger>
+              )}
+              {audioEnabled && (
+                <TabsTrigger value="audio" disabled={!canSwitchTab}>
+                  Audio
+                </TabsTrigger>
+              )}
+              {textEnabled && (
+                <TabsTrigger value="text" disabled={!canSwitchTab}>
+                  Text
+                </TabsTrigger>
+              )}
             </TabsList>
-            <TabsContent value="text">
-              <Controller
-                control={form.control}
-                name="writtenText"
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Written Testimonial
-                    </FieldLabel>
-                    <Textarea
-                      {...field}
-                      placeholder="Start typing..."
-                      id={field.name}
-                      aria-invalid={fieldState.invalid}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </TabsContent>
+            {textEnabled && (
+              <TabsContent value="text">
+                <Controller
+                  control={form.control}
+                  name="writtenText"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>
+                        Written Testimonial
+                      </FieldLabel>
+                      <Textarea
+                        {...field}
+                        placeholder="Start typing..."
+                        id={field.name}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </TabsContent>
+            )}
+            {audioEnabled && (
             <TabsContent value="audio">
               <Controller
                 control={form.control}
@@ -274,6 +287,8 @@ export default function TestimonialForm() {
                 )}
               />
             </TabsContent>
+            )}
+            {videoEnabled && (
             <TabsContent value="video">
               <Controller
                 control={form.control}
@@ -306,6 +321,7 @@ export default function TestimonialForm() {
                 )}
               />
             </TabsContent>
+            )}
           </Tabs>
           <Controller
             control={form.control}
@@ -344,9 +360,9 @@ export default function TestimonialForm() {
                                 a: ({ node, ...props }) => (
                                   <a
                                     {...props}
-                                    target="_blank" // opens link in new tab
-                                    rel="noopener noreferrer" // security best practice
-                                    className="text-blue-600 underline" // optional styling
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 underline"
                                   />
                                 ),
                               }}
