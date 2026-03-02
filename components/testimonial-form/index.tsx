@@ -1,6 +1,7 @@
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { useQuery } from "@tanstack/react-query";
 import {
   ClientOnly,
   useNavigate,
@@ -9,7 +10,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
@@ -39,33 +40,47 @@ import {
   VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
-import { useQuery } from "@tanstack/react-query";
 import { defaultAgreement } from "../form-preferences/formSchema";
 
 export default function TestimonialForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
-  const { isLoading, data: formPreferenceArray, error } = useQuery(
+
+  const { data: formPreferenceArray } = useQuery(
     convexQuery(api.formPreferences.getActiveFormPreferenceByOrgId, {
       organizationId: organization._id,
     }),
   );
-  const formPreference = formPreferenceArray && formPreferenceArray.length > 0 ? formPreferenceArray[0] : null;
-  const form = useForm<Testimonial>({
-    resolver: zodResolver(testimonialSchema),
+
+  const formPreference =
+    formPreferenceArray && formPreferenceArray.length > 0
+      ? formPreferenceArray[0]
+      : null;
+
+  const agreements =
+    formPreference?.agreements &&
+    formPreference.agreements?.length > 0
+      ? formPreference.agreements
+      : [defaultAgreement];
+
+  const form = useForm<Testimonial & { agreementsAccepted: string[] }>({
     defaultValues: {
       name: "",
       email: "",
       writtenText: "",
-      consent: false,
+      agreementsAccepted: [],
       turnstileToken: "",
     },
+    resolver: zodResolver(testimonialSchema),
   });
-  const agreements: string[] =
-    formPreference && formPreference.agreements && formPreference.agreements.length > 0
-      ? formPreference.agreements
-      : [defaultAgreement];
+
+  useEffect(() => {
+    if (agreements.length > 0) {
+      form.setValue("agreementsAccepted", []);
+    }
+  }, [agreements, form.setValue]);
+
   const navigation = useNavigate();
   const uploadFile = useUploadFile();
   const generateUploadUrl = useConvexMutation(
@@ -73,6 +88,7 @@ export default function TestimonialForm() {
   );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
+
   const [tabValue, setTabValue] = useState("video");
 
   const handleTabChange = (value: string) => {
@@ -84,29 +100,32 @@ export default function TestimonialForm() {
   const canSwitchTab =
     form.watch("mediaFile") == null && form.watch("writtenText") === "";
 
-  async function onSubmit(values: Testimonial) {
-    try {
-      // Step 1: Validate Turnstile token
-      const turnstileToken = values.turnstileToken;
-      const isHuman = await validateTurnstileToken({
-        data: { turnstileToken },
-      });
-      if (!isHuman) {
-        throw new Error("Human verification failed");
-      }
+  const allAgreementsAccepted =
+    form.watch("agreementsAccepted")?.length === agreements.length;
 
-      // Step 2:
+  async function onSubmit(
+    values: Testimonial & { agreementsAccepted: string[] },
+  ) {
+    try {
+      const isHuman = await validateTurnstileToken({
+        data: { turnstileToken: values.turnstileToken },
+      });
+
+      if (!isHuman) throw new Error("Human verification failed");
+
       let storageId: string | undefined;
       let media_type = "text";
+
       if (values.mediaFile) {
         const { url, key } = await generateUploadUrl({
           organizationId: organization._id,
         });
-        if (!key) {
-          throw new Error("Failed to generate media key");
-        }
+
+        if (!key) throw new Error("Failed to generate media key");
+
         await uploadFile({ file: values.mediaFile, url, key });
         storageId = key;
+
         if (values.mediaFile.type.startsWith("audio")) {
           media_type = "audio";
         } else if (values.mediaFile.type.startsWith("video")) {
@@ -114,17 +133,17 @@ export default function TestimonialForm() {
         }
       }
 
-      // Step 3: Save testimonial data with storage ID
       const id = await postTestimonial({
         name: values.name,
-        email: values.email ? values.email : undefined,
-        storageId: storageId,
-        media_type: media_type,
+        email: values.email || undefined,
+        storageId,
+        media_type,
         text: values.writtenText,
         organizationId: organization._id as string,
       });
 
       form.reset();
+
       toast.success("Testimonial submitted successfully!", {
         description: "Thank you for your submission.",
       });
@@ -134,8 +153,8 @@ export default function TestimonialForm() {
         params: { orgSlug: organization.slug, id },
       });
     } catch (error) {
-      console.error("Error submitting testimonial:", error);
       const message = error instanceof Error ? error.message : "Unknown error";
+
       toast.error("Failed to submit testimonial", {
         description: message,
       });
@@ -191,11 +210,7 @@ export default function TestimonialForm() {
               </Field>
             )}
           />
-          <Tabs
-            className="w-full"
-            value={tabValue}
-            onValueChange={handleTabChange}
-          >
+          <Tabs value={tabValue} onValueChange={handleTabChange}>
             <TabsList>
               <TabsTrigger value="video" disabled={!canSwitchTab}>
                 Video
@@ -296,25 +311,49 @@ export default function TestimonialForm() {
           </Tabs>
           <Controller
             control={form.control}
-            name="consent"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid} orientation="horizontal">
-                <Checkbox
-                  id={field.name}
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-                <FieldContent>
-                  <FieldLabel htmlFor={field.name}>
-                    I agree that my personal information and testimonial may be
-                    processsed and published on this service.
-                  </FieldLabel>
+            name="agreementsAccepted"
+            render={({ field, fieldState }) => {
+              const selected = field.value || [];
+
+              const toggle = (agreement: string, checked: boolean) => {
+                if (checked) {
+                  field.onChange([...selected, agreement]);
+                } else {
+                  field.onChange(selected.filter((a) => a !== agreement));
+                }
+              };
+
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Agreements</FieldLabel>
+
+                  <div className="flex flex-col gap-2">
+                    {agreements.map((agreement, index) => {
+                      const checked = selected.includes(agreement);
+
+                      return (
+                        <div key={agreement} className="flex items-start gap-2">
+                          <Checkbox
+                            id={`agreement-${index}`}
+                            checked={checked}
+                            onCheckedChange={(c) =>
+                              toggle(agreement, Boolean(c))
+                            }
+                          />
+                          <FieldLabel htmlFor={`agreement-${index}`}>
+                            {agreement}
+                          </FieldLabel>
+                        </div>
+                      );
+                    })}
+                  </div>
+
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
-                </FieldContent>
-              </Field>
-            )}
+                </Field>
+              );
+            }}
           />
 
           <Controller
@@ -335,7 +374,9 @@ export default function TestimonialForm() {
             )}
           />
 
-          <Button type="submit" disabled={form.formState.isSubmitting}>
+          <Button type="submit" disabled={
+            form.formState.isSubmitting || !allAgreementsAccepted
+          }>
             {form.formState.isSubmitting && <Spinner />}
             {form.formState.isSubmitting ? "Submitting..." : "Submit"}
           </Button>
