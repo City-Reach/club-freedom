@@ -1,8 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouteContext } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
+import { PlusIcon, XIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import {
+  defaultAgreement,
+  type FormSchema,
+  formSchema,
+} from "@/components/form-preferences/schema";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldDescription,
@@ -15,10 +23,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
-import { defaultAgreement, type FormSchema, formSchema } from "./schema";
-import { Checkbox } from "../ui/checkbox";
 
-export default function FormPreferenceCreationForm() {
+export default function FormPreferenceForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
@@ -34,10 +40,8 @@ export default function FormPreferenceCreationForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const { control } = form;
-
-  const { fields, append, remove } = useFieldArray({
-    control,
+  const agreementArray = useFieldArray({
+    control: form.control,
     name: "agreements",
   });
 
@@ -65,12 +69,12 @@ export default function FormPreferenceCreationForm() {
 
   return (
     <form
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-8"
       id="organization-form-preference"
       onSubmit={form.handleSubmit(handleCreateForm)}
     >
       <Controller
-        control={control}
+        control={form.control}
         name="name"
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
@@ -89,15 +93,15 @@ export default function FormPreferenceCreationForm() {
         )}
       />
       <Controller
-        control={control}
+        control={form.control}
         name="formats"
         render={({ field, fieldState }) => (
           <FieldSet>
-            <FieldLegend>Formats</FieldLegend>
+            <FieldLegend variant="label">Formats</FieldLegend>
             <FieldDescription>
               Choose the formats you want to enable
             </FieldDescription>
-            <FieldGroup>
+            <FieldGroup className="flex-row gap-2">
               {(["video", "audio", "text"] as const).map((format) => (
                 <Field
                   key={format}
@@ -127,14 +131,17 @@ export default function FormPreferenceCreationForm() {
           </FieldSet>
         )}
       />
-      <Field>
-        <FieldLabel>Agreements</FieldLabel>
+      <FieldSet>
+        <FieldLegend variant="label">Agreements</FieldLegend>
+        <FieldDescription>
+          Add and remove agreements as needed.
+        </FieldDescription>
 
-        <div className="flex flex-col gap-2">
-          {fields.map((item, index) => (
+        <FieldGroup className="gap-2">
+          {agreementArray.fields.map((item, index) => (
             <Controller
               key={item.id}
-              control={control}
+              control={form.control}
               name={`agreements.${index}.value`}
               render={({ field, fieldState }) => (
                 <div className="flex gap-2 items-start">
@@ -144,31 +151,33 @@ export default function FormPreferenceCreationForm() {
                     aria-invalid={fieldState.invalid}
                   />
 
-                  {fields.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="text-sm text-red-500"
+                  {agreementArray.fields.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      className="text-destructive"
+                      onClick={() => agreementArray.remove(index)}
                     >
-                      ✕
-                    </button>
+                      <XIcon />
+                    </Button>
                   )}
                 </div>
               )}
             />
           ))}
-        </div>
+        </FieldGroup>
 
-        {fields.length < 3 && (
-          <button
+        {agreementArray.fields.length < 3 && (
+          <Button
+            variant="outline"
             type="button"
-            onClick={() => append({ value: defaultAgreement })}
-            className="text-sm text-blue-500 mt-2"
+            onClick={() => agreementArray.append({ value: "" })}
+            className="border-dashed"
           >
-            + Add agreement
-          </button>
+            <PlusIcon /> Add agreement
+          </Button>
         )}
-      </Field>
+      </FieldSet>
     </form>
   );
 }

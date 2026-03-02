@@ -1,10 +1,19 @@
 import z from "zod";
 
+const formatSchema = z.union([
+  z.literal("audio"),
+  z.literal("video"),
+  z.literal("text"),
+]);
+
 export const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  textEnabled: z.boolean(),
-  audioEnabled: z.boolean(),
-  videoEnabled: z.boolean(),
+  formats: z
+    .array(formatSchema)
+    .min(1, {
+      error: "At least one format must be selected",
+    })
+    .max(3),
   agreements: z
     .array(
       z.object({
