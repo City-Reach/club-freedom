@@ -40,7 +40,7 @@ import {
   VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
-import { defaultAgreement } from "../form-preferences/formSchema";
+import { defaultAgreement } from "../form-preferences/schema";
 export default function TestimonialForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",

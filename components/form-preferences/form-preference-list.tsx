@@ -56,6 +56,17 @@ export default function FormPreferenceList() {
         </EmptyContent>
       </Empty>
     );
+
+  if (data.length <= 0) {
+    return (
+      <Empty className="bg-muted">
+        <EmptyHeader>
+          <EmptyTitle>No testimonial form created</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
+
   return (
     <ul className="grid gap-2">
       {data.map((formPreference, index) => (

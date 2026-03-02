@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import {
   type FormSchema,
   formSchema,
-} from "@/components/form-preferences/formSchema";
+} from "@/components/form-preferences/schema";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
