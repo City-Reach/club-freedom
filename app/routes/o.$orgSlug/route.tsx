@@ -12,22 +12,11 @@ export const Route = createFileRoute("/o/$orgSlug")({
       }),
     );
 
-    if (organization && organization['slug'] === 'organization-2') {
-      const theme = organizationThemes.bam;
-      applyTheme(theme);
-    }
-
-
     if (!organization) {
       throw notFound();
     }
 
     return { organization };
-  },
-  onLeave: () => {
-    console.log("test");
-    const theme = organizationThemes.default;
-    applyTheme(theme);
   },
   head: ({ matches }) => {
     const routeMatch = matches.find((match) => match.routeId === "/o/$orgSlug");
