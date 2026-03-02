@@ -1,6 +1,6 @@
+import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import TestimonialForm from "@/components/testimonial-form";
-import { convexQuery } from "@convex-dev/react-query";
 import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$orgSlug/_public/")({
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/o/$orgSlug/_public/")({
       }),
     );
     return { formPreferenceArray };
-  }
+  },
 });
 
 function TestimonialSubmissionPage() {

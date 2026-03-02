@@ -339,7 +339,6 @@ export default function TestimonialForm() {
 
               return (
                 <Field data-invalid={fieldState.invalid}>
-
                   <div className="flex flex-col gap-2">
                     {agreements.map((agreement, index) => {
                       const checked = selected.includes(agreement);
