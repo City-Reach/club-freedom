@@ -79,7 +79,7 @@ function ActivateFormPreference() {
       size="sm"
       onClick={() => handleActivate()}
     >
-      Activate
+      {formPreference.activated ? "Activated" : "Activate"}
     </Button>
   );
 }

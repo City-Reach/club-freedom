@@ -10,6 +10,7 @@ import {
   type FormSchema,
   formSchema,
 } from "@/components/form-preferences/formSchema";
+import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -57,14 +58,17 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
     resolver: zodResolver(formSchema),
   });
 
-  const { control } = form;
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty, isSubmitting },
+  } = form;
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "agreements",
   });
 
-  // Sync fetched data into form
   useEffect(() => {
     if (!formPreference) return;
 
@@ -86,15 +90,6 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
         audioEnabled: data.audioEnabled,
         videoEnabled: data.videoEnabled,
         agreements: data.agreements.map((a) => a.value),
-      });
-
-      // Reset to latest saved values
-      form.reset({
-        name: data.name,
-        textEnabled: data.textEnabled,
-        audioEnabled: data.audioEnabled,
-        videoEnabled: data.videoEnabled,
-        agreements: data.agreements,
       });
 
       toast.success("Form preference updated successfully!", {
@@ -125,9 +120,8 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
       <form
         className="flex flex-col gap-4"
         id="organization-form-preference"
-        onSubmit={form.handleSubmit(handleUpdateForm)}
+        onSubmit={handleSubmit(handleUpdateForm)}
       >
-        {/* Name */}
         <Controller
           control={control}
           name="name"
@@ -144,8 +138,6 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
             </Field>
           )}
         />
-
-        {/* Text Enabled */}
         <Controller
           control={control}
           name="textEnabled"
@@ -172,8 +164,6 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
             </Field>
           )}
         />
-
-        {/* Audio Enabled */}
         <Controller
           control={control}
           name="audioEnabled"
@@ -200,8 +190,6 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
             </Field>
           )}
         />
-
-        {/* Video Enabled */}
         <Controller
           control={control}
           name="videoEnabled"
@@ -228,8 +216,6 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
             </Field>
           )}
         />
-
-        {/* Agreements */}
         <Field>
           <FieldLabel>Agreements</FieldLabel>
 
@@ -271,6 +257,17 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
             </button>
           )}
         </Field>
+        <Button
+          type="submit"
+          disabled={!isDirty || isSubmitting}
+          className={`mt-4 px-4 py-2 rounded ${
+            isDirty
+              ? "text-white"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          {isSubmitting ? "Saving..." : "Save Changes"}
+        </Button>
       </form>
     </FormPreferenceContext.Provider>
   );
