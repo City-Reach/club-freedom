@@ -12,6 +12,7 @@ import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
 import { useEffect, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
+import Markdown from "react-markdown";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
 import {
@@ -23,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldError,
   FieldLabel,
@@ -41,7 +41,6 @@ import {
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 import { defaultAgreement } from "../form-preferences/formSchema";
-
 export default function TestimonialForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
@@ -59,8 +58,7 @@ export default function TestimonialForm() {
       : null;
 
   const agreements =
-    formPreference?.agreements &&
-    formPreference.agreements?.length > 0
+    formPreference?.agreements && formPreference.agreements?.length > 0
       ? formPreference.agreements
       : [defaultAgreement];
 
@@ -341,7 +339,20 @@ export default function TestimonialForm() {
                             }
                           />
                           <FieldLabel htmlFor={`agreement-${index}`}>
-                            {agreement}
+                            <Markdown
+                              components={{
+                                a: ({ node, ...props }) => (
+                                  <a
+                                    {...props}
+                                    target="_blank" // opens link in new tab
+                                    rel="noopener noreferrer" // security best practice
+                                    className="text-blue-600 underline" // optional styling
+                                  />
+                                ),
+                              }}
+                            >
+                              {agreement}
+                            </Markdown>
                           </FieldLabel>
                         </div>
                       );
@@ -374,9 +385,10 @@ export default function TestimonialForm() {
             )}
           />
 
-          <Button type="submit" disabled={
-            form.formState.isSubmitting || !allAgreementsAccepted
-          }>
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting || !allAgreementsAccepted}
+          >
             {form.formState.isSubmitting && <Spinner />}
             {form.formState.isSubmitting ? "Submitting..." : "Submit"}
           </Button>
