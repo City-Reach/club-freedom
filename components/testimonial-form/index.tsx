@@ -255,72 +255,72 @@ export default function TestimonialForm() {
               </TabsContent>
             )}
             {audioEnabled && (
-            <TabsContent value="audio">
-              <Controller
-                control={form.control}
-                name="mediaFile"
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Audio Testimonial
-                    </FieldLabel>
-                    <FieldDescription>
-                      Please find a quiet place to record your audio
-                      testimonial.
-                    </FieldDescription>
-                    <FieldDescription>
-                      Time limit:{" "}
-                      <strong>
-                        {formatDistance(
-                          0,
-                          AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
-                        )}
-                      </strong>
-                    </FieldDescription>
-                    <ClientOnly>
-                      <AudioRecorder />
-                    </ClientOnly>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </TabsContent>
+              <TabsContent value="audio">
+                <Controller
+                  control={form.control}
+                  name="mediaFile"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>
+                        Audio Testimonial
+                      </FieldLabel>
+                      <FieldDescription>
+                        Please find a quiet place to record your audio
+                        testimonial.
+                      </FieldDescription>
+                      <FieldDescription>
+                        Time limit:{" "}
+                        <strong>
+                          {formatDistance(
+                            0,
+                            AUDIO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
+                          )}
+                        </strong>
+                      </FieldDescription>
+                      <ClientOnly>
+                        <AudioRecorder />
+                      </ClientOnly>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </TabsContent>
             )}
             {videoEnabled && (
-            <TabsContent value="video">
-              <Controller
-                control={form.control}
-                name="mediaFile"
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Video Testimonial
-                    </FieldLabel>
-                    <FieldDescription>
-                      Please find a quiet place to record your video
-                      testimonial.
-                    </FieldDescription>
-                    <FieldDescription>
-                      Time limit:{" "}
-                      <strong>
-                        {formatDistance(
-                          0,
-                          VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
-                        )}
-                      </strong>
-                    </FieldDescription>
-                    <ClientOnly>
-                      <VideoRecorder />
-                    </ClientOnly>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-            </TabsContent>
+              <TabsContent value="video">
+                <Controller
+                  control={form.control}
+                  name="mediaFile"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>
+                        Video Testimonial
+                      </FieldLabel>
+                      <FieldDescription>
+                        Please find a quiet place to record your video
+                        testimonial.
+                      </FieldDescription>
+                      <FieldDescription>
+                        Time limit:{" "}
+                        <strong>
+                          {formatDistance(
+                            0,
+                            VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS * 1000,
+                          )}
+                        </strong>
+                      </FieldDescription>
+                      <ClientOnly>
+                        <VideoRecorder />
+                      </ClientOnly>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </TabsContent>
             )}
           </Tabs>
           <Controller
