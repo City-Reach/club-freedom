@@ -41,10 +41,22 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.1(react@19.2.4))
+      '@lexical/link':
+        specifier: ^0.41.0
+        version: 0.41.0
+      '@lexical/markdown':
+        specifier: ^0.41.0
+        version: 0.41.0
       '@lexical/react':
         specifier: ^0.41.0
         version: 0.41.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yjs@13.6.29)
       '@lexical/rich-text':
+        specifier: ^0.41.0
+        version: 0.41.0
+      '@lexical/selection':
+        specifier: ^0.41.0
+        version: 0.41.0
+      '@lexical/utils':
         specifier: ^0.41.0
         version: 0.41.0
       '@marsidev/react-turnstile':
