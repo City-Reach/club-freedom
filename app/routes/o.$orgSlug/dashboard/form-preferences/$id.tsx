@@ -1,33 +1,50 @@
 import { convexQuery } from "@convex-dev/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { api } from "@/convex/_generated/api";
 import FormPreferenceEditForm from "./-components/form/edit";
+import { FormPreferenceContext } from "@/contexts/form-preference-context";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
 export const Route = createFileRoute(
   "/o/$orgSlug/dashboard/form-preferences/$id",
 )({
   component: RouteComponent,
   loader: async ({ context, params }) => {
-    const formPreferences = await context.queryClient.ensureQueryData(
+    const formPreference = await context.queryClient.ensureQueryData(
       convexQuery(api.formPreferences.getFormPreferenceByIdAndOrgId, {
         id: params.id,
         orgId: context.organization._id,
       }),
     );
 
-    if (!formPreferences) {
+    if (!formPreference) {
       throw notFound();
     }
 
-    return { formPreferences };
+    return { formPreference };
   },
 });
 
 function RouteComponent() {
+  const { formPreference } = Route.useLoaderData();
+
   return (
-    <div className="grid max-w-3xl w-full gap-8 mx-auto p-4 pt-8">
-      <h2 className="font-semibold">Edit testimonial form</h2>
-      <FormPreferenceEditForm />
-    </div>
+    <FormPreferenceContext.Provider
+      value={{
+        formPreference,
+      }}
+    >
+      <div className="grid max-w-3xl w-full gap-8 mx-auto p-4 pt-8">
+        <div>
+          <Button asChild variant="link" className="px-0! self-start">
+            <Link to="..">
+              <ChevronLeft /> Back
+            </Link>
+          </Button>
+        </div>
+        <FormPreferenceEditForm />
+      </div>
+    </FormPreferenceContext.Provider>
   );
 }

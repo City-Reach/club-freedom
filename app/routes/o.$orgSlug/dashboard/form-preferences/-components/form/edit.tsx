@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
 import { PlusIcon } from "lucide-react";
+import { useMemo } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,32 +22,35 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
+import ActivateFormPreference from "../actions/activate";
 import MarkdownEditorWithLinks from "./agreement-editor";
 import { defaultAgreement, type FormSchema, formSchema } from "./schema";
-import { useMemo } from "react";
+import RemoveFormPreference from "../actions/remove";
+
+export const FORM_ID = "form-preference-edit-form";
 
 export default function FormPreferenceEditForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
 
-  const { formPreferences } = useLoaderData({
+  const { formPreference } = useLoaderData({
     from: "/o/$orgSlug/dashboard/form-preferences/$id",
   });
 
   const formats = useMemo(() => {
     const result = [] as ("video" | "audio" | "text")[];
-    if (formPreferences.videoEnabled) {
+    if (formPreference.videoEnabled) {
       result.push("video");
     }
-    if (formPreferences.audioEnabled) {
+    if (formPreference.audioEnabled) {
       result.push("audio");
     }
-    if (formPreferences.textEnabled) {
+    if (formPreference.textEnabled) {
       result.push("text");
     }
     return result;
-  }, [formPreferences]);
+  }, [formPreference]);
 
   const updateFormPreference = useMutation(
     api.formPreferences.updateFormPreference,
@@ -55,7 +59,7 @@ export default function FormPreferenceEditForm() {
 
   const form = useForm<FormSchema>({
     defaultValues: {
-      name: formPreferences.name,
+      name: formPreference.name,
       formats,
       agreements: [{ value: defaultAgreement }],
     },
@@ -72,14 +76,13 @@ export default function FormPreferenceEditForm() {
   const handleCreateForm = async (data: FormSchema) => {
     try {
       await updateFormPreference({
-        _id: formPreferences._id,
+        _id: formPreference._id,
         name: data.name,
         textEnabled: data.formats.includes("text"),
         audioEnabled: data.formats.includes("audio"),
         videoEnabled: data.formats.includes("video"),
         agreements: data.agreements.map((a) => a.value),
       });
-      form.reset();
       toast.success("Form preference created successfully!", {
         description: "Thank you for creating a form preference.",
       });
@@ -98,7 +101,7 @@ export default function FormPreferenceEditForm() {
   return (
     <form
       className="flex flex-col gap-8"
-      id="organization-form-preference"
+      id={FORM_ID}
       onSubmit={form.handleSubmit(handleCreateForm)}
     >
       <Controller
@@ -199,7 +202,11 @@ export default function FormPreferenceEditForm() {
         )}
       </FieldSet>
 
-      <Button type="submit">Create</Button>
+      <div className="flex gap-2">
+        <ActivateFormPreference variant="outline" />
+        <RemoveFormPreference variant="destructive" />
+        <Button type="submit">Update</Button>
+      </div>
     </form>
   );
 }

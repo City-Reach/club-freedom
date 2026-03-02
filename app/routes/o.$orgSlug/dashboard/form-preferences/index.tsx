@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import FormPreferenceList from "@/components/form-preferences/form-preference-list";
 import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+import FormPreferenceList from "./-components/list";
+import LoadingFormPreferenceList from "./-components/list/loading";
 
 export const Route = createFileRoute("/o/$orgSlug/dashboard/form-preferences/")(
   {
@@ -17,7 +19,9 @@ function RouteComponent() {
           <PlusIcon /> New Form
         </Link>
       </Button>
-      <FormPreferenceList />
+      <Suspense fallback={<LoadingFormPreferenceList />}>
+        <FormPreferenceList />
+      </Suspense>
     </div>
   );
 }
