@@ -15,6 +15,7 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import Markdown from "react-markdown";
 import { toast } from "sonner";
 import { validateTurnstileTokenServerFn } from "@/app/functions/turnstile";
+import { defaultAgreement } from "@/app/routes/o.$orgSlug/dashboard/form-preferences/-components/form/schema";
 import {
   AudioRecorder,
   VideoRecorder,
@@ -42,7 +43,6 @@ import {
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
 import { cn } from "@/lib/utils";
-import { defaultAgreement } from "../form-preferences/schema";
 export default function TestimonialForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",

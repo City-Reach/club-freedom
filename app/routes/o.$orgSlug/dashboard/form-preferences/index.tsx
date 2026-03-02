@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
 import FormPreferenceList from "./-components/list";
 import LoadingFormPreferenceList from "./-components/list/loading";
 

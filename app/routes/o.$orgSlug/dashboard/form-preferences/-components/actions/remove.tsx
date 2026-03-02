@@ -1,5 +1,6 @@
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
+import type { ComponentProps } from "react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -15,7 +16,6 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useFormPreferenceContext } from "@/contexts/form-preference-context";
 import { api } from "@/convex/_generated/api";
-import type { ComponentProps } from "react";
 
 export default function RemoveFormPreference(
   props: ComponentProps<typeof Button>,

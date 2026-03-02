@@ -23,9 +23,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import ActivateFormPreference from "../actions/activate";
+import RemoveFormPreference from "../actions/remove";
 import MarkdownEditorWithLinks from "./agreement-editor";
 import { defaultAgreement, type FormSchema, formSchema } from "./schema";
-import RemoveFormPreference from "../actions/remove";
 
 export const FORM_ID = "form-preference-edit-form";
 

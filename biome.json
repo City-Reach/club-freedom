@@ -11,6 +11,7 @@
       "!!**/dist",
       "!!**/_generated",
       "!!**/components/ui",
+      "!!**/components/editor",
       "!!app/routeTree.gen.ts"
     ]
   },
