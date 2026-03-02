@@ -1,4 +1,4 @@
-import { useConvexMutation } from "@convex-dev/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
 import {
@@ -39,12 +39,19 @@ import {
   VIDEO_RECORDING_TIME_LIMIT_IN_SECONDS,
 } from "@/lib/media";
 import { type Testimonial, testimonialSchema } from "@/lib/schema/testimonials";
+import { useQuery } from "@tanstack/react-query";
+import { defaultAgreement } from "../form-preferences/formSchema";
 
 export default function TestimonialForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
-
+  const { isLoading, data: formPreferenceArray, error } = useQuery(
+    convexQuery(api.formPreferences.getActiveFormPreferenceByOrgId, {
+      organizationId: organization._id,
+    }),
+  );
+  const formPreference = formPreferenceArray && formPreferenceArray.length > 0 ? formPreferenceArray[0] : null;
   const form = useForm<Testimonial>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
@@ -55,6 +62,10 @@ export default function TestimonialForm() {
       turnstileToken: "",
     },
   });
+  const agreements: string[] =
+    formPreference && formPreference.agreements && formPreference.agreements.length > 0
+      ? formPreference.agreements
+      : [defaultAgreement];
   const navigation = useNavigate();
   const uploadFile = useUploadFile();
   const generateUploadUrl = useConvexMutation(
@@ -283,7 +294,6 @@ export default function TestimonialForm() {
               />
             </TabsContent>
           </Tabs>
-
           <Controller
             control={form.control}
             name="consent"

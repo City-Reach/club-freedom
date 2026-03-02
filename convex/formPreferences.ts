@@ -33,6 +33,16 @@ export async function getActivatedFormPreferencesByOrgId(
   return formPreferences;
 }
 
+export const getActiveFormPreferenceByOrgId = query({
+  args: {
+    organizationId: v.string(),
+  },
+  handler: async (ctx, { organizationId }) => {
+    const formPreference = await getActivatedFormPreferencesByOrgId(ctx, organizationId);
+    return formPreference;
+  },
+});
+
 export const getFormPreferenceByOrgId = query({
   args: {
     organizationId: v.string(),
