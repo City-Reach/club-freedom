@@ -1,9 +1,9 @@
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { useConvexMutation } from "@convex-dev/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useQuery } from "@tanstack/react-query";
 import {
   ClientOnly,
+  useLoaderData,
   useNavigate,
   useRouteContext,
 } from "@tanstack/react-router";
@@ -45,12 +45,9 @@ export default function TestimonialForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
-
-  const { data: formPreferenceArray } = useQuery(
-    convexQuery(api.formPreferences.getActiveFormPreferenceByOrgId, {
-      organizationId: organization._id,
-    }),
-  );
+  const { formPreferenceArray } = useLoaderData({
+    from: "/o/$orgSlug/_public/",
+  });
 
   const formPreference =
     formPreferenceArray && formPreferenceArray.length > 0
@@ -90,9 +87,12 @@ export default function TestimonialForm() {
   );
   const postTestimonial = useMutation(api.testimonials.postTestimonial);
   const validateTurnstileToken = useServerFn(validateTurnstileTokenServerFn);
-
-  const [tabValue, setTabValue] = useState("video");
-
+  const getInitialTab = () => {
+    if (videoEnabled) return "video";
+    if (audioEnabled) return "audio";
+    return "text";
+  };
+  const [tabValue, setTabValue] = useState(getInitialTab);
   const handleTabChange = (value: string) => {
     setTabValue(value);
     form.resetField("mediaFile");
@@ -339,7 +339,6 @@ export default function TestimonialForm() {
 
               return (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Agreements</FieldLabel>
 
                   <div className="flex flex-col gap-2">
                     {agreements.map((agreement, index) => {

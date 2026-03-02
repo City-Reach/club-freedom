@@ -1,8 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import TestimonialForm from "@/components/testimonial-form";
+import { convexQuery } from "@convex-dev/react-query";
+import { api } from "@/convex/_generated/api";
 
 export const Route = createFileRoute("/o/$orgSlug/_public/")({
   component: TestimonialSubmissionPage,
+  loader: async ({ context }) => {
+    const formPreferenceArray = await context.queryClient.ensureQueryData(
+      convexQuery(api.formPreferences.getActiveFormPreferenceByOrgId, {
+        organizationId: context.organization._id,
+      }),
+    );
+    return { formPreferenceArray };
+  }
 });
 
 function TestimonialSubmissionPage() {
