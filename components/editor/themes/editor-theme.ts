@@ -1,6 +1,6 @@
-import { EditorThemeClasses } from "lexical"
+import type { EditorThemeClasses } from "lexical";
 
-import "./editor-theme.css"
+import "./editor-theme.css";
 
 export const editorTheme: EditorThemeClasses = {
   ltr: "text-left",
@@ -15,7 +15,7 @@ export const editorTheme: EditorThemeClasses = {
   },
   paragraph: "leading-7 [&:not(:first-child)]:mt-6",
   quote: "mt-6 border-l-2 pl-6 italic",
-  link: "text-blue-600 hover:underline hover:cursor-pointer",
+  link: "text-primary hover:underline hover:cursor-pointer",
   list: {
     checklist: "relative",
     listitem: "mx-8",
@@ -127,4 +127,4 @@ export const editorTheme: EditorThemeClasses = {
   indent: "[--lexical-indent-base-value:40px]",
   mark: "",
   markOverlap: "",
-}
+};
