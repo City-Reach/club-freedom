@@ -31,6 +31,7 @@ export default function FormPreferenceCreationForm() {
 
   const form = useForm<FormSchema>({
     defaultValues: {
+      name: "",
       formats: ["video", "audio", "text"],
       agreements: [{ value: defaultAgreement }],
     },
@@ -131,6 +132,7 @@ export default function FormPreferenceCreationForm() {
                 </Field>
               ))}
             </FieldGroup>
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </FieldSet>
         )}
       />

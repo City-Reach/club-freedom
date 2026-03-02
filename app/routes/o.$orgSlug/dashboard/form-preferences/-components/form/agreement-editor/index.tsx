@@ -10,6 +10,7 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { type EditorState, ParagraphNode, TextNode } from "lexical";
 import { Trash } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -22,6 +23,7 @@ import { ToolbarPlugin } from "@/components/editor/plugins/toolbar/toolbar-plugi
 import { editorTheme } from "@/components/editor/themes/editor-theme";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { HistoryToolbarPlugin } from "@/components/editor/plugins/toolbar/history-toolbar-plugin";
 
 type Props = {
   markdown: string;
@@ -71,6 +73,7 @@ export default function MarkdownEditorWithLinks({
               {() => (
                 <div className="sticky top-0 z-10 flex gap-2 overflow-auto border-b p-1">
                   <LinkToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+                  <HistoryToolbarPlugin />
                   {onDelete && (
                     <Button
                       variant="destructive"
@@ -99,6 +102,7 @@ export default function MarkdownEditorWithLinks({
               <ClickableLinkPlugin />
               <AutoLinkPlugin />
               <LinkPlugin />
+              <HistoryPlugin />
               <FloatingLinkEditorPlugin
                 anchorElem={floatingAnchorElem}
                 isLinkEditMode={isLinkEditMode}
