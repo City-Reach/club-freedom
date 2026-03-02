@@ -6,9 +6,9 @@ export const testimonialSchema = z
     email: z.email("Please enter a valid email address").or(z.literal("")),
     mediaFile: z.file({ error: "Please record your testimonial" }).optional(),
     writtenText: z.string(),
-    consent: z.boolean().refine((val) => val === true, {
-      message: "You must agree to the terms",
-    }),
+    agreementsAccepted: z
+      .array(z.string())
+      .min(1, "You must accept all agreements"),
     turnstileToken: z.string().min(1, "Please complete the human verification"),
   })
   .superRefine((data, ctx) => {
