@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import FormPreferenceForm from "./-components/form-preference-form";
+import FormPreferenceForm from "./-components/form";
 
 export const Route = createFileRoute(
   "/o/$orgSlug/dashboard/form-preferences/new",

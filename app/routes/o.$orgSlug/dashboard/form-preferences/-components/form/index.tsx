@@ -1,14 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouteContext } from "@tanstack/react-router";
+import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
-import { PlusIcon, XIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import {
-  defaultAgreement,
-  type FormSchema,
-  formSchema,
-} from "@/components/form-preferences/schema";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -21,16 +16,18 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
+import MarkdownEditorWithLinks from "./agreement-editor";
+import { defaultAgreement, type FormSchema, formSchema } from "./schema";
 
-export default function FormPreferenceForm() {
+export default function FormPreferenceCreationForm() {
   const { organization } = useRouteContext({
     from: "/o/$orgSlug",
   });
   const postFormPreference = useMutation(
     api.formPreferences.postFormPreference,
   );
+  const router = useRouter();
 
   const form = useForm<FormSchema>({
     defaultValues: {
@@ -40,8 +37,10 @@ export default function FormPreferenceForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const agreementArray = useFieldArray({
-    control: form.control,
+  const { control } = form;
+
+  const { fields, append, remove } = useFieldArray({
+    control,
     name: "agreements",
   });
 
@@ -59,6 +58,10 @@ export default function FormPreferenceForm() {
       toast.success("Form preference created successfully!", {
         description: "Thank you for creating a form preference.",
       });
+      await router.navigate({
+        to: "/o/$orgSlug/dashboard/form-preferences",
+        params: { orgSlug: organization.slug },
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       toast.error("Failed to submit form preference", {
@@ -74,7 +77,7 @@ export default function FormPreferenceForm() {
       onSubmit={form.handleSubmit(handleCreateForm)}
     >
       <Controller
-        control={form.control}
+        control={control}
         name="name"
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
@@ -93,15 +96,15 @@ export default function FormPreferenceForm() {
         )}
       />
       <Controller
-        control={form.control}
+        control={control}
         name="formats"
         render={({ field, fieldState }) => (
           <FieldSet>
-            <FieldLegend variant="label">Formats</FieldLegend>
+            <FieldLegend>Formats</FieldLegend>
             <FieldDescription>
               Choose the formats you want to enable
             </FieldDescription>
-            <FieldGroup className="flex-row gap-2">
+            <FieldGroup className="flow-col @sm/dashboard:flex-row gap-2">
               {(["video", "audio", "text"] as const).map((format) => (
                 <Field
                   key={format}
@@ -132,52 +135,45 @@ export default function FormPreferenceForm() {
         )}
       />
       <FieldSet>
-        <FieldLegend variant="label">Agreements</FieldLegend>
-        <FieldDescription>
-          Add and remove agreements as needed.
-        </FieldDescription>
+        <FieldLegend>Agreements</FieldLegend>
+        <FieldDescription>Add or remove agreements</FieldDescription>
 
-        <FieldGroup className="gap-2">
-          {agreementArray.fields.map((item, index) => (
+        <div className="flex flex-col gap-2">
+          {fields.map((item, index) => (
             <Controller
               key={item.id}
-              control={form.control}
+              control={control}
               name={`agreements.${index}.value`}
-              render={({ field, fieldState }) => (
-                <div className="flex gap-2 items-start">
-                  <Textarea
-                    {...field}
-                    placeholder={defaultAgreement}
-                    aria-invalid={fieldState.invalid}
-                  />
-
-                  {agreementArray.fields.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-destructive"
-                      onClick={() => agreementArray.remove(index)}
-                    >
-                      <XIcon />
-                    </Button>
-                  )}
-                </div>
+              render={({ field }) => (
+                <MarkdownEditorWithLinks
+                  markdown={field.value}
+                  onMarkdownChange={field.onChange}
+                  onDelete={
+                    fields.length > 1
+                      ? () => {
+                          remove(index);
+                        }
+                      : undefined
+                  }
+                />
               )}
             />
           ))}
-        </FieldGroup>
+        </div>
 
-        {agreementArray.fields.length < 3 && (
+        {fields.length < 3 && (
           <Button
-            variant="outline"
             type="button"
-            onClick={() => agreementArray.append({ value: "" })}
+            variant="outline"
+            onClick={() => append({ value: defaultAgreement })}
             className="border-dashed"
           >
             <PlusIcon /> Add agreement
           </Button>
         )}
       </FieldSet>
+
+      <Button type="submit">Create</Button>
     </form>
   );
 }
