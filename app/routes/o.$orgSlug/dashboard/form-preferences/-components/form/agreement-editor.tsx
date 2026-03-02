@@ -7,10 +7,10 @@ import {
 import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { type EditorState, ParagraphNode, TextNode } from "lexical";
 import { Trash } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -18,12 +18,12 @@ import { ContentEditable } from "@/components/editor/editor-ui/content-editable"
 import { AutoLinkPlugin } from "@/components/editor/plugins/auto-link-plugin";
 import { FloatingLinkEditorPlugin } from "@/components/editor/plugins/floating-link-editor-plugin";
 import { LinkPlugin } from "@/components/editor/plugins/link-plugin";
+import { HistoryToolbarPlugin } from "@/components/editor/plugins/toolbar/history-toolbar-plugin";
 import { LinkToolbarPlugin } from "@/components/editor/plugins/toolbar/link-toolbar-plugin";
 import { ToolbarPlugin } from "@/components/editor/plugins/toolbar/toolbar-plugin";
 import { editorTheme } from "@/components/editor/themes/editor-theme";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { HistoryToolbarPlugin } from "@/components/editor/plugins/toolbar/history-toolbar-plugin";
 
 type Props = {
   markdown: string;
@@ -31,7 +31,7 @@ type Props = {
   onDelete?: () => void;
 };
 
-export default function MarkdownEditorWithLinks({
+export default function AgreementEditor({
   markdown,
   onMarkdownChange,
   onDelete,

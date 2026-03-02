@@ -61,7 +61,9 @@ export default function FormPreferenceEditForm() {
     defaultValues: {
       name: formPreference.name,
       formats,
-      agreements: [{ value: defaultAgreement }],
+      agreements: formPreference.agreements?.map((value) => ({ value })) || [
+        { value: defaultAgreement },
+      ],
     },
     resolver: zodResolver(formSchema),
   });

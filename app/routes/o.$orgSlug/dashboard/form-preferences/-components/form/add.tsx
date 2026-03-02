@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
-import MarkdownEditorWithLinks from "./agreement-editor";
+import AgreementEditor from "./agreement-editor";
 import { defaultAgreement, type FormSchema, formSchema } from "./schema";
 
 export default function FormPreferenceCreationForm() {
@@ -147,7 +147,7 @@ export default function FormPreferenceCreationForm() {
               control={control}
               name={`agreements.${index}.value`}
               render={({ field }) => (
-                <MarkdownEditorWithLinks
+                <AgreementEditor
                   markdown={field.value}
                   onMarkdownChange={field.onChange}
                   onDelete={
