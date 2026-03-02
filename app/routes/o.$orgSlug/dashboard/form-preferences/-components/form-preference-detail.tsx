@@ -233,28 +233,35 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
                     />
 
                     {fields.length > 1 && (
-                      <button
+                      <Button
                         type="button"
+                        size="sm"
+                        variant="ghost"
                         onClick={() => remove(index)}
                         className="text-sm text-red-500"
                       >
                         ✕
-                      </button>
+                      </Button>
                     )}
                   </div>
                 )}
               />
             ))}
+            To create a link in agreements, enclose the link text in brackets (e.g., [Your Link Text]) and then follow it 
+      immediately with the URL in parentheses (e.g., (https://yourlinkurl.com)). 
+      <div>
+      Example: [Google](https://www.google.com) will render as <a className="text-blue-600 underline" href="https://www.google.com" target="_blank">Google</a>.
+      </div>
           </div>
 
           {fields.length < 3 && (
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={() => append({ value: "" })}
-              className="text-sm text-blue-500 mt-2"
             >
               + Add agreement
-            </button>
+            </Button>
           )}
         </Field>
         <Button
