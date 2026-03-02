@@ -1,23 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { useMutation } from "convex/react";
-import { PlusIcon } from "lucide-react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
 import { api } from "@/convex/_generated/api";
-import AgreementEditor from "./agreement-editor";
+import AgreementsField from "./fields/agreements";
+import FormatsField from "./fields/formats";
+import NameField from "./fields/name";
 import { defaultAgreement, type FormSchema, formSchema } from "./schema";
 
 export default function FormPreferenceCreationForm() {
@@ -36,13 +27,6 @@ export default function FormPreferenceCreationForm() {
       agreements: [{ value: defaultAgreement }],
     },
     resolver: zodResolver(formSchema),
-  });
-
-  const { control } = form;
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "agreements",
   });
 
   const handleCreateForm = async (data: FormSchema) => {
@@ -72,110 +56,22 @@ export default function FormPreferenceCreationForm() {
   };
 
   return (
-    <form
-      className="flex flex-col gap-8"
-      id="organization-form-preference"
-      onSubmit={form.handleSubmit(handleCreateForm)}
-    >
-      <Controller
-        control={control}
-        name="name"
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-            <FieldDescription>
-              Give a name for your testimonial form
-            </FieldDescription>
-            <Input
-              {...field}
-              id={field.name}
-              aria-invalid={fieldState.invalid}
-              placeholder="Testimonial form name"
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-      <Controller
-        control={control}
-        name="formats"
-        render={({ field, fieldState }) => (
-          <FieldSet>
-            <FieldLegend>Formats</FieldLegend>
-            <FieldDescription>
-              Choose the formats you want to enable
-            </FieldDescription>
-            <FieldGroup className="flow-col @sm/dashboard:flex-row gap-2">
-              {(["video", "audio", "text"] as const).map((format) => (
-                <Field
-                  key={format}
-                  orientation="horizontal"
-                  data-invalid={fieldState.invalid}
-                >
-                  <Checkbox
-                    id={`testimonial-format-${format}`}
-                    name={field.name}
-                    checked={field.value.includes(format)}
-                    onCheckedChange={(checked) => {
-                      const newValue = checked
-                        ? [...field.value, format]
-                        : field.value.filter((f) => f !== format);
-                      field.onChange(newValue);
-                    }}
-                  />
-                  <FieldLabel
-                    htmlFor={`testimonial-format-${format}`}
-                    className="font-normal"
-                  >
-                    {format}
-                  </FieldLabel>
-                </Field>
-              ))}
-            </FieldGroup>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </FieldSet>
-        )}
-      />
-      <FieldSet>
-        <FieldLegend>Agreements</FieldLegend>
-        <FieldDescription>Add or remove agreements</FieldDescription>
+    <FormProvider {...form}>
+      <form
+        className="flex flex-col gap-8"
+        id="organization-form-preference"
+        onSubmit={form.handleSubmit(handleCreateForm)}
+      >
+        <NameField />
+        <FormatsField />
+        <FieldSet>
+          <FieldLegend>Agreements</FieldLegend>
+          <FieldDescription>Add or remove agreements</FieldDescription>
+          <AgreementsField />
+        </FieldSet>
 
-        <div className="flex flex-col gap-2">
-          {fields.map((item, index) => (
-            <Controller
-              key={item.id}
-              control={control}
-              name={`agreements.${index}.value`}
-              render={({ field }) => (
-                <AgreementEditor
-                  markdown={field.value}
-                  onMarkdownChange={field.onChange}
-                  onDelete={
-                    fields.length > 1
-                      ? () => {
-                          remove(index);
-                        }
-                      : undefined
-                  }
-                />
-              )}
-            />
-          ))}
-        </div>
-
-        {fields.length < 3 && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => append({ value: defaultAgreement })}
-            className="border-dashed"
-          >
-            <PlusIcon /> Add agreement
-          </Button>
-        )}
-      </FieldSet>
-
-      <Button type="submit">Create</Button>
-    </form>
+        <Button type="submit">Create</Button>
+      </form>
+    </FormProvider>
   );
 }

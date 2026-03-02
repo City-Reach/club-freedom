@@ -52,8 +52,7 @@ export default function RemoveFormPreference(
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure you want to remove the{" "}
-            <strong>{formPreference.name}</strong> form?
+            Are you sure you want to remove this form?
           </AlertDialogTitle>
           <AlertDialogDescription>
             <strong>{formPreference.name}</strong> will be no longer a form
@@ -66,7 +65,6 @@ export default function RemoveFormPreference(
             onClick={() => handleDelete()}
             className={buttonVariants({
               variant: "destructive",
-              size: "xs",
             })}
           >
             Remove
