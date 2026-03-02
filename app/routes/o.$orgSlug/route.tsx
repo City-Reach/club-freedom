@@ -1,7 +1,6 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
 import { api } from "@/convex/_generated/api";
-import { applyTheme, organizationThemes } from "@/themes/default_themes";
 
 export const Route = createFileRoute("/o/$orgSlug")({
   component: Outlet,
