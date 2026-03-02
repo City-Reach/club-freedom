@@ -247,11 +247,21 @@ export default function FormPreferenceDetail({ formPreferenceId }: Props) {
                 )}
               />
             ))}
-            To create a link in agreements, enclose the link text in brackets (e.g., [Your Link Text]) and then follow it 
-      immediately with the URL in parentheses (e.g., (https://yourlinkurl.com)). 
-      <div>
-      Example: [Google](https://www.google.com) will render as <a className="text-blue-600 underline" href="https://www.google.com" target="_blank">Google</a>.
-      </div>
+            To create a link in agreements, enclose the link text in brackets
+            (e.g., [Your Link Text]) and then follow it immediately with the URL
+            in parentheses (e.g., (https://yourlinkurl.com)).
+            <div>
+              Example: [Google](https://www.google.com) will render as{" "}
+              <a
+                className="text-blue-600 underline"
+                href="https://www.google.com"
+                target="_blank"
+                rel="noopener"
+              >
+                Google
+              </a>
+              .
+            </div>
           </div>
 
           {fields.length < 3 && (
