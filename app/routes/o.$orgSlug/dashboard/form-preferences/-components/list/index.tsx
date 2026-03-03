@@ -89,7 +89,7 @@ export default function FormPreferenceList() {
                     id: formPreference._id,
                   }}
                 >
-                  View
+                  Edit
                 </Link>
               </Button>
               <ActivateFormPreference variant="outline" size="xs" />
