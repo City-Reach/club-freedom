@@ -29,10 +29,14 @@ import { Route as OOrgSlugPublicIndexRouteImport } from './routes/o.$orgSlug/_pu
 import { Route as OOrgSlugDashboardSettingsRouteImport } from './routes/o.$orgSlug/dashboard/settings'
 import { Route as OOrgSlugDashboardMembersRouteImport } from './routes/o.$orgSlug/dashboard/members'
 import { Route as OOrgSlugDashboardTestimonialsRouteRouteImport } from './routes/o.$orgSlug/dashboard/testimonials/route'
+import { Route as OOrgSlugDashboardFormPreferencesRouteRouteImport } from './routes/o.$orgSlug/dashboard/form-preferences/route'
 import { Route as OOrgSlugPublicTestimonialsRouteRouteImport } from './routes/o.$orgSlug/_public/testimonials/route'
 import { Route as OOrgSlugDashboardTestimonialsIndexRouteImport } from './routes/o.$orgSlug/dashboard/testimonials/index'
+import { Route as OOrgSlugDashboardFormPreferencesIndexRouteImport } from './routes/o.$orgSlug/dashboard/form-preferences/index'
 import { Route as OOrgSlugPublicTestimonialsIndexRouteImport } from './routes/o.$orgSlug/_public/testimonials/index'
 import { Route as OOrgSlugDashboardTestimonialsIdRouteImport } from './routes/o.$orgSlug/dashboard/testimonials/$id'
+import { Route as OOrgSlugDashboardFormPreferencesNewRouteImport } from './routes/o.$orgSlug/dashboard/form-preferences/new'
+import { Route as OOrgSlugDashboardFormPreferencesIdRouteImport } from './routes/o.$orgSlug/dashboard/form-preferences/$id'
 import { Route as OOrgSlugPublicTestimonialsIdRouteImport } from './routes/o.$orgSlug/_public/testimonials/$id'
 import { Route as OOrgSlugPublicTestimonialsTmpIdRouteImport } from './routes/o.$orgSlug/_public/testimonials/tmp.$id'
 
@@ -138,6 +142,12 @@ const OOrgSlugDashboardTestimonialsRouteRoute =
     path: '/testimonials',
     getParentRoute: () => OOrgSlugDashboardRouteRoute,
   } as any)
+const OOrgSlugDashboardFormPreferencesRouteRoute =
+  OOrgSlugDashboardFormPreferencesRouteRouteImport.update({
+    id: '/form-preferences',
+    path: '/form-preferences',
+    getParentRoute: () => OOrgSlugDashboardRouteRoute,
+  } as any)
 const OOrgSlugPublicTestimonialsRouteRoute =
   OOrgSlugPublicTestimonialsRouteRouteImport.update({
     id: '/testimonials',
@@ -150,6 +160,12 @@ const OOrgSlugDashboardTestimonialsIndexRoute =
     path: '/',
     getParentRoute: () => OOrgSlugDashboardTestimonialsRouteRoute,
   } as any)
+const OOrgSlugDashboardFormPreferencesIndexRoute =
+  OOrgSlugDashboardFormPreferencesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => OOrgSlugDashboardFormPreferencesRouteRoute,
+  } as any)
 const OOrgSlugPublicTestimonialsIndexRoute =
   OOrgSlugPublicTestimonialsIndexRouteImport.update({
     id: '/',
@@ -161,6 +177,18 @@ const OOrgSlugDashboardTestimonialsIdRoute =
     id: '/$id',
     path: '/$id',
     getParentRoute: () => OOrgSlugDashboardTestimonialsRouteRoute,
+  } as any)
+const OOrgSlugDashboardFormPreferencesNewRoute =
+  OOrgSlugDashboardFormPreferencesNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => OOrgSlugDashboardFormPreferencesRouteRoute,
+  } as any)
+const OOrgSlugDashboardFormPreferencesIdRoute =
+  OOrgSlugDashboardFormPreferencesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => OOrgSlugDashboardFormPreferencesRouteRoute,
   } as any)
 const OOrgSlugPublicTestimonialsIdRoute =
   OOrgSlugPublicTestimonialsIdRouteImport.update({
@@ -189,14 +217,18 @@ export interface FileRoutesByFullPath {
   '/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/testimonials': typeof OOrgSlugPublicTestimonialsRouteRouteWithChildren
+  '/o/$orgSlug/dashboard/form-preferences': typeof OOrgSlugDashboardFormPreferencesRouteRouteWithChildren
   '/o/$orgSlug/dashboard/testimonials': typeof OOrgSlugDashboardTestimonialsRouteRouteWithChildren
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
   '/o/$orgSlug/': typeof OOrgSlugPublicIndexRoute
   '/o/$orgSlug/dashboard/': typeof OOrgSlugDashboardIndexRoute
   '/o/$orgSlug/testimonials/$id': typeof OOrgSlugPublicTestimonialsIdRoute
+  '/o/$orgSlug/dashboard/form-preferences/$id': typeof OOrgSlugDashboardFormPreferencesIdRoute
+  '/o/$orgSlug/dashboard/form-preferences/new': typeof OOrgSlugDashboardFormPreferencesNewRoute
   '/o/$orgSlug/dashboard/testimonials/$id': typeof OOrgSlugDashboardTestimonialsIdRoute
   '/o/$orgSlug/testimonials/': typeof OOrgSlugPublicTestimonialsIndexRoute
+  '/o/$orgSlug/dashboard/form-preferences/': typeof OOrgSlugDashboardFormPreferencesIndexRoute
   '/o/$orgSlug/dashboard/testimonials/': typeof OOrgSlugDashboardTestimonialsIndexRoute
   '/o/$orgSlug/testimonials/tmp/$id': typeof OOrgSlugPublicTestimonialsTmpIdRoute
 }
@@ -215,8 +247,11 @@ export interface FileRoutesByTo {
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
   '/o/$orgSlug/dashboard': typeof OOrgSlugDashboardIndexRoute
   '/o/$orgSlug/testimonials/$id': typeof OOrgSlugPublicTestimonialsIdRoute
+  '/o/$orgSlug/dashboard/form-preferences/$id': typeof OOrgSlugDashboardFormPreferencesIdRoute
+  '/o/$orgSlug/dashboard/form-preferences/new': typeof OOrgSlugDashboardFormPreferencesNewRoute
   '/o/$orgSlug/dashboard/testimonials/$id': typeof OOrgSlugDashboardTestimonialsIdRoute
   '/o/$orgSlug/testimonials': typeof OOrgSlugPublicTestimonialsIndexRoute
+  '/o/$orgSlug/dashboard/form-preferences': typeof OOrgSlugDashboardFormPreferencesIndexRoute
   '/o/$orgSlug/dashboard/testimonials': typeof OOrgSlugDashboardTestimonialsIndexRoute
   '/o/$orgSlug/testimonials/tmp/$id': typeof OOrgSlugPublicTestimonialsTmpIdRoute
 }
@@ -238,14 +273,18 @@ export interface FileRoutesById {
   '/_auth/accept-invite/$inviteId': typeof AuthAcceptInviteInviteIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/o/$orgSlug/_public/testimonials': typeof OOrgSlugPublicTestimonialsRouteRouteWithChildren
+  '/o/$orgSlug/dashboard/form-preferences': typeof OOrgSlugDashboardFormPreferencesRouteRouteWithChildren
   '/o/$orgSlug/dashboard/testimonials': typeof OOrgSlugDashboardTestimonialsRouteRouteWithChildren
   '/o/$orgSlug/dashboard/members': typeof OOrgSlugDashboardMembersRoute
   '/o/$orgSlug/dashboard/settings': typeof OOrgSlugDashboardSettingsRoute
   '/o/$orgSlug/_public/': typeof OOrgSlugPublicIndexRoute
   '/o/$orgSlug/dashboard/': typeof OOrgSlugDashboardIndexRoute
   '/o/$orgSlug/_public/testimonials/$id': typeof OOrgSlugPublicTestimonialsIdRoute
+  '/o/$orgSlug/dashboard/form-preferences/$id': typeof OOrgSlugDashboardFormPreferencesIdRoute
+  '/o/$orgSlug/dashboard/form-preferences/new': typeof OOrgSlugDashboardFormPreferencesNewRoute
   '/o/$orgSlug/dashboard/testimonials/$id': typeof OOrgSlugDashboardTestimonialsIdRoute
   '/o/$orgSlug/_public/testimonials/': typeof OOrgSlugPublicTestimonialsIndexRoute
+  '/o/$orgSlug/dashboard/form-preferences/': typeof OOrgSlugDashboardFormPreferencesIndexRoute
   '/o/$orgSlug/dashboard/testimonials/': typeof OOrgSlugDashboardTestimonialsIndexRoute
   '/o/$orgSlug/_public/testimonials/tmp/$id': typeof OOrgSlugPublicTestimonialsTmpIdRoute
 }
@@ -265,14 +304,18 @@ export interface FileRouteTypes {
     | '/accept-invite/$inviteId'
     | '/api/auth/$'
     | '/o/$orgSlug/testimonials'
+    | '/o/$orgSlug/dashboard/form-preferences'
     | '/o/$orgSlug/dashboard/testimonials'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
     | '/o/$orgSlug/'
     | '/o/$orgSlug/dashboard/'
     | '/o/$orgSlug/testimonials/$id'
+    | '/o/$orgSlug/dashboard/form-preferences/$id'
+    | '/o/$orgSlug/dashboard/form-preferences/new'
     | '/o/$orgSlug/dashboard/testimonials/$id'
     | '/o/$orgSlug/testimonials/'
+    | '/o/$orgSlug/dashboard/form-preferences/'
     | '/o/$orgSlug/dashboard/testimonials/'
     | '/o/$orgSlug/testimonials/tmp/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -291,8 +334,11 @@ export interface FileRouteTypes {
     | '/o/$orgSlug/dashboard/settings'
     | '/o/$orgSlug/dashboard'
     | '/o/$orgSlug/testimonials/$id'
+    | '/o/$orgSlug/dashboard/form-preferences/$id'
+    | '/o/$orgSlug/dashboard/form-preferences/new'
     | '/o/$orgSlug/dashboard/testimonials/$id'
     | '/o/$orgSlug/testimonials'
+    | '/o/$orgSlug/dashboard/form-preferences'
     | '/o/$orgSlug/dashboard/testimonials'
     | '/o/$orgSlug/testimonials/tmp/$id'
   id:
@@ -313,14 +359,18 @@ export interface FileRouteTypes {
     | '/_auth/accept-invite/$inviteId'
     | '/api/auth/$'
     | '/o/$orgSlug/_public/testimonials'
+    | '/o/$orgSlug/dashboard/form-preferences'
     | '/o/$orgSlug/dashboard/testimonials'
     | '/o/$orgSlug/dashboard/members'
     | '/o/$orgSlug/dashboard/settings'
     | '/o/$orgSlug/_public/'
     | '/o/$orgSlug/dashboard/'
     | '/o/$orgSlug/_public/testimonials/$id'
+    | '/o/$orgSlug/dashboard/form-preferences/$id'
+    | '/o/$orgSlug/dashboard/form-preferences/new'
     | '/o/$orgSlug/dashboard/testimonials/$id'
     | '/o/$orgSlug/_public/testimonials/'
+    | '/o/$orgSlug/dashboard/form-preferences/'
     | '/o/$orgSlug/dashboard/testimonials/'
     | '/o/$orgSlug/_public/testimonials/tmp/$id'
   fileRoutesById: FileRoutesById
@@ -476,6 +526,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OOrgSlugDashboardTestimonialsRouteRouteImport
       parentRoute: typeof OOrgSlugDashboardRouteRoute
     }
+    '/o/$orgSlug/dashboard/form-preferences': {
+      id: '/o/$orgSlug/dashboard/form-preferences'
+      path: '/form-preferences'
+      fullPath: '/o/$orgSlug/dashboard/form-preferences'
+      preLoaderRoute: typeof OOrgSlugDashboardFormPreferencesRouteRouteImport
+      parentRoute: typeof OOrgSlugDashboardRouteRoute
+    }
     '/o/$orgSlug/_public/testimonials': {
       id: '/o/$orgSlug/_public/testimonials'
       path: '/testimonials'
@@ -490,6 +547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OOrgSlugDashboardTestimonialsIndexRouteImport
       parentRoute: typeof OOrgSlugDashboardTestimonialsRouteRoute
     }
+    '/o/$orgSlug/dashboard/form-preferences/': {
+      id: '/o/$orgSlug/dashboard/form-preferences/'
+      path: '/'
+      fullPath: '/o/$orgSlug/dashboard/form-preferences/'
+      preLoaderRoute: typeof OOrgSlugDashboardFormPreferencesIndexRouteImport
+      parentRoute: typeof OOrgSlugDashboardFormPreferencesRouteRoute
+    }
     '/o/$orgSlug/_public/testimonials/': {
       id: '/o/$orgSlug/_public/testimonials/'
       path: '/'
@@ -503,6 +567,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/o/$orgSlug/dashboard/testimonials/$id'
       preLoaderRoute: typeof OOrgSlugDashboardTestimonialsIdRouteImport
       parentRoute: typeof OOrgSlugDashboardTestimonialsRouteRoute
+    }
+    '/o/$orgSlug/dashboard/form-preferences/new': {
+      id: '/o/$orgSlug/dashboard/form-preferences/new'
+      path: '/new'
+      fullPath: '/o/$orgSlug/dashboard/form-preferences/new'
+      preLoaderRoute: typeof OOrgSlugDashboardFormPreferencesNewRouteImport
+      parentRoute: typeof OOrgSlugDashboardFormPreferencesRouteRoute
+    }
+    '/o/$orgSlug/dashboard/form-preferences/$id': {
+      id: '/o/$orgSlug/dashboard/form-preferences/$id'
+      path: '/$id'
+      fullPath: '/o/$orgSlug/dashboard/form-preferences/$id'
+      preLoaderRoute: typeof OOrgSlugDashboardFormPreferencesIdRouteImport
+      parentRoute: typeof OOrgSlugDashboardFormPreferencesRouteRoute
     }
     '/o/$orgSlug/_public/testimonials/$id': {
       id: '/o/$orgSlug/_public/testimonials/$id'
@@ -597,6 +675,27 @@ const OOrgSlugPublicRouteRouteChildren: OOrgSlugPublicRouteRouteChildren = {
 const OOrgSlugPublicRouteRouteWithChildren =
   OOrgSlugPublicRouteRoute._addFileChildren(OOrgSlugPublicRouteRouteChildren)
 
+interface OOrgSlugDashboardFormPreferencesRouteRouteChildren {
+  OOrgSlugDashboardFormPreferencesIdRoute: typeof OOrgSlugDashboardFormPreferencesIdRoute
+  OOrgSlugDashboardFormPreferencesNewRoute: typeof OOrgSlugDashboardFormPreferencesNewRoute
+  OOrgSlugDashboardFormPreferencesIndexRoute: typeof OOrgSlugDashboardFormPreferencesIndexRoute
+}
+
+const OOrgSlugDashboardFormPreferencesRouteRouteChildren: OOrgSlugDashboardFormPreferencesRouteRouteChildren =
+  {
+    OOrgSlugDashboardFormPreferencesIdRoute:
+      OOrgSlugDashboardFormPreferencesIdRoute,
+    OOrgSlugDashboardFormPreferencesNewRoute:
+      OOrgSlugDashboardFormPreferencesNewRoute,
+    OOrgSlugDashboardFormPreferencesIndexRoute:
+      OOrgSlugDashboardFormPreferencesIndexRoute,
+  }
+
+const OOrgSlugDashboardFormPreferencesRouteRouteWithChildren =
+  OOrgSlugDashboardFormPreferencesRouteRoute._addFileChildren(
+    OOrgSlugDashboardFormPreferencesRouteRouteChildren,
+  )
+
 interface OOrgSlugDashboardTestimonialsRouteRouteChildren {
   OOrgSlugDashboardTestimonialsIdRoute: typeof OOrgSlugDashboardTestimonialsIdRoute
   OOrgSlugDashboardTestimonialsIndexRoute: typeof OOrgSlugDashboardTestimonialsIndexRoute
@@ -615,6 +714,7 @@ const OOrgSlugDashboardTestimonialsRouteRouteWithChildren =
   )
 
 interface OOrgSlugDashboardRouteRouteChildren {
+  OOrgSlugDashboardFormPreferencesRouteRoute: typeof OOrgSlugDashboardFormPreferencesRouteRouteWithChildren
   OOrgSlugDashboardTestimonialsRouteRoute: typeof OOrgSlugDashboardTestimonialsRouteRouteWithChildren
   OOrgSlugDashboardMembersRoute: typeof OOrgSlugDashboardMembersRoute
   OOrgSlugDashboardSettingsRoute: typeof OOrgSlugDashboardSettingsRoute
@@ -623,6 +723,8 @@ interface OOrgSlugDashboardRouteRouteChildren {
 
 const OOrgSlugDashboardRouteRouteChildren: OOrgSlugDashboardRouteRouteChildren =
   {
+    OOrgSlugDashboardFormPreferencesRouteRoute:
+      OOrgSlugDashboardFormPreferencesRouteRouteWithChildren,
     OOrgSlugDashboardTestimonialsRouteRoute:
       OOrgSlugDashboardTestimonialsRouteRouteWithChildren,
     OOrgSlugDashboardMembersRoute: OOrgSlugDashboardMembersRoute,
