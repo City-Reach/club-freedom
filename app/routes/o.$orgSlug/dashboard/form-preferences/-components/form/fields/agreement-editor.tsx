@@ -24,17 +24,20 @@ import { ToolbarPlugin } from "@/components/editor/plugins/toolbar/toolbar-plugi
 import { editorTheme } from "@/components/editor/themes/editor-theme";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 type Props = {
   markdown: string;
   onMarkdownChange: (markdown: string) => void;
   onDelete?: () => void;
+  hasError?: boolean;
 };
 
 export default function AgreementEditor({
   markdown,
   onMarkdownChange,
   onDelete,
+  hasError = false,
 }: Props) {
   const handleEditorChange = useCallback(
     (editorState: EditorState) => {
@@ -57,7 +60,12 @@ export default function AgreementEditor({
   };
 
   return (
-    <div className="bg-background overflow-hidden rounded-lg border">
+    <div
+      className={cn(
+        "bg-background overflow-hidden rounded-lg border",
+        hasError && "border-destructive",
+      )}
+    >
       <LexicalComposer
         initialConfig={{
           namespace: "MarkdownEditorWithLinks",

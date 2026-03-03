@@ -17,7 +17,7 @@ export const formSchema = z.object({
   agreements: z
     .array(
       z.object({
-        value: z.string(),
+        value: z.string().min(1, "Agreement should not be empty"),
       }),
     )
     .min(1)
