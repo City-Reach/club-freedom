@@ -1,4 +1,4 @@
-name = "club-freedom"
+name = "club-freedom-staging"
 
 compatibility_date = "2025-09-02"
 compatibility_flags = [ "nodejs_compat" ]
