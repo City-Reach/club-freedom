@@ -10,7 +10,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import Markdown from "react-markdown";
 import { toast } from "sonner";
@@ -90,14 +90,9 @@ export default function TestimonialForm() {
     return "text";
   });
 
-  const formatCount = useMemo(() => {
-    let count = 0;
-    if (videoEnabled) count++;
-    if (audioEnabled) count++;
-    if (textEnabled) count++;
-
-    return count;
-  }, [videoEnabled, audioEnabled, textEnabled]);
+  const formatCount = [videoEnabled, audioEnabled, textEnabled].filter(
+    Boolean,
+  ).length;
 
   const handleTabChange = (value: string) => {
     setTabValue(value);
