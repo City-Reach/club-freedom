@@ -52,7 +52,7 @@ export default defineSchema({
   }),
   stylingPreferences: defineTable({
     organizationId: v.string(),
-    themeId: v.string(),
+    themeId: v.id("stylings"),
   }).index("byOrganizationId", {
     fields: ["organizationId"],
   }),

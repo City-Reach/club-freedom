@@ -119,11 +119,12 @@ export const getOrganizationStylings = query({
       )
       .first();
 
-    if (theme) {
-      const style = await ctx.db.get(theme.themeId as Id<"styling">);
-      console.log(style);
-    } else {
-      return {};
+    const id = theme?.themeId;
+    if (id) {
+      const style = await ctx.db.get(id);
+      return style?.variables;
     }
+
+    return {};
   },
 });
