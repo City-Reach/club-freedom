@@ -1,8 +1,7 @@
 import { v } from "convex/values";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { Doc, Id } from "@/convex/betterAuth/_generated/dataModel";
 import { components } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
-import { Id } from "@/convex/betterAuth/_generated/dataModel";
 import { authComponent, createAuth } from "./auth";
 import { r2 } from "./r2";
 
@@ -115,8 +114,9 @@ export const getOrganizationStylings = query({
   handler: async (ctx, args) => {
     const theme = await ctx.db
       .query("stylingPreferences")
-      .withIndex("byOrganizationId",
-        (q) => q.eq("organizationId", args.organizationId))
+      .withIndex("byOrganizationId", (q) =>
+        q.eq("organizationId", args.organizationId),
+      )
       .first();
 
     if (theme) {
@@ -125,7 +125,5 @@ export const getOrganizationStylings = query({
     } else {
       return {};
     }
-
-
-  }
+  },
 });
