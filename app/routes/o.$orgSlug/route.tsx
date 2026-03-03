@@ -15,6 +15,13 @@ export const Route = createFileRoute("/o/$orgSlug")({
       throw notFound();
     }
 
+    const stylings = await context.queryClient.ensureQueryData(
+      convexQuery(api.organization.getOrganizationStylings, {
+        organizationId: String(organization._id),
+      }),
+    );
+    console.log(stylings);
+
     return { organization };
   },
   head: ({ matches }) => {
