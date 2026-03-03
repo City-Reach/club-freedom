@@ -10,7 +10,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "convex/react";
 import { formatDistance } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import Markdown from "react-markdown";
 import { toast } from "sonner";
@@ -73,6 +73,12 @@ export default function TestimonialForm() {
     },
     resolver: zodResolver(testimonialSchema),
   });
+
+  useEffect(() => {
+    if (agreements.length > 0) {
+      form.setValue("agreementsAccepted", []);
+    }
+  }, [agreements.length, form.setValue]);
 
   const navigation = useNavigate();
   const uploadFile = useUploadFile();
