@@ -43,4 +43,17 @@ export default defineSchema({
   }).index("byOrganizationIdAndActivated", {
     fields: ["organizationId", "activated"],
   }),
+  stylings: defineTable({
+    themeName: v.string(),
+    variables: v.record(v.string(), v.any()),
+    public: v.boolean(),
+  }).index("byThemeName", {
+    fields: ["themeName"],
+  }),
+  stylingPreferences: defineTable({
+    organizationId: v.string(),
+    themeId: v.id("stylings"),
+  }).index("byOrganizationId", {
+    fields: ["organizationId"],
+  }),
 });

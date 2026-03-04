@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import type { Doc } from "@/convex/betterAuth/_generated/dataModel";
+import type { Doc, Id } from "@/convex/betterAuth/_generated/dataModel";
 import { components } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
@@ -104,5 +104,27 @@ export const findInvitationById = query({
       },
     );
     return invitation;
+  },
+});
+
+export const getOrganizationStylings = query({
+  args: {
+    organizationId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const theme = await ctx.db
+      .query("stylingPreferences")
+      .withIndex("byOrganizationId", (q) =>
+        q.eq("organizationId", args.organizationId),
+      )
+      .first();
+
+    const id = theme?.themeId;
+    if (id) {
+      const style = await ctx.db.get(id);
+      return style?.variables;
+    }
+
+    return {};
   },
 });
